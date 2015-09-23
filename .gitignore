@@ -1,0 +1,4 @@
+# Object files
+node_modules/
+public/
+.deploy_git/
