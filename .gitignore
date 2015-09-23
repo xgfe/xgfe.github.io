@@ -1,4 +1,7 @@
 # Object files
+.DS_Store
+.idea/
+*.log
 node_modules/
 public/
 .deploy_git/
