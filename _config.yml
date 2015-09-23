@@ -5,9 +5,9 @@
 # Site
 title: xgfe
 subtitle:
-description: xgfe blog
+description: xgfe's blog
 author: xgfe
-language: zh-CN
+language: zh-Hans
 timezone:
 
 # URL
@@ -63,7 +63,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: http://hexo.io/plugins/
 ## Themes: http://hexo.io/themes/
-theme: air
+theme: next
 
 # Deployment
 ## Docs: http://hexo.io/docs/deployment.html
@@ -72,3 +72,19 @@ deploy:
   repo: https://github.com/xgfe/blog
   branch: gh-pages
   message: blog publish
+
+# logo
+avatar: /blog/uploads/xg-logo.jpg
+
+# 多说评论系统short name
+duoshuo_shortname: xgfe
+
+# Swiftype 搜索 key
+swiftype_key: V1zf5_xmZoj7m3re5xiw
+
+# Social links
+social:
+  GitHub: https://github.com/xgfe
+
+# JiaThis 分享服务
+jiathis: true
