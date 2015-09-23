@@ -6,3 +6,4 @@ node_modules/
 public/
 .deploy_git/
 debug.log
+db.json
