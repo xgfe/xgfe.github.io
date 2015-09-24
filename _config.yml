@@ -94,3 +94,6 @@ feed:
   type: atom
   path: atom.xml
   limit: 20
+
+# 百度统计
+baidu_analytics: c12fed2b75c3474f8bd49a906c840766
