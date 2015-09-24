@@ -8,7 +8,7 @@ menu:
   #commonweal: /blog/404
 
 # Place your favicon.ico to /source directory.
-favicon: /blog/favicon.ico
+favicon: /blog/uploads/xg-logo.ico
 
 # Set default keywords (Use a comma to separate)
 keywords: "Hexo,next"

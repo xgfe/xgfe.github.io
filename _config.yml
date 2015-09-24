@@ -88,3 +88,9 @@ social:
 
 # JiaThis 分享服务
 jiathis: true
+
+# rss
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20

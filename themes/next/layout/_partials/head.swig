@@ -45,7 +45,7 @@
 {% endif %}
 
 {% if theme.rss %}
-  <link rel="alternate" href="{{ url_for(theme.rss) }}" title="{{ config.title }}" type="application/atom+xml" />
+  <link rel="alternate" target="_blank" href="{{ url_for(theme.rss) }}" title="{{ config.title }}" type="application/atom+xml" />
 {% endif %}
 
 {% if theme.favicon %}
