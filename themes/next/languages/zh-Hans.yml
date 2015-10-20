@@ -1,12 +1,12 @@
 title:
   archive: 归档
-  category: 分类
+  category: 作者
   tag: 标签
 
 menu:
   home: 首页
   archives: 归档
-  categories: 分类
+  categories: 作者
   tags: 标签
   about: 关于
   search: 搜索
@@ -19,7 +19,7 @@ sidebar:
 
 post:
   posted: 发表于
-  in: 分类于
+  in: 作者
   read_more: 阅读全文
   untitled: 未命名
   toc_empty: 此文章未包含目录
@@ -40,9 +40,9 @@ counter:
     other: "目前共计 %d 个标签"
 
   categories:
-    zero: 暂无分类
-    one: 目前共计 1 个分类
-    other: "目前共计 %d 个分类"
+    zero: 暂无作者
+    one: 目前共计 1 个作者
+    other: "目前共计 %d 个作者"
 
   archive_posts:
     zero: 暂无日志。
@@ -53,7 +53,7 @@ state:
   posts: 日志
   pages: 页面
   tags: 标签
-  categories: 分类
+  categories: 作者
 
 cheers:
   um: 嗯..
