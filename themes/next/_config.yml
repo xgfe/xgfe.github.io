@@ -1,7 +1,7 @@
 # when running hexo in a subdirectory (e.g. domain.tld/blog), remove leading slashes ( "/archives" -> "archives" )
 menu:
   home: /blog
-  categories: /blog/categories
+  #categories: /blog/categories
   #about: /blog/about
   archives: /blog/archives
   tags: /blog/tags

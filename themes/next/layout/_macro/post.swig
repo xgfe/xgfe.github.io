@@ -68,6 +68,16 @@
           </span>
           {% endif %}
         {% endif %}
+
+        <!-- tags 挪动位置 -->
+        {% if post.tags and post.tags.length %}
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            {% for tag in post.tags %}
+              <a href="{{ url_for(tag.path) }}" rel="tag"><i class="icon-next-tags"></i>{{ tag.name }}</a>
+            {% endfor %}
+          </span>
+        {% endif %}
       </div>
     </header>
 
@@ -127,13 +137,6 @@
     </div>
 
     <footer class="post-footer">
-      {% if post.tags and post.tags.length and not is_index %}
-        <div class="post-tags">
-          {% for tag in post.tags %}
-            <a href="{{ url_for(tag.path) }}" rel="tag">#{{ tag.name }}</a>
-          {% endfor %}
-        </div>
-      {% endif %}
 
       {% if not is_index and (post.prev or post.next) %}
         <div class="post-nav">
