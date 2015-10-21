@@ -2,8 +2,8 @@ title: HTML代码检查工具实践
 date: 2015-10-08
 categories: yangjiyuan
 tags: 
-- HTML
-- HTMLHint
+- html
+- htmlhint
 - 代码规范
 ---
 

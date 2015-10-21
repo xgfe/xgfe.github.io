@@ -2,7 +2,7 @@ title: Sublime Text 3使用xg-htmlhint配置教程
 date: 2015-10-20 16:32:00
 categories: chenwubai
 tags:
-- HTMLHint
+- htmlhint
 ---
 
 &emsp;&emsp;在[《HTML代码检查工具实践》](http://xgfe.github.io/blog/2015/10/08/yangjiyuan/html-hinting-tool/)中对xg-htmlhint进行了详细的介绍。本文主要针对Sublime Text 3使用xg-htmlhint工具需要的配置安装进行了说明。该教程只针对Sublime Text 3，在Sublime Text 2中可能会安装出错。  
