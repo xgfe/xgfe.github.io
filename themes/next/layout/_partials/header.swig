@@ -19,6 +19,7 @@
 
 <nav class="site-nav">
   {% set hasSearch = theme.swiftype_key || theme.tinysou_Key %}
+  {% set hasSearch = true %}
 
   {% if theme.menu %}
     <ul id="menu" class="menu {{ hasSearch and 'menu-left' }}">
@@ -62,5 +63,11 @@
       {% include 'search.swig' %}
     </div>
   {% endif %}
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp" >
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
 </nav>
 
