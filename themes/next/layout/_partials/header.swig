@@ -31,6 +31,19 @@
           </a>
         </li>
       {% endfor %}
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
 
       {# Search icon for default scheme #}
       {% if not theme.scheme and theme.swiftype_key %}
