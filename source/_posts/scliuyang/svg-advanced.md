@@ -10,13 +10,18 @@ tags:
 创建SVG元素和普通创建DOM元素有细小的区别，创建SVG需要用到命名空间创建,举个栗子  
 
 ```
-var svgNS = “http://www.w3.org/2000/svg”; //命名空间字符串var svgDom = document.createElementNS(svgNS, ‘svg’);
+var svgNS = “http://www.w3.org/2000/svg”; //命名空间字符串
+var svgDom = document.createElementNS(svgNS, ‘svg’);
 ```
 <!--more-->
 当然对普通属性的操作使用setAttribue即可，但是如果操作SVG特有的属性即xlink:href之类的则必须使用如下的方法
 
 ```
-<use xlink:href="#pat"> //操作xlink:hrefvar xlinkNS = "http://www.w3.org/1999/xlink";var use = document.createElementNS(svgNS, 'use');use.setAttributeNS(xlinkNS,'href', '#pat');
+<use xlink:href="#pat"> //操作xlink:href
+
+var xlinkNS = "http://www.w3.org/1999/xlink";
+var use = document.createElementNS(svgNS, 'use');
+use.setAttributeNS(xlinkNS,'href', '#pat');
 ```
 # viewport和viewbox
 
@@ -38,10 +43,10 @@ x,y呢决定viewbox的左上角起始点(允许负值)，width,height决定viewb
 </svg>
 ```
 现在我们有一个宽高都是500的SVG，里面有一个鹦鹉，如图
-<img src="/blog/uploads/svg-advance/svg-1.png" style="width:200px;height:200px;">
+<img src="/blog/uploads/scliuyang/svg-advance/svg-1.png" style="width:200px;height:200px;">
 我们设置viewbox="0 0 100 100",结果如下
-<img src="/blog/uploads/svg-advance/svg-2.png" style="width:200px;height:200px;">
-<img src="/blog/uploads/svg-advance/svg-3.png" style="width:200px;height:200px;">
+<img src="/blog/uploads/scliuyang/svg-advance/svg-2.png" style="width:200px;height:200px;">
+<img src="/blog/uploads/scliuyang/svg-advance/svg-3.png" style="width:200px;height:200px;">
 可以清楚的看到浏览器将蓝色方框内的内容等比例拉伸到500，500的大小
 
 现在是viewbox的宽高比和viewport的宽高比一致，当宽高比不一致的时候就需要用到
@@ -55,7 +60,7 @@ preserveAspectRatio="align meetOrSlice"
 ### align
 
 align取值为none时，宽高比不相同的话会强制拉伸充满整个viewport,就像这样
-<img src="/blog/uploads/svg-advance/svg-5.png" style="height:200px;">
+<img src="/blog/uploads/scliuyang/svg-advance/svg-5.png" style="height:200px;">
 
 align的其他取值情况是下面两列的混合情况
 
@@ -65,8 +70,8 @@ align的其他取值情况是下面两列的混合情况
  xMax YMax
 
 ```
-<img src="/blog/uploads/svg-advance/svg-6.jpg" >
-<img src="/blog/uploads/svg-advance/svg-7.jpg" >
+<img src="/blog/uploads/scliuyang/svg-advance/svg-6.jpg" >
+<img src="/blog/uploads/scliuyang/svg-advance/svg-7.jpg" >
 
 ### meetOrSlice
 
@@ -94,7 +99,7 @@ align的其他取值情况是下面两列的混合情况
 # SVG变换
 
 SVG元素也可以应用css变换，不过唯一需要注意的一点就是，svg元素的transform-origin是左上角0,0点,如果想像普通元素一样请设置transform-origin:50% 50%;
-<img src="/blog/uploads/svg-advance/svg-8.png" >
+<img src="/blog/uploads/scliuyang/svg-advance/svg-8.png" >
  
 # SVG动画
 
@@ -106,8 +111,11 @@ SVG动画可以有3种实现方法
 
 参考链接：
 [帅气的描边动画](http://www.webhek.com/animated-line-drawing-in-svg)
-[很有创意的loading动画](http://www.oxxostudio.tw/articles/201407/svg-progress-bar.html)# SVG clip-path
+[很有创意的loading动画](http://www.oxxostudio.tw/articles/201407/svg-progress-bar.html)
+
+# SVG clip-path
 
 SVG剪切，配合defs使用，剪切定义路径以外的图像（隐藏）
-<img  src="/blog/uploads/svg-advance/svg-9.png"><img  src="/blog/uploads/svg-advance/svg-10.png">
+<img  src="/blog/uploads/scliuyang/svg-advance/svg-9.png">
+<img  src="/blog/uploads/scliuyang/svg-advance/svg-10.png">
 [亲自试一试](http://jsbin.com/kigiqidoze/edit?html,js,output)
