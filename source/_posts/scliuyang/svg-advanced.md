@@ -5,6 +5,15 @@ tags:
 - svg
 - 进阶
 ---
+本文在大概了解SVG的基础上，深入的讲解一些SVG常用的知识，主要有以下几点  
+
+1. JS操作SVG
+2. viewport和viewbox
+3. SVG变换
+4. SVG动画
+5. SVG clip-path
+
+<!--more-->
 # JS如何操作SVG元素
 
 创建SVG元素和普通创建DOM元素有细小的区别，创建SVG需要用到命名空间创建,举个栗子  
@@ -13,7 +22,7 @@ tags:
 var svgNS = “http://www.w3.org/2000/svg”; //命名空间字符串
 var svgDom = document.createElementNS(svgNS, ‘svg’);
 ```
-<!--more-->
+
 当然对普通属性的操作使用setAttribue即可，但是如果操作SVG特有的属性即xlink:href之类的则必须使用如下的方法
 
 ```
