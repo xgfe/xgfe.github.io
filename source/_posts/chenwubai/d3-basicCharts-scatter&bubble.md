@@ -202,4 +202,4 @@ tags:
 	        });
 &emsp;&emsp;最后的气泡图是长这样的。  
 <img src="/blog/uploads/chenwubai/d3-basicCharts-scatter&bubble/bubble.png" width="320" height="160" />  
-&emsp;&emsp;完整的代码和例子展示请移步scatter.html和bubble.html。
+&emsp;&emsp;完整的代码和例子展示请移步[scatter.html](https://github.com/xgfe/blog/blob/master/source/uploads/chenwubai/d3-basicCharts-scatter%26bubble/scatter.html)和[bubble.html](https://github.com/xgfe/blog/blob/master/source/uploads/chenwubai/d3-basicCharts-scatter%26bubble/bubble.html)。

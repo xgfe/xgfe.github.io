@@ -140,4 +140,4 @@ tags:
 &emsp;&emsp;至此，得到了如下图所示的柱状图。  
 <img src="/blog/uploads/chenwubai/d3-basicCharts-bar/bar.png" width="320" height="160" />
 
-&emsp;&emsp;完整的代码和例子展示请移步bar.html。
+&emsp;&emsp;完整的代码和例子展示请移步[bar.html](https://github.com/xgfe/blog/blob/master/source/uploads/chenwubai/d3-basicCharts-bar/bar.html)。
