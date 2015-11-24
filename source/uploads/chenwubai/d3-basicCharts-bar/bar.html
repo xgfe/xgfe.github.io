@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>柱状图</title>
+        <style>
+            .container {
+                margin: 30px auto;
+                width: 600px;
+                height: 300px;
+                border: 1px solid #000;
+            }
+            .axis path,
+            .axis line {
+                stroke: #000;
+                fill: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <svg width="100%" height="100%"></svg>
+        </div>
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script>
+            window.onload = function() {
+                var width = 600, height = 300;
+                // SVG画布边缘与图表内容的距离
+                var padding = { top: 50, right: 50, bottom: 50, left: 50 };
+                // 创建一个分组用来组合要画的图表元素
+                var main = d3.select('.container svg').append('g')
+                        .classed('main', true)
+                        .attr('transform', "translate(" + padding.top + ',' + padding.left + ')');
+                // 模拟数据
+                var dataset = {
+                    x: ["赵","钱","孙","李","周","吴","郑","王"],
+                    y: [40, 30, 50, 70, 90, 20, 10, 40]
+                };
+                // 定义x轴的比例尺(序数比例尺)
+                var xScale = d3.scale.ordinal()
+                        .domain(dataset.x)
+                        .rangeRoundBands([0, width - padding.left - padding.right],0,0);
+                // 定义y轴的比例尺(线性比例尺)
+                var yScale = d3.scale.linear()
+                        .domain([0, d3.max(dataset.y)])
+                        .range([height - padding.top - padding.bottom, 0]);
+                // 定义x轴和y轴
+                var xAxis = d3.svg.axis()
+                        .scale(xScale)
+                        .orient('bottom');
+                var yAxis = d3.svg.axis()
+                        .scale(yScale)
+                        .orient('left');
+                // 添加坐标轴元素
+                main.append('g')
+                        .attr('class', 'axis')
+                        .attr('transform', 'translate(0,' + (height - padding.bottom - padding.top) + ')')
+                        .call(xAxis);
+                main.append('g')
+                        .attr('class', 'axis')
+                        .call(yAxis);
+
+                // 矩形之间的间距
+                var rectMargin = 10;
+                // 添加矩形
+                main.selectAll('.bar')
+                        .data(dataset.y)
+                        .enter()
+                        .append('rect')
+                        .attr('class', 'bar')
+                        .attr('x', function(d, i) {
+                            return xScale(dataset.x[i]) + rectMargin;
+                        })
+                        .attr('y', function(d, i) {
+                            return yScale(d);
+                        })
+                        .attr('width', xScale.rangeBand() - 2*rectMargin)
+                        .attr('height', function(d, i) {
+                            return height - padding.top - padding.bottom - yScale(d);
+                        })
+                        .attr('fill', function(d, i) {
+                            return getColor(i);
+                        });
+                // 添加文字标签
+                /*main.selectAll('.text')
+                        .data(dataset.y)
+                        .enter()
+                        .append('text')
+                        .attr('class', 'text')
+                        .attr('x', function(d, i) {
+                            return xScale(dataset.x[i]);
+                        })
+                        .attr('y', function(d, i) {
+                            return yScale(d);
+                        })
+                        .attr('dx', (xScale.rangeBand() - 14)/2)
+                        .attr('dy', '20')
+                        .text(function(d) {
+                            return d;
+                        });*/
+            };
+            function getColor(idx) {
+                var palette = [
+                    '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
+                    '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa',
+                    '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
+                    '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'
+                ]
+                return palette[idx % palette.length];
+            }
+        </script>
+    </body>
+</html>
+
+
