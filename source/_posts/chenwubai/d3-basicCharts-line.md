@@ -129,4 +129,4 @@ tags:
 	        });
 &emsp;&emsp;在main元素中选择到所有的圆先“占位”（因为此时选择到的是一个空的集合，只是这个集合代表main中所有的圆），然后绑定dataset到此集合上，通过[enter()](https://github.com/mbostock/d3/wiki/Selections#enter)和append()搭配使用添加新的circle元素直到集合元素个数与dataset子元素个数相同为止。用比例尺计算出各圆的坐标并对其相关属性进行赋值，就完成了点的添加。  
 <img src="/blog/uploads/chenwubai/d3-basicCharts-line/line.png" width="320" height="160" />
-&emsp;&emsp;完整的代码和例子展示请移步[line.html](https://github.com/xgfe/blog/blob/master/source/uploads/chenwubai/d3-basicCharts-line/line.html)。
+&emsp;&emsp;完整的代码和例子展示请移步[line.html](/blog/uploads/chenwubai/d3-basicCharts-line/line.html)。
