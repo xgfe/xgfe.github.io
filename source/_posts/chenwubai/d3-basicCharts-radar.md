@@ -258,4 +258,4 @@ tags:
 	        });  
 &emsp;&emsp;最后的样子是这样的。  
 <img src="/blog/uploads/chenwubai/d3-basicCharts-radar/radarWithText.png" width="320" height="160" />  
-&emsp;&emsp;完整的代码及展示可参见[radar.html](https://github.com/xgfe/blog/blob/master/source/uploads/chenwubai/d3-basicCharts-radar/radar.html)。
+&emsp;&emsp;完整的代码及展示可参见[radar.html](/blog/uploads/chenwubai/d3-basicCharts-radar/radar.html)。

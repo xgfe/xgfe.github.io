@@ -92,5 +92,5 @@ tags:
 好了，饼图就这样画好了。  
 <img src="/blog/uploads/chenwubai/d3-basicCharts-pie/pie.png" width="320" height="160" />  
 
-&emsp;&emsp;给大家（虽然我知道目前没有什么人看这个但是我还是要像个神经病一样的装作有人看 =_= ）留个小小的拓展，如何加上下图这样的文字标签。答案就在[pie.html](https://github.com/xgfe/blog/blob/master/source/uploads/chenwubai/d3-basicCharts-pie/pie.html)里。  
+&emsp;&emsp;给大家（虽然我知道目前没有什么人看这个但是我还是要像个神经病一样的装作有人看 =_= ）留个小小的拓展，如何加上下图这样的文字标签。答案就在[pie.html](/blog/uploads/chenwubai/d3-basicCharts-pie/pie.html)里。  
 <img src="/blog/uploads/chenwubai/d3-basicCharts-pie/pieWithText.png" width="320" height="160" />
