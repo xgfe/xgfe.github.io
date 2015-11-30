@@ -217,13 +217,17 @@ ngModule.controller('FormCtrl', function($http) {
 
 ```javascript
 ngModule.directive('validatePasswordCharacters', function() {
-
+    // /\d+/,       //numeric values
+    // /[a-z]+/     //lowercase values
+    // /[A-Z]+/     //uppercase values
+    // /\W+/        //special characters
+    // /^\S+$/      //no whitespace allowed
     var REQUIRED_PATTERNS = [
-        /\d+/,    //numeric values
-        /[a-z]+/, //lowercase values
-        /[A-Z]+/, //uppercase values
-        /\W+/,    //special characters
-        /^\S+$/   //no whitespace allowed
+        /\d+/,
+        /[a-z]+/,
+        /[A-Z]+/,
+        /\W+/,
+        /^\S+$/
     ];
 
     return {
