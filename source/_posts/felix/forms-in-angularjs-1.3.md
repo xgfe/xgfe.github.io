@@ -45,7 +45,7 @@ tags:
 
 不过还有好多知识点需要理解的，让我们快点开始吧......
 
-## <span id="video-github">演讲视频，Github仓库和演示应用</span  
+## <span id="video-github">演讲视频，Github仓库和演示应用</span>  
 
 不是很久以前，那是在2014年6月多伦多的AngularJs交流会上，我讲述了AngularJs的表单验证，几乎涵盖了这篇文章的所有话题。视频放在Youtube上，链接在下面。**请记住在当时，异步验证API还不稳定**。所以当视频中讨论API对于基于promise的验证是如何工作的时候，请查看一下本文章的后面部分。除此，好好欣赏视频吧，期望你能喜欢我潇洒的幽默。
 
@@ -192,16 +192,16 @@ ngModule.controller('FormCtrl', function($http) {
 
 下面的input元素的type类型也会注册验证器。
 
-|   \<input type="...">  |       Registered Error       |
-|:---------------------:|:----------------------------:|
-|      type="email"     |     ngModel.$error.email     |
-|       type="url"      |      ngModel.$error.url      |
-|     type="number"     |     ngModel.$error.number    |
-|      type="date"      |      ngModel.$error.date     |
-|      type="time"      |      ngModel.$error.time     |
-| type="datetime-local" | ngModel.$error.datetimelocal |
-|      type="week"      |      ngModel.$error.week     |
-|      type="month"     |     ngModel.$error.month     |
+| &lt;input type="..."&gt; |       Registered Error       |
+|:------------------------:|:----------------------------:|
+|       type="email"       |     ngModel.$error.email     |
+|        type="url"        |      ngModel.$error.url      |
+|       type="number"      |     ngModel.$error.number    |
+|        type="date"       |      ngModel.$error.date     |
+|        type="time"       |      ngModel.$error.time     |
+|   type="datetime-local"  | ngModel.$error.datetimelocal |
+|        type="week"       |      ngModel.$error.week     |
+|       type="month"       |     ngModel.$error.month     |
 
 ### ngModel如何处理这些错误
 
