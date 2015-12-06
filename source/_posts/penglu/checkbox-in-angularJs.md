@@ -2,7 +2,6 @@ title: checkbox-in-angularJs
 date: 2015-12-03 20:50:00
 categories: 
 - penglu
-- Angular
 tags: 
 - angularjs
 - checkbox
