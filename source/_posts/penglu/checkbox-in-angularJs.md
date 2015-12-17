@@ -1,4 +1,4 @@
-title: checkbox-in-angularJs
+title: checkbox in angularJs
 date: 2015-12-06 13:59:00
 categories: penglu
 tags: 
@@ -6,10 +6,11 @@ tags:
 - checkbox
 ---
 
-# AngularJs中checkbox的使用
 用了两次checkbox,第一次使用的时候遇到了一些问题，本来要做总结的，结果一拖再拖，导致今天用的时候又生疏了，所以今天就做一下总结。
 
 <!-- more -->
+
+# AngularJs中checkbox的使用
 
 1. ng-model:双向数据绑定，通过设置ng-model的值可以设置对应checkbox的“选中|不选”状态，ng-model的变化(手动选择造成的改变)会触发ng-change事件;
 2. ng-true-value和ng-false-value可以用来动态绑定"选中|不选"状态下默认值(默认为true和false);
