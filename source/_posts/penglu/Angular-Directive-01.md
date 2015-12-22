@@ -253,11 +253,11 @@ tags:
 			-  	通过标签属性(xx-yy)传递(注意如果通过data-xx的方式传递，则scope中接收要忽略data-.即直接接收xx)
 			-  在scope中通过驼峰(xxYy)的方式接收,如果外层scope传递变量在独立scope中不改变名称，则可以直接使用scope:{xxYy : '=|@|&'}的方式接收，但是如果要使用不同的变量名则可以使用scope:{yyXx: '=|@|&xxYy'}的方式接收.
 			
-	   - {% raw %} @: 当前属性作为字符串传递.通过在属性中插入{{}}来绑定来自外层scope的值。{% endraw %}
-	       - 通过这种方式，只能单向传递数据，独立scope可以看做复制了一份外层scope的变量。在独立scope中修改变量不会引起外层scope值的变化.
-	       - 通过这种方式,在独立scope中接收到的字符串,如果传递的是对象或者数组,则会变转换成json字符串,如果在独立$scope中需要使用,则需要使用$scope.$eval()函数或者$parse服务进行解析，**注意:解析后的数据必须使用新变量来接受，否则scope域值改变，但是dom绑定的数值仍未变化**
-	       - Demo
-	       ```
+	   	- {% raw %} @: 当前属性作为字符串传递.通过在属性中插入{{}}来绑定来自外层scope的值。{% endraw %}
+	       	- 通过这种方式，只能单向传递数据，独立scope可以看做复制了一份外层scope的变量。在独立scope中修改变量不会引起外层scope值的变化.
+	       	- 通过这种方式,在独立scope中接收到的字符串,如果传递的是对象或者数组,则会变转换成json字符串,如果在独立$scope中需要使用,则需要使用$scope.$eval()函数或者$parse服务进行解析，**注意:解析后的数据必须使用新变量来接受，否则scope域值改变，但是dom绑定的数值仍未变化**
+	       	- Demo
+	       	```
 	      	{% raw %}
 				<body ng-controller="myController">
 			    <script>
@@ -290,10 +290,10 @@ tags:
 			    </body>
 	    	{% endraw %}
 			```
-	   -  =: 双向数据绑定
-	      - 通过这种方式，可以实现双向数据绑定，可以看成是独立scope拿到一个指向外层scope的指针。内外层数据的修改都是同步进行的。
-	      -  通过这种方式可以传递对象、数组。即数据按照原格式进行传递.
-	      -  Demo
+	   	-  =: 双向数据绑定
+	      	- 通过这种方式，可以实现双向数据绑定，可以看成是独立scope拿到一个指向外层scope的指针。内外层数据的修改都是同步进行的。
+	      	-  通过这种方式可以传递对象、数组。即数据按照原格式进行传递.
+	      	-  Demo
 			```
 			{% raw %}
 				<body ng-controller="myController">
@@ -327,43 +327,45 @@ tags:
 				    <div>外层controller:{{user.name}},My family:<span ng-repeat="item in family track by $index">{{item}}&nbsp;</span></div>
 				    <div my-directive user="user" family="family" style="color: red;"></div>
 				</body>
-		{% endraw %}
-			```
-	   - &: 传递一个来自父scope的函数.
-	       - Demo
-	        ```
-	      	{% raw %}
-		      	<body ng-controller="myController">
-				<script>
-				    angular.module('app', []);
-				    angular.module('app').directive('myDirective',['$parse', function($parse){
-				        return {
-				            restrict:'AE',
-				            scope: {
-				                setName: "&",
-				                userName: '@'
-				            },
-				            template:'<input ng-model="userName"><button ng-click="changeName(userName)">input中输入待修改名字</button>',
-				            link: function(scope){
-				                // 通过&接收到的函数使用必包的方式又包裹了一层，因此需要调用才能获取真正传递的函数
-				                scope.changeName = scope.setName();
-				            }
-				        }
-				    }]);
-				    angular.module('app').controller('myController', ['$scope', function($scope){
-				       $scope.user = {
-				           name: 'penglu'
-				       };
-				       $scope.setName = function(name){
-				           $scope.user.name = name;
-				       }
-				    }]);
-				</script>
-				<div>{{user.name}}</div>
-				<div my-directive user-name="{{user.name}}" set-name="setName" ></div>
-				</body>
 			{% endraw %}
-	        ```	
+			```
+		- &: 传递一个来自父scope的函数.
+			- Demo
+
+			```
+			{% raw %}
+			<body ng-controller="myController">
+			<script>
+			    angular.module('app', []);
+			    angular.module('app').directive('myDirective',['$parse', function($parse){
+			        return {
+			            restrict:'AE',
+			            scope: {
+			                setName: "&",
+			                userName: '@'
+			            },
+			            template:'<input ng-model="userName"><button ng-click="changeName(userName)">input中输入待修改名字</button>',
+			            link: function(scope){
+			                // 通过&接收到的函数使用必包的方式又包裹了一层，因此需要调用才能获取真正传递的函数
+			                scope.changeName = scope.setName();
+			            }
+			        }
+			    }]);
+			    angular.module('app').controller('myController', ['$scope', function($scope){
+			       $scope.user = {
+			           name: 'penglu'
+			       };
+			       $scope.setName = function(name){
+			           $scope.user.name = name;
+			       }
+			    }]);
+			</script>
+			<div>{{user.name}}</div>
+			<div my-directive user-name="{{user.name}}" set-name="setName" ></div>
+			</body>
+			{% endraw %}
+			```
+
 	4. $eval与$parse 
 		- $eval:scope域上的一个函数,在当前scope域上执行传入的表达式
 			- $eval([expression], [locals]); 
@@ -382,10 +384,10 @@ tags:
 			            console.log(scope.$eval(function(scope){return scope.a + scope.b;}));  //3
 			        }])
 			    </script>
-		     	```
+				```
 		- $eval():可以将json字符串转换为对象或者数组
 			- Demo
-		 	```
+			```
 		{% raw %}
 		<body ng-controller="myController">
 			<script>
@@ -433,12 +435,12 @@ tags:
 				</script>
 				</body>
 				{% endraw %}
-		  ```
+			```
 		- $parse:用于解析json字符串
 			- 备注:解析字符串的时候，没有assign属性  
 			- Demo
 			```
-			{% raw %>
+			{% raw %}
 			<body ng-controller="myController">
 			<script>
 			    angular.module('app',[]);
@@ -509,7 +511,7 @@ tags:
 		       <my-dir title="penglu"></my-dir>
 		   </require-dir>
 			</body>
-			{% endraw %}
+		{% endraw %}
 		```
 8. link & compile
 	1. Angular初始化
@@ -536,46 +538,46 @@ tags:
 		- 一般只使用compile，然后再返回函数中绑定scope，或者只使用link函数。
 		- 可以在compile或者link函数中操作dom，绑定一些事件
 	6. Demo
-   ```
-   {% raw %}
-   <body  ng-controller="MainCtrl">
-    <script>
-        angular.module('app',[]);
-        angular.module('app').controller('MainCtrl', ['$scope', function($scope){
-            $scope.num = 5;
-        }]);
-        angular.module('app').directive('rabbitRepeater', function($document){
-            return {
-                restrict: 'A',
-                compile: function(ele, attrs){
-                    console.log('compile');
-                    // 数据绑定发生在link中，因此如果需要动态绑定model的，都需要使用link设置
-                    // 可以在compile函数中返回link函数,则return的函数会执行
-                    return function(scope, ele, attrs, controller){
-                        console.log('compile & link');
-                        // compile与link不能同时设置,如果同时设置则link函数无效。
-                        var template = $(ele).children().clone();
-                        for(var i=0; i<attrs.rabbitRepeater - 1; i++){
-                            $(ele).append(template.clone());
-                        }
-                    }
-                },
-                link: function(scope, ele, attrs){
-                    console.log('link');
-                    // compile与link不能同时设置,如果同时设置则link函数无效。
-                    var template = $(ele).children().clone();
-                    for(var i=0; i<attrs.rabbitRepeater - 1; i++){
-                        $(ele).append(template.clone());
-                    }
-                }
-            }
-        });
-    </script>
-    <ul rabbit-repeater="{{num}}">
-        <li >哈哈哈</li>
-    </ul>
-</body>
-{% endraw %}
+   	```
+   	{% raw %}
+   	<body ng-controller="MainCtrl">
+	    <script>
+	        angular.module('app',[]);
+	        angular.module('app').controller('MainCtrl', ['$scope', function($scope){
+	            $scope.num = 5;
+	        }]);
+	        angular.module('app').directive('rabbitRepeater', function($document){
+	            return {
+	                restrict: 'A',
+	                compile: function(ele, attrs){
+	                    console.log('compile');
+	                    // 数据绑定发生在link中，因此如果需要动态绑定model的，都需要使用link设置
+	                    // 可以在compile函数中返回link函数,则return的函数会执行
+	                    return function(scope, ele, attrs, controller){
+	                        console.log('compile & link');
+	                        // compile与link不能同时设置,如果同时设置则link函数无效。
+	                        var template = $(ele).children().clone();
+	                        for(var i=0; i<attrs.rabbitRepeater - 1; i++){
+	                            $(ele).append(template.clone());
+	                        }
+	                    }
+	                },
+	                link: function(scope, ele, attrs){
+	                    console.log('link');
+	                    // compile与link不能同时设置,如果同时设置则link函数无效。
+	                    var template = $(ele).children().clone();
+	                    for(var i=0; i<attrs.rabbitRepeater - 1; i++){
+	                        $(ele).append(template.clone());
+	                    }
+	                }
+	            }
+	        });
+	    </script>
+	    <ul rabbit-repeater="{{num}}">
+	        <li >哈哈哈</li>
+	    </ul>
+	</body>
+	{% endraw %}
    ```
 ## 一起来定义指令
 1. 指令使用:定义一个pagination指令，用于翻页等功能.
@@ -585,12 +587,12 @@ tags:
 {% endraw %}
 ```
 2. 功能分析
-  - 根据pageNum动态生成Dom结构.
-  		- 如果变化也会重新生成Dom
-  - 当前选中页为激活状态.
-  - 如果当前页为末｜首页，则’下｜上一页’设置为不可用.
-  - 页面点击切换当前页.
-  - 点击’上｜下一页’进行切换，如果当前页为’首｜末页’则不切换
+  	- 根据pageNum动态生成Dom结构.
+		- 如果变化也会重新生成Dom
+  	- 当前选中页为激活状态.
+  	- 如果当前页为末｜首页，则’下｜上一页’设置为不可用.
+  	- 页面点击切换当前页.
+  	- 点击’上｜下一页’进行切换，如果当前页为’首｜末页’则不切换
 3. 代码实现:class使用bootstrap  
 ```
 {% raw %}
