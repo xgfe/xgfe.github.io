@@ -1,4 +1,4 @@
-title: Angular-Directive-01
+title: AngularJs 指令基础
 date: 2015-12-22 16:00:00
 categories: penglu
 tags: 
@@ -13,7 +13,6 @@ tags:
 
 <!-- more -->
 
-# AngularJs 指令基础
 ## Why
 1. 直接操作DOM；
 2. 通过移除重复代码来重构你应用的某些部分；
