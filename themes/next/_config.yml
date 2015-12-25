@@ -1,14 +1,14 @@
 # when running hexo in a subdirectory (e.g. domain.tld/blog), remove leading slashes ( "/archives" -> "archives" )
 menu:
-  home: /blog
-  #categories: /blog/categories
-  #about: /blog/about
-  archives: /blog/archives
-  tags: /blog/tags
-  #commonweal: /blog/404
+  home: /
+  #categories: /categories
+  #about: /about
+  archives: /archives
+  tags: /tags
+  #commonweal: /404
 
 # Place your favicon.ico to /source directory.
-favicon: /blog/uploads/xg-logo.ico
+favicon: /uploads/xg-logo.ico
 
 # Set default keywords (Use a comma to separate)
 keywords: "Hexo,next"

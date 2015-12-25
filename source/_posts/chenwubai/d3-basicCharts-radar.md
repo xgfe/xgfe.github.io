@@ -53,7 +53,7 @@ tags:
 		</body>
 	</html>
 &emsp;&emsp;这里为什么我会说雷达图和饼图会有点类似呢？看一下下面这张图。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-radar/radarAnalysis.png" width="400" height="289" />   
+<img src="/uploads/chenwubai/d3-basicCharts-radar/radarAnalysis.png" width="400" height="289" />   
 &emsp;&emsp;可以看到，雷达图的网轴（蓝色部分）是由多个正多边形所组成的，而正多边形的绘制正好是可以利用圆半径的特性来绘制的，所以从一开始把绘制的原点移动到画布的中心是很方便后面的绘制工作的。  
 ## 模拟数据  
 &emsp;&emsp;我们先模拟一些原始数据。  
@@ -122,7 +122,7 @@ tags:
 	    stroke-dasharray: 10 5;
 	}  
 &emsp;&emsp;我们得到了如下图所示的网轴。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-radar/web.png" width="320" height="160" />   
+<img src="/uploads/chenwubai/d3-basicCharts-radar/web.png" width="320" height="160" />   
 ## 添加纵轴  
 &emsp;&emsp;接着我们把纵轴也添加上。纵轴就是添加一根根的线条，连接中心点和最外层的多边形上的点，需要的数据可以从polygons.webPoints[0]中取。  
 
@@ -142,7 +142,7 @@ tags:
 	            return d.y;
 	        });
 &emsp;&emsp;雷达图的坐标轴部分就完成了。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-radar/webWithLine.png" width="320" height="160" />  
+<img src="/uploads/chenwubai/d3-basicCharts-radar/webWithLine.png" width="320" height="160" />  
 ## 计算雷达图区域并添加  
 &emsp;&emsp;雷达图区域也是一个多边形，只不过是一个不规则的多边形。但是他的几个点始终处在纵轴上，并且点在纵轴上的位置可以通过点所代表的值在纵轴范围内的占比计算出来的。  
 
@@ -223,7 +223,7 @@ tags:
 	    stroke-width: 3;
 	}
 &emsp;&emsp;于是得到了下图这个样子的图表。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-radar/radar.png" width="320" height="160" />   
+<img src="/uploads/chenwubai/d3-basicCharts-radar/radar.png" width="320" height="160" />   
 ## 计算文字标签坐标并添加  
 &emsp;&emsp;为了让上面的图表更完整一些，我们给它加上文字标签。文字标签标注在网轴的外围，所以可以以计算网轴多边形点坐标的同样的原理计算文字标签的坐标。  
 
@@ -257,5 +257,5 @@ tags:
 	            return data.fieldNames[i];
 	        });  
 &emsp;&emsp;最后的样子是这样的。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-radar/radarWithText.png" width="320" height="160" />  
-&emsp;&emsp;完整的代码及展示可参见[radar.html](/blog/uploads/chenwubai/d3-basicCharts-radar/radar.html)。
+<img src="/uploads/chenwubai/d3-basicCharts-radar/radarWithText.png" width="320" height="160" />  
+&emsp;&emsp;完整的代码及展示可参见[radar.html](/uploads/chenwubai/d3-basicCharts-radar/radar.html)。

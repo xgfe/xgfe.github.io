@@ -7,7 +7,7 @@ tags:
 - D3.js
 ---
 
-&emsp;&emsp;在[《基于D3.js的柱状图的实现》](http://xgfe.github.io/blog/2015/11/23/chenwubai/d3-basicCharts-bar/#more)中已经介绍过如何用D3.js来实现一个简单的柱状图了。现在就让这道新世界的大门再打开一些，我们来用D3.js来实现折线图。  
+&emsp;&emsp;在[《基于D3.js的柱状图的实现》](/2015/11/23/chenwubai/d3-basicCharts-bar/#more)中已经介绍过如何用D3.js来实现一个简单的柱状图了。现在就让这道新世界的大门再打开一些，我们来用D3.js来实现折线图。  
 <!-- more -->        
 &emsp;&emsp;折线图由坐标轴、线条和点组成。和实现柱状图一样，我们还是先把大概的画图框架搭起来，代码如下（别忘了添加D3.js）：  
 
@@ -30,7 +30,6 @@ tags:
 		        <svg width="100%" height="100%"></svg>
 		    </div>
 		    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-		    <script>
         	<script>
 	        	window.onload = function() {
 	            	var width = 600, height = 300;
@@ -89,7 +88,7 @@ tags:
 	        .call(yAxis);  
             
 &emsp;&emsp;这次我们模拟了一些点的数据来进行折线的绘制。[d3.scale.linear()](https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear)创建了线性比例尺，[linear.domain()](https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear_domain)定义定义域，[linear.range()](https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear_range)定义值域。这里需要注意一下，因为SVG画布的y轴与传统认知上的y轴的方向是反着来的，所以在定义y轴的定义域和值域对应关系时，也需要反着来。[d3.extent](https://github.com/mbostock/d3/wiki/Arrays#d3_extent)可以得到参数数组中的最大值和最小值，并以数组的形式返回。然后用[d3.svg.axis()](https://github.com/mbostock/d3/wiki/SVG-Axes#axis)创建了两个坐标轴，把比例尺应用到它们上面，并且用[axis.orient()](https://github.com/mbostock/d3/wiki/SVG-Axes#orient)设置了坐标轴的刻度尺的方向。最后，添加SVG元素，用[call()](https://github.com/mbostock/d3/wiki/Selections#call)把定义好的坐标轴与SVG元素联系起来。通过设置它们的transform属性来移动元素，使它们看起来像是一个坐标系。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-line/axis-line.png" width="320" height="160" /> 
+<img src="/uploads/chenwubai/d3-basicCharts-line/axis-line.png" width="320" height="160" /> 
 ## 折线的实现  
 &emsp;&emsp;在D3.js中，需要先创建一个线的函数，然后由该函数得出的值赋给代表折线的path元素的d属性，才能绘制出折线。需要明确，line是一个函数，不是一个对象。具体的代码如下：
 
@@ -108,7 +107,7 @@ tags:
 	        .attr('class', 'line')
 	        .attr('d', line(dataset));
 &emsp;&emsp;这样做了以后，我们得到了如下图所示的一条线。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-line/lineShape.png" width="320" height="160" />  
+<img src="/uploads/chenwubai/d3-basicCharts-line/lineShape.png" width="320" height="160" />  
 ## 点的实现
 &emsp;&emsp;点其实就是一个个的圆，所以在这里我们用SVG里的circle元素来画点。  
 
@@ -128,5 +127,5 @@ tags:
 	            return getColor(i);
 	        });
 &emsp;&emsp;在main元素中选择到所有的圆先“占位”（因为此时选择到的是一个空的集合，只是这个集合代表main中所有的圆），然后绑定dataset到此集合上，通过[enter()](https://github.com/mbostock/d3/wiki/Selections#enter)和append()搭配使用添加新的circle元素直到集合元素个数与dataset子元素个数相同为止。用比例尺计算出各圆的坐标并对其相关属性进行赋值，就完成了点的添加。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-line/line.png" width="320" height="160" />
-&emsp;&emsp;完整的代码和例子展示请移步[line.html](/blog/uploads/chenwubai/d3-basicCharts-line/line.html)。
+<img src="/uploads/chenwubai/d3-basicCharts-line/line.png" width="320" height="160" />
+&emsp;&emsp;完整的代码和例子展示请移步[line.html](/uploads/chenwubai/d3-basicCharts-line/line.html)。

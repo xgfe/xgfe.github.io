@@ -8,7 +8,7 @@ tags:
 ---
 
 
-&emsp;&emsp;在[《HTML代码检查工具实践》](http://xgfe.github.io/blog/2015/10/08/yangjiyuan/html-hinting-tool/)中对xg-htmlhint进行了详细的介绍。本文主要针对vim使用xg-htmlhint工具需要的配置安装进行了说明。
+&emsp;&emsp;在[《HTML代码检查工具实践》](/2015/10/08/yangjiyuan/html-hinting-tool/)中对xg-htmlhint进行了详细的介绍。本文主要针对vim使用xg-htmlhint工具需要的配置安装进行了说明。
 <!-- more -->  
 
 ## 安装xg-htmlhint  
@@ -39,7 +39,7 @@ endfun
 
 用vim编辑.html文件时，每次保存时都会用htmlhint自动编译该文件，效果如下。
 
-![htmlhint-vim](/blog/uploads/htmlhint-vim.gif)
+![htmlhint-vim](/uploads/htmlhint-vim.gif)
 
 ## 参考链接  
 

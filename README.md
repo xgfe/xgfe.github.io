@@ -14,7 +14,7 @@
 * 获取项目代码
 	
 	```
-	git clone https://github.com/xgfe/blog blog
+	git clone https://github.com/xgfe/xgfe.github.io.git blog
 	cd blog
 	npm install
 	```

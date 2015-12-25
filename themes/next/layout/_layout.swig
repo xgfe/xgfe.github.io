@@ -110,7 +110,7 @@
     var $description = $('meta[name="description"]');
     var dataForWeixin={
       appId: "",
-      img: "http://xgfe.github.io/blog/uploads/xg-logo.jpg",
+      img: "http://xgfe.github.io/uploads/xg-logo.jpg",
       url: location.href,
       title: $('title').text(),
       desc: $description.eq($description.length - 1).attr('content'),

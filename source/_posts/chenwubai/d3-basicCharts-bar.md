@@ -57,7 +57,7 @@ tags:
   
 ### 坐标轴的实现
 &emsp;&emsp;为了把真实的数据与SVG画布上的坐标轴上的坐标联系起来，我们需要定义比例尺来描述这样的对应关系。D3中常用的比例尺有线性比例尺和序数比例尺，它们的区别如图所示：   
-<img src="/blog/uploads/chenwubai/d3-basicCharts-bar/ordinalAndLinear.png" width="720" height="120" />  
+<img src="/uploads/chenwubai/d3-basicCharts-bar/ordinalAndLinear.png" width="720" height="120" />  
 &emsp;&emsp;从图上可以看出，线性比例尺的对应关系是连续的，而序数比例尺的对应关系是离散的。分析柱状图的展现意义可以得出x轴应该选用序数比例尺，而y轴选用线性比例尺。   
 
 	// 模拟数据
@@ -96,7 +96,7 @@ tags:
 - 比例尺的本质是一个函数，它接收定义域上的值来得出对应的值域上的值。  
 
 &emsp;&emsp;应用序数比例尺的坐标轴与线性比例尺的有很大不同，这里大概说明一下。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-bar/ordinal.range.png" width="660" height="260" />  
+<img src="/uploads/chenwubai/d3-basicCharts-bar/ordinal.range.png" width="660" height="260" />  
 &emsp;&emsp;rangeRoundBands(interval, padding, outerPadding)中的padding和outerPadding都是可选的，默认为0。如上图所示的比例尺的代码是这样的。  
 	
 	var o = d3.scale.ordinal()
@@ -112,7 +112,7 @@ tags:
         fill: none;
     }
 &emsp;&emsp;最终得到的柱状图的坐标轴如下图所示：  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-bar/axis-bar.png" width="320" height="160" />
+<img src="/uploads/chenwubai/d3-basicCharts-bar/axis-bar.png" width="320" height="160" />
 ### 柱子的实现  
 &emsp;&emsp;柱子无非就是一个个矩形，在SVG中可以使用rect元素来画。先选择到main下所有bar类的元素（此时选择到的是一个空的集合），把dataset.y绑定到这个集合上，用[enter()](https://github.com/mbostock/d3/wiki/Selections#enter)对比绑定的数组元素个数与集合中的SVG元素个数，与[append()](https://github.com/mbostock/d3/wiki/Selections#append)搭配使用，会自动补齐至两边个数相等。每一次的append都对应dataset.y中的一个数组元素。利用前面创建的比例尺函数计算出值并赋给举行元素的x、y属性。具体的代码如下：
 
@@ -138,6 +138,6 @@ tags:
                 return getColor(i);
             });
 &emsp;&emsp;至此，得到了如下图所示的柱状图。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-bar/bar.png" width="320" height="160" />
+<img src="/uploads/chenwubai/d3-basicCharts-bar/bar.png" width="320" height="160" />
 
-&emsp;&emsp;完整的代码和例子展示请移步[bar.html](/blog/uploads/chenwubai/d3-basicCharts-bar/bar.html)。
+&emsp;&emsp;完整的代码和例子展示请移步[bar.html](/uploads/chenwubai/d3-basicCharts-bar/bar.html)。

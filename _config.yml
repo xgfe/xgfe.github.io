@@ -12,8 +12,8 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://xgfe.github.io/blog
-root: /blog/
+url: http://xgfe.github.io
+root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
@@ -69,12 +69,12 @@ theme: next
 ## Docs: http://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/xgfe/blog
-  branch: gh-pages
+  repo: https://github.com/xgfe/xgfe.github.io
+  branch: master
   message: blog publish
 
 # logo
-avatar: /blog/uploads/xg-logo.jpg
+avatar: /uploads/xg-logo.jpg
 
 # 多说评论系统short name
 duoshuo_shortname: xgfe
