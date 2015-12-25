@@ -11,7 +11,7 @@ menu:
 favicon: /uploads/xg-logo.ico
 
 # Set default keywords (Use a comma to separate)
-keywords: "Hexo,next"
+keywords: xgfe, xg, fe, 鲜果前端, 前端
 
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
@@ -88,6 +88,9 @@ vendors: vendors
 css: css
 js: js
 images: images
+
+google_site_verification: K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY
+baidu_site_verification: tXr3ZTm3Hx
 
 # Theme version
 version: 0.4.5.1
