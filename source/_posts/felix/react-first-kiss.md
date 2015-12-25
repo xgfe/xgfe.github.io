@@ -81,8 +81,8 @@ React 组件支持很多事件，除了 Click 事件以外，还有 KeyDown 、C
     * value, checked, selected，使得组件受限，必须通过onChage事件改变值
     * 仅仅设置默认值可以用：defaultValue, defaultChecked, defaultValue
 * 组件样式style写法
-
-        style=\{\{opacity: this.state.opacity\}\}
+        
+        {% raw %}style={{opacity: this.state.opacity}}{% endraw %}
 这是因为 React 组件样式是一个对象，所以第一重大括号表示这是 JavaScript 语法，第二重大括号表示样式对象。 
 * 大写就是自定义的组件，小写就是react内部的dom组件
 * 组件生命周期  
@@ -132,7 +132,7 @@ React 组件支持很多事件，除了 Click 事件以外，还有 KeyDown 、C
     * 循环
     数组循环用.map；对象循环只能用自执行函数了  
     参考：[HTML扩展](https://facebook.github.io/react/docs/jsx-gotchas-zh-CN.html)
-* {...this.props}会把付租金的所以props赋值到子组件上
+* {...this.props}会把父组件的所以props赋值到子组件上
 
 ## 辅助
 * Flux  
