@@ -65,7 +65,7 @@ tags:
 	// pie是一个函数    
 	var pieData = pie(dataset);
 &emsp;&emsp;[layout](https://github.com/mbostock/d3/wiki/Layouts)叫做布局，在D3.js中它提供了一些转化成特定图表数据的函数，如其中就包括饼图。它提供一个基础的转化函数，在此基础上我们根据自己的需要再对该函数进行进一步的设置，就得到了如上述代码中pie变量保存的函数一样的转化工具，通过把原始的数据dataset传入pie中就能得到绘图数据pieData。具体的变化我们可以看下图。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-pie/dataCompare.png" width="507" height="190" />  
+<img src="/uploads/chenwubai/d3-basicCharts-pie/dataCompare.png" width="507" height="190" />  
 &emsp;&emsp;左边是转化前的原始的数据结构，右边是转化后的适合绘图的数据结构。可以看到，在保留原本的数据的基础上，转化后的数据新增了该项在整个饼图中的起始角度（startAngle和endAngle），以及弧形之间的间隙角度（padAngle）。  
 ## 计算弧形路径  
 &emsp;&emsp;在饼图中，我们用SVG中的path元素来表示每一块弧形，而从pieData到path元素的d属性还是有一定的距离，所以我还需要再通过一步操作来用pieData计算出d属性可用的值。  
@@ -90,7 +90,7 @@ tags:
 	            return arc(d);
 	        });
 好了，饼图就这样画好了。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-pie/pie.png" width="320" height="160" />  
+<img src="/uploads/chenwubai/d3-basicCharts-pie/pie.png" width="320" height="160" />  
 
-&emsp;&emsp;给大家（虽然我知道目前没有什么人看这个但是我还是要像个神经病一样的装作有人看 =_= ）留个小小的拓展，如何加上下图这样的文字标签。答案就在[pie.html](/blog/uploads/chenwubai/d3-basicCharts-pie/pie.html)里。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-pie/pieWithText.png" width="320" height="160" />
+&emsp;&emsp;给大家（虽然我知道目前没有什么人看这个但是我还是要像个神经病一样的装作有人看 =_= ）留个小小的拓展，如何加上下图这样的文字标签。答案就在[pie.html](/uploads/chenwubai/d3-basicCharts-pie/pie.html)里。  
+<img src="/uploads/chenwubai/d3-basicCharts-pie/pieWithText.png" width="320" height="160" />

@@ -5,7 +5,7 @@ tags:
 - react
 ---
 
-<a href="/blog/uploads/felix/react/react-first-kiss.pdf" target="_blank">React入门分享PPT下载</a>  
+<a href="/uploads/felix/react/react-first-kiss.pdf" target="_blank">React入门分享PPT下载</a>  
 React 起源于 Facebook 的内部项目，因为该公司对市场上所有 JavaScript MVC 框架，都不满意，就决定自己写一套，用来架设Instagram 的网站。由于 React 的设计思想极其独特，属于革命性创新，性能出众，代码逻辑却非常简单。React的虚拟DOM的特性使得他可以多端渲染，甚至直接渲染到Canvas。
 
 <!-- more -->
@@ -108,7 +108,7 @@ React 组件支持很多事件，除了 Click 事件以外，还有 KeyDown 、C
                 [function callback]
             )
 
-    ![](/blog/uploads/felix/react/life-cycle.png)
+    ![](/uploads/felix/react/life-cycle.png)
 * 组件通信
     * 父子组件通信：  
     子组件通过props可以访问父组件的属性和方法

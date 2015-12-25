@@ -7,7 +7,7 @@ tags:
 - D3.js
 ---
 
-&emsp;&emsp;在之前的[《基于D3.js的柱状图的实现》](http://xgfe.github.io/blog/2015/11/23/chenwubai/d3-basicCharts-bar/#more)和[《基于D3.js的折线图的实现》](http://xgfe.github.io/blog/2015/11/23/chenwubai/d3-basicCharts-line/#more)中，已经介绍过柱状图和折线图了。今天来说说非常相似的两种图表——散点图和气泡图。  
+&emsp;&emsp;在之前的[《基于D3.js的柱状图的实现》](/2015/11/23/chenwubai/d3-basicCharts-bar/#more)和[《基于D3.js的折线图的实现》](/2015/11/23/chenwubai/d3-basicCharts-line/#more)中，已经介绍过柱状图和折线图了。今天来说说非常相似的两种图表——散点图和气泡图。  
 <!-- more -->       
 &emsp;&emsp;还是和之前一样，我们先把简单的画图框架搭起来，添加SVG画布：  
 
@@ -30,7 +30,6 @@ tags:
 		        <svg width="100%" height="100%"></svg>
 		    </div>
 		    <script src="d3/d3.js"></script>
-		    <script>
         	<script>
 	        	window.onload = function() {
 	            	var width = 600, height = 300;
@@ -50,7 +49,7 @@ tags:
   
 ## 散点图
 ### 坐标轴的实现  
-&emsp;&emsp;为了实现真实的效果，散点图和气泡图我们使用不同的模拟数据。与折线图同理，散点图的各点的坐标的关系在坐标轴上的关系是连续的，所以它的x轴和y轴都使用线性比例尺（线性比例尺和序数比例尺的区别参见[《基于D3.js的柱状图的实现》](http://xgfe.github.io/blog/2015/11/23/chenwubai/d3-basicCharts-bar/#more)）。
+&emsp;&emsp;为了实现真实的效果，散点图和气泡图我们使用不同的模拟数据。与折线图同理，散点图的各点的坐标的关系在坐标轴上的关系是连续的，所以它的x轴和y轴都使用线性比例尺（线性比例尺和序数比例尺的区别参见[《基于D3.js的柱状图的实现》](/2015/11/23/chenwubai/d3-basicCharts-bar/#more)）。
 
 	// 模拟数据
 	var dataset = [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6],
@@ -133,7 +132,7 @@ tags:
 	        .call(yAxis);
             
 &emsp;&emsp;同折线图的坐标轴的实现是相同的，先用[d3.scale.linear()](https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear)创建比例尺，再用[d3.svg.axis()](https://github.com/mbostock/d3/wiki/SVG-Axes#axis)创建坐标轴并且设置对应的比例尺，最后添加SVG元素并“绑定”坐标轴到其上，就可以看到完成以后的坐标轴。注意这里需要对移动SVG元素，使它们在视觉上组装成一个坐标系（但实际上它们在位置上是零散的，并没有很强的关系）。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-scatter&bubble/axis-scatter.png" width="320" height="160" />
+<img src="/uploads/chenwubai/d3-basicCharts-scatter&bubble/axis-scatter.png" width="320" height="160" />
 ### 散点的实现  
 &emsp;&emsp;在图表中一般点都是通过画圆来实现的，当圆的半径足够小的时候，它就是点。
 
@@ -157,7 +156,7 @@ tags:
         fill-opacity: 0.5;
     }
 &emsp;&emsp;最后，散点图长这样。
-<img src="/blog/uploads/chenwubai/d3-basicCharts-scatter&bubble/scatter.png" width="320" height="160" />
+<img src="/uploads/chenwubai/d3-basicCharts-scatter&bubble/scatter.png" width="320" height="160" />
 ## 气泡图  
 ### 坐标轴的实现  
 &emsp;&emsp;因为只有模拟的数据结构不同，实现原理都是类似的，这里就不再赘述，直接上代码。  
@@ -201,5 +200,5 @@ tags:
 	            return d.weight;
 	        });
 &emsp;&emsp;最后的气泡图是长这样的。  
-<img src="/blog/uploads/chenwubai/d3-basicCharts-scatter&bubble/bubble.png" width="320" height="160" />  
-&emsp;&emsp;完整的代码和例子展示请移步[scatter.html](/blog/uploads/chenwubai/d3-basicCharts-scatter%26bubble/scatter.html)和[bubble.html](/blog/uploads/chenwubai/d3-basicCharts-scatter%26bubble/bubble.html)。
+<img src="/uploads/chenwubai/d3-basicCharts-scatter&bubble/bubble.png" width="320" height="160" />  
+&emsp;&emsp;完整的代码和例子展示请移步[scatter.html](/uploads/chenwubai/d3-basicCharts-scatter%26bubble/scatter.html)和[bubble.html](/uploads/chenwubai/d3-basicCharts-scatter%26bubble/bubble.html)。
