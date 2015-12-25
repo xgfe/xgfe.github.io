@@ -5,7 +5,8 @@
 # Site
 title: xgfe
 subtitle:
-description: xgfe's blog
+keywords: xgfe, xg, fe, 鲜果前端, 前端
+description: xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.
 author: xgfe
 language: zh-Hans
 timezone:
