@@ -65,10 +65,10 @@ tags:
 <img src="/uploads/zhouxiong/server-ssh2/code-layout.png" height="600px">
 ### 4.2各部分说明
 1. Java Resources-包含全部的java源代码，配置文件和引入的jar文件
- * src-包括所有的java源文件和配置文件
-  		* configs下包括所有的struts2和spring的配置文件
-  		* yiban下包括所有的java源文件，在源文件中也会分成相应的层，action层（用于接收请求，由Struts2负责），dao层（直接处理数据库），service层（处理具体的业务逻辑）。pojo是对象和数据库表的映射文件。util下是一些公共功能的可复用的java文件。
- * Libraries－所有的jar文件，包括tomcat，jre，外部引入的SSH2的jar包
+* src-包括所有的java源文件和配置文件
+	* configs下包括所有的struts2和spring的配置文件  
+	* yiban下包括所有的java源文件，在源文件中也会分成相应的层，action层（用于接收请求，由Struts2负责），dao层（直接处理数据库），service层（处理具体的业务逻辑）。pojo是对象和数据库表的映射文件。util下是一些公共功能的可复用的java文件。
+* Libraries－所有的jar文件，包括tomcat，jre，外部引入的SSH2的jar包
 2. WebContent-编写的前端展示的文件，css、js、jsp等。其中WEB-INF下的web.xml是至关重要的文件，所有的请求都会经过web.xml然后查找对应的java文件进行处理
 
 ## 5.具体项目搭建过程
