@@ -14,7 +14,7 @@ tags:
 5.具体项目搭建过程
 
 <!--more-->
-## 1.SSH2
+## SSH2
 - **Struts2**－最早接触到用户请求,下面的加粗部分就是一个struts2的请求
 <pre>
 <code>
@@ -35,11 +35,11 @@ tags:
 
 - **Spring**－管理Struts2的请求以及简化对数据库的访问，并能通过Ioc（依赖注入）和AOP（面向切面）特性快速进行项目开发
 
-## 2.MVC
-### 2.1 MVC原理图
-<img src="/uploads/zhouxiong/server-ssh2/mvc.jpg">
+## MVC
+### MVC原理图
+<img src="/uploads/zhouxiong/server-ssh2/mvc.jpg" width="500px" height="370px">
 
-### 2.2 MVC与MVVM
+### MVC与MVVM
 1. MVC 
 
  mvc是一种常用的软件架构，是一种开发模式，其各部分的通信可简单看成以下几步：<br/>
@@ -57,13 +57,13 @@ tags:
 （2）View和Model不直接通信，而是通过ViewModel传递  <br/>
 （3）View只是被动的显示内容，所有业务逻辑放在ViewModel中  <br/>
 
-## 3.服务器端代码请求过程
-![服务器端请求过程](/uploads/zhouxiong/server-ssh2/server-process.png)
+## 服务器端代码请求过程
+<img src="/uploads/zhouxiong/server-ssh2/server-process.png" height="350px" width="600px">
 
-## 4.服务端代码的逻辑结构
-### 4.1逻辑结构图
-<img src="/uploads/zhouxiong/server-ssh2/code-layout.png" height="600px">
-### 4.2各部分说明
+## 服务端代码的逻辑结构
+### 逻辑结构图
+<img src="/uploads/zhouxiong/server-ssh2/code-layout.png" width="300px" height="585px">
+### 各部分说明
 1. Java Resources-包含全部的java源代码，配置文件和引入的jar文件
 * src-包括所有的java源文件和配置文件
 	* configs下包括所有的struts2和spring的配置文件  
@@ -71,14 +71,14 @@ tags:
 * Libraries－所有的jar文件，包括tomcat，jre，外部引入的SSH2的jar包
 2. WebContent-编写的前端展示的文件，css、js、jsp等。其中WEB-INF下的web.xml是至关重要的文件，所有的请求都会经过web.xml然后查找对应的java文件进行处理
 
-## 5.具体项目搭建过程
-### 5.1准备工作
+## 具体项目搭建过程
+### 准备工作
 - jdk1.7
 - IDE: eclipse
 - 服务器：tomcat6.0
 - 数据库：mysql，保证数据库的服务是启动的
 
-### 5.2 项目搭建
+### 项目搭建
 1. 新建项目
 <p>
  在eclipse中新建一个web project，此时的project没有ssh2的支持，需要手动引入
