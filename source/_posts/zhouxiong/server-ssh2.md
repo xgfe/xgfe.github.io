@@ -5,6 +5,15 @@ tags:
 - java
 - SSH2
 ---
+作为一个前端开发人员，了解一门服务器端语言，对于提高自己的知识广度是很有帮助的。本文简单介绍服务器端javaEE的SSH2框架相关知识，主要有以下几点
+
+1.SSH2是什么？
+2.MVC
+3.服务器端代码请求过程
+4.服务器端代码逻辑结构
+5.具体项目搭建过程
+
+<!--more-->
 ## 1.SSH2
 - **Struts2**－最早接触到用户请求,下面的加粗部分就是一个struts2的请求
 <pre>
@@ -28,7 +37,7 @@ tags:
 
 ## 2.MVC
 ### 2.1 MVC原理图
-<img src="/Users/zhouxiong/Desktop/images/personal-share/server/mvc.jpg">
+<img src="/uploads/zhouxiong/server-ssh2/mvc.jpg">
 
 ### 2.2 MVC与MVVM
 1. MVC 
@@ -41,7 +50,7 @@ tags:
  
 2. MVVM
 
-	<img src="/Users/zhouxiong/Desktop/images/personal-share/server/mvvm.png" height="300px" width="400px">
+	<img src="/uploads/zhouxiong/server-ssh2/mvvm.png" height="300px" width="400px">
 
 	MVVM模式是将Controller换成ViewModel，其有以下特性： <br/>
 （1）**各部分之间通信为双向的**  <br/>
@@ -49,12 +58,11 @@ tags:
 （3）View只是被动的显示内容，所有业务逻辑放在ViewModel中  <br/>
 
 ## 3.服务器端代码请求过程
-![服务器端请求过程](/Users/zhouxiong/Desktop/images/personal-share/server/server-process.png)
+![服务器端请求过程](/uploads/zhouxiong/server-ssh2/server-process.png)
 
 ## 4.服务端代码的逻辑结构
 ### 4.1逻辑结构图
-<!--![代码组织结构](/Users/zhouxiong/Desktop/images/personal-share/code-layout.png) -->
-<img src="/Users/zhouxiong/Desktop/images/personal-share/server/code-layout.png" height="600px">
+<img src="/uploads/zhouxiong/server-ssh2/code-layout.png" height="600px">
 ### 4.2各部分说明
 1. Java Resources-包含全部的java源代码，配置文件和引入的jar文件
  * src-包括所有的java源文件和配置文件
