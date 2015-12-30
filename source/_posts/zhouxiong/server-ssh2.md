@@ -15,12 +15,12 @@ tags:
 
 <!--more-->
 ## SSH2
-- **Struts2**－最早接触到用户请求,下面的加粗部分就是一个struts2的请求
+- **Struts2**－最早接触到用户请求,下面的url部分就是一个struts2的请求
 <pre>
 <code>
 	$.ajax({
 		type: "GET",
-		**url: "/share/picture-json/doShowRelatePictureAction.action",**
+		url: "/share/picture-json/doShowRelatePictureAction.action",
 		data: {
 			"picId": id
 		},
