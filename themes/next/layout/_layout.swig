@@ -6,7 +6,7 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="{{ config.language }}">
-
+  <div style="display:none"><img src="http://xgfe.github.io/uploads/xg-logo.jpg" alt="xgfe"/></div>
   {% include '_partials/old-browsers.swig' %}
   {% include '_scripts/analytics.swig' %}
 
@@ -105,21 +105,14 @@
         return false;
       });
   </script>
-  <!-- share for weixin -->
+  <!-- baidu 站长自动推送 -->
   <script>
-    var $description = $('meta[name="description"]');
-    var dataForWeixin={
-      appId: "",
-      img: "http://xgfe.github.io/uploads/xg-logo.jpg",
-      url: location.href,
-      title: $('title').text(),
-      desc: $description.eq($description.length - 1).attr('content'),
-      fakeid: ""
-    };
-    !function(){var t=function(){
-      WeixinJSBridge.on("menu:share:appmessage",function(){
-        WeixinJSBridge.invoke("sendAppMessage",{appid:dataForWeixin.appId,img_url:dataForWeixin.img,img_width:"200",img_height:"200",link:dataForWeixin.url,desc:dataForWeixin.desc,title:dataForWeixin.title},function(){})}),
-      WeixinJSBridge.on("menu:share:timeline",function(){WeixinJSBridge.invoke("shareTimeline",{img_url:dataForWeixin.img,img_width:"200",img_height:"200",link:dataForWeixin.url,desc:dataForWeixin.desc,title:dataForWeixin.title},function(){})}),WeixinJSBridge.on("menu:share:weibo",function(){WeixinJSBridge.invoke("shareWeibo",{content:dataForWeixin.title+" "+dataForWeixin.url,url:dataForWeixin.url},function(){})})};document.addEventListener?document.addEventListener("WeixinJSBridgeReady",t,!1):document.attachEvent&&(document.attachEvent("WeixinJSBridgeReady",t),document.attachEvent("onWeixinJSBridgeReady",t))}();
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
   </script>
 </body>
 </html>
