@@ -14,7 +14,7 @@ tags:
 
 `NoSql`在Android上应用得不多，`Paper`是目前刚出现的性能比较好而且比较小巧的一款。翻翻源代码，分析一下他的原理
 
-
+<!-- more -->
 介绍
 ---
 代码地址： https://github.com/pilgr/Paper
