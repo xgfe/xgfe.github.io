@@ -491,7 +491,7 @@ AppRegistry.registerComponent('touch', () => touch);
 ### 其他注意点
 * ```onResponderRelease```方法其实响应的是touchUp，这就意味着它只监听手指的抬起，对于组件上的越界等并没有监测。所以如果在触发的responder上进行滑动，手指划出其边界后继续滑动如果不进行判定的话，并不会自动拦截事件。
 * e.nativeEvent其中的pageX和pageY在滑动时是会实时变化的，但是locationX和locationY并不会。
-* 如果组件一设置了```onStartShouldSetResponder```与```onResponderTerminationRequest```返回true，组建二设置了```onMoveShouldSetResponder```，则在组件一中点击且滑动会触发组件二的行为。因此要特别注意```onStartShouldSetResponder```与```onMoveShouldSetResponder```的同时使用。
+* 如果组件一设置了```onStartShouldSetResponder```与```onResponderTerminationRequest```返回true，组件二设置了```onMoveShouldSetResponder```，则在组件一中点击且滑动会触发组件二的行为。因此要特别注意```onStartShouldSetResponder```与```onMoveShouldSetResponder```的同时使用。
 
 ## PanResponder
 PanResponder是React－Native提供的一套抽象方法，和gesture responder system比起来，其抽象程度更高，使用起来更加方便。具体的说它在基本的evt参数之外，还提供了另外一个参数gestureState。gestureState是一个对象，包含了以下信息：
@@ -1022,7 +1022,7 @@ AppRegistry.registerComponent('touch', () => touch);
 * 程序内部会对config的type进行监测，现阶段支持以下几个：[spring, linear, easeInEaseOut, easeIn, easeOut, keyboard]
 * 程序内部也会对property进行监测，现阶段支持opacity与scaleXY两个。
 
-### 具体分析(基于Christopher Chedeau的演讲)
+## 具体分析(基于Christopher Chedeau的演讲)
 **这部分主要基于react native animated的作者Christopher Chedeau的演讲，后面也附有链接地址，大家想练练听力的话可以去瞅瞅[doge之微笑]**
 
 * 让我们回归动画的本质，试想下一个最基本的最简单的最暴力的动画的形成
@@ -1103,7 +1103,7 @@ AppRegistry.registerComponent('touch', () => touch);
 		onUpdate(value) {
 		React.findDOMNode(this).style.left = value + 'px';
 		}
-		~~~	
+		~~~
 	* 但是！这样我们不就违背了React的初衷了嘛？尽量不要去自己操作dom，React如是说。而且，在这种情况下条件竞争问题依然存在。同时如果这个组件unmount之后，动画就报错了。
 ```Uncaught Exception: Cannot call ‘style’ of null``。所以现在怎么办呢？
 
@@ -1113,7 +1113,7 @@ AppRegistry.registerComponent('touch', () => touch);
 	* 因此官方提供了我们上面说的几种组件，在内部，它们都是执行了数据绑定等一系列操作的。同时提高了新的数据类型来增加可扩展性。
 
 	~~~js
-	Animated.div = class extends React.Component{
+	 Animated.div = class extends React.Component{
     componentWillUnmount() {
         nextProps.style.left.removeAllListeners();
     },
@@ -1137,7 +1137,7 @@ AppRegistry.registerComponent('touch', () => touch);
 }
 	~~~
 
-## 参考文献
+# 参考文献
 * [“指尖上的魔法” -- 谈谈React-Native中的手势](https://github.com/jabez128/jabez128.github.io/issues/1)
 * [React Native 浅入门 —— 交互篇](http://leowang721.github.io/2015/08/12/learning/react-native/interactive/#comments)
 * [React Native官方文档 手势响应系统](http://reactnative.cn/docs/0.31/gesture-responder-system.html#content)
