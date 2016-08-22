@@ -10,7 +10,9 @@ tags:
 # React-Native触摸
   在移动应用开发中，触摸和动画是不可忽视的两个方面。React-Native针对手势处理，提供了几组API，为基本的点击手势和复杂的滑动等都提供了相应的解决方案。
   相比web端的手势，React-Native应用中的手势要复杂很多。在初次进行React-Native的组件[Picker](https://github.com/xgfe/react-native-picker-xg)封装时，需要涉及到模拟原生iOS滚轮的行为实现，针对这部分需要涉及到React-Native中的触摸实现，此作为选题的初衷。如果刚刚接触要搭建环境balabala，可以参考[基本环境搭建](http://memory.lulutia.com/2016/05/27/RN/)。
-  
+
+<!-- more -->
+
 ## Touch 手势
   在web开发中click操作是最常用的一个行为，其对应到移动端的开发中即是touch手势。在web开发中，浏览器内部实现了click事件，我们只需要使用```onclick```或者```addEventListener('click', callback)```来进行click事件的绑定。在React-Native中，其也提供了四个与touch相关的组件来实现基本的touch行为。
 
