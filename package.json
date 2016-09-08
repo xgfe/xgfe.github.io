@@ -5,12 +5,15 @@
   "hexo": {
     "version": "3.2.2"
   },
+  "scripts": {
+    "postinstall": "./postinstall.sh"
+  },
   "dependencies": {
     "hexo": "^3.1.1",
     "hexo-deployer-git": "0.0.4",
     "hexo-generator-archive": "^0.1.2",
     "hexo-generator-category": "^0.1.2",
-    "hexo-generator-baidu-sitemap": "^0.1.1",
+    "hexo-generator-baidu-sitemap": "0.1.1",
     "hexo-generator-feed": "^1.0.3",
     "hexo-generator-index": "^0.1.2",
     "hexo-generator-seo-friendly-sitemap": "0.0.12",
