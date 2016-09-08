@@ -69,8 +69,12 @@ theme: next
 # Deployment
 ## Docs: http://hexo.io/docs/deployment.html
 deploy:
-  type: git
+- type: git
   repo: https://github.com/xgfe/xgfe.github.io
+  branch: master
+  message: blog publish
+- type: git
+  repo: https://git.coding.net/ffe/ffe.git
   branch: master
   message: blog publish
 
