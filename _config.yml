@@ -73,10 +73,10 @@ deploy:
   repo: https://github.com/xgfe/xgfe.github.io
   branch: master
   message: blog publish
-- type: git
-  repo: https://git.coding.net/ffe/ffe.git
-  branch: master
-  message: blog publish
+# - type: git
+#   repo: https://git.coding.net/ffe/ffe.git
+#   branch: master
+#   message: blog publish
 
 # logo
 avatar: /uploads/xg-logo.jpg
