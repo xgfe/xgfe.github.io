@@ -29,8 +29,8 @@ tags:
 
 最终我们将部分页面或某些功能拆分成一个个Vue实例进行管理，从某种程度上来说，开发效率和可维护性确实有所提高。比如下图一中的地址选择部分，图二的整个页面，就是用Vue完成的。
 
-<img alt="页面部分区域使用Vue" src='/uploads/yangjiyuan/vue-in-action-vue-project/order-page.jpg'>
-<img alt="整个页面使用Vue" src='/uploads/yangjiyuan/vue-in-action-vue-project/address.png'>
+![页面部分区域使用Vue](http://p0.meituan.net/dpnewvc/4cf750c891c38bd48c069952bf93cf9b64372.jpg)
+![整个页面使用Vue](http://p0.meituan.net/dpnewvc/51809f4e59cb884bb514e5d364eafc2433788.png)
 
 
 ### 再次出现的问题
@@ -117,7 +117,7 @@ vue-devtools是用于调试Vue应用的Chrome插件，可以实时查看组件�
 #### 工程化
 目前Vue项目中工程化多采用webpack+vue-loader的方式，每一个.vue文件就是一个组件，这也是官方推荐的方式，单个组件维护起来更加方便。也可以采取别的方式，我并没有使用webpack和vue-loader，而是用传统的方式，即每个组件是一个目录，存放相应的模板、样式和逻辑，最后通过gulp或xg等工具进行构建。
 
-<img alt="项目目录结构" width="200" src="/uploads/yangjiyuan/vue-in-action-vue-project/project.png"/>
+<img alt="项目目录结构" width="200" src="http://p1.meituan.net/dpnewvc/7376ee3db58451e9e289a6550c3c0389155269.png"/>
 
 #### 基础组件库
 现在已经有很多优秀的Vue组件库了，比如微信UI风格的[Vux(2570stars)](https://github.com/airyland/vux)，bootstrap风格的[vue-strap(2673stars)](https://github.com/yuche/vue-strap)，material风格的[vue-mdl(638stars)](https://github.com/posva/vue-mdl)和[Keen-UI(1146stars)](https://github.com/JosephusPaye/Keen-UI)，eleme团队的[mint-ui(2977stars)](https://github.com/ElemeFE/mint-ui)等。  
