@@ -102,3 +102,6 @@ feed:
 
 # 百度统计
 baidu_analytics: 3601d4483819a5ab6ddabb0b6422a328
+
+include:
+  - .nojekyll
