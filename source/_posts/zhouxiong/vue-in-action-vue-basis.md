@@ -29,7 +29,7 @@ var vm = new Vue({
 
 #### 实例生命周期
 
-![实例生命周期](/uploads/zhouxiong/vue-in-action-vue-basis/lifecycle.png)
+![实例生命周期](http://p0.meituan.net/dpnewvc/43cca72c865daf323a732de2c8924743116787.png)
 
 ### 数据绑定
 
