@@ -72,13 +72,13 @@ Mustache标签也可以用在HTML属性中
 
  ```
 	{{ number + 1 }}
-	
+
 	{{ ok ? 'YES' : 'NO' }}
-	
+
 	{{ message.split('').reverse().join('') }}
 
  ```
- 
+
 #### 过滤器
 
 Vue.js允许在表达式后添加可选的过滤器，以‘管道符’形式
@@ -115,55 +115,55 @@ Vue.js允许在表达式后添加可选的过滤器，以‘管道符’形式
 
 
  上述指令用于条件渲染，根据绑定的表达式结果确定是否要渲染HTML元素。`v-else` 元素必须立即跟在 `v-if` 或 `v-show` 元素的后面——否则它不能被识别。
- 
- - 区别
-  
- `v-if` 是真实的条件渲染，因为它会确保条件块在切换当中合适地销毁与重建条件块内的事件监听器和子组件
-  
- `v-show` 绑定的元素始终被编译并保留，只是简单地基于 CSS 切换，另外它不支持`<template>`标签
-  
-   一般来说，`v-if` 有更高的切换消耗而 `v-show `有更高的初始渲染消耗。因此，如果需要频繁切换 `v-show` 较好，如果在运行时条件不大可能改变 `v-if` 较好
-  
 
- 
+ - 区别
+
+ `v-if` 是真实的条件渲染，因为它会确保条件块在切换当中合适地销毁与重建条件块内的事件监听器和子组件
+
+ `v-show` 绑定的元素始终被编译并保留，只是简单地基于 CSS 切换，另外它不支持`<template>`标签
+
+   一般来说，`v-if` 有更高的切换消耗而 `v-show `有更高的初始渲染消耗。因此，如果需要频繁切换 `v-show` 较好，如果在运行时条件不大可能改变 `v-if` 较好
+
+
+
 - v-on
 
   利用`v-on`指令用于监听DOM事件，例如：`<a v-on:click="doSomething">`
- 
+
   另外`v-on`指令还可以缩写成`@`符号表示：
- 
+
  ```
 	<!-- 完整语法 -->
 	<a v-on:click="doSomething"></a>
-	
+
 	<!-- 缩写 -->
 	<a @click="doSomething"></a>
   ```
- 
+
 - v-bind
- 
+
  利用`v-bind`指令用于响应的更新HTML属性，例如：`<a v-bind:href="url"></a>`
- 
+
  另外`v-bind`指令还可以缩写为`:`表示：
 
  ```
 	<!-- 完整语法 -->
 	<a v-bind:href="url"></a>
-	
+
 	<!-- 缩写 -->
 	<a :href="url"></a>
-	
+
 	<!-- 完整语法 -->
 	<button v-bind:disabled="someDynamicCondition">Button</button>
-	
+
 	<!-- 缩写 -->
 	<button :disabled="someDynamicCondition">Button</button>
  ```
- 
+
 - v-model
 
  此指令用于表单元素上，例如常见的input，select，textarea，radio，checkbox等
- 
+
   ```
    <select v-model="selected" multiple>
 	  <option selected>A</option>
@@ -173,11 +173,11 @@ Vue.js允许在表达式后添加可选的过滤器，以‘管道符’形式
   <br>
   <span>Selected: {{ selected | json }}</span>
   ```
- 
+
 - v-for
 
  `v-for`指令基于一个数组渲染一个列表。还有一个特殊的变量`$index`，它是当前数组元素的索引
- 
+
   ```
   <ul id="example-1">
 	  <li v-for="item in items">
@@ -195,25 +195,25 @@ Vue.js允许在表达式后添加可选的过滤器，以‘管道符’形式
 	  }
  })
   ```
-  
+
  Vue.js封装了数组的变异方法，例如`push`,`pop`,`shift`, `unshift`等和非变异方法，例如`filter`,`concat`等，如果是非变异的方法，则只需要直接使用返回的新数组替换原来的数组即可
- 
+
   ```
   example1.items = example1.items.filter(function (item) {
        return item.message.match(/Foo/)
   })
   ```
- 
+
  - track-by
 
   列表在渲染的过程中通过唯一的键进行追踪，可以通过数组中每个值的唯一id进行标识或者通过`$index`，这种模式下可以处理数组中重复的值
-  
+
    ```
     <div v-for="item in items" track-by="$index">
 	  <!-- content -->
    </div>
    ```
- 
+
 ### 计算属性
 在Vue.js中将绑定表达式限定为一个表达式，如果需要多余一个表达式的逻辑，应当使用计算属性。一个比较常见的应用方式是b属性的值依赖于a属性的值，则b应当设置为计算属性。计算属性同样具有getter和setter方法
 
@@ -240,7 +240,7 @@ var vm = new Vue({
 })
  ```
 此时的`vm. fullName`依赖于`vm. firstName `和`vm. lastName`，所以当`vm. firstName`和`vm. lastName`的值改变的时候，`vm. fullName`值也会相应的进行改变。同样的如果调用`vm.fullName = 'John Doe'` 时，setter 会被调用，`vm.firstName` 和 `vm.lastName` 也会有相应更新
- 
+
 ### Class与style绑定
 数据绑定的一个常见需求是操作元素的class和它的内联样式。因为它们都是HTML元素的属性，可以用`v-bind`来处理它们：只需要计算出表达式最终字符串。在`v-bind`用于绑定class和style时，Vue.js专门对其进行增强，使得表达式的结果类型除了字符串外，还可以是对象或者数组。
 
@@ -275,7 +275,7 @@ data: {
 
 ```
 <div v-bind:class="[classA, classB]">
-``` 
+```
 ```
  data: {
   classA: 'class-a',
@@ -304,12 +304,12 @@ data: {
 	  }
 }
  ```
- 
+
 - 数组语法
 
  可以将多个样式对象应用到一个元素上
  `<div v-bind:style="[AStyle, BStyle]">`
- 
+
  ```
   AStyle: {
         color: 'red'
@@ -318,7 +318,7 @@ data: {
         fontSize: '22px'
     }
  ```
- 
+
 ### 表单控件绑定
 
 可以通过`v-model`指令在表单元素上创建双向数据绑定
@@ -369,7 +369,7 @@ new Vue({
 ```
 
 #### Select
- 
+
  - 单选，value为单个字符串
 
  ```
@@ -380,7 +380,7 @@ new Vue({
 </select>
 <span>Selected: {{ selected }}</span>
  ```
- 
+
  - 多选，value为一个数组
 
  ```
@@ -392,13 +392,13 @@ new Vue({
 <br>
 <span>Selected: {{ selected | json }}</span>
  ```
- 
+
 #### 参数特性
- 
+
  - lazy
 
  在默认情况下，`v-model`是在`input`事件中同步输入框值和数据，可以添加一个`lazy`属性，从而在`change`事件中同步
- 
+
  ```
 <!-- 在 "change" 而不是 "input" 事件中更新 -->
 <input v-model="msg" lazy>
@@ -411,13 +411,13 @@ new Vue({
  ```
  <input v-model="msg" debounce="500">
  ```
- 
+
  `debounce`参数不会延迟DOM，若想延迟DOM事件，应当使用`debounce过滤器`。包装处理器，让它延迟执行，包装后的处理器将延迟`x`ms（默认为300ms）后执行，如果在延迟结束前再次调用，延时时长重置为`x`ms
- 
+
  ```
  <input @keyup="onKeyup | debounce 500">
  ```
- 
+
 ### 方法和事件处理器
 
 #### 方法处理器
@@ -597,7 +597,7 @@ var parent = Vue.extend({
     }
 });
 ```
- 
+
 渲染为：
 
 ```
@@ -691,9 +691,9 @@ Vue.component('child-component', {
 - slot
 
  父组件的内容在渲染的时候会被抛弃，除非子组件包含了`slot`标签。如果子组件只包含一个`slot`，则父组件的内容将被添加到`slot`标签中；如果子组件具有多个`slot`标签，可以通过`slot`标签的`name`属性进行分发。在具有多个`slot`标签时，仍然可以有一个匿名的`slot`，它是默认的`slot`，作为找不到匹配的内容的`slot`。
- 
+
  子组件模板：
- 
+
  ```
  <div>
 	  <slot name="one"></slot>
@@ -701,9 +701,9 @@ Vue.component('child-component', {
 	  <slot name="two"></slot>
 </div>
  ```
- 
+
  父组件模板：
- 
+
  ```
   <multi-insertion>
 	  <p slot="one">One</p>
@@ -711,9 +711,9 @@ Vue.component('child-component', {
 	  <p>Default A</p>
    </multi-insertion>
  ```
- 
+
  渲染为：
- 
+
  ```
    <div>
 	  <p slot="one">One</p>
@@ -721,7 +721,7 @@ Vue.component('child-component', {
 	  <p slot="two">Two</p>
    </div>
  ```
- 
+
 #### 编写可复用的组件
 
 在编写组件的时候，如果需要达到可复用的目的，应当定义一个清晰的公开接口。Vue.js组件的API来自三个部分：props、事件和slot
@@ -798,7 +798,7 @@ Vue.directive('my-directive', {
 	  },
 	  update: function (value) {
 	    this.el.innerHTML =
-	      'name - '       + this.name + '<br>' +  
+	      'name - '       + this.name + '<br>' +
 	      'expression - ' + this.expression + '<br>' +
 	      'argument - '   + this.arg + '<br>' +
 	      'modifiers - '  + JSON.stringify(this.modifiers) + '<br>' +
