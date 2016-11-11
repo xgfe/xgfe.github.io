@@ -74,7 +74,9 @@ vue-router是官方提供的基于Vue的路由器，和Vue深度集成，使得�
 熟悉React的同学应该都知道[Flux](https://github.com/facebook/flux)和[Redux](https://github.com/reactjs/redux)，非常有名的数据状态管理工具，将整个应用的状态数据存储在一个单例store中，通过约定的方式进行获取，修改，这样整个数据流就变得非常清晰。vuex就是借鉴的这种思想。
 
 #### 其他工具：[vue-resource](https://github.com/vuejs/vue-resource)和[vue-devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-vue-resource是提供异步请求的插件，可以使用XMLHttpRequest或JSONP发送请求，并且支持Promise和请求拦截。  
+vue-resource是提供异步请求的插件，可以使用XMLHttpRequest或JSONP发送请求，并且支持Promise和请求拦截。
+
+**注：经指正，vue-resource已经不再是官方推荐的ajax工具，由[axios](https://github.com/mzabriskie/axios)代替，详情参看Vue作者发布的[说明](https://medium.com/the-vue-point/retiring-vue-resource-871a82880af4#.906qvqa0n)**
 
 vue-devtools是用于调试Vue应用的Chrome插件，可以实时查看组件的状态，如果使用Vuex的话，还能随时查看store的各种状态。
 
@@ -120,9 +122,6 @@ vue-devtools是用于调试Vue应用的Chrome插件，可以实时查看组件�
 <img alt="项目目录结构" width="200" src="http://p1.meituan.net/dpnewvc/7376ee3db58451e9e289a6550c3c0389155269.png"/>
 
 #### 基础组件库
-现在已经有很多优秀的Vue组件库了，比如微信UI风格的[Vux(2570stars)](https://github.com/airyland/vux)，bootstrap风格的[vue-strap(2673stars)](https://github.com/yuche/vue-strap)，material风格的[vue-mdl(638stars)](https://github.com/posva/vue-mdl)和[Keen-UI(1146stars)](https://github.com/JosephusPaye/Keen-UI)，eleme团队的[mint-ui(2977stars)](https://github.com/ElemeFE/mint-ui)等。  
+现在已经有很多优秀的Vue组件库了，比如微信UI风格的[Vux](https://github.com/airyland/vux)，bootstrap风格的[vue-strap](https://github.com/yuche/vue-strap)，material风格的[vue-mdl](https://github.com/posva/vue-mdl)和[Keen-UI](https://github.com/JosephusPaye/Keen-UI)，eleme团队的[mint-ui](https://github.com/ElemeFE/mint-ui)等。  
 
-当然，是否引入组件库也要视情况而定，如果项目结构简单或者有固定的UI规范，就没必要引入第三方组件，完全可以自己写一套CSS组件，因为Vue已经非常强大，仅仅需要配合一些基础的样式组件就可以完成一个完整的应用了，我们之前做过一个基于移动端的样式库fuguUI，目前是个半成品，如果能进一步完善，就可以作为基础的样式组件库应用到项目中了，其他优秀的移动端样式库还有[FrozenUI(1776stars)](http://frozenui.github.io/start.html)，[Skeleton(12880stars)](https://github.com/dhg/Skeleton)等。当然，适合自己的才是最好的，如果条件允许的话，最好能开发自己的组件库。
-
-## 项目实战展示
-[kuailv-mall-vue(内网访问)](http://git.sankuai.com/users/yangjiyuan/repos/kuailv-mall-vue/browse)
+当然，是否引入组件库也要视情况而定，如果项目结构简单或者有固定的UI规范，就没必要引入第三方组件，完全可以自己写一套CSS组件，因为Vue已经非常强大，仅仅需要配合一些基础的样式组件就可以完成一个完整的应用了，我们之前做过一个基于移动端的样式库fuguUI，目前是个半成品，如果能进一步完善，就可以作为基础的样式组件库应用到项目中了，其他优秀的移动端样式库还有[FrozenUI](http://frozenui.github.io/start.html)，[Skeleton](https://github.com/dhg/Skeleton)等。当然，适合自己的才是最好的，如果条件允许的话，最好能开发自己的组件库。
