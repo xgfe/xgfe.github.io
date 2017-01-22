@@ -5,8 +5,7 @@ tags:
 - git
 
 ---
-
-<iframe src="//slides.com/xgfe/deck-2b2010e0-acd6-4284-90d7-fe8a789343eb/embed" width="576" height="420" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<iframe src="//slides.com/xgfe/deck-a989e27f-2a33-4351-a7b9-cb675607152b/embed" width="576" height="420" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 <!-- more -->
 
 ## 初识Git
