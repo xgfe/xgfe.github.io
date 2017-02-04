@@ -9,13 +9,13 @@ tags:
 android中的imageView在图片大小不完全一致时会进行相应的缩放或者裁剪。scaleType属性决定缩放裁剪的效果，这里总结了下在各种情况下的缩放裁剪效果。
 
 <!--more-->
-##ImageView中ScaleType属性效果
+## ImageView中ScaleType属性效果
 
-###imageview的宽高为wrap_content
+### imageview的宽高为wrap_content
 - scaletype的值不影响结果，图片按照原有大小展示
 ![](https://github.com/xgfe/xgfe.github.io/blob/develop/source/_posts/wangweitao/img/wrap_parent-wrap_content.png?raw=true)
 
-###imageview的宽固定&高为wrap_content
+### imageview的宽固定&高为wrap_content
 - imageview宽度的值为固定值，高度按照图片的高度计算。
 - 宽大于图片宽度
 	- matrix：宽度靠左，填充满高度
@@ -49,7 +49,7 @@ android中的imageView在图片大小不完全一致时会进行相应的缩放�
 	- fitxy：宽度缩放填充，高度缩放填充；图像变形
 ![](https://github.com/xgfe/xgfe.github.io/blob/develop/source/_posts/wangweitao/img/10-wrap_content-fitXY.png?raw=true)
 
-###imageView宽wrap_content&高固定
+### imageView宽wrap_content&高固定
 - imageView高大于图片高度
 	- matrix：宽填充，高靠上
 	- fitstart：同上
