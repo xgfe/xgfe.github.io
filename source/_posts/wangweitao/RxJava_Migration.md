@@ -9,24 +9,23 @@ tags:
 
 <!--more-->
 
-android响应式编程升级（译文）
-===
+## The Next Step for Reactive Android Programming（译文）
 
  原文地址：[The Next Step for Reactive Android Programming](http://futurice.com/blog/the-next-step-for-reactive-android-programming)
 
  RxJava2已经出来了。如果项目还在使用RxJava1,则需要考虑升级版本。在升级之前，要仔细考虑升级的投入回报，需要花费的时间以及短期和长期的收益。
 
-升级的好处
----
-- 支持Reactive Streams
+### 升级的好处
+
+#### 支持Reactive Streams
 
  支持Reactive Streams是rxjava2架构上的一个变动。rxjava2重写了一套代码来支持它。Reactive Streams提供了通俗易懂的api来理解reactive库的工作过程。使我们能方便的使用不同的库。以reactor3库为例，该库与rxjava非常相似。如果你是一个android开发者，那么就不能使用它了。毕竟它是基于java 8及其以上的版本。
 
- 在两个版本库升级reactive流是一件很容易的事。![](./img/img-1.gif)
+ 在两个版本库升级reactive流是一件很容易的事。![](https://github.com/xgfe/xgfe.github.io/blob/develop/source/_posts/wangweitao/RxJava_Migration_img/img-1.gif?raw=true)
 reactor3的性能比rxjava2提升10%～50%。很遗憾它不能使用在android上。
 据我所知，rxjava2是目前android中惟一支持reactive streams的库。这表明当下升级rxjava2的回报并不高。
 
-- backpressure - observable/flowable
+#### backpressure - observable/flowable
  
  rxjava2有一个叫做flowable的新类型.它与rxjava1中的observable非常的相似。它们最大的不同就是在rxjava2中，flowable支持backpressure.
 
@@ -34,18 +33,18 @@ reactor3的性能比rxjava2提升10%～50%。很遗憾它不能使用在android�
  
  支持backpressure表示处理事件的消费者没有及时保存事件，那么它有一套策略去处理它们。需要你去指定这个策略。
 
-- flowable
+#### flowable
 
  在使用flowables时，你需要制定它的一些行为策略，包括：
  - 缓存：处理线程不能及时处理的事件会被缓存起来，当处理线程空闲时将发送缓存的事件。
  - 丢弃：当处理线程处理缓慢时，它会忽略所有的时间。一旦处理线程空闲，将会处理最近产生的事件。
  - 错误：处理线程会抛出MissingBackpressureException
 
- 实际上来说，你在app中容易遇到backpressure吗？我对此非常怀疑。因此，我写了一个读取加速度传感器的flowable。把读出的数据打印在屏幕上：![](./img/img-2.gif)
+ 实际上来说，你在app中容易遇到backpressure吗？我对此非常怀疑。因此，我写了一个读取加速度传感器的flowable。把读出的数据打印在屏幕上：![](https://github.com/xgfe/xgfe.github.io/blob/develop/source/_posts/wangweitao/RxJava_Migration_img/img-2.gif?raw=true)
  
  android中的加速度计每秒读取50次，将这些数据展示在屏幕上还不足以遇到backpressure问题。实际上，这些取决于reactive流的处理过程。但是它能够表明，backpressure并不是经常发生的问题。
  
-- observable
+#### observable
 
  observable并不支持backpressure.这表明它们从来不会发出MissingBackpressureException。如果消费者线程不能够及时处理这些事件，它们会缓存事件并稍后重新发射。
  
@@ -63,19 +62,19 @@ reactor3的性能比rxjava2提升10%～50%。很遗憾它不能使用在android�
 
  需要记住的是如果你在按钮的点击事件中花费大量时间，也会导致backpressure。
  
-- 性能
+#### 性能
 
  rxjava2的性能要比之前版本高。使用高性能的库是一件很棒的事。但是你需要知道项目性能的瓶颈是不是rxjava.很多时候你会看着代码思考是不是flatmap的速度太慢了。在android程序中，计算通常都不是问题。大多数时候瓶颈是在ui渲染上。
  
  我们并不是因为太多东西出现在计算线程上而导致掉帧，而是因为太复杂的布局，忘记在后台线程访问数据或者渲染时创建bitmap而导致的掉帧。
  
-升级的挑战
----
-- 再见nulls
+### 升级的挑战
+
+#### 再见nulls
 
  近几年对nulls的敌意越来越多。即使是null引用的发明者也说这是一个“10亿美元的错误”。在rxjava1中你可以使用null值。但是在最新版本中，则不能使用nulls。null值在steam中被禁止。如果你在项目中使用了null,那么将会有大量的升级工作要做。你可能需要一些null objects pattern或者optionals来表示那些缺失的值。
  
-- dex容量限制
+#### dex容量限制
 
  你是否尝试过相函数式编程人员解释android中函数数量的限制？你可以尝试一下，它们的反应会很有趣。
  
@@ -83,7 +82,7 @@ reactor3的性能比rxjava2提升10%～50%。很遗憾它不能使用在android�
  
  如果你的方法数已经超过限制，那么这不是一个问题。但是如果你的方法快要超过限制，那么这就是升级的另一个问题。
  
-- 自定义operators
+#### 自定义operators
 
  rxjava中现有的operators也许不够使用。你可能需要一些自定义的行为。在这种情况下，你会尝试编写自己的operator.
  
@@ -95,8 +94,8 @@ reactor3的性能比rxjava2提升10%～50%。很遗憾它不能使用在android�
  
  首先，检查现有operator的组合是否能满足需求。其次，可以考虑使用transformer。它们不会像operator那样个性化，但容易编写。此外它们拥有更高的性能。最后一点，在android中瓶颈问题通常都是ui.
  
-结论
----
+### 结论
+
  
  以上都是对升级到rxjava2的分析。最总都取决于你认为升级工作是否值得。
  
