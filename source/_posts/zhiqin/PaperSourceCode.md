@@ -2,7 +2,7 @@ title: Paper源码分析（Android上的`NoSql`）
 date: 2016.7.13 16:00:00
 updated: 2016.7.13 16:01:00
 categories:
-- tianyouzhen
+- zhiqin
 tags:
 - Android
 - NoSql

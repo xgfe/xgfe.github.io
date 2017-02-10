@@ -2,7 +2,7 @@ title: Coordinators探险——Fragment和ViewGroup的抉择
 date: 2017.02.08 16:54:39
 updated: 2017.02.08 16:54:39
 categories:
-- tianyouzhen
+- zhiqin
 tags:
 - Android
 - Coordinators
