@@ -20,6 +20,8 @@ Coordinators简介
 
 > 讲真，简化Android开发中MV**模式里的生命周期。
 
+<!--more-->
+
 项目的使用也十分简单,首先让你的界面控制层继承`Coordinator`。
 
 *控制层：MVVM里就是ViewModel，MVP里就是Presenter*
