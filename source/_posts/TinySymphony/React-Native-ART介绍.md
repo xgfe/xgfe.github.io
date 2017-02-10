@@ -278,6 +278,12 @@ render () {
 
 ```
 
+做了这样一个demo：
+
+<img src="http://7xjgb0.com1.z0.glb.clouddn.com/artAnimationStars.gif" width=400 />
+
+<p></p>
+
 具体的使用和`Animated.View`之类相同，更复杂的例子看[这篇文章](http://browniefed.com/blog/react-native-animated-with-react-art-firework-show/)
 
 ### 目前ART相关的项目
@@ -292,6 +298,9 @@ render () {
 React Native ART让RN开发者使用类svg语法绘制矢量图形，优点在于同步渲染/高清无码，并且可绘制简单的动画。
 目前的坑在于未实现所有svg标签支持、安卓模拟器使用易奔溃、动画和绘制的开发效率不一定很高（相比于最近火爆酷炫的[lottie](https://github.com/airbnb/lottie-react-native))
 ART动画的性能在安卓真机上也堪忧，不过这更多的应该是RN平台的问题，相信日后会有所改善。
+
+另外需要注意的是，ART不支持目前RN团队推荐的`jest` snapshot测试，还是老老实实用`enzyme`吧
+
 不太建议在C端等用户体验要求较高的项目中使用ART动画（<del>不过C端有敢用RN的么</del>）
 
 总而言之，ART其“画”UI的能力确实给了开发者很大的自定义空间。
