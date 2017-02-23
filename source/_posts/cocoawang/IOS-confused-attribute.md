@@ -27,35 +27,34 @@ frame的原点是任意的，相对于父视图中的坐标位置。
 参考下图示意：    
 ![](https://p1.meituan.net/dpnewvc/17700a291a6a67172f5d56643e036aa936025.jpg)      
 
-1. frame:该View在父View坐标系统中的位置和大小，参照点是父View的坐标系统；     
-2. bounds：该View在本地坐标系统中的位置和大小，参照点是本地坐标系统，即View自己的坐标系统，默认以0，0为起点；     
-3. center：该View的中心点在父View坐标系统中的位置，参照点是父View坐标系统。      
-4. 通过修改View的bounds属性可以修改本地坐标系统的原点位置。   例：  
+frame:该View在父View坐标系统中的位置和大小，参照点是父View的坐标系统；     
+bounds：该View在本地坐标系统中的位置和大小，参照点是本地坐标系统，即View自己的坐标系统，默认以0，0为起点；     
+center：该View的中心点在父View坐标系统中的位置，参照点是父View坐标系统。      
+通过修改View的bounds属性可以修改本地坐标系统的原点位置。    
+例:
 
-	``` 
-	[view setBounds:CGRectMake(-20, -20, 300, 300)]; 
-	```   
+	[view setBounds:CGRectMake(-20, -20, 300, 300)];         
 	  	
-	 则View坐标系的原点为（-20，-20）   
-	 bounds参考自己坐标系，可以修改自己坐标系的原点位置，进而影响到“子view”的显示位置
+则View坐标系的原点为（-20，-20）   
+bounds参考自己坐标系，可以修改自己坐标系的原点位置，进而影响到“子view”的显示位置
    
 
-demo演示：       
+demo演示:
 
+``` 
+	UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(20, 20, 280, 250)];  
+	[view1 setBounds:CGRectMake(-20, -20, 280, 250)];  
+	view1.backgroundColor = [UIColor redColor];  
+	[self.view addSubview:view1];//添加到self.view  
+	NSLog(@"view1 frame:%@========view1 bounds:%@",NSStringFromCGRect(view1.frame),NSStringFromCGRect(view1.bounds));  
+		  
+	UIView *view2 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];  
+	view2.backgroundColor = [UIColor yellowColor];  
+	[view1 addSubview:view2];//添加到view1上,[此时view1坐标系左上角起点为(-20,-20)]  
+	NSLog(@"view2 frame:%@========view2 bounds:%@",NSStringFromCGRect(view2.frame),NSStringFromCGRect(view2.bounds));     
 ```
-UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(20, 20, 280, 250)];  
-[view1 setBounds:CGRectMake(-20, -20, 280, 250)];  
-view1.backgroundColor = [UIColor redColor];  
-[self.view addSubview:view1];//添加到self.view  
-NSLog(@"view1 frame:%@========view1 bounds:%@",NSStringFromCGRect(view1.frame),NSStringFromCGRect(view1.bounds));  
-	  
-UIView *view2 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];  
-view2.backgroundColor = [UIColor yellowColor];  
-[view1 addSubview:view2];//添加到view1上,[此时view1坐标系左上角起点为(-20,-20)]  
-NSLog(@"view2 frame:%@========view2 bounds:%@",NSStringFromCGRect(view2.frame),NSStringFromCGRect(view2.bounds));    
-```    
-	 
-结果如图所示：   
+ 
+#### 结果如图所示：   
 ![](https://p0.meituan.net/dpnewvc/4721b54d14f6ba0a90468588ea7dd5e861110.jpg)     
 
 为何（-20，-20）的偏移量，却可以让view2向右下角移动呢？   
@@ -77,51 +76,53 @@ instancetype是clang3.5开始提供的一个关键字，与id一样表示未知�
 	> 实例方法中，以autorelease、init、retain、self开头    
 	  
 	会返回一个方法所在类类型的对象，即这些方法的返回结果以方法所在的类为类型。     
-	例：
+例：
 
 	```
 	@interface NSObject    
 	+ (id)alloc;    
 	- (id)init;  
-	@end
-	```
+	@end  
 	
+	```
 	当我们使用如下方式初始化NSArray时：
 
-	```
-	NSArray *array = [[NSArray alloc] init];   
-	```
+ ```
+	NSArray *array = [[NSArray alloc] init];     	 
+ ```
 	按照Cocoa的命名规则，[NSArray alloc]与[[NSArray alloc]init]返回的都为NSArray的对象。
 	
 2. 非关联返回类型  
   
-   ```
-	@interface NSArray  
-	+ (id)constructAnArray;  
-	@end
 	```
-	
+	 @interface NSArray    
+    + (id)constructAnArray;  
+	 @end   
+		
+	```
 	当我们使用如下方式初始化NSArray时：
 
-		[NSArray constructAnArray];
-	根据Cocoa的方法命名规范，得到的返回类型就和方法声明的返回类型一样，是id。    
+     ```
+	 [NSArray constructAnArray];  
+	 ```
+  根据Cocoa的方法命名规范，得到的返回类型就和方法声明的返回类型一样，是id。    
 	
-	但是如果使用instancetype作为返回类型，如下：
+   但是如果使用instancetype作为返回类型，如下：
 
-	```
+    ```
 	@interface NSArray  
 	+ (instancetype)constructAnArray;    
-	@end   
+	@end      
 	```
-	当使用相同方式初始化NSArray时：
+   当使用相同方式初始化NSArray时：
 
+  ```
+	[NSArray constructAnArray];    
 	```
-	[NSArray constructAnArray];  
-	```
-	得到的返回类型和方法所在类的类型相同，是NSArray*。   
+ 得到的返回类型和方法所在类的类型相同，是NSArray*。   
 	
-	#### 总结：instancetype的作用就是使那些非关联返回类型的方法返回所在类的类型。      
+- 总结：instancetype的作用就是使那些非关联返回类型的方法返回所在类的类型。      
 	
-### instancetype和id区别(总结)    
+### instancetype和id区别(总结)       
 - instancetype可以返回和方法所在类相同类型的对象，id只能返回未知类型的对象。
 - instancetype只能作为返回值，不能像id那样作为参数。 
