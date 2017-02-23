@@ -7,6 +7,11 @@ tags:
 - UI
 ---
 
+## 概述
+本文主要是讲解如何封装一个具有原生UI效果的弹窗的。
+
+<!-- more -->
+
 ## 步骤1
 建立一个dialogController，里面一个view用于弹窗。具体就不写了，详情见[demo](https://github.com/shsoul/ShDialog)（只是demo，样式什么的得自己调。）。需要注意的是怎么弹窗，我们需要看到弹窗后面的背景，因此要：
 
