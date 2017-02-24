@@ -1,6 +1,8 @@
 title: IOS confused attribute Part 1
 date: 2017-02-23 12:00:37
+categories: Cocoa
 tags:
+- ios
 ---
 
 ## 概述   
