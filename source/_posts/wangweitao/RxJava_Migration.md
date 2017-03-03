@@ -9,8 +9,6 @@ tags:
 
 <!--more-->
 
-## The Next Step for Reactive Android Programming（译文）
-
  原文地址：[The Next Step for Reactive Android Programming](http://futurice.com/blog/the-next-step-for-reactive-android-programming)
 
 
