@@ -8,12 +8,12 @@ tags:
 ## 简介 
 android通过在intent中指定目标类名和参数实现界面之间的跳转。这种写法在activity数量少、跳转简单、开发人员较少时效果好。
  
- 如果遇到activity数量较多、跳转复杂、多人协作开发、长期的修改变动的情况，则可以通过activityRouter来解耦合、管理跳转逻辑等。
+ 如果遇到activity数量较多、跳转复杂、多人协作开发、长期的修改的情况，则可以通过activityRouter来解耦合、管理跳转逻辑等。
 
 <!--more-->
 ## AcitivtyRouter的主要优势
 
- ActivityRouter的最大优势在于项目中存在大量的activity、跳转关系较复杂，且后续需求变动添加频繁、开发人员较多或流动性大的时候，能非常方便的进行维护和开发。
+ ActivityRouter的最大优势在于项目中存在大量的activity、跳转关系较复杂，且后续需求变动频繁、开发人员较多或流动性大的时候，能非常方便的进行维护和开发。
 ### 使用原生跳转
  假设需要做一个包含商品列表、购物车、用户中心、商品详情、登录、订单列表、订单详情等界面的demo，跳转关系如下图所示。
  ![1. 使用原生跳转](https://p0.meituan.net/dpnewvc/10dbcf812dadbfc530586dab3e9bfeeb582755.png)
@@ -27,10 +27,10 @@ android通过在intent中指定目标类名和参数实现界面之间的跳转�
  ![2. 使用ActivityRouter管理跳转](https://p0.meituan.net/dpnewvc/2e3998e6e62a8147fc6d286f7aec34c0306557.png)
   
 ### ActivityRouter在版本迭代和维护中的优势
- 假设在原先的基础上需要添加一个活动页面，改页面有很多跳往其他页面的入口。那么则如下图所示，有多少新的入口就需要添加多少个跳转的判断或者调用。
+ 假设在原先的基础上需要添加一个活动页面，该页面有很多跳转其他页面的功能。如下图所示，有多少新的入口就需要添加多少个跳转的判断或者调用。
  ![3. 添加界面后的原生跳转](https://p0.meituan.net/dpnewvc/1e60eef57c66b8b50239dd7261613470662661.png)
    
- 如果是采用ActivityRouter的来管理这些路有的，那么只需要调用ActivityRouter的接口即可，调用哪些服务时需要被拦截的逻辑根本不需要变动和添加。
+ 如果是采用ActivityRouter的来管理这些路由，那么只需要调用ActivityRouter的接口即可，而拦截的逻辑根本不需要变动。
  ![4. 添加界面后的ActivityRouter跳转](https://p1.meituan.net/dpnewvc/25ad81ab29548af2a57bef4a30970a4f325124.png)
  
 ## 已有的开源activityRouter
@@ -49,7 +49,7 @@ android通过在intent中指定目标类名和参数实现界面之间的跳转�
  android annotation编译，api比较简单，目前没有稳定版本。
  
 ## ARouter的使用
- 本文例子使用的是ARouter。它的api简单有效，同时支持apt和android annotation的编译。
+ 本文例子使用的是ARouter。它的api简单有效，同时支持apt和android annotation的编译，能够兼容旧的项目。
  
 ### gradle配置
  使用apt编译的gradle配置：
@@ -153,7 +153,7 @@ public class Home extends AppCompatActivity {
  **注意:**
  
 * 标注activity时，path至少包含两级目录。如/mall/home,只有/home是出错。
-* 注解@Autowired的name参数是通过url跳转时对应的参数名称。
+* 注解@Autowired的name参数是通过url跳转时对应的参数名称。如:通过url(http://KMall/mall/home?model=101)来启动activity时，想要注入model的值就需要设置@Autowired(name = "model")
 * 使用@Autowired注解要记得ARouter.getInstance().inject(this)注解。
  
 ### activity间路由跳转
@@ -300,7 +300,7 @@ public class LoginInterceptor implements IInterceptor {
 
  **注意：**
  
-* 注解@Interceptor的priority标志优先级，拦截器按照优先级顺序依次执行，name属性只是在生成java doc的过程中有用。
+* 注解@Interceptor的priority表示优先级，拦截器按照优先级顺序依次执行，name属性只是在生成java doc的过程中有用。
 * 在拦截操作process中，如果继续跳转需要调用callback.onContinue()，如果遇到错误可以使用callback.onInterrupt()中断所有的路由。
 * 拦截器中一定要保证不需要被处理的路径能够通过callback.onContinue()继续执行下去。
 * 拦截器中不应有耗时操作，积压大量的请求会crash.
@@ -352,9 +352,9 @@ public class MainActivity extends AppCompatActivity {
 
  **注意：**
  
-* 接口一定要继承IProvider，否则编译不通过后，错误信息提示不够准确，难以定位。
-* 如果只有一个服务的实现，那么利用@Autowired(name = "/mall/utils/toast/normal")时可以不添加name属性。如果超过一个服务的实现，就需要通过name属性来区分。
-* 除了利用@Autowired来注解外，也可以通过(CustomToast)ARouter.getInstance().build("/mall/utils/toast/normal").navigation()来获取引用执行。
+* 接口一定要继承IProvider，否则编译不通过。而且错误信息提示不够准确，难以定位。
+* 如果只有一个服务接口的实现，那么利用@Autowired(name = "/mall/utils/toast/normal")时可以不添加name属性。如果服务接口不止一个实现类，则需要name属性来区分。
+* 除了利用@Autowired来注解外，也可以通过(CustomToast)ARouter.getInstance().build("/mall/utils/toast/normal").navigation()来调用。
 
 ### demo地址
 
