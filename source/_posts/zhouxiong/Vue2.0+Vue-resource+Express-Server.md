@@ -6,14 +6,10 @@ tags:
 - Vue-resource
 - Express
 ---
+### 前言
 继上一篇文章[Vue2.0+Vue-router2.0+Vuex2.0搭建简书](http://xgfe.github.io/2016/12/22/zhouxiong/Vue2.0+Vue-router2.0+Vuex2.0/)，该文章主要讲述简书网站的前端搭建过程。本篇文章将重点讲述简书网站的服务端搭建，服务端主要通过Express启动一个本地server处理请求，将数据保存至数据库中。
 
 <!--more-->
-## Vue2.0+Vue-resource+Express搭建简书网站服务端
-
-### 前言
-
-继上一篇文章[Vue2.0+Vue-router2.0+Vuex2.0搭建简书](http://xgfe.github.io/2016/12/22/zhouxiong/Vue2.0+Vue-router2.0+Vuex2.0/)，该文章主要讲述简书网站的前端搭建过程。本篇文章将重点讲述简书网站的服务端搭建，服务端主要通过Express启动一个本地server处理请求，将数据保存至数据库中。
 
 **注意：本篇文章只介绍了比较重要的几个文件的内容，有些文件内容类似就没有拿出来讲解。所以代码并不是全部的，所以按照本文的内容并不能完全搭建起一个网站，想要全部的代码可以从下面的github仓库中获取**
 
