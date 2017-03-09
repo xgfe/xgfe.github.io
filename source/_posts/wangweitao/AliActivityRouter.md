@@ -153,7 +153,10 @@ public class Home extends AppCompatActivity {
  **注意:**
  
 * 标注activity时，path至少包含两级目录。如/mall/home,只有/home是出错。
-* 注解@Autowired的name参数是通过url跳转时对应的参数名称。如:通过url(http://KMall/mall/home?model=101)来启动activity时，想要注入model的值就需要设置@Autowired(name = "model")
+* 注解@Autowired的name参数是通过url跳转时对应的参数名称。如:通过```
+	url(http://KMall/mall/home?model=101)
+```
+ 来启动activity时，想要注入model的值就需要设置@Autowired(name = "model")
 * 使用@Autowired注解要记得ARouter.getInstance().inject(this)注解。
  
 ### activity间路由跳转
