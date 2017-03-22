@@ -1,5 +1,6 @@
 title: Electron开发跨平台桌面应用
 date: 2017-03-16 11:25:57
+categories: TinySymphony
 tags:
   - electron
   - atom
