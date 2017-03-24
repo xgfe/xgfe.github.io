@@ -67,7 +67,7 @@ NSSetUncaughtExceptionHandler(&HandleException);
 
 ### Mach Exception
 
-从OC异常往底层走，我们看到的是Mach异常。Mach异常是FreeBSD上特有定义的高层异常，当然，现在网络上能收集到的资料都和mac和ios开发有关。相关的源码网络上可以找到[这里](https://github.com/st3fan/osx-10.9/blob/master/xnu-2422.1.72/osfmk/mach/exception_types.h)。看到异常定义的名称我们会感觉到异常的亲切——EXC_MASK_开头的异常呢。我们一一来总结常见的两个个Mach异常吧：
+从OC异常往底层走，我们看到的是Mach异常。Mach异常是FreeBSD上特有定义的高层异常，当然，现在网络上能收集到的资料都和mac和ios开发有关。相关的源码网络上可以找到[这里](https://github.com/st3fan/osx-10.9/blob/master/xnu-2422.1.72/osfmk/mach/exception_types.h)。看到异常定义的名称我们会感觉到异常的亲切——EXC_MASK_开头的异常呢。我们一一来总结常见的两个Mach异常吧：
 
 #### EXC_BAD_ACCESS (Bad Memory Access)
 
@@ -150,7 +150,7 @@ void InstallSignalHandler(void) {
 
 ### 准备工作
 
-首先我们当然要下载一个Hopper，[官网](https://www.hopperapp.com)。这个软件demo版可以直接使用完整功能，和Charles一样每次启动可以使用30分钟——对于我们勉强够用了，动心了可以买买买～
+首先我们当然要下载一个[Hopper](https://www.hopperapp.com)。这个软件demo版可以直接使用完整功能，和Charles一样每次启动可以使用30分钟——对于我们勉强够用了，动心了可以买买买～
 另外，我们还需要找到用于进行反编译的程序。理论上，它在ipa包的/Payload/xxx.app/xxx即对应的编译结果，其中在本地xcode编译出来的app在~/Library/Developer/Xcode/DerivedData下。
 最后，我们当然要准备好需要的crash堆栈，另外在旁边准备一个科学计算器比较好。
 另外再用浏览器开一个ARM汇编指令大全吧。[比如](http://blog.csdn.net/forever_2015/article/details/50285865)
