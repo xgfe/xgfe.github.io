@@ -50,18 +50,15 @@ Router.router.build("/main").withAnimated(YES).withObject(@"key", value).navigat
 	* 我们需要至少支持push和present两种模式。
 
 2. 实现方案
-
 ![](https://p0.meituan.net/dpnewvc/c501389026c246735b894934a7cf436a10727.png)
-
-* 在register模块上，保存url和类的映射关系。并保存所有的拦截器。
-* 在router模块
-
-	- 由于有两种模式，因此得有两个方法调用present和push（个人感觉navigate更合适，因为可以往前或往后导航）
-	- 由于可以前后导航，因此得自定义的vc类中，得定义两个接口，init和update。
-	- 维护路由堆栈，加入新的用init，导航到堆栈中存在的就调update。
-* 在跳转之前，调用所有的拦截器，根据拦截器返回的结果再做真正的跳转操作。
-* 用的是字典传参。
-* 由于用的是字典传参，最好加入依赖注入方案。
+	* 在register模块上，保存url和类的映射关系。并保存所有的拦截器。
+	* 在router模块：
+		- 由于有两种模式，因此得有两个方法调用present和push（个人感觉navigate更合适，因为可以往前或往后导航）
+		- 由于可以前后导航，因此得自定义的vc类中，得定义两个接口，init和update。
+		- 维护路由堆栈，加入新的用init，导航到堆栈中存在的就调update。
+	* 在跳转之前，调用所有的拦截器，根据拦截器返回的结果再做真正的跳转操作。
+	* 用的是字典传参。
+	* 由于用的是字典传参，最好加入依赖注入方案。
 
 ### 先假想使用router，再思考封装router。
 
