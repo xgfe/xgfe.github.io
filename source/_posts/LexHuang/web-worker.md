@@ -201,7 +201,7 @@ ____
 ____
 
 ### 共享worker
-一个 **共享worker** 可以被多个脚本所访问 — 即使它们正在被多个不同的窗口访问着, 多个iframe乃至多个worker. 在这一节我们将会讨论 [Basic shared worker example](https://mdn.github.io/simple-shared-worker/)里的代码: 它和基础专属worker的例子很类似,除了它有两个函数可以被不同的脚本文件处理：两数相乘和平方一个数字。两个脚本使用同一个worker 来完成所需的实际计算。
+一个 **共享worker** 可以被多个脚本所访问 — 即使它们正在被多个不同的窗口访问着, 比如多个iframe乃至多个worker。 在这一节我们将会讨论 [Basic shared worker example](https://mdn.github.io/simple-shared-worker/)里的代码: 它和基础专属worker的例子很类似,除了它有两个函数可以被不同的脚本文件处理：两数相乘和平方一个数字。两个脚本使用同一个worker 来完成所需的实际计算。
 
 这里我们将重点分析专属和共享worker之间的不同。注意到在这个例子里我们有两个HTML页面，每个页面都有JavaScript 访问同一个worker文件。
 
@@ -217,7 +217,7 @@ ____
 var myWorker = new SharedWorker("worker.js");
 ```
 
-一个最大的不同点在于使用共享worker你必须通过一个``port对象``来通信——明确指定一个的端口，这样脚本们可以通过它来与worker通信。(在专属worker偷偷完成了这一点)。
+一个最大的不同点在于使用共享worker你必须通过一个``port对象``来通信——明确指定一个端口，这样脚本们可以通过它来与worker通信。(在专属worker偷偷完成了这一点)。
     
 端口链接需要通过隐式地使用``onmessage``事件处理程序或者显式地在传递任何消息前使用 start()方法。只有当消息事件通过是addEventListener()接通的情况下需要调用start()。
 
@@ -279,7 +279,7 @@ web worker之间的通信必须依赖于浏览器的上下文环境，并且通�
 
 每个web worker的全局作用域对象 WorkerGlobalScope 还会有一个web worker的线程列表，在初始化时这个列表为空。当web worker被创建的时候或者拥有父web worker的时候，它们就会被填充进来。
 
-最后，每个web worker的全局作用域对象 WorkerGlobalScope 还拥有这个线程的文档对象列表，在初始化时这个列表为空。当web worker被创建的时候，文档对象就会被填充进来。无论何时当一个文档对象被丢弃的时候，它就要从这个文档对象列举里面删除出来。
+最后，每个web worker的全局作用域对象 WorkerGlobalScope 还拥有这个线程的文档对象列表，在初始化时这个列表为空。当web worker被创建的时候，文档对象就会被填充进来。无论何时当一个文档对象被丢弃的时候，它就会从这个文档对象列表里面被删除。
 在web worker的生命周期中，定义了下面四种不同类型的线程名称，用以标识它们在线程的整个生命周期中的不同状态：
 
 * 当一个web worker的``文档列表``不为空的时候，这个web worker会被称之为``许可线程``。
@@ -351,7 +351,7 @@ web worker之间的通信必须依赖于浏览器的上下文环境，并且通�
 >23. 启动``外部端口``的[端口消息队列](https://html.spec.whatwg.org/multipage/comms.html#port-message-queue)。
 >
 >24. 如果``is shared``为false，则开启worker的隐藏端口的[端口消息队列](https://html.spec.whatwg.org/multipage/comms.html#port-message-queue)。
->25. 如果``is shared``为true, 则排队一个任务, 在``worker的全局作用域``中使用[the DOM manipulation task source](https://html.spec.whatwg.org/multipage/webappapis.html#dom-manipulation-task-source)来发射一个名为[connect](https://html.spec.whatwg.org/multipage/indices.html#event-workerglobalscope-connect)的事件，使用[MessageEvent](https://html.spec.whatwg.org/multipage/comms.html#messageevent)，并将其[data](https://html.spec.whatwg.org/multipage/comms.html#dom-messageevent-data)特性初始化为空字符串,[ports]()特性初始化为一个包含着``内部端口``的新[frozen array](https://heycam.github.io/webidl/#dfn-frozen-array-type)，并且[source](https://html.spec.whatwg.org/multipage/comms.html#dom-messageevent-source)特性初始化为``内部端口``
+>25. 如果``is shared``为true, 则排队一个任务, 在``worker的全局作用域``中使用[the DOM manipulation task source](https://html.spec.whatwg.org/multipage/webappapis.html#dom-manipulation-task-source)来启动一个名为[connect](https://html.spec.whatwg.org/multipage/indices.html#event-workerglobalscope-connect)的事件，使用[MessageEvent](https://html.spec.whatwg.org/multipage/comms.html#messageevent)，并将其[data](https://html.spec.whatwg.org/multipage/comms.html#dom-messageevent-data)特性初始化为空字符串,[ports]()特性初始化为一个包含着``内部端口``的新[frozen array](https://heycam.github.io/webidl/#dfn-frozen-array-type)，并且[source](https://html.spec.whatwg.org/multipage/comms.html#dom-messageevent-source)特性初始化为``内部端口``
 >26. 启动[ServiceWorkerContainer](https://w3c.github.io/ServiceWorker/#serviceworkercontainer)对象的[客户端消息队列](https://w3c.github.io/ServiceWorker/#dfn-client-message-queue)，[ServiceWorkerContainer](https://w3c.github.io/ServiceWorker/#serviceworkercontainer)对象相关的[service worker client](https://w3c.github.io/ServiceWorker/#serviceworkercontainer-service-worker-client)是worker全局作用域的[相关设置对象](https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object)。
 >27. **Event loop**: 执行由内部配置指定的[responsible event loop](https://html.spec.whatwg.org/multipage/webappapis.html#responsible-event-loop)直到其被摧毁。
     ***
@@ -387,7 +387,7 @@ ___
 
 ## 错误处理
 当worker内出现了一个运行时错误，它的onerror 事件处理程序会被调用。该事件处理程序会收到一个名为error的事件，它实现了ErrorEvent 接口。
-该事件可以被取消但是不会冒泡；为了阻止默认行为的发生，该worker可以调用错误事件的preventDefault() 方法。
+该事件可以被取消但是不会冒泡；为了阻止默认行为的发生，该worker可以调用错误事件的``preventDefault()`` 方法。
 错误事件有以下三个域:
 * message
     一个人工可读的错误消息。
@@ -448,9 +448,9 @@ ___
 
 
 ## 关于线程安全
-Worker接口生成真正的系统级别的线程，有心的程序员会想到如果不太小心，那么并发会对你的代码产生有趣的影响。
+Worker接口生成真正的系统级别的线程，有心的程序员会想到如果不太小心，那么并行会对你的代码产生有趣的影响。
 
-然而，对于 web worker 来说，与其他线程的通信点会被很小心的控制，这意味着你很难引起并发问题。你没有办法去访问非线程安全的组件或者是 DOM，此外你还需要通过序列化对象作为数据来在线程间传递。所以你要是不费点劲儿，还真搞不出错误来。
+然而，对于 web worker 来说，与其他线程的通信点会被很细心地控制，这就意味着你很难引起并行问题。你没有办法去访问非线程安全的组件或者是 DOM，此外你还需要通过序列化对象作为数据来在线程间传递。所以你要是不费点劲儿，还真搞不出错误来。
 
 
 ## 内容安全策略
