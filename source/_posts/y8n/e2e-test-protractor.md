@@ -1,6 +1,6 @@
 title: E2E测试之protractor
 date: 2016-07-01 10:58:49
-categories: yangjiyuan
+categories: y8n
 tags:
 - 测试
 - E2E
@@ -17,8 +17,14 @@ protractor是为AngularJS定制的测试框架，也是由angular团队开发并
 protractor有如下几个特点：
 
 - 端到端测试
-- jasmine作为测试框架- 基于WebDriverJS- 针对angular的定位器- 实现自动等待，变异步为同步
-- 支持测试代码的调试- 支持多浏览器的并行UI测试## 安装
+- jasmine作为测试框架
+- 基于WebDriverJS
+- 针对angular的定位器
+- 实现自动等待，变异步为同步
+- 支持测试代码的调试
+- 支持多浏览器的并行UI测试
+
+## 安装
 1.安装protractor工具
 
 ```
@@ -29,7 +35,8 @@ $ npm install -g protractor
 ```
 $ webdriver-manager update
 ```
-	3.安装v1.6以上版本的Java
+	
+3.安装v1.6以上版本的Java
 
 ## 使用
 写好配置文件之后，就可以执行测试了
@@ -107,7 +114,9 @@ browser对象主要用于执行操作浏览器相关的行为，比如打开链�
 - browser.addMockModule()
 - browser.getTitle()
 - browser.executeScript()
-- browser.getCurrentUrl()## element、by对象
+- browser.getCurrentUrl()
+
+## element、by对象
 element和by对象主要用于获取浏览器中的元素和操作元素行为。by元素用于生成一个特殊的“选择器”，element接受选择器对参数从而获取到页面中的元素。  
 element中获取元素的方法，如：  
 
@@ -133,7 +142,9 @@ by对象用于生成选择器对象供element使用，可以把它理解为jQuer
 - by.repeater()
 - by.buttonText()
 
-其中，`model`、`bindling`、`repeater`等方法都是根据AngularJS定制的选择方法，更方便获取元素。## ExpectedConditionsd对象
+其中，`model`、`bindling`、`repeater`等方法都是根据AngularJS定制的选择方法，更方便获取元素。
+
+## ExpectedConditionsd对象
 顾名思义， ExpectedConditions意为“期望条件”，也就是说在一定条件下，执行特定的操作，一般和`browser.wait`配合使用。protractor提供了有限的几个方法，浏览器会在满足条件之前停止运行一定时间，直到满足条件才会继续运行。如下面的测试表示当Checkbox在5秒之内被选中的时候再对列表的数目进行断言。
 
 ```
@@ -223,4 +234,6 @@ it('should wait for checkoBox to be select', function() {
 - [http://www.protractortest.org/](http://www.protractortest.org/)
 - [http://dj1211.com/?p=678](http://dj1211.com/?p=678)
 - [http://ramonvictor.github.io/protractor/slides/#/](http://ramonvictor.github.io/protractor/slides/#/)
-- [https://github.com/codef0rmer/proquery](https://github.com/codef0rmer/proquery)
+- [https://github.com/codef0rmer/proquery](https://github.com/codef0rmer/proquery)
+
+
