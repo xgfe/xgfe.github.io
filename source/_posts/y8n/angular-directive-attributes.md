@@ -1,6 +1,6 @@
 title: Angular指令中的属性
 date: 2016-08-12 17:18:08
-categories: yangjiyuan
+categories: y8n
 tags:
 - Angular
 - 指令

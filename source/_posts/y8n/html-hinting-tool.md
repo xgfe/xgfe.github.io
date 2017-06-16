@@ -1,6 +1,6 @@
 title: HTML代码检查工具实践
 date: 2015-10-08
-categories: yangjiyuan
+categories: y8n
 tags: 
 - html
 - htmlhint

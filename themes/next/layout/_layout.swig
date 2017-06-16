@@ -29,7 +29,7 @@
 
         {% if page.comments %}
           <div class="comments" id="comments">
-            {% if (theme.duoshuo and theme.duoshuo.shortname) or theme.duoshuo_shortname %}
+<!--             {% if (theme.duoshuo and theme.duoshuo.shortname) or theme.duoshuo_shortname %}
               <div class="ds-thread" data-thread-key="{{ page.path }}"
                    data-title="{{ page.title }}" data-url="{{ page.permalink }}">
               </div>
@@ -37,7 +37,8 @@
               <div id="disqus_thread">
                 <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
               </div>
-            {% endif %}
+            {% endif %} -->
+            <div id="SOHUCS" sid="" ></div> 
           </div>
         {% endif %}
       </div>
@@ -58,6 +59,7 @@
   {% block script_extra_before %}{% endblock %}
   {% block comment_system %}
     {% include '_scripts/comments/duoshuo.swig' %}
+    {% include '_scripts/comments/changyan.swig' %}
     {% include '_scripts/comments/disqus.swig' %}
   {% endblock %}
   {% include '_scripts/fancy-box.swig' %}
