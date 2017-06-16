@@ -28,7 +28,7 @@ tags:
 
 举个例子：
 
-```
+```objectivec
 //使用router前，这里必须在Viewcontroller调用。
 
 UIViewController *main = [[UIViewController alloc] initWithxxx:(id)xxx];
@@ -68,7 +68,7 @@ Router.router.build("/main").withAnimated(YES).withObject(@"key", value).navigat
 2. 在register模块上注册我们的vc。有拦截器加拦截器。
 3. 最后调用router相应的方法传参和跳转到我们定义的vc吧。为了更好的使用体验(参数的不确定)，用builder模式好一点。
 
-```
+```objectivec
 Router.router.build("/main").withAnimated(YES).withObject(@"key", value).navigate();
 
 Router.router.build("/login").withAnimated(YES).withObject(@"key", value).present();
@@ -77,7 +77,7 @@ Router.router.build("/login").withAnimated(YES).withObject(@"key", value).presen
 
 ### 总结
 
- 以上是我对router的一些想法，也按照这个想法实现了一套router。再也不用关注路由的关系了，只需关注本身页面的构造。达到解耦的效果。特别在嵌套很深的界面中，路由可直接在操作中进行，再也不用回调到外面的controller进行跳转。总的来说，效果不错。
+ 以上是我对router的一些想法，也按照这个想法实现了一套router（KLMRouter）。了解更多请移步[github](https://github.com/shsoul/KLMRouter)。再也不用关注路由的关系了，只需关注本身页面的构造。达到解耦的效果。特别在嵌套很深的界面中，路由可直接在操作中进行，再也不用回调到外面的controller进行跳转。总的来说，效果不错。
  
  ![](https://p0.meituan.net/dpnewvc/e4c8706c48fdac66aff949f38b599a0015251.png)
 
