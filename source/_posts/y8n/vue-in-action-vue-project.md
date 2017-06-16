@@ -1,6 +1,6 @@
 title: Vue实战（二）—— 在项目中的实践
 date: 2016-11-08
-categories: yangjiyuan
+categories: y8n
 tags: 
 - Vue
 ---
