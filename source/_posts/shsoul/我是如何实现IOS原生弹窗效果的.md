@@ -15,7 +15,7 @@ tags:
 ## 步骤1
 建立一个dialogController，里面一个view用于弹窗。具体就不写了，详情见[demo](https://github.com/shsoul/ShDialog)（只是demo，样式什么的得自己调。）。需要注意的是怎么弹窗，我们需要看到弹窗后面的背景，因此要：
 
-```
+```objectivec
 DialogViewController *dialog = [[DialogViewController alloc] init];
 dialog.modalPresentationStyle = UIModalPresentationOverFullScreen;    
 self.definesPresentationContext = YES;
@@ -26,7 +26,7 @@ self.definesPresentationContext = YES;
 
 添加弹窗动画:透明度渐变和缩放,这里用到了spring动画。需要注意的是在viewWillAppear或者viewDidAppear里面调用弹窗动画，不然看不到动画效果。
 
-```
+```objectivec
 - (void)viewDidLoad {
 	_contentView.transform = CGAffineTransformMakeScale(2, 2);
     _contentView.alpha = 0;
@@ -55,7 +55,7 @@ self.definesPresentationContext = YES;
 
 添加毛玻璃（模糊）效果,IOS8后用这种方式实现毛玻璃效果。非常方便。
 
-```
+```objectivec
 UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 _effectView = [[UIVisualEffectView alloc] initWithEffect:effect];
 _effectView.layer.cornerRadius = 12;
@@ -72,7 +72,7 @@ _effectView.clipsToBounds = YES;
  
 UIBezierPath+CAShapeLayer来挖洞。毛玻璃太暗的原因是受到背景颜色（灰色）的影响。因此在弹窗的View背后挖一个一样大小的洞来解决。
 
-```
+```objectivec
 - (void)animateDidCompletion {
     UIBezierPath *cPath = [UIBezierPath bezierPathWithRoundedRect:self.contentView.frame cornerRadius:12];
     UIBezierPath *wPath = [UIBezierPath bezierPathWithRect:self.view.bounds];
