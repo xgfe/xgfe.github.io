@@ -9,8 +9,9 @@ tags:
 Looper主要成员变量是：   
 MessageQueue mQueue;   
 Thread mThread;   
-一个线程拥有一个Looper，一个Looper封装了MessageQueue和Thread，loop方法使消失队列循环起来了。loop中由Message关联的Handler执行对Message的处理,因为loop是执行在线程中的所以对消息的处理是在同一线程中执行的。
-<pre><code>
+一个线程拥有一个Looper，一个Looper封装了MessageQueue和Thread，loop方法使消失队列循环起来了。loop中由Message关联的Handler执行对Message的处理,因为loop是执行在线程中的所以对消息的处理是在同一线程中执行的。  
+
+```java
 private Looper(boolean quitAllowed) {
         mQueue = new MessageQueue(quitAllowed);
         mThread = Thread.currentThread();
@@ -27,8 +28,10 @@ public static void loop() {
             msg.target.dispatchMessage(msg);
             msg.recycleUnchecked();
         }
-</pre></code>   
- 
+```   
+
+## Handler 
+  
 Handler执行对消息和Runnable的处理，如果post Runnable到队列中，是把Runnable赋值给Message的callback，然后直接执行它的run方法（参见handleCallback），如果sendMessage 到队列中，是先判断Handler的mCallback对消息的处理返回true时就不执行handleMessage，返回false时就执行handleMessage。Callback起到了对消息处理进行拦截的功能。   
 final MessageQueue mQueue;   
 final Looper mLooper;   
@@ -65,9 +68,12 @@ private static void handleCallback(Message message) {
         message.callback.run();
     }
 ```   
+
+## HandlerThread   
+
 HandlerThread是一个封装了Looper的Thread。在消息循环前会先调用onLooperPrepared()。   
 
-<pre><code>
+```java
 public void run() {
         mTid = Process.myTid();
         Looper.prepare();
@@ -80,4 +86,6 @@ public void run() {
         Looper.loop();
         mTid = -1;
     }
-</code></pre>
+```   
+   
+   
