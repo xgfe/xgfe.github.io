@@ -86,7 +86,7 @@ waitUntilNotified：等待Object monitor Timeout时间或者提前被唤醒。
 # Buffer
 ## Segment和SegmentPool
 ### Segment源码
-<pre><code>
+```java
 final class Segment {
 static final int SIZE = 8192;
 static final int SHARE_MINIMUM = 1024;
@@ -122,11 +122,11 @@ public Segment split(int byteCount) {
     prev.push(prefix);
     return prefix;
   }
-</code></pre>
+```
 Segment是一个双向链表，pos是读操作指针，limit是写操作指针，data是内存array，shared代表data是否与其他Segment共享，owner代表data是否归属于Segment。   
 split：分裂成两个Segment，一个是pos-pos+byteCount另一个是pos+byteCount-limit，分裂时如果byteCount >= SHARE_MINIMUM即分裂生成的Segment的数据量比较大则共享被分裂Segment的data（prefix = new Segment(this)），prefix的limit等于被分裂Segment的pos+byteCount，被分裂Segment的pos=pos+byteCount，分裂生成的Segment插入被分裂Segment的前面。如果byteCount < SHARE_MINIMUM即分裂生成的Segment的数据量比较小则内存copy的代价比较小，从pool中取一个Segment从被分裂Segment copy byteCount到此Segment中。
 ### SegmentPool源码
-<pre><code>
+```java
 final class SegmentPool {
 static final long MAX_SIZE = 64 * 1024; // 64 KiB.
 static Segment next;
@@ -155,12 +155,12 @@ static Segment take() {
       next = segment;
     }
   }
-</code></pre>
+```
 take从SegmentPool取Segment，recycle回收Segment到pool中，只有未被share过的（即shared == false）才可以被回收。
-Segment A 被share后，Segment A的shared被赋值true，则即使与Segment A 共享data的Segment都被回收了，在Segment A被回收时，Segment A是不可以放到pool中的，可推断只有owner=true 且 shared=false时才可以放到pool中。
-###Buffer
-### Buffer源码
-<pre><code>
+Segment A 被share后，Segment A的shared被赋值true，则即使与Segment A 共享data的Segment都被回收了，在Segment A被回收时，Segment A是不可以放到pool中的，可推断只有owner=true 且 shared=false时才可以放到pool中。   
+   
+### Buffer源码   
+```java
 public final class Buffer implements BufferedSource, BufferedSink, Cloneable {  
 Segment head; 
 long size;
@@ -265,7 +265,7 @@ Segment writableSegment(int minimumCapacity) {
       byteCount -= movedByteCount;
     }
   }
-</code></pre>
+```
 
 ### Buffer内存共享结构图
 ![Buffer内存共享结构图](https://raw.githubusercontent.com/zero21ke/pic/master/blog/okio/buffer.jpg)
@@ -282,7 +282,7 @@ writableSegment内部实现是，取队尾tail看剩余空间是否满足minimum
 completeSegmentByteCount:当前已complete的byte数，如果taile的data归taile所属，则很可能还会继续对tail进行写操作所以tail处于未 complete状态，tail前的Segment处于complete状态。   
 skip：从head开始跳过n个字节，跳过的Segment放到pool中。   
 write(Buffer source, long byteCount):从source的head摘取Segment连接到taile之后，当待写入的剩余字节小于source的head且taile不可写（owner==false）时，head做split操作。  
-###RealBufferedSink
+### RealBufferedSink
 <pre><code>
 final class RealBufferedSink implements BufferedSink {
   public final Buffer buffer = new Buffer();
@@ -301,8 +301,8 @@ public BufferedSink writeByte(int b) throws IOException {
   }
 </code></pre>
 每个写操作都是先写入Buffer中，之后都调用emitCompleteSegments把Buffer中complete Segment写入Sink。
-###Pipe
-<pre><code>
+### Pipe
+```java
 public final class Pipe {
   final long maxBufferSize;
   final Buffer buffer = new Buffer();
@@ -348,7 +348,7 @@ public long read(Buffer sink, long byteCount) throws IOException {
       }
     }
 }
-</code></pre>
+```
 PipeSink负责向Buffer写，PipeSource负责从Buffer读，读写操作需要用synchronized (buffer)进行同步，Pipe满时调用timeout.waitUntilNotified(buffer)，PipeSink写线程会等待buffer对象timeout设置的时间，如果timeout到时抛出InterruptedIOException，Pipe空时PipeSource读线程会调用timeout.waitUntilNotified(buffer)，读线程会等待buffer对象timeout设置的时间，如果timeout到时抛出InterruptedIOException。
 # 设计模式
 ## 装饰器模式
