@@ -1,10 +1,15 @@
-title: Looper和Handler和HandlerThread   
-date: 2017-06-26 17:00:00                                 
-categories:                                 
-- zero                                     
+title: Looper和Handler和HandlerThread
+date: 2017-06-26
+categories:
+- zero
 tags:
 - Android
+
 ---
+
+本文主要分析了Looper，Handler和HandlerThread的主要源码部分。
+
+<!-- more -->
 
 Looper主要成员变量是：   
 MessageQueue mQueue;   
