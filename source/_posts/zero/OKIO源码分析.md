@@ -13,7 +13,7 @@ tags:
 
 # AsyncTimeout
 ## AsyncTimeout源码
-<pre><code>
+```java
 public class Timeout {
 public final void waitUntilNotified(Object monitor) throws InterruptedIOException {
     try {
@@ -77,7 +77,7 @@ public final boolean exit() {
     inQueue = false;
     return cancelScheduledTimeout(this);
   }   
-</code></pre>
+```
 
 waitUntilNotified：等待Object monitor Timeout时间或者提前被唤醒。
   
@@ -283,7 +283,7 @@ completeSegmentByteCount:当前已complete的byte数，如果taile的data归tail
 skip：从head开始跳过n个字节，跳过的Segment放到pool中。   
 write(Buffer source, long byteCount):从source的head摘取Segment连接到taile之后，当待写入的剩余字节小于source的head且taile不可写（owner==false）时，head做split操作。  
 ### RealBufferedSink
-<pre><code>
+```java
 final class RealBufferedSink implements BufferedSink {
   public final Buffer buffer = new Buffer();
   public final Sink sink;
@@ -299,7 +299,7 @@ public BufferedSink writeByte(int b) throws IOException {
     buffer.writeByte(b);
     return emitCompleteSegments();
   }
-</code></pre>
+```
 每个写操作都是先写入Buffer中，之后都调用emitCompleteSegments把Buffer中complete Segment写入Sink。
 ### Pipe
 ```java
@@ -357,7 +357,7 @@ PipeSink负责向Buffer写，PipeSource负责从Buffer读，读写操作需要�
 为Sink增加hash计算功能的HashingSink
 为Sink增加buffer功能的RealBufferedSink
 ## 对象适配器模式
-<pre><code>
+```java
 final class RealBufferedSink implements BufferedSink {
 public OutputStream outputStream() {
     return new OutputStream() {
@@ -366,7 +366,6 @@ public OutputStream outputStream() {
         buffer.writeByte((byte) b);
         emitCompleteSegments();
       }
-
-</code></pre>
+```
 把RealBufferedSink对象适配成OutputStream
 
