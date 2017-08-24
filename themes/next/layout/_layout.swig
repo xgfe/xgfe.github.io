@@ -6,7 +6,9 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="{{ config.language }}">
-  <div style="display:none"><img src="http://xgfe.github.io/uploads/xg-logo.jpg" alt="xgfe"/></div>
+  <div style="display:none">
+    <img src="//p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe"/>
+  </div>
   {% include '_partials/old-browsers.swig' %}
   {% include '_scripts/analytics.swig' %}
 
@@ -29,16 +31,7 @@
 
         {% if page.comments %}
           <div class="comments" id="comments">
-<!--             {% if (theme.duoshuo and theme.duoshuo.shortname) or theme.duoshuo_shortname %}
-              <div class="ds-thread" data-thread-key="{{ page.path }}"
-                   data-title="{{ page.title }}" data-url="{{ page.permalink }}">
-              </div>
-            {% elseif theme.disqus_shortname %}
-              <div id="disqus_thread">
-                <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-              </div>
-            {% endif %} -->
-            <div id="SOHUCS" sid="" ></div> 
+            <div id="SOHUCS" sid="" ></div>
           </div>
         {% endif %}
       </div>
@@ -58,7 +51,6 @@
   {# This block is used to set options before any other scripts run #}
   {% block script_extra_before %}{% endblock %}
   {% block comment_system %}
-    {% include '_scripts/comments/duoshuo.swig' %}
     {% include '_scripts/comments/changyan.swig' %}
     {% include '_scripts/comments/disqus.swig' %}
   {% endblock %}
@@ -96,7 +88,7 @@
       });
     });
   </script>
-  
+
   <!-- google search, added by felix -->
   <script>
       $('#gg-form').on('submit', function(e) {
