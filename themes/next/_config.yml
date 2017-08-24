@@ -9,7 +9,7 @@ menu:
   #commonweal: /404
 
 # Place your favicon.ico to /source directory.
-favicon: //p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico
+favicon: http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico
 
 # Set default keywords (Use a comma to separate)
 keywords: xgfe, xg, fe, 鲜果前端, 前端

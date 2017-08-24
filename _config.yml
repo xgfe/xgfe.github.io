@@ -80,7 +80,7 @@ deploy:
 #   message: blog publish
 
 # logo
-avatar: //p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png
+avatar: http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png
 
 # 多说评论系统short name
 #duoshuo_shortname: xgfe
