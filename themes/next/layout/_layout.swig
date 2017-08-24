@@ -6,8 +6,8 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="{{ config.language }}">
-  <div style="display:none">
-    <img src="//p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe"/>
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe"/>
   </div>
   {% include '_partials/old-browsers.swig' %}
   {% include '_scripts/analytics.swig' %}
