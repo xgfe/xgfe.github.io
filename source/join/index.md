@@ -1,5 +1,5 @@
-title: join
-date: 2015-09-24 00:19:58
+title: 新美大B2B业务部寻找新朋友加入，热聘职位： web、 Android 、iOS，等你来加入~~
+date: 2017-08-24 19:10:00
 type: "join"
 ---
 
