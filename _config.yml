@@ -80,10 +80,10 @@ deploy:
 #   message: blog publish
 
 # logo
-avatar: /uploads/xg-logo.jpg
+avatar: //p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png
 
 # 多说评论系统short name
-duoshuo_shortname: xgfe
+#duoshuo_shortname: xgfe
 
 # Swiftype 搜索 key
 #swiftype_key: V1zf5_xmZoj7m3re5xiw
