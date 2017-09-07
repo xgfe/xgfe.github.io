@@ -332,3 +332,8 @@ html：
 ```
 
 完整示例代码git地址：https://github.com/huanlifen/html2image
+
+## 参考资料
+
+1.[原版html2canvas](https://github.com/niklasvh/html2canvas)
+2.[优化版html2canvas 0.5.0-beta4](https://github.com/omwteam/html2canvas)
