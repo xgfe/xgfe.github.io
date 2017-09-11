@@ -256,3 +256,6 @@ livereload[tiny-lr] listening on 35729 ...</pre></code>
 ```javascript
 app.use(require('connect-livereload')());
 ```
+
+最后，因为学习那段时间身边的小伙伴们都很沉迷彩票，就简单做了个彩票业务的demo，有些逻辑还没有写完，后面会不断完善。
+git仓库地址：url = ssh://git@git.sankuai.com/~gaoxueling/cp-pro.git
