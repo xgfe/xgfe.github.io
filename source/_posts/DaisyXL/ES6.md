@@ -149,6 +149,16 @@ npm install
 </code></pre>
 
 4.task为构建工具目录
+   - util--放置常见脚本的目录
+        args.js--定义gulp命令行脚本 .option就是定义gulp -***中对内容  .argv表示输入对命令行以字符串形式进行解析
+   - scripts.js--构建脚本，通过gulp对js文件进行重命名，压缩和存放  脚本服务文件
+   - pages.js--模板脚本
+   - server.js--服务器脚本
+   - css.js--监听样式脚本
+   - browser.js--浏览器自动监听变化并编译到指定文件夹
+   - clean.js--编译前情况文件夹
+   - build.js--把所有脚本关联起来，编排执行顺序
+   - default.js--默认执行的任务
 
 5.使用npm自动生成package.json文件，有这个文件就可以使用npm来获取依赖包了
 <pre><code>npm init</code></pre>
@@ -173,43 +183,76 @@ app
         index.ejs
 server
 tasks
-    util--放置常见脚本的目录
-        args.js--定义gulp命令行脚本 .option就是定义gulp -***中对内容  .argv表示输入对命令行以字符串形式进行解析
-    scripts.js--如何通过gulp对js文件进行重命名，压缩和存放  脚本服务文件
-        文件依赖的包说明：（import后npm install 以下包+yargs --save-dev  更新依赖包并且添加到package.json）
-            'gulp' 
-            'gulp-if';//处理if语句 
-            'gulp-concat';//处理文件拼接 
-            'webpack';//打包  'webpack-stream';
-            'vinyl-named'; //文件重命名
-            'gulp-plumber';//处理文件信息流
-            'gulp-uglify';//文件压缩
-            'gulp-util';//命令行输出
-            './util/args';//自定义命令行参数的包
-    pages.js--模板脚本
-    server.js--服务器脚本
-    css.js--监听样式脚本
-    browser.js--浏览器自动监听变化并编译到指定文件夹
-    clean.js--编译前情况文件夹
-    build.js--把所有脚本关联起来，编排执行顺序
-    default.js--默认执行的任务
+    util
+        args.js
+    scripts.js
+    pages.js
+    server.js
+    css.js
+    browser.js
+    clean.js
+    build.js
+    default.js
 package.json
 .babelrc
 gulpfile.babel.js
 ```
-自动构建
+这里没有粘贴每个配置文件的内容，若需要可以克隆ssh://git@git.sankuai.com/~gaoxueling/es6.git仓库的地址获取搭建好的工程查看具体配置文件，其中我对每个文件的配置和依赖包的用处进行了注释说明。
 
-task-util-args.js   定义命令行参数，其中.option就是定义gulp -\*\*\*中对内容  .argv表示输入对命令行以字符串形式进行解析。
+8.通过<code>npm install *** --save-dev</code>命令把涉及到的依赖包依赖到本地，并添加到package.json文件中，可以通过<code>gulp</code>命令检查是否有使用的依赖包没有更新到本地,直到命令行输出下面内容为止，ES6工程基本搭建完成。
+<pre><code>➜  es6 git:(master) gulp
+[16:53:30] Requiring external module babel-register
+[16:53:31] Using gulpfile ~/works/es6/gulpfile.babel.js
+[16:53:31] Starting 'build'...
+[16:53:31] Starting 'clean'...
+[16:53:31] Finished 'clean' after 10 ms
+[16:53:31] Starting 'css'...
+[16:53:31] Finished 'css' after 16 ms
+[16:53:31] Starting 'pages'...
+[16:53:31] Finished 'pages' after 17 ms
+[16:53:31] Starting 'scripts'...
+[16:53:31] Version: webpack 3.5.5
+   Asset     Size  Chunks             Chunk Names
+index.js  2.94 kB       0  [emitted]  index
+[16:53:31] Finished 'scripts' after 290 ms
+[16:53:31] Starting 'browser'...
+[16:53:31] Finished 'browser' after 92 μs
+[16:53:31] Starting 'serve'...
+[16:53:31] Finished 'serve' after 77 μs
+[16:53:31] Finished 'build' after 338 ms
+[16:53:31] Starting 'default'...
+[16:53:31] Finished 'default' after 25 μs</code></pre>
+从输出可以看出，gulp执行的顺序，build --> clean --> css --> pages --> scripts，那么为什么会按照这样的顺序执行呢？
+我们前面创建了一个gulpfile.babel.js，在文件中指定了gulp运行时，先进入task目录。
+```javascript
+requireDir('./tasks');
+```
+那么，gulp 会进入task目录寻找一个叫做default.js的文件,该文件中指定了启动时默认要执行的脚本build，也就是编译脚本。在build.js这个文件中，我们来编排编译步骤，即是上面运行的这种步骤。
+<img src="/uploads/DaisyXL/ES6/result.png" width="520px" height="260px">
+9.无报错后，通过gulp --watch使服务处于监听状态,运行出现最后一行，则启动并监听成功。
+<pre><code>➜  es6 git:(master) gulp --watch
+[17:02:49] Requiring external module babel-register
+[17:02:50] Using gulpfile ~/works/es6/gulpfile.babel.js
+[17:02:50] Starting 'build'...
+[17:02:50] Starting 'clean'...
+[17:02:50] Finished 'clean' after 9.31 ms
+[17:02:50] Starting 'css'...
+[17:02:50] Finished 'css' after 16 ms
+[17:02:50] Starting 'pages'...
+[17:02:50] Finished 'pages' after 16 ms
+[17:02:50] Starting 'scripts'...
+[17:02:50] Version: webpack 3.5.5
+   Asset     Size  Chunks             Chunk Names
+index.js  2.94 kB       0  [emitted]  index
+[17:02:50] Finished 'scripts' after 281 ms
+[17:02:50] Starting 'browser'...
+[17:02:50] Starting 'serve'...
+livereload[tiny-lr] listening on 35729 ...</pre></code>
 
-服务器搭建
+至此，前端开发框架已经搭建好了，编辑index.ejs模板页面显示内容，通过localhost：3000访问
 
-以上步骤完成后，通过gulp指令检查有没有缺少依赖包，无抱错后，通过gulp --watch使服务处于监听状态。
-
-<img src="/uploads/DaisyXL/ES6/runresult.png" width="520px" height="260px">
-
-至此，前端开发框架已经搭建好了，编辑index.ejs模板页面，通过localhost：3000访问
-
-**ps** ：此时有一个问题，就是不能实现热更新，那么补充一点：
-需要在app.js中添加这样一行代码：
-
-app.use(require(&#39;connect-livereload&#39;)());
+然而，我们发现，有一些ES6的项目网页依赖了livereload包却并不能自动进行刷新，仍然需要手动去刷新，也就是自动构建中的辅助功能未得到实现。
+那么检查一下在server目录中的app.js中是否缺少这样一行代码：
+```javascript
+app.use(require('connect-livereload')());
+```
