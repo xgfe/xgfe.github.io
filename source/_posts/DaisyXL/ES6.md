@@ -109,16 +109,23 @@ ES6是无法直接在浏览器中运行的，因此想要实现一个ES6工程�
 gulp：自动化工具，替代之前流行grant，通过stream流操作使得级联操作非常块，完成任务自动化，顺畅工作流，由nodejs开发。
 
 **gulp** 使用说明
-(全局安装）$ npm instal --global gulp
-(项目安装）$ npm install --save-dev gulp
-(根目录创建gulpfile.js/gulpfile.babel.js）$ touch gulpfile.js
-<img src="/uploads/DaisyXL/ES6/gulpfile-babel.png" width="450px" height="100px">
-(运行）$ gulp
-(运行并监听）$ gulp --watch
+<pre>(全局安装）<code>$ npm instal --global gulp</code></pre>
+<pre>(项目安装）<code>$ npm install --save-dev gulp</code></pre>
+<pre>(根目录创建gulpfile.js/gulpfile.babel.js）<code>$ touch gulpfile.js</code></pre>
 
-具体使用可以阅读[gulp中文文档](http://www.gulpjs.com.cn/)
+gulpfile.js文件内容
+```javascript
+var gulp = require('gulp');
+gulp.task('default', function() {
 
-**3 编译工具（ **babel, webpack** ）** 
+});
+```
+<pre>(运行）<code>$ gulp</code></pre>
+<pre>(运行并监听）<code>$ gulp --watch</code></pre>
+
+具体使用说明可以阅读[gulp中文文档](http://www.gulpjs.com.cn/)
+
+**3 编译工具（ babel, webpack ）** 
 
 babel：js编译器，把ES6代码编译成ES5代码。
 webpack：处理模块化，项目依赖的关系，import实现。
@@ -126,13 +133,70 @@ webpack-stream—webpack：对gulp对支持。
 
 **4 代码实现** 
 
-创建 **ES6** 前端工程
+1.创建ES6前端工程,并创建三个并行模块：
+- **app**
+- **server**
+- **tasks**
 
-公司内部可以从 [公司的](ssh://git@git.sankuai.com/~gaoxueling/es6.git) [git](ssh://git@git.sankuai.com/~gaoxueling/es6.git) [仓库](ssh://git@git.sankuai.com/~gaoxueling/es6.git)进行clone
+2.app目录为前端项目代码，包含**html**（模板页面）,**js**（交互实现）,**css**（样式）
+*ps.1:这里的模版页面创建的不是html页面，而是ejs文件，是因为实战工程的服务器端代码是通过express这个nodejs框架创建的。*
+*ps.2:js目录下的index.js文件为入口脚本文件，同样的views目录下的index.ejs为入口模板文件。*
 
-完成目录结构（该目录结构为自行练习时需要创建的目录结构）
-<img src="/uploads/DaisyXL/ES6/mulu.png" width="630px" height="920px">
+3.server为服务器端目录，这里面我们使用**nodejs**来写服务器端代码。
+在server目录下执行下面命令,在当前目录使用ejs模板引擎,如果执行express出错，先检查下是否已经安装nodejs，并install了express脚手架。
+<pre><code>express -e .
+npm install
+</code></pre>
 
+4.task为构建工具目录
+
+5.使用npm自动生成package.json文件，有这个文件就可以使用npm来获取依赖包了
+<pre><code>npm init</code></pre>
+
+6.创建设置babel编译工具的文件.babelrc
+
+7.创建gulp的配置文件gulpfile.babel.js
+
+*ps.2:官网上给的是创建gulpfile.js,是ES5使用的，但是当前工程是ES6工程，使用官网给出的文件名运行gulp命令会报错。*
+
+
+```md
+**最终目录结构**
+app
+    js--交互实现
+        class--类
+            test.js
+        index.js
+    css--样式
+    views--模板页面
+        error.ejs
+        index.ejs
+server
+tasks
+    util--放置常见脚本的目录
+        args.js--定义gulp命令行脚本 .option就是定义gulp -***中对内容  .argv表示输入对命令行以字符串形式进行解析
+    scripts.js--如何通过gulp对js文件进行重命名，压缩和存放  脚本服务文件
+        文件依赖的包说明：（import后npm install 以下包+yargs --save-dev  更新依赖包并且添加到package.json）
+            'gulp' 
+            'gulp-if';//处理if语句 
+            'gulp-concat';//处理文件拼接 
+            'webpack';//打包  'webpack-stream';
+            'vinyl-named'; //文件重命名
+            'gulp-plumber';//处理文件信息流
+            'gulp-uglify';//文件压缩
+            'gulp-util';//命令行输出
+            './util/args';//自定义命令行参数的包
+    pages.js--模板脚本
+    server.js--服务器脚本
+    css.js--监听样式脚本
+    browser.js--浏览器自动监听变化并编译到指定文件夹
+    clean.js--编译前情况文件夹
+    build.js--把所有脚本关联起来，编排执行顺序
+    default.js--默认执行的任务
+package.json
+.babelrc
+gulpfile.babel.js
+```
 自动构建
 
 task-util-args.js   定义命令行参数，其中.option就是定义gulp -\*\*\*中对内容  .argv表示输入对命令行以字符串形式进行解析。
