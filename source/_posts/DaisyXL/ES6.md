@@ -51,9 +51,12 @@ extend({t:1}, {k:2});
 ```
 ```javascript
 //ES6
-Object.assign({t:2}, {k:2});
+const deepClone=(obj)=>{
+   var proto=Object.getPrototypeOf(obj);
+   return Object.assign({},Object.create(proto),obj);
+}
 ```
-显而易见，ES6提供了深拷贝的接口，可以一行代码完胜ES5实现对象深拷贝。不过需要说明的是，Object.assign跟我们手动复制的效果相同，所以一样只能处理深度只有一层的对象，没办法做到真正的 Deep Copy。不过如果要复制的对象只有一层的话可以考虑使用它。
+显而易见，ES6提供了深拷贝的接口，通过Object.getPrototypeOf函数得到obj被克隆函数的原型上的属性，然后通过Object.assign实现深度克隆，可以两行代码完胜ES5实现对象深拷贝。
 # ES6一些比较好的特性
 **1.默认参数**
 ```javascript
