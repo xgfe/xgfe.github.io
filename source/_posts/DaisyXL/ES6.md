@@ -12,7 +12,7 @@ tags:
 <!-- more -->
 # 前言：为什么要使用ES6？
 ECMAScript6，又叫ECMAScript 2015，和ES3以及ES5的区别大概就像下面这个图一样，ES6相对早先几个版本有更加强大的生产力，能够提高开发效率。
-<img src="/uploads/DaisyXL/ES6/ES.png" width="1000px" height="300px">
+<img src="https://p0.meituan.net/dpnewvc/98edd093d4e832cd1c7bcfdfd2f699d8277917.png" width="1000px" height="300px">
 同样实现对象深拷贝，看看下面两种实现方式。
 ```javascript
 //ES5
@@ -89,7 +89,7 @@ var txt = `hello ${name}`;
 ES6是无法直接在浏览器中运行的，因此想要实现一个ES6工程并在浏览器中看到实现效果，需要先进行项目构建。
 
 **1 基础架构** 
-<img src="/uploads/DaisyXL/ES6/jiagou.png" width="800px" height="350px">
+<img src="https://p1.meituan.net/dpnewvc/dcb6af4925ecdda34fa5ab6452b969ad99150.png" width="800px" height="350px">
 
 模块说明：
 - 业务逻辑
@@ -197,7 +197,7 @@ package.json
 .babelrc
 gulpfile.babel.js
 ```
-这里没有粘贴每个配置文件的内容，若需要可以克隆ssh://git@git.sankuai.com/~gaoxueling/es6.git仓库的地址获取搭建好的工程查看具体配置文件，其中我对每个文件的配置和依赖包的用处进行了注释说明。
+这里没有粘贴每个配置文件的内容，若需要可以克隆https://github.com/DaisyGXL/Lemmon-tree.git 仓库的地址获取搭建好的工程es6-project查看具体配置文件，其中我对每个文件的配置和依赖包的用处进行了注释说明。
 
 8.通过<code>npm install *** --save-dev</code>命令把涉及到的依赖包依赖到本地，并添加到package.json文件中，可以通过<code>gulp</code>命令检查是否有使用的依赖包没有更新到本地,直到命令行输出下面内容为止，ES6工程基本搭建完成。
 <pre><code>➜  es6 git:(master) gulp
@@ -228,7 +228,7 @@ index.js  2.94 kB       0  [emitted]  index
 requireDir('./tasks');
 ```
 那么，gulp 会进入task目录寻找一个叫做default.js的文件,该文件中指定了启动时默认要执行的脚本build，也就是编译脚本。在build.js这个文件中，我们来编排编译步骤，即是上面运行的这种步骤。
-<img src="/uploads/DaisyXL/ES6/result.png" width="520px" height="260px">
+<img src="https://p1.meituan.net/dpnewvc/ba5a70a25d75752961db41f1b315cb7627416.png" width="520px" height="260px">
 9.无报错后，通过gulp --watch使服务处于监听状态,运行出现最后一行，则启动并监听成功。
 <pre><code>➜  es6 git:(master) gulp --watch
 [17:02:49] Requiring external module babel-register
@@ -258,4 +258,4 @@ app.use(require('connect-livereload')());
 ```
 
 最后，因为学习那段时间身边的小伙伴们都很沉迷彩票，就简单做了个彩票业务的demo，有些逻辑还没有写完，后面会不断完善。
-git仓库地址：url = ssh://git@git.sankuai.com/~gaoxueling/cp-pro.git
+git仓库地址：https://github.com/DaisyGXL/Lemmon-tree.git  工程名：cp-project
