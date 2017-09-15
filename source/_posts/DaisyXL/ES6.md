@@ -13,50 +13,6 @@ tags:
 # 前言：为什么要使用ES6？
 ECMAScript6，又叫ECMAScript 2015，和ES3以及ES5的区别大概就像下面这个图一样，ES6相对早先几个版本有更加强大的生产力，能够提高开发效率。
 <img src="https://p0.meituan.net/dpnewvc/98edd093d4e832cd1c7bcfdfd2f699d8277917.png" width="1000px" height="300px">
-同样实现对象深拷贝，看看下面两种实现方式。
-```javascript
-//ES5
-var creatAssign = function(keysFunc, defaults) {
-    return function(obj) {
-        var length = arguments.length;
-        if (defaults) {
-            obj = Object(obj);
-        }
-        if (length < 2 || obj == null) {
-            return obj;
-        }
-        for(var i=1; i<length; i++) {
-            var source = arguments[index];
-            var keys = keysFunc(source);
-            var len = key.length;
-            for(var j=0; j<length; j++) {
-                var key = keys[i];
-                if (!defaults || obj[key] === void 0) {
-                    obj[key] = source[key];
-                }
-            }
-        }
-        return obj;
-    };
-};
-var allKeys = function(obj) {
-    var keys = [];
-    for(key in obj) {
-        keys.push(key);
-    }
-    return keys;
-};
-var extend = creatAssign(allKeys);
-extend({t:1}, {k:2});
-```
-```javascript
-//ES6
-const deepClone=(obj)=>{
-   var proto=Object.getPrototypeOf(obj);
-   return Object.assign({},Object.create(proto),obj);
-}
-```
-显而易见，ES6提供了深拷贝的接口，通过Object.getPrototypeOf函数得到obj被克隆函数的原型上的属性，然后通过Object.assign实现深度克隆，可以两行代码完胜ES5实现对象深拷贝。
 # ES6一些比较好的特性
 **1.默认参数**
 ```javascript
