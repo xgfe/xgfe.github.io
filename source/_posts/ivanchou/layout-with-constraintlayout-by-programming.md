@@ -7,6 +7,9 @@ tags:
 - 布局
 ---
 
+关于 ConstraintLayout 的 xml 方式布局的介绍有很多，但是你知道 ConstraintSet 吗？
+本文对于 ConstraintLayout 采用代码进行布局的方式进行了介绍。
+
 <!--more-->
 
 ## 1. 引言
