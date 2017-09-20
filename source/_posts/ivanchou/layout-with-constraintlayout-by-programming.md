@@ -24,7 +24,7 @@ ConstraintLayout 的优点在于使用扁平的层次结构创建出复杂的布
 
 * 通过编程的方式布局
 
-    android.support.constraint 包下有四个类，分别是 ConstraintLayout、ConstraintLayout.LayoutParams、ConstraintSet 与 Guideline。官方文档对它们的说明分别如下所示，
+    android.support.constraint 包下有四个类，分别是 ConstraintLayout、ConstraintLayout.LayoutParams、ConstraintSet 与 Guideline。官方文档对它们的说明如下表，
 
 >| 类名 | 描述 |
 |----------|----------|
@@ -37,7 +37,7 @@ ConstraintLayout 的优点在于使用扁平的层次结构创建出复杂的布
 
 ## 编程实现约束布局
 
-要通过编程的方式实现约束布局，分为以下一个步骤，
+要通过编程的方式实现约束布局，分为以下几个步骤：
 
 * 添加 View 到 Activity 中
     
@@ -73,7 +73,7 @@ ConstraintLayout 的优点在于使用扁平的层次结构创建出复杂的布
 
     通常在 xml 中添加 View 时，Android SDK 会自动帮我们生成资源文件的 id，存储在 R.java 中。但是通过代码的方式并不会触发生成 id，所以需要进行手动绑定。
     
-    首先，在 res/values 目录中新建一个资源文件 ids.xml，内容如下:
+    首先，在 res/values 目录中新建一个资源文件 ids.xml，
     
     ```Xml
     <?xml version="1.0" encoding="utf-8"?>
@@ -110,7 +110,7 @@ ConstraintLayout 的优点在于使用扁平的层次结构创建出复杂的布
 
 * 配置依赖关系 ConstraintSet
     
-    官方推荐使用 ConstraintSet 来进行约束配置，这里很奇怪为什么不能通过 LayoutParams 来配置依赖关系。ConstraintSet 可以用来通过编程的方式定义一系列用在 ConstraintLayout 上的约束，可以用来创建、保存约束，并且可以将其应用在已有的 ConstraintLayout 上，可以通过以下几种方式创建 ConstraintSet，
+    官方推荐使用 ConstraintSet 来进行约束配置，这里很奇怪为什么不能通过 LayoutParams 来配置依赖关系。ConstraintSet 可以用来通过编程的方式定义一系列用在 ConstraintLayout 上的约束，可以用来创建、保存约束，并且可以将其应用在已有的 ConstraintLayout 上，可以通过以下 3 种方式来获取 ConstraintSet。
     
     1. 手动
     ```Java
@@ -124,7 +124,7 @@ ConstraintLayout 的优点在于使用扁平的层次结构创建出复杂的布
     ```Java
     c.clone(clayout);
     ```
-    第2、3两种方法具体使用参见官方文档说明，这篇文章主要介绍手动编码的方式。我们重点来看 connect 方法，
+    第2、3两种方法具体使用参见官方文档说明，这篇文章主要介绍手动编码的方式，我们重点来看 connect 方法。
 
     ```Java
     void connect(int startID, int startSide, int endID, int endSide, int margin)
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-可以看到相比于 xml 代码，Java 代码既繁琐又长，更何况 ConstraintLayout 的出现本来就不推荐手写 xml，在 Android Stuidio 中以直接拖动的方式进行布局操作最少只需要 3 步，
+可以看到相比于 xml 代码，Java 代码既繁琐又长，更何况 ConstraintLayout 的出现本来就不推荐手写 xml，在 Android Stuidio 中以直接拖动的方式进行布局操作最少只需要 3 步：
 
 * 拖动控件到界面上
 * 设置 id（可省略）
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 3. [ConstraintLayout | Android Developers][4]
 4. [An Android ConstraintSet Tutorial][5]
 
-[1]:http://p0.meituan.net/xgfe/c0e6f4a512cf2b68c3284e5226201ba135327.png
+
 [2]:https://developer.android.com/training/constraint-layout/index.html
 [3]:http://blog.csdn.net/guolin_blog/article/details/53122387
 [4]:https://developer.android.com/reference/android/support/constraint/package-summary.html
