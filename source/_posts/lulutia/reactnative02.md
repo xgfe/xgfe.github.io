@@ -1,5 +1,5 @@
 title: React Native 学习系列二
-date: 2015-06-28 22:03:12
+date: 2017-06-28 22:03:12
 categories: lulutia
 tags: 
 - React Native
