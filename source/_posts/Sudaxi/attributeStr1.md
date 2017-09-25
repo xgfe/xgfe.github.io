@@ -7,9 +7,6 @@ tags:
 本文主要分析了富文本常用的属性设置，平时工作过程经常遇到一些有特殊需求的label、UITextField、UITextView。一般情况下，大家都喜欢直接用多个label来实现其不同的属性，很多人忽略了label本身的富文本属性。本文针对富文本进行了详细的介绍。
 <!--more-->
 
-关于富文本AttributedString的使用总结
-本文主要分析了富文本常用的属性设置，平时工作过程经常遇到一些有特殊需求的label、UITextField、UITextView。一般情况下，大家都喜欢直接用多个label来实现其不同的属性，很多人忽略了label本身的富文本属性。本文针对富文本进行了详细的介绍。
-
 首先先大概了解一下NSAttributedString 的21个属性。
 常见的属性大概如下：
 <img src="http://p0.meituan.net/xgfe/8ac5ef6b34677319cfc020c8a1406681105850.jpg" width="600" height="600" alt="常见属性"/>
