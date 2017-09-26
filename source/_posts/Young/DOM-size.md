@@ -50,7 +50,7 @@ tags:
 
 **用法：**滚动尺寸主要用来确定元素内容的实际大小，滚动位置既可以用来确定当前滚动的状态也可以设置滚动位置。一个很常见的使用场景就是判断页面的滚动情况，不同的浏览器的获取scrollTop方法不同，document.documentElement返回的是文档的根节点即<html>，document.body返回的是body，在chrome中，获取页面scrollTop只能通过document.body.scrollTop来获取，document.documentElement获取相同属性始终返回0，而在FF下（只测试了chrome和FF）正好相反。
 
-## 说了半天还是来个图
+## 无图无真相
 作为一个斗图新人，没有图没有底气，所以虽然手残，我还是画了一个图，首先我们就假装图中那个灰色的东西是滚动条，然后看图对应上述属性吧~
 
 ![](http://p1.meituan.net/xgfe/447fe588baa4cd81ed6e3cd6fc38b55d85970.png)
@@ -63,7 +63,6 @@ tags:
 * clientY:以视口为参照，鼠标距离视口左上角的垂直像素距离。
 * screenY:以浏览器为参照，鼠标距离浏览器左上角的垂直像素距离，包含工具栏之类。
 
-**Ps:**配图一目了然，写这么多字好啰嗦的好么。。待我搞几个图来再来补充。
 
 
 
