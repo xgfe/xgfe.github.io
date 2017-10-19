@@ -10,9 +10,9 @@ tags:
 <!-- more -->
 
 ### 技术原理
-* 下面大多数的效果图中，背景图片源background-image url通常会反复使用数次，同时利用CSS混合模式 (multiply, overlay, screen, difference等)进行处理。
-* 在有一些效果中，使用了一下CSS filter 属性进一步处理图片，比如 grayscale(), brightness(), 和 contrast() 等可以让图片呈现出更好的效果。
-* 制作这个演示时，我们首先让这些图片呈现出原始面貌，然后使用CSS @supports 来检测某种CSS属性是否在你的浏览器中受支持。然后才施加这些效果。
+* 以下大多数的效果图中，背景图片源 background-image url 通常会反复使用数次，同时利用CSS混合模式 (multiply, overlay, screen, difference 等)进行处理。
+* 在某些效果中，使用了 CSS filter 属性进一步处理图片，比如 grayscale(), brightness(), 和 contrast() 等可以让图片呈现出更好的效果。
+* 使用 CSS @supports 来检测某种 CSS 属性是否在浏览器中受支持，不支持展示原图。
 
 ### 属性介绍
 #### mix-blend-mode属性
