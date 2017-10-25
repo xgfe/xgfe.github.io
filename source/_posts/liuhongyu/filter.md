@@ -193,7 +193,7 @@ tags:
 ![](http://p1.meituan.net/xgfe/c0b7f1e52f4e11a4a55bad3ba1157f6f69507.jpg)
 
 ### 浏览器兼容性
-* background-blend-mode不支持IE具体详情见下图（mix-blend-mode类似）
+* background-blend-mode不支持IE具体详情见下图（mix-blend-mode类似） 
 
 ![](http://p1.meituan.net/xgfe/02a2dec38a572e4175a74533c2589854308285.jpg)
 
