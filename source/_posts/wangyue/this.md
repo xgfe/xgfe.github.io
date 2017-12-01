@@ -44,6 +44,7 @@ tags:
 
 #### one more thing
   在验证`this`指向的例外情况时，我试了下`with`会不会影响`this`的指向，结果是不会。不过，倒是发现了一点其他奇怪的情况，放个图大家看吧：![with的奇怪情况](http://p0.meituan.net/xgfe/ff3cb88b203bcfbd8e432d5b67365ade127542.png)
-  究其原因，应该是`null`是一个字面量，不可被赋值。`undefined`是一个特殊的预定义的全局变量，可以被赋值，不过正常情况下赋值会静默失败。而`let`根本就不是关键字，是合法的变量名。但是即使`let`被赋值，也不会影响它正常工作（`let`居然不是关键字！！！）。![](http://p1.meituan.net/xgfe/8fedaea7d3fbd2b0770cc5f390824ee679269.png)
+  究其原因，`null`是一个字面量，不可被赋值。`undefined`是一个特殊的预定义的全局变量，可以被赋值，不过正常情况下赋值会静默失败。而`let`根本就不是关键字，是合法的变量名。但是即使`let`被赋值，也不会影响它正常工作（`let`居然不是关键字！！！）。![](http://p1.meituan.net/xgfe/8fedaea7d3fbd2b0770cc5f390824ee679269.png)
   另一个彩蛋：
-  ![undefined ?](http://p1.meituan.net/xgfe/bd8b5379a0ce56a2640c860a60eb85be99091.png)
+  ![undefined ?](http://vfile.meituan.net/xgfe/054512edd6754ca9011615ea9e854b7d92301.png)
+  因为刚才说过`undefined`是一个预定义的全局变量，给它赋值在非严格模式下会静默失败。但是在函数作用域中，我们可以重新声明一个叫undefined的变量，它和全局预定义的那个`undefined`并不是同一个变量，是可以被正常赋值的。
