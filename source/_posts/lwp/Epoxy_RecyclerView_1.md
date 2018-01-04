@@ -8,13 +8,15 @@ tags:
 
 ---
 
+本文仅从宏观上介绍了 Epoxy 的特色和优势，并说明了基本使用步骤。
+
+<!--more-->
+
 Epoxy（环氧树脂）是一个Android库，用于在 `RecyclerView` 中构建复杂的页面。界面模型是通过自定义视图、数据绑定布局或 Litho 组件通过注释处理自动生成的。这些模型会在 `EpoxyController` 中用于声明在 `RecyclerView` 中显示哪些项目。
 
 这将抽象化 `ViewHolder` 的样板，区分项目和绑定有效负载变化，项目类型，项目ID，跨度计数等等，以简化具有多种视图类型的构建屏幕。此外，Epoxy 增加了对保存视图状态和自动比较项目变化的支持。
 
 Epoxy 是由 Airbnb 团队开发的 ，以简化使用 `RecyclerView` 的过程，并添加了必要的缺失功能。Airbnb 在他们的应用中的大部分页面上使用 Epoxy ，这大大提高了开发人员的经验。
-
-<!--more-->
 
 ## Epoxy 的特点
 
