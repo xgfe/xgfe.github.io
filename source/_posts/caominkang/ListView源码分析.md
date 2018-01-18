@@ -1,5 +1,5 @@
 title: ListView源码分析
-date: 2018-01-18 12:45:30
+date: 2018-01-18 13:48
 categories:
 - caominkang
 tags:
@@ -9,7 +9,7 @@ tags:
 
 ---
 
-本文从listView
+本文主要从源码角度分析listView的实现方式
 
 <!--more-->
 
@@ -61,8 +61,8 @@ listView作为列表控件，虽然已经被功能更加强大的recycleView取�
 
 MyItemAdapter重写了getView()方法，这个方法主要在每个子项滑入屏幕时调用。这里需要注意的是convertView参数，这个参数是之前缓存的布局中取出来的view，从代码中可以看到，如果convertView为空，则需要使用LayoutInflater加载布局，如果convertView不为空，则可以直接复用，也是本文重点讲解的复用机制。另一方面，代码中使用ViewHolder这个内部类缓存控件实例，是为了减少调用findViewById的次数，提高性能，和listView的复用机制没有直接关系。
 
-##二、原理详解
-###1.RecycleBin机制
+## 二、原理分析
+### 1.RecycleBin机制
 ListView继承自抽象类AbsListView，ListView的复用过程依靠AbsListView中的一个内部类，也就是RecycleBin，下面是不完整代码：
     
     /**
@@ -242,7 +242,7 @@ ListView继承自抽象类AbsListView，ListView的复用过程依靠AbsListView
   首先我们来看注释，对这个类有个基本认识，RecycleBin有两种类型的存储方式，一种是ActiveViews,一种是ScrapViews。ActiveViews用于缓存屏幕上显示的view，一旦ActiveViews中的view滑出屏幕，该view就会从ActiveViews中移除，加入到ScrapViews中。不过这里有个值得注意的地方，RecycleBin中有ArrayList<View>[] mscrapViews，是一个二维的，其实原因很简单，使用listView可以处理不同种类的数据，数据种类数用viewTypeCount字段存储，不同种类的数据存在不同的ArrayList<View>中，对于只有一种类型的数据，使用的是mCurrentScrap。
   再来看方法：
   fillActiveViews会根据第一个参数选择缓存多少view到mActiveViews中，同时记下第一个view的位置。而getActiveViews方法则是从mActiveViews中取出view，取出后，就将该位置的view设置为null，也就是说下次取同样位置时会返回null。getScrapView从ScrapViews中取出相应位置的ScrapView，addScrapView先判断是否是应该回收的view，再将可以回收的view放入ScrapViews中，有了俩对操作，就可以很方便的实现view管理了，下面一节再讲解listView具体如何实现复用的。
-###2. onLayout过程
+### 2. onLayout过程
 由于本文关注复用过程，而复用过程大多数是在onLayout过程中体现的，所以我们先看onLayout方法。
     
     /**
@@ -505,7 +505,7 @@ AbsListView中onLayout方法注释写的很清楚，子类不要重写这个方�
     }
 
 这里我们可以看到，是直接调用getActiveView方法从mActiveViews中获取第一次缓存的view，相应的会将setupChild的标志是否是回收的view会传入true，在方法里面就会调用attachViewToParent方法，将之前被detach的view attach到listView上。
-###3.滑动复用
+### 3.滑动复用
 
 通过前面讲解，我们发现，listView初始化时，只加载一屏幕数据，而且这个时候mActiveView中缓存的是这一屏幕view，mScrapView中暂时没有缓存。我们接下来看滑动过程。滑动涉及到事件，这个部分代码是写在父类中的onTouchEvent方法中，这个方法主要涉针对事件和动作做处理，手指滑动事件为MotionEvent.ACTION_MOVE，我们进入到这个case里面，发现里面嵌套的还是switch语句，用于处理TouchMode，在滑动过程中，TouchMode对应的是TOUCH_MODE_SCROLL,那么我们可以看到里面有调用trackMotionScroll方法，这个方法看似复杂，但是我们忽略掉与mGroupFlags和childAccessAbilityFocus部分代码后，重点看与位置有关部分。首先参数deltaY表示从手指按下时位置到当前手指位置距离，incrementalDeltaY表示上次出发event事件到现在手指在y方向的移动距离，incrementalDeltaY小于0，说明是下滑，这里需要注意，android的原点在左上角，y轴是从上到下，所以这里的下滑是针对坐标轴。方法一开始会做一些准备工作，比如将第一child的顶部位置和最后一个child的底部位置拿出来，做完这些工作后根据是滑动方向进去循环处理，代码如下
     
@@ -672,7 +672,7 @@ AbsListView中onLayout方法注释写的很清楚，子类不要重写这个方�
     }
     
 这里我们可以看到，会将从scrapView中取出来的view作为convertView传入getView方法中，将里面地点内容更新为需要的内容，这里还做了个保险措施，要是复用失败会将取出来的scrapView重新放回去。得到view后就会像之前一样，用setUpChild方法attach到listView中。通过上述分析可以看到，在滚动过程中，一旦有view移除，就加入到scrapViews中缓存，平移其他view，形成滑动效果。每次view滑入屏幕时，会调用obtainView方法从缓存中取出view更新内容。换句话来说，除了初次填充之外，移入屏幕的view都是复用了移出屏幕的view。这里可以写代码验证，将第一条item的背景颜色设置为红色，当他完全移出屏幕时你会发现刚移入屏幕的item背景颜色也是红色的。测试代码这里就不放出了。
-##三、总结
+## 三、总结
 listView通过adapter简化数据绑定过程，通过RecycleBin简化数据复用过程，省去了开发过程中的很多工作，这种封装思想需要好好学习。
 
     
