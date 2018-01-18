@@ -68,7 +68,7 @@ Node的http模块包含对HTTP处理的封装。http服务继承自TCP服务器�
 	    res.end('<p>Hello World</p>');
 	}).listen(3000);
 	```
-	运行代码，在浏览器访问http://localhost:300
+	运行代码，在浏览器访问`http://localhost:3000`
 * HTTP客户端(http模块提供了两个函数http.request和http.get，功能是客户端向服务器端发送请求)
 	1. http.request(options,callback)用于发起http请求，接收两个参数，options是一个类似关联数组的对象，里面包含一些请求的参数，callback表示请求后的回调。
 
