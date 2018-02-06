@@ -32,8 +32,8 @@ CSS 预处理器：用一种专门的编程语言，为 CSS 增加了一些编�
 * scss引用的外部文件命名必须以_ 开头,文件名如果以下划线_ 开头的话,Sass会认为该文件是一个引用文件,不会将其编译为css文件。
 
 ### 变量
-* Less的变量声明和调用 用@ 
-* Sass的变量声明和调用 用$
+* Less的变量声明和调用 : 用@ 
+* Sass的变量声明和调用 : 用$
 
 <table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwpg061yj30nw0cwq62.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwo1ksgcj30p80cugo9.jpg"></td></tr></table>
 
@@ -67,8 +67,8 @@ Both : 定义全局变量（在选择器、函数、选择宏...的外面定义�
 	}
 
 ### 条件语句(LESS中称作引导)  
-* Less 可以通过 when 语句判断条件
-* Sass 通过 @if 和 @else 的方式进行条件判断
+* Less : 可以通过 when 语句判断条件
+* Sass : 通过 @if 和 @else 的方式进行条件判断
 
 <table><tr><td>Less</td><td>Sass</td></tr><tr><td rowspan="2"><img width = "400px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9d44q4j30pi0bcacy.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9br31dj30p40iqdjj.jpg"></td></tr></table>
 
@@ -79,26 +79,26 @@ Both : 定义全局变量（在选择器、函数、选择宏...的外面定义�
 <table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "150px" height = "300px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsyxnt0j30fi0qqacf.jpg"></td><td><img width = "150px" height = "300px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsw1rouj30fg0qodi7.jpg"></td></tr></table>
 
 ### 输出格式
-* LESS并没有输出设置，
-* Sass提供4中输出选项：nested, compact, compressed 和 expanded。
+* LESS : 并没有输出设置，
+* Sass : 提供4中输出选项：nested, compact, compressed 和 expanded。
 
 ### Mixins (混合宏)
-* Less支持带参数的混合以及有默认参数值的混合
-* Sass有明确的定义: @Mixin + 宏 调用 : @include + 宏
+* Less : 支持带参数的混合以及有默认参数值的混合
+* Sass : 有明确的定义: @Mixin + 宏 调用 : @include + 宏
 
 <table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxaheqwoj30n00kin0g.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxak5ku1j30my0ketcd.jpg"></td></tr></table>
 
 ### Parametric-Mixins (参数混入)
 混合宏使用中参数使用：
 
-* Less @
-* Sass $ + @mixin + @include
+* Less : @
+* Sass : $ + @mixin + @include
 
 <table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz0u3aj30ng0dwq55.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz7mboj30nm0e0wgz.jpg"></td></tr></table>
 
 ### Placeholder (占位符) 
-* Less Null
-* Sass 可以使用 **%** 作为占位符
+* Less : Null
+* Sass : 可以使用 **%** 作为占位符
 
 ### 运算
 Sass在数字上比Less更专业。它已经可以换算单位了。Sass可以处理无法识别的度量单位并将其输出。这个特性很明显是一个对未来的尝试——证明W3C作出的一些改变。
