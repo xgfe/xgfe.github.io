@@ -25,11 +25,11 @@ CSS 预处理器：用一种专门的编程语言，为 CSS 增加了一些编�
 
 ### 编译环境
 * Sass的安装需要Ruby环境,是在服务端处理的
-* Less是需要引入less.js来处理Less代码输出css到浏览器，也可以在开发环节使用Less，然后编译乘css文件，直接放到项目中,也有Less.app、SimpleLess、CodeKit.app这样的工具，也有在线编译地。
+* Less是需要引入less.js来处理Less代码输出css到浏览器，也可以在开发环节使用Less，然后编译乘css文件，直接放到项目中,也有Less.app、SimpleLess、CodeKit.app这样的工具，也有在线编译的。
 
 ### 引用 @import
 * Less引用外部文件和css中的@import没什么差异。
-* scss引用的外部文件命名必须以_开头,文件名如果以下划线_开头的话,Sass会认为该文件是一个引用文件,不会将其编译为css文件。
+* scss引用的外部文件命名必须以_ 开头,文件名如果以下划线_ 开头的话,Sass会认为该文件是一个引用文件,不会将其编译为css文件。
 
 ### 变量
 * Less的变量声明和调用 用@ 
