@@ -235,7 +235,7 @@ tags:
 
 &nbsp;&nbsp;也就是说，在onLayout阶段，ActiveView主要是缓存第一次加载的数据，以避免因为两次onLayout产生重复数据
 
-##三、屏幕滑动
+## 三、屏幕滑动
 &nbsp;&nbsp;屏幕滑动的处理是写在AbsListView中，触摸监听函数是onTouchEvent（），该函数会针对不同类型的触摸事件进行处理，而在屏幕上滑动事件对应的是ACTION_MOVE,而该case又嵌套一个switch分支，针对TOUCH_MODE处理，我们直接看TOUCH_MODE_SRCOLL,对应手指在屏幕上滑动。在该case内，调用了trackMotionScroll方法，也就是说只要手指在屏幕上滑动，trackMotionScroll就会被调用，trackMotion中核心代码如下：
     
     final boolean down = incrementalDeltaY<0;
@@ -318,7 +318,7 @@ tags:
 * 将得到的view传入setUpChild中以加入ListView中
 
 &nbsp;&nbsp;也就是说，在滑动屏幕时，每当有view从屏幕中移出，就先缓存到scrapViews中，再从ListView中移除该view，而每当有view要滑入屏幕中时，会从scrapViews中取出缓存的view,将其中的数据更新为相应位置的数据，再加入到ListView中，这样的循环使得ListView无论加载多少数据，都是固定数量的view在循环利用，内存都不会增加。
-##四、总结
+## 四、总结
 &nbsp;&nbsp;ListView通过activeView解决两次onLayout过程中数据重复问题，通过scrapView解决滑动过程中view复用问题。无论是onLayout过程还是滑动过程，都是采用attach-detach-attach的操作思路，将两个阶段统一为一个抽象操作，以实现代码的复用。
 
 
