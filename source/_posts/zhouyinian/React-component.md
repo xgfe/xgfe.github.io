@@ -1,4 +1,4 @@
-title: 实现一个React 组建
+title: 实现一个React 组件
 date: 2018.03.04 14:00:00
 categories: zhouyinian
 tags:
@@ -55,7 +55,7 @@ export const BlogList = bloglist => (
 ```
 #### 容器型组件(container)
 
-容器型组件关心组建如何工作，可以为展示组件或其他容器组件提供数据，通常是有状态的。
+容器型组件关心组件如何工作，可以为展示组件或其他容器组件提供数据，通常是有状态的。
 
 ```
 import React,{Component} from "react";
@@ -105,7 +105,7 @@ export default Blog
 
 <img src="//ww1.sinaimg.cn/large/933205a1ly1fp020d7trzj21vi0okdl3.jpg"/>
 
-### 编写一个复选框组建
+### 编写一个复选框组件
 
 最近用了AngularJS 和 Vue, 在写表单的时候基于双向数据绑定，写起来是相当的happy，当然React的单向数据流也有着自己的优点。基于此我们可以对项目中常用的表单控件进行组件的封装，下面以复选框为例。
 
@@ -162,7 +162,7 @@ export default App;
 
 #### 第二步，实现label的可配置
 
-我们会发现复选框的`label`的文字`点击我`是写死的，那么怎么让`label`的动态传入呢
+我们会发现复选框的 `label` 的文字 `点击我` 是写死的，那么怎么让 `label` 的动态传入呢？
 
 ```
 //Checkbox.js
@@ -183,7 +183,7 @@ export default CheckBox
 
 ```
 
-这里要注意`this.props.children` 表示当前组建的所有子节点。`this.props.children` 的值有三种可能：如果当前组件没有子节点，它就是 `undefined` ;如果有一个子节点，数据类型是 `object` ；如果有多个子节点，数据类型就是 `array` 。
+这里要注意`this.props.children` 表示当前组件的所有子节点。`this.props.children` 的值有三种可能：如果当前组件没有子节点，它就是 `undefined` ;如果有一个子节点，数据类型是 `object` ；如果有多个子节点，数据类型就是 `array` 。
 
 ```
 //App.js
@@ -411,7 +411,7 @@ render() {
         };
     }
 ```
-子组件可以通过设置`contextTypes`类型后在`this.content`访问到父组件的`getChildContext`函数返回的对象属性，需要主意的是，getChildContext 指定的传递给子组件的属性需要先通过 childContextTypes 来指定，不然会产生错误。
+子组件可以通过设置`contextTypes`类型后在`this.content`访问到父组件的`getChildContext`函数返回的对象属性，需要注意的是，getChildContext 指定的传递给子组件的属性需要先通过 childContextTypes 来指定，不然会产生错误。
 
 同时，在子组件要把受控状态转移到`this.content`监听的对象中。
 
@@ -471,7 +471,7 @@ export default CheckBox;
 import CheckBox from './components/CheckBox/CheckBox'
 const CheckBoxGroup = CheckBox.Group;
 ```
-最后在App.js 中引入组件
+然后在App.js 中引入
 ```
 //App.js
 import React, { Component } from 'react';
@@ -524,7 +524,7 @@ export default App;
 
 ### 最后
 
-写一个组件很容易，但是写好一个组件就不是那么容易的事了，React也有一些现在比较成熟的UI组件库，比如蚂蚁金服的Antd Design,可以打开看看里面的源码学习一下。
+写一个组件很容易，但是写好一个组件就不是那么容易的事了，React也有一些现在比较成熟的UI组件库，比如蚂蚁金服的Antd Design [传送门](//github.com/ant-design/ant-design/) ，可以打开看看里面的源码学习一下。
 
 
 
