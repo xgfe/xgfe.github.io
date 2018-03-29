@@ -1,10 +1,10 @@
 ---
-title: ios源码解读-对象关联解读
+title:iOS源码解读-对象关联解读
 date: 2018-03-24 20:31:49
-tags: ios 分类
+tags: iOS 分类
 ---
 ### 疑问  
-在iOS开发中，经常为了将代码解耦或者在原有的类的基础上扩展功能，经常会使用类目(Catogery)这一种iOS的api。但是大家都知道分类添加的属性Xcode不会自动的为其生成一个下划线开头的成员变量及set和get方法，如果你没有手动实现这两个方法，直接在外面通过点语法调用这个属性，肯定就挂了，会报”unrecognized selector sent to instance”的错误。假设我们在类目.h中放置一个属性（但是并不生命set方法和get方法）,我们在类目中.m中尝试添加自定义set方法和get方法，我们发现已经可以像正常类一样调用这个类目的属性，这里就说明了@property已经帮我们申明了set和get方法，只是并没有实现。这样我们自己实现了set和get方法，但是没有成员变量来存放我们set的值，这样get的时候也就无法取到set的值，这样肯定是不行的。那我们猜想一下苹果会怎么设计这个set的值存储的方式。
+在iOS开发中，经常为了将代码解耦或者在原有的类的基础上扩展功能，经常会使用类目(Catogery)。但是大家都知道分类添加的属性Xcode不会自动的为其生成一个下划线开头的成员变量及set和get方法，如果你没有手动实现这两个方法，直接在外面通过点语法调用这个属性，肯定就挂了，会报”unrecognized selector sent to instance”的错误。假设我们在类目.h中放置一个属性（但是并不生命set方法和get方法）,我们在类目中.m中尝试添加自定义set方法和get方法，我们发现已经可以像正常类一样调用这个类目的属性，这里就说明了@property已经帮我们申明了set和get方法，只是并没有实现。这样我们自己实现了set和get方法，但是没有成员变量来存放我们set的值，这样get的时候也就无法取到set的值，这样肯定是不行的。那我们猜想一下苹果会怎么设计这个set的值存储的方式。
 
 ### 猜想
 在没有看到苹果的实现之前，我想的是将set的值存放在一个单例下的变量中，这样在get的时候去取这个单例中被set的变量。但是这会产生一个问题，那就是如果我们在一个工程中创建了很多类目，事实上，在开发的过程中类目文件很多也是很正常的。那么我们可能需要创建单例来保存这些类目下的属性，也许会用一个全局的单例，或者是每个类目创建一个单例来存储。这是我的想法，那我们看看苹果的做法究竟是什么。
@@ -30,7 +30,7 @@ typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
 ```objc
 void _object_set_associative_reference(id object, void *key, id value, uintptr_t policy) {
     // retain the new value (if any) outside the lock.
-    ObjcAssociation old_association(0, nil); //构造了一个表示旧值得对象
+    ObjcAssociation old_association(0, nil); //构造了一个表示旧值的对象
     id new_value = value ? acquireValue(value, policy) : nil;//根据传进来的值和策略产生一个新值
     {
         AssociationsManager manager;//这是管理关联的单例
