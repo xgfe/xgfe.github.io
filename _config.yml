@@ -73,6 +73,8 @@ deploy:
 - type: git
   repo: https://github.com/xgfe/xgfe.github.io
   branch: master
+  name: lulutia
+  email: nowillnowill@gmail.com
   message: blog publish
 # - type: git
 #   repo: https://git.coding.net/ffe/ffe.git
