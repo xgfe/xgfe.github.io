@@ -14,13 +14,13 @@ tags:
 <!--more-->
 ## 一、routable-ios 是什么？可以用来做什么？与之类似的框架还有哪些？
 * routable-ios 是一个路由框架，由两个文件四个类组成，其中核心的类就一个。
-* 可以很方便的实现 iOS 中 ViewController 之间的跳转。跳转方式也可以灵活的设置，后面具体会讲到。
+* 可以很方便的实现 iOS 中`UIViewController`之间的跳转。跳转方式也可以灵活的设置，后面具体会讲到。
 * 类似的框架还有 [ABRouter](https://github.com/aaronbrethorst/ABRouter) & [HHRouter](https://github.com/lightory/HHRouter)。后期的文章也会对 HHRouter 做介绍。
 
 ## 二、routable-ios 中类的关系
-&nbsp;&nbsp;了解类与类之间的关系，有助于理解整个框架。`Routable` 继承自 `UPRouter`，主要的功能都在 `UPRouter` 类中，路由主要的功能其实就两个：
+&nbsp;&nbsp;了解类与类之间的关系，有助于理解整个框架。`Routable`继承自`UPRouter`，主要的功能都在`UPRouter`类中，路由主要的功能其实就两个：
 
-* 注册希望路由跳转的类及 `URL`
+* 注册希望路由跳转的类及`URL`
 * 进行跳转
 
 
@@ -30,13 +30,13 @@ tags:
 ## 三、routable-ios 如何使用
 * 将`routable-ios`导入项目
 * 注册路由：
-```
-    [[Routable sharedRouter] map:@"user/:name/:age" toController:[UserController class]];
-```
+	```
+	[[Routable sharedRouter] map:@"user/:name/:age" toController:[UserController class]];
+	```
 * 调用路由进行跳转：
-```
-    [[Routable sharedRouter] open:@"user/chenyu/28"];
-```
+	```
+	[[Routable sharedRouter] open:@"user/chenyu/28"];
+	```
 * 在 VC 中获取传递的参数
 
 	```
@@ -57,15 +57,15 @@ tags:
 ## 四、routable-ios 中的核心类
 &nbsp;&nbsp;核心类分别有：`Routable`，`UPRouterOptions`，`RouterParams`，`UPRouter`
 ### 1.`Routable`
-&nbsp;&nbsp;`Routable` 继承自 `UPRouter`
+&nbsp;&nbsp;`Routable`继承自`UPRouter`
 
 ```
 + (instancetype)sharedRouter; //提供单例方法，用来创建路由类
 + (instancetype)newRouter;     //另一种创建路由的方式，一般不推荐，不是单例。
 ```
 
-### 2. `UPRouterOptions`
-&nbsp;&nbsp;`UPRouterOptions` 继承自 `NSObject`。首先看一下这个类提供的一些属性，我们就知道这个类是做什么的了。
+### 2.`UPRouterOptions`
+&nbsp;&nbsp;`UPRouterOptions`继承自`NSObject`。首先看一下这个类提供的一些属性，我们就知道这个类是做什么的了。
 
 ```
 @property (readwrite, nonatomic, getter=isModal) BOOL modal;  //是否是模态视图
@@ -123,10 +123,10 @@ tags:
 	                                          isModal:YES];
 	}
 	```
-* 剩余的基本就是一些快捷的方法及一些 `setters` 方法，可以查看源码。
+* 剩余的基本就是一些快捷的方法及一些`setters`方法，可以查看源码。
 
-### 3. `RouterParams `
-&nbsp;&nbsp;`RouterParams` 继承自 `NSObject`。`RouterParams`并没有在.h 文件中做声明，这个类只在 `Routable` 和 `UPRouter` 中的实现中才用到，而这三个类都在一个文件中，所以也没有必要出现在 .h 文件中。
+### 3.`RouterParams`
+&nbsp;&nbsp;`RouterParams`继承自`NSObject`。`RouterParams`并没有在.h 文件中做声明，这个类只在`Routable`和`UPRouter`中的实现中才用到，而这三个类都在一个文件中，所以也没有必要出现在 .h 文件中。
 首先看一下`RouterParams`的声明：
 
 ```
@@ -141,14 +141,14 @@ tags:
 ```
 &nbsp;&nbsp;这个类的出现，主要作用是将跳转时匹配好的所有内容存起来，缓存到另一个字典中，未来再次跳转的时候，直接可以拿出来用，你也许会问，我们的路由不是在一个字典里吗，也可以直接拿出来用，为什么还要缓存，后续到源代码的地方会细说，为什么要缓存，为什么跳转的时候不是直接去 map 中寻找。
             
-### 4. `UPRouter `
+### 4.`UPRouter`
 &nbsp;&nbsp;`UPRouter`继承自`NSObject`，首先看一下类的声明，删除了很多注释。
 
 ```
 @interface UPRouter : NSObject
 
 /**
- The `UINavigationController` instance which mapped `UIViewController`s will be pushed onto.
+ The UINavigationController instance which mapped UIViewControllers will be pushed onto.
  */
 @property (readwrite, nonatomic, strong) UINavigationController *navigationController;
 
@@ -186,7 +186,7 @@ tags:
 @end
 ```
 
-注册路由比较简单，就是将传入的 URL 作为 key，将 Class 作为值存入已初始化的 routes 中。
+&nbsp;&nbsp;注册路由比较简单，就是将传入的`URL`作为 key，将`Class`作为值存入已初始化的`routes`中。
 
 ```
 - (void)map:(NSString *)format toController:(Class)controllerClass {
@@ -210,7 +210,7 @@ tags:
 
 ```
 
-路由跳转做的事情比较多，一共有三个比较重要的方法，会详细看，首先看路由跳转的方法
+&nbsp;&nbsp;路由跳转做的事情比较多，一共有三个比较重要的方法，会详细看，首先看路由跳转的方法
 
 ```
 - (void)open:(NSString *)url
@@ -233,12 +233,12 @@ tags:
   //controllerForRouterParams 这个方法比较简单，打断点进去看看就 OK 了。
   UIViewController *controller = [self controllerForRouterParams:params];
   
-  //判断当前是否有 presented 的 ViewController，有的话要 dismiss，因为接下来要跳转或者 presentViewController
+  //判断当前是否有 presented 的 UIViewController，有的话要 dismiss，因为接下来要跳转或者 presentViewController
   if (self.navigationController.presentedViewController) {
     [self.navigationController dismissViewControllerAnimated:animated completion:nil];
   }
   
-  //是否是以模态的方式弹出 ViewController
+  //是否是以模态的方式弹出 UIViewController
   if ([options isModal]) {
     if ([controller.class isSubclassOfClass:UINavigationController.class]) {
       [self.navigationController presentViewController:controller
@@ -259,13 +259,13 @@ tags:
     [self.navigationController setViewControllers:@[controller] animated:animated];
   }
   else {
-    //直接 push 一个 ViewController
+    //直接 push 一个 UIViewController
     [self.navigationController pushViewController:controller animated:animated];
   }
 }
 ```
 
-获取路由跳转相关的参数方法（删除了一些容错处理的代码）：
+&nbsp;&nbsp;获取路由跳转相关的参数方法（删除了一些容错处理的代码）：
 
 ```
 - (RouterParams *)routerParamsForUrl:(NSString *)url extraParams: (NSDictionary *)extraParams {
@@ -351,12 +351,11 @@ tags:
 ```
 &nbsp;&nbsp;将路由跳转最重要的三个方法分析了一下，在重要的代码前都加上了注释。接下来总结一下整体的思路。
 ## 五、总结
-&nbsp;&nbsp;注册的时候，比较简单，将我们的路径和 VC 传递进去，保存在字典中就可以了。
-跳转的时候，做的判断就比较多。首先判断缓存中是否有这个路径，如果有的话，直接跳转，在注释中也详细说明了为什么要缓存。如果没有的话，则去枚举这个路由字典，并组装数据，存入缓存中。
+&nbsp;&nbsp;注册的时候，比较简单，将我们的路径和 VC 传递进去，保存在字典中就可以了。跳转的时候，做的判断就比较多。首先判断缓存中是否有这个路径，如果有的话，直接跳转，在注释中也详细说明了为什么要缓存。如果没有的话，则去枚举这个路由字典，并组装数据，存入缓存中。
 
 &nbsp;&nbsp;任何框架，都会有不完美的地方，没错，这里要说说了。如果需要给你跳转的 VC 传递数据，那么需要你的 VC 实现这个方法：`initWithRouterParams:params`，通过`params`去获取你的值。其实在这里也可以通过获取这个 VC 的所有属性，在创建这个 VC 的时候，通过 KVC 的方式把值赋给这个 VC 的属性。
 
-&nbsp;&nbsp;另一种实现办法是扩展 `UIViewController`，在这里可以这样做：
+&nbsp;&nbsp;另一种实现办法是扩展`UIViewController`，在这里可以这样做：
 
 ```
 @interface UIViewController (Routable)
@@ -382,7 +381,7 @@ static char kAssociatedParamsObjectKey;
 @end
 
 ```
-&nbsp;&nbsp;这样每个 `ViewController` 中就不用实现固定的方法了，在使用的时候，直接调用 `self. params` 就可以拿到这个字典了。
+&nbsp;&nbsp;这样每个`UIViewController`中就不用实现固定的方法了，在使用的时候，直接调用`self. params`就可以拿到这个字典了。
 
 ## 六、建议
 &nbsp;&nbsp;在`routable-ios`中给出的注册路由的方式是，一个 VC 一个 VC 的注册。可以将需要路由跳转的 VC 配置到 plist 文件中，写一个方法，读取 plist 文件，循环注册即可，在`application:didFinishLaunchingWithOptions:`方法中，调用注册路由的方法即可。
