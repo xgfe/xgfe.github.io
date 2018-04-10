@@ -31,11 +31,11 @@ tags:
 * 将`routable-ios`导入项目
 * 注册路由：
 	```
-	    [[Routable sharedRouter] map:@"user/:name/:age" toController:[UserController class]];
+	[[Routable sharedRouter] map:@"user/:name/:age" toController:[UserController class]];
 	```
 * 调用路由进行跳转：
 	```
-	    [[Routable sharedRouter] open:@"user/chenyu/28"];
+	[[Routable sharedRouter] open:@"user/chenyu/28"];
 	```
 * 在 VC 中获取传递的参数
 
