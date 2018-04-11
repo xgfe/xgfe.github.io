@@ -210,7 +210,7 @@ tags:
 
 ```
 
-&nbsp;&nbsp;路由跳转做的事情比较多，一共有三个比较重要的方法，会详细看，首先看路由跳转的方法
+&nbsp;&nbsp;路由跳转一共有三个比较重要的方法，首先看`open:animated:extraParams:`方法：
 
 ```
 - (void)open:(NSString *)url
@@ -381,7 +381,7 @@ static char kAssociatedParamsObjectKey;
 @end
 
 ```
-&nbsp;&nbsp;这样每个`UIViewController`中就不用实现固定的方法了，在使用的时候，直接调用`self. params`就可以拿到这个字典了。
+&nbsp;&nbsp;这样每个`UIViewController`中就不用实现固定的方法了，在使用的时候，直接调用`self.params`就可以拿到这个字典了。
 
 ## 六、建议
 &nbsp;&nbsp;在`routable-ios`中给出的注册路由的方式是，一个 VC 一个 VC 的注册。可以将需要路由跳转的 VC 配置到 plist 文件中，写一个方法，读取 plist 文件，循环注册即可，在`application:didFinishLaunchingWithOptions:`方法中，调用注册路由的方法即可。
