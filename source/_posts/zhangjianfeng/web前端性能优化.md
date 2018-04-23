@@ -34,12 +34,41 @@ DNS解析时间可能导致大量用户感知延迟，DNS解析所需的时间�
 ```javascript
     <link rel="dns-prefetch" href="hostname" />
 ```
+### 预加载
+预加载是一种浏览器机制，使用浏览器空闲时间来预先下载/加载用户接下来很可能会浏览的页面/资源。页面提供给浏览器需要预加载的集合。浏览器载入当前页面完成后，将会在后台下载需要预加载的页面并添加到缓存中。当用户访问某个预加载的链接时，如果从缓存命中,页面就得以快速呈现。 实现方式：
+```javascript
+// 页面，可以使用绝对或者相对路径
+<link rel="prefetch" href="page2.html" /> 
+// 图片，也可以是其他类型的文件
+<link rel="prefetch" href="sprite.png" /> 
+```
+从上面的HTML代码可以看出，预加载使用 <link> 标签，并指定 rel="prefetch" 属性，而href属性就是需要预加载的文件路径。
 ### 懒加载
 
-一个页面有很多图片，而首屏出现的图片大概就一两张，如果一次性把所有图片都加载出来，不仅影响页面渲染速度，还浪费带宽。这也就是们通常所说的首屏加载，技术上现实其中要用的技术就是图片懒加载--到可视区域再加载。
+一个页面有很多图片，而首屏出现的图片大概就一两张，如果一次性把所有图片都加载出来，不仅影响页面渲染速度，还浪费带宽。这也就是们通常所说的首屏加载，技术上现实其中要用的技术就是图片懒加载--到可视区域再加载。简单实现如下：
+```javascript
+function lazyload () {
+    // 获取所有要进行懒加载的图片
+    var eles = document.querySelectorAll('img[data-original][lazyload]');
+    var viewHeight = window.innerHeight;
+    eles.forEach(function (item, index) {
+        var rect;
+        if (item.dataset.original === '') {
+            return;
+        }
+        rect = item.getBoundingClientRect();
+        // 图片一进入可视区，动态加载
+        if (rect.bottom >= 0 && rect.top < viewHeight) {
+            item.src = item.dataset.original;
+            item.removeAttribute('data-original');
+            item.removeAttribute('lazyload');
+        }
+    });
+}
+```
 ### CSS Sprites
 
-合并 CSS图片，减少请求数的又一个好办法。
+合并 CSS图片，也就是通过将多个图片或者icon放在一张图片中，利用css的background-position属性控制每个图片或icon的位置。
 ## 客户端渲染
 
 客户端优化 dom、css 和 js 的代码和加载顺序
@@ -149,14 +178,25 @@ el.style.cssText += "; left: " + left + "px; top: " + top + "px;";
     2. 一次性操作DOM
     3. 多做缓存
     4. 注意节流，避免频繁触发滚动事件
+
     ```javascript
-    var throttle = function (fn, delay) {
-        var timer = null;
+    var throttle = function (fn, threshhold = 200) {
+        var last;
+        var timer;
         return function () {
-            clearTimeout(timer);
-            timer = setTimeout(function() {
-                fn();
-            },delay);
+            var context = this;
+            var args = arguments;
+            var now = +new Date();
+            if (last && now < last + threshhold) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    last = now;
+                    fn.apply(context, args);
+                }, threshhold);
+            } else {
+                last = now;
+                fn.apply(context, args);
+            }
         };
     };
     ```
