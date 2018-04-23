@@ -52,12 +52,12 @@ CSS 预处理器：用一种专门的编程语言，为 CSS 增加了一些编�
 * Less的变量声明和调用 ： 用@ 
 * Sass的变量声明和调用 ： 用$
 
-<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntwpg061yj30nw0cwq62.jpg"></td><td><img width = "300px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntwo1ksgcj30p80cugo9.jpg"></td></tr></table>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwpg061yj30nw0cwq62.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwo1ksgcj30p80cugo9.jpg"></td></tr></table>
 
 ### 局部变量和全局变量
 Both ： 定义全局变量（在选择器、函数、选择宏...的外面定义的变量为全局变量）
 
-<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "150px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntwzi2wicj30pm0f4whn.jpg"></td><td><img width = "300px" height = "150px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntwzh8h1zj30ps0fgq67.jpg"></td></tr></table>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "150px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwzi2wicj30pm0f4whn.jpg"></td><td><img width = "300px" height = "150px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwzh8h1zj30ps0fgq67.jpg"></td></tr></table>
 
 ### 工具库
 * Sass工具库
@@ -95,13 +95,13 @@ Both ： 定义全局变量（在选择器、函数、选择宏...的外面定�
 * Less ： 可以通过 when 语句判断条件
 * Sass ： 通过 @if 和 @else 的方式进行条件判断
 
-<table><tr><td>Less</td><td>Sass</td></tr><tr><td rowspan="2"><img width = "400px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fnty9d44q4j30pi0bcacy.jpg"></td><td><img width = "300px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fnty9br31dj30p40iqdjj.jpg"></td></tr></table>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td rowspan="2"><img width = "400px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9d44q4j30pi0bcacy.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9br31dj30p40iqdjj.jpg"></td></tr></table>
 
 ### 作用域
 * Less的作用域是按照代码的从上至下的顺序进行的
 * Sass的作用域是按照最后一次定义影响全局的
 
-<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "150px" height = "300px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntwsyxnt0j30fi0qqacf.jpg"></td><td><img width = "150px" height = "300px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntwsw1rouj30fg0qodi7.jpg"></td></tr></table>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "150px" height = "300px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsyxnt0j30fi0qqacf.jpg"></td><td><img width = "150px" height = "300px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsw1rouj30fg0qodi7.jpg"></td></tr></table>
 
 ### 输出格式
 * LESS ： 并没有输出设置
@@ -111,7 +111,7 @@ Both ： 定义全局变量（在选择器、函数、选择宏...的外面定�
 * Less ： 支持带参数的混合以及有默认参数值的混合
 * Sass ： 有明确的定义： @Mixin + 宏 调用 ： @include + 宏
 
-<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntxaheqwoj30n00kin0g.jpg"></td><td><img width = "300px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntxak5ku1j30my0ketcd.jpg"></td></tr></table>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxaheqwoj30n00kin0g.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxak5ku1j30my0ketcd.jpg"></td></tr></table>
 
 ### Parametric-Mixins (参数混入)
 混合宏使用中参数使用：
@@ -119,7 +119,7 @@ Both ： 定义全局变量（在选择器、函数、选择宏...的外面定�
 * Less ： @
 * Sass ： $ + @mixin + @include
 
-<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntxcz0u3aj30ng0dwq55.jpg"></td><td><img width = "300px" height = "100px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntxcz7mboj30nm0e0wgz.jpg"></td></tr></table>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz0u3aj30ng0dwq55.jpg"></td><td><img width = "300px" height = "100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz7mboj30nm0e0wgz.jpg"></td></tr></table>
 
 ### Placeholder (占位符) 
 * Less ： Null
@@ -135,7 +135,7 @@ Sass在数字上比Less更专业。它已经可以换算单位了。Sass可以�
 * Sass定义的选择器可以通过继承的方式使用
 * Less没有这个功能
 
-<table><tr><td>Less</td><td>Sass</td></tr><tr><td>Null</td><td><img width = "300px" height = "150px" src="https：//ws1.sinaimg.cn/large/0073X7Nbly1fntxsqoiopj30p60kmn0e.jpg"></td></tr></table>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td>Null</td><td><img width = "300px" height = "150px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxsqoiopj30p60kmn0e.jpg"></td></tr></table>
 
 ## 总结
 ### 开发中如何选择使用Less还是Sass?
