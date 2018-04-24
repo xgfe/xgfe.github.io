@@ -72,7 +72,7 @@ Both ： 定义全局变量（在选择器、函数、选择宏...的外面定�
 			* 4、Compass 带有大量混合宏，可以忘记浏览器前缀，节省大量时间。
 			* 5、嵌套规则，使用嵌套，减少代码量 
 			* 6、设备查询，media queries，一样是使用混合宏，减少代码量，节省开发时间 
-			* 7、自动压缩 CSS 代码，再次节省开发时间，提高效益。
+			* 7、自动压缩 CSS 代码，再次节省开发时间，提高效益
 		* 只要先import “compass/_**CSS3**_”， 之後就可以使用所有 CSS3 的內容，如border-radius、box-shadow、gradient…等，使用方式是 @include ，其实是 compass 帮你写好了 @mixin ，你只要会用就好，而compass厉害的就是会同时帮你产生各個浏览器相对应的CSS。
 		* 在 compass 新建的项目目录下，新建 images 文件夹。 在 images 文件夹中新建一个文件夹用于放置要合成的图片。 在项目的 Sass 文件夹下新建一个文件。就能看到在 images 文件夹中生成了一个_**雪碧图**_。
 	* **SCUT**。SCUT 是提供给前端开发者的 Sass 工具集，能帮助提高对一般样式代码模式的执（implementations of common style-code patterns）。Scut 工具集可以帮助用户避免重复写代码，扩大代码的可重用性。Scut 工具集可以处理模式（patterns）遇到的下列问题：pattern 是不直观的。pattern 需要简写 pattern 涉及到一些重要的最佳实践 pattern 是极为常见的，（至少）有点讨厌。Scut 工具集的目标是实现可重用性的最大化（maximizies reusabilit）。
