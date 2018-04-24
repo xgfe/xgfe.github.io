@@ -1,7 +1,7 @@
-title： Less Vs Sass
-date： 2018-01-26
-categories： zhoushiqi
-tags： 
+title: Less Vs Sass
+date: 2018-01-26
+categories: zhoushiqi
+tags: 
 - CSS
 - Less
 - Sass
