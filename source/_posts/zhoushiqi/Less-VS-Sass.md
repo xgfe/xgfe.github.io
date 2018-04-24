@@ -84,7 +84,7 @@ Both ： 定义全局变量（在选择器、函数、选择宏...的外面定�
 			* 4、强大的文件右键功能　
 			* 5、错误提示 
 			* 6、跨平台　
-			* 7、免费且负责。
+			* 7、免费且负责
 * Less工具库
 	* 有UI组件库**Bootstrap**，Bootstrap 是 web前端开发中一个比较有名的前端UI组件库，Bootstrap的样式文件部分源码就是采用 Less 语法编写。
 	* Less工具库**EST**。 EST（EFE Styling Toolkit）是一个基于Less的样式工具库，帮助您更轻松地书写 Less 代码。EST 提供了一系列方便快捷的 mixin，只在调用时才输出代码。该项目由 EFE 团队开发而来，项目托管在 [GitHub](https：//github.com/ecomfe/est/) 上。EST不希望提供直接给HTML调用的类名，用「样式类」污染HTML代码的语义。当然您也可以根据自己的项目需求基于 EST 搭建样式类库，提供类名接口来进行快速开发。
