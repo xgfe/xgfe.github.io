@@ -75,7 +75,7 @@ Both ： 定义全局变量（在选择器、函数、选择宏...的外面定�
 			* 7、自动压缩 CSS 代码，再次节省开发时间，提高效益
 		* 只要先import “compass/_**CSS3**_”， 之後就可以使用所有 CSS3 的內容，如border-radius、box-shadow、gradient…等，使用方式是 @include ，其实是 compass 帮你写好了 @mixin ，你只要会用就好，而compass厉害的就是会同时帮你产生各個浏览器相对应的CSS。
 		* 在 compass 新建的项目目录下，新建 images 文件夹。 在 images 文件夹中新建一个文件夹用于放置要合成的图片。 在项目的 Sass 文件夹下新建一个文件。就能看到在 images 文件夹中生成了一个_**雪碧图**_。
-	* **SCUT**。SCUT 是提供给前端开发者的 Sass 工具集，能帮助提高对一般样式代码模式的执（implementations of common style-code patterns）。Scut 工具集可以帮助用户避免重复写代码，扩大代码的可重用性。Scut 工具集可以处理模式（patterns）遇到的下列问题：pattern 是不直观的。pattern 需要简写 pattern 涉及到一些重要的最佳实践 pattern 是极为常见的，（至少）有点讨厌。Scut 工具集的目标是实现可重用性的最大化（maximizies reusabilit）。
+	* **SCUT**。SCUT 是提供给前端开发者的 Sass 工具集，能帮助提高对一般样式代码模式的执行（implementations of common style-code patterns）。Scut 工具集可以帮助用户避免重复写代码，扩大代码的可重用性。Scut 工具集可以处理模式（patterns）遇到的下列问题：pattern 是不直观的。pattern 需要简写 pattern 涉及到一些重要的最佳实践 pattern 是极为常见的，（至少）有点讨厌。Scut 工具集的目标是实现可重用性的最大化（maximizies reusabilit）。
 	* **Koala**。Sass 和 Less 不一样，需要在本地编译成 CSS 才能看到效果，所以有一个很强大的_**编译工具**_才是重中之重。如果你不会安装 ruby ，更是没听过它;如果你安装了 Ruby，但是不会用它，那么就果断用 Koala 吧。
 		* 特点：
 			* 1、多语言支持 	
@@ -123,7 +123,7 @@ Both ： 定义全局变量（在选择器、函数、选择宏...的外面定�
 
 ### 输出格式
 * Less ：并没有输出设置
-* Sass ：提供4中输出选项：nested，compact，compressed 和 expanded
+* Sass ：提供4种输出选项：nested，compact，compressed 和 expanded
 
 ### Mixins (混合宏)
 * Less ：支持带参数的混合以及有默认参数值的混合
@@ -158,7 +158,7 @@ Sass 在数字上比 Less 更专业。它已经可以换算单位了。Sass 可�
 ## 总结
 ### 开发中如何选择使用Less还是Sass?
 * **相同点**：两者都是 CSS 预处理器，都具有相同的功能，可以帮助我们快速编译代码，帮助我们更好的维护我们的样式代码或者说维护项目吧。
-* **不同点**：Less 相对清晰明了，易于上手，对编译环境要求比较宽松。Sass 的功能比 Less 强大，是下一个层次的选择，适合稍微有经验的前端开发者的工具。
+* **不同点**：Less 相对清晰明了，易于上手，对编译环境要求比较宽松。Sass 的功能比 Less 强大，是下一个层次的选择，适合稍微有经验的前端开发者。
 * 根据业务线需求、组内成员情况，进行约定。
 * 按需使用，随习惯所为！
 
