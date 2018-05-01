@@ -7,7 +7,7 @@ tags:
 ---
 
 React技术栈由facebook团队提出，由于性能优势明显，很快获得了广泛关注和大规模的使用，如今发展已经非常成熟。
-其实基于react的渲染远离可以实现很多有意思的功能，例如实现一个React的国际化工具。(React v16.3)
+基于react的渲染原理可以实现很多有意思的功能，例如实现一个React的国际化工具。(React v16.3)
 
 <!--more-->
 
@@ -27,7 +27,7 @@ React技术栈由facebook团队提出，由于性能优势明显，很快获得�
 缺点:翻译表一旦更新，需要重新打包发布，本地要维护大量的翻译表文件，过于繁琐
 2.动态翻译
 优点:灵活，翻译表放进cdn一句sql可以更新，可操作性强
-缺点:暂无
+缺点:兼容性有待考察，对于不同的项目结构要设置特有的配置
 3.多版本
 优点:产生的打包文件最小，无需配置
 缺点:修改过程复杂，应用场景不广泛
@@ -88,7 +88,6 @@ onRender(process<Object>): React.ReactElement<any>;
 afterRender(): void;
 ```
 
-
 ## 四、实现
 
 ### 4.1 translate函数
@@ -119,7 +118,9 @@ export default {
 ### 4.2 TranslateWrapper类
 
 这里将翻译的语言类型放入Context保存，被TranslateWrapper包裹的对象将被翻译
-显然继承自React.Component后，得到了$$typeof,props,ref等属性，通过简单的逻辑判断将string类型数据取出对照翻译表进行翻译
+可以看到一个ReactDom，包含了$$typeof,props,ref等属性，将其children对象取到，并通过相应逻辑判断对照翻译表进行翻译
+其中如果children类型时string，则代表没有其他子节点，可以直接翻译返回
+类型为其他则递归，直到所有返回值均为string类型
 
 ```
 import React,{Component} from 'react';
@@ -163,7 +164,8 @@ export default props => (
 ```
 ## 五、改写React.createElement
 
-与React.Component不同 ...args这里得到了ReactDom的另一种格式的属性 形如 {$$typeof,props || null,...children}
+与React.Component不同 ...args这里得到了ReactDom的另一种属性格式 形如 $$typeof,props,... 或 null,...children,...
+这里仍然沿用TranslateWrapper类的处理思路，translate函数与之前相同
 ```
 const createElement = React.createElement;
 React.createElement = (...args) => {
@@ -183,11 +185,11 @@ React.createElement = (...args) => {
 
 ## 六、兼容性
 
-如果想在项目中使用，只需将这个工具放到工程的入口即可
+如果想在项目中使用，秩序按如下方式导入即可即可
 ```
 import React,{Component,PropTypes} from 'react';
 import ReactDom from 'react-dom';
-import './translate.js';
+import './translate.js'; // 改写React.createElement
 import TranslateWrapper from './translateWrapper';
 import {Provider} from './context';
 
@@ -198,11 +200,12 @@ class App extends Component {
 
     render(){
         return <Provider value="en">
-                <div data-translate>
+                你好
+                <div data-translate>
                     你好
                     <TranslateWrapper>
                         <span>你好
-                            <span>你好</span>
+                            <span>你好React</span>
                         </span>
                     </TranslateWrapper>
                 </div>
@@ -211,11 +214,18 @@ class App extends Component {
 }
 
 ReactDom.render(<App/>,document.body.appendChild(document.createElement('div')));
+
+//翻译格式：
+//export default {
+//    '你好':'Hello'
+//}
+
+//结果：你好HelloHello你好React
 ```
 
 正常来说兼容性还是不错的
 但由于目前出现了很多前端流行的组件库，ant-design，.element of react
-寄希望于无缝兼容不如提供中间件接口可以让兄弟们自行过滤 o(╥﹏╥)o
+寄希望于无缝兼容 不如提供中间件接口来让使用者自行配置 o(╥﹏╥)o
 
 ### 6.1 ant-design
 例如，在ant-design组件库中，input的placeholder属性，如不进行检测，将不会被翻译
