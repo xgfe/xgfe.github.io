@@ -6,8 +6,8 @@ tags:
     - 国际化
 ---
 
-React技术栈由facebook团队提出，由于性能优势明显，很快获得了广泛关注和大规模的使用，如今发展已经非常成熟。
-基于react的渲染原理可以实现很多有意思的功能，例如实现一个React的国际化工具。(React v16.3)
+React最早由Facebook的软件工程师Jordan Walke创建，它在2011年首次部署在Facebook的新闻源中，由于其性能优势明显，很快获得了广泛关注和大规模的使用，如今发展已经非常成熟。
+基于React的渲染原理可以实现很多有意思的功能，例如实现一个React的国际化工具。(React v16.3)
 
 <!--more-->
 
@@ -18,7 +18,7 @@ React技术栈由facebook团队提出，由于性能优势明显，很快获得�
 2.动态翻译
 3.多版本
 
-比较流行的为webpack团队的webpack-i18-plugin和yahoo团队的react-intl
+比较流行的为webpack团队的webpack-i18-plugin和yahoo团队的React-intl
 
 ### 1.2 对比
 
