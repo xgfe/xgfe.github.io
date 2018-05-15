@@ -37,7 +37,7 @@ React最早由Facebook的软件工程师Jordan Walke创建，它在2011年首次
 ### 3.1 翻译语法
 
 语法分为批量翻译或指定单句不翻译
-具体通过Provider类以及属性no-translate实现
+具体通过``<Provider/>``类以及属性no-translate实现
 ```
 // 批量翻译
 <Provider value={{
@@ -78,13 +78,13 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
-基于这个想法，通过设置no-translate属性，<Provider/>，并在createElement中判断，就知道哪里的文字需要翻译，也知道要翻译成哪种语言了（第一步）！
+基于这个想法，通过设置no-translate属性，``<Provider/>``，并在createElement中判断，就知道哪里的文字需要翻译，也知道要翻译成哪种语言了（第一步）！
 (第二步比较简单，暂时忽略...)
 再定义一个translate函数，接受文字，语言包和翻译表，返回翻译后的文字（第三步）
 
 下面的流程图展示了整体的思路：
 
-![](/images/process.png)
+![](http://vfile.meituan.net/xgfe/2f1f2dac01553645441f63da880b712937156.png)
 
 
 ## 四、实现
@@ -94,7 +94,11 @@ ReactDOM.render(
 ### 4.1 定义一个languageMap
 
 languageMap一定得是单例模式，方便全局调用
-代码放在./core/languageMap.js
+```
+// file: ./core/languageMap.js
+const translateMap = {};
+export default translateMap;
+```
 
 ### 4.2 再写一个translate函数
 
@@ -107,6 +111,7 @@ middleware作为中间件，可以操作翻译前后的字段，可以解决一�
 
 代码如下：
 ```
+// file: ./core/translate.js
 const middleware = {
   merge: function(obj) {
     Object.keys(obj).forEach(function(key) {
@@ -136,7 +141,6 @@ const translate = (content, languageMap, language) => {
   return content;
 };
 ```
-代码放在./core/translate.js中以备使用
 
 ### 4.3 再创建translateClass
 
@@ -148,6 +152,7 @@ export const { Provider, Consumer } = React.createContext();
 ```
 在创建一个./core/translateClass
 ```
+// file: ./core/translateClass.jsx
 import React from "react";
 import { translate } from "./translate";
 import { Consumer } from "./context";
@@ -173,22 +178,21 @@ class Translate extends React.Component {
 
 export default Translate;
 ```
-代码放在./core/translateClass.jsx中
 
 ### 4.4 改写createElement
 
 有了之前的铺垫，可以很快的实现我们自己的createElement
 ```
+// file: ./core/translateTag.jsx
 import React, { Component } from "react";
-import { translate } from "./translate";
 import Translate from "./translateClass";
-import { Consumer } from "./context";
 
 const createElement = React.createElement;
 
 React.createElement = (...args) => {
   let children = args.slice(2);
 
+  // ① console.log(args)
   children = children.map(child => {
     if (typeof args[0] === "string" && typeof child === "string") {
       if (args[1] && args[1]["no-translate"]) {
@@ -204,7 +208,7 @@ React.createElement = (...args) => {
 };
 ```
 
-可以看到一个ReactDom，包含了$$typeof,props,ref等属性，将其children获取到，进行如下判断：
+在标志①出打印args可以看到ReactDom的结构，它包含了$$typeof,props,ref,children等属性，$$typeof代表组件类型，props是属性，children是子节点的若干元素，将其children获取到，进行如下判断：
 1. 如果类型是Object就不做任何操作
 2. 如果child类型是字符串就进行翻译
 3. 如带有no-translate属性将不对其进行翻译
@@ -212,8 +216,7 @@ React.createElement = (...args) => {
 通过改变Provider的位置，可以设置不同区块的context，这样可以改变不同区块的翻译表和语言类型
 
 
-代码放在./core/translateTag.jsx
-如上，translate工具类基本完成
+到这里，translate工具类基本完成
 
 ## 五、进行测试
 
@@ -223,17 +226,8 @@ import ReactDom from "react-dom";
 import languageMap from "./core/languageMap";
 import { translate, middleware } from "./core/translate";
 import { Provider } from "./core/context";
+// 全局更新createElement
 import "./core/translateTag.jsx";
-
-// 控制字符反转 打开注释可以看到
-middleware.merge({
-  // afterRender: content => {
-  //   return content
-  //     .split("")
-  //     .reverse()
-  //     .join("");
-  // }
-});
 
 const styles = {
   fontFamily: "sans-serif",
@@ -250,26 +244,14 @@ class App extends Component {
   }
 
   fetchTranslateList() {
-    let flag = 0;
-
-    setInterval(() => {
-      if (flag === 0) {
-        languageMap["en"] = {};
-        languageMap["france"] = {};
-        flag = 1;
-      } else {
-        languageMap["en"] = {
-          你好: "Hello",
-          国际化: "intl"
-        };
-        languageMap["france"] = {
-          你好: "Bonjour",
-          国际化: "intl"
-        };
-        flag = 0;
-      }
-      this.setState({});
-    }, 1000);
+    languageMap["en"] = {
+      你好: "Hello",
+      国际化: "intl"
+    };
+    languageMap["france"] = {
+      你好: "Bonjour",
+      国际化: "intl"
+    };
   }
 
   render() {
@@ -302,14 +284,14 @@ ReactDom.render(
   document.body.appendChild(document.createElement("div"))
 );
 ```
-以上代码，我们创建了一个入口文件，分别将中文翻译成了英文和法文，最终运行正常，证明工具可以使用！
+以上代码，我们创建了一个入口文件，分别将中文翻译成了英文和法文，最终运行正常！
 
 ## 六、兼容性
 
 写这个工具的初衷当然是无缝兼容各种react项目，但事实上并不简单
 举例来说，目前出现的很多的前端组件库与这个工具有很多兼容性冲突，这些库主要有：
 1.ant-design/ant-mobile（蚂蚁金服团队的前端UI组件库，链接：https://ant.design/index-cn）
-2..Element of react（饿了么团队的前端UI组件库react版本，链接：https://eleme.github.io/element-react/）
+2.element-react（饿了么团队的前端UI组件库react版本，链接：https://eleme.github.io/element-react/）
 等等...
 
 
@@ -348,14 +330,14 @@ filter.forAntDesign = (props,language) => {
 
 
 ### 6.2 .Element
-也有一些框架或者自行编写的组件，如.Element for react，一些dom文字并不会放在text中，更确切地说其组件内部进行了重构，并不会将文字简单的向外展示，这就需要额外的编写特殊的filter了
+也有一些框架或者自行编写的组件，如element-react，一些dom文字并不会放在text中，更确切地说其组件内部进行了重构，并不会将文字简单的向外展示，这就需要额外的编写特殊的filter了
 
 
 ## 七、总结
 到这里，我们的React国际化工具已经实现了，这里是一个简单的在线demo
 
-
-<iframe src="https://codesandbox.io/embed/64zx97v9qr" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+![](http://vfile.meituan.net/xgfe/6460f46a93b3449c986b87414797f780255260.gif)
+codesandbox链接：https://codesandbox.io/embed/64zx97v9qr
 完整代码参考 github: https://github.com/ranrantu/react-i18
 
 
