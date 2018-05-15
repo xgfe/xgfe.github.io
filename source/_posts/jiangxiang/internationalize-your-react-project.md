@@ -57,10 +57,11 @@ React最早由Facebook的软件工程师Jordan Walke创建，它在2011年首次
 ## 三、核心思路
 
 实现多语言通俗来说就是：
-1.先找到要翻译的文字
-2.请求在线语言包
-3.再对要翻译的文字进行翻译
-三步
+
+1. 先找到要翻译的文字
+2. 请求在线语言包
+3. 再对要翻译的文字进行翻译
+
 
 基于以上基本思路再思考，我们都知道，JSX是react的语法糖，而使用高阶函数``React.createElement``可以重新定义组件的渲染，我们只需要将要翻译的文字在该方法中处理即可。
 
@@ -78,9 +79,9 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
-基于这个想法，通过设置no-translate属性，``<Provider/>``，并在createElement中判断，就知道哪里的文字需要翻译，也知道要翻译成哪种语言了（第一步）！
-(第二步比较简单，暂时忽略...)
-再定义一个translate函数，接受文字，语言包和翻译表，返回翻译后的文字（第三步）
+* 基于这个想法，通过设置no-translate属性，``<Provider/>``，并在createElement中判断，就知道哪里的文字需要翻译，也知道要翻译成哪种语言了（第一步）！
+* (第二步比较简单，暂时忽略...)
+* 再定义一个translate函数，接受文字，语言包和翻译表，返回翻译后的文字（第三步）
 
 下面的流程图展示了整体的思路：
 
@@ -337,8 +338,9 @@ filter.forAntDesign = (props,language) => {
 到这里，我们的React国际化工具已经实现了，这里是一个简单的在线demo
 
 ![](http://vfile.meituan.net/xgfe/6460f46a93b3449c986b87414797f780255260.gif)
-codesandbox链接：https://codesandbox.io/embed/64zx97v9qr
-完整代码参考 github: https://github.com/ranrantu/react-i18
+
+* codesandbox链接：https://codesandbox.io/embed/64zx97v9qr
+* 完整代码参考 github: https://github.com/ranrantu/react-i18
 
 
 总之，这可以说是react动态翻译的一种思路，这种实现至今还是有不足的地方，还请各位拍砖指正，感谢！
