@@ -1,4 +1,4 @@
-title: 实现React国际化
+title: 实现 React 国际化
 date: 2018-04-26 15:00:00
 categories: jiangxiang
 tags:
@@ -79,9 +79,9 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
-* 基于这个想法，通过设置 no-translate 属性，``<Provider/>``，并在``createElement``中判断，就知道哪里的文字需要翻译，也知道要翻译成哪种语言了（第一步）！
-* (第二步比较简单，暂时忽略...)
-* 再定义一个``translate``函数，接受文字，语言包和翻译表，返回翻译后的文字（第三步）
+* 第一步解决：基于这个想法，通过设置 no-translate 属性，``<Provider/>``，并在``createElement``中判断，就知道哪里的文字需要翻译，也知道要翻译成哪种语言了
+* 第二步：比较简单，暂时忽略
+* 第三步：再定义一个``translate``函数，接受文字，语言包和翻译表，返回翻译后的文字
 
 下面的流程图展示了整体的思路：
 
@@ -146,7 +146,7 @@ const translate = (content, languageMap, language) => {
 
 ### 4.3 再创建 translateClass
 
-为了使用Context API，我们需要一个辅助类来接受``<Provider/>``传过来的 languageMap 和 language 等字段
+为了使用 Context API ，我们需要一个辅助类来接受``<Provider/>``传过来的 languageMap 和 language 等字段
 
 先创建一个./core/context.js
 ```
