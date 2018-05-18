@@ -23,14 +23,14 @@ tags:
 ### 1.2 对比
 
 1.打包时翻译
-优点:方案比较成熟，已有成功案例（如很多资讯网站、博客，如 mdn ）
-缺点:翻译表一旦更新，需要重新打包发布，本地要维护大量的翻译表文件，过于繁琐
+优点：方案比较成熟，已有成功案例（如很多资讯网站、博客，如 mdn ）
+缺点：翻译表一旦更新，需要重新打包发布，本地要维护大量的翻译表文件，过于繁琐
 2.动态翻译
-优点:灵活，翻译表放进 cdn 一句 sql 可以更新，可操作性强
-缺点:兼容性有待考察，对于不同的项目结构要设置特有的配置
+优点：灵活，翻译表放进 cdn 一句 sql 可以更新，可操作性强
+缺点：兼容性有待考察，对于不同的项目结构要设置特有的配置
 3.多版本
-优点:产生的打包文件最小，无需配置
-缺点:修改过程复杂，应用场景不广泛
+优点：产生的打包文件最小，无需配置
+缺点：修改过程复杂，应用场景不广泛
 
 ## 二、大概的设想
 
@@ -103,13 +103,13 @@ export default translateMap;
 
 ### 4.2 再写一个translate函数
 
-任何需要翻译的地方，都将会使用这个``translate``函数，它接受三个参数:
+任何需要翻译的地方，都将会使用这个``translate``函数，它接受三个参数：
 
-* content:要翻译的文字
-* languageMap:语言包
-* language:语言类型
+* content：要翻译的文字
+* languageMap：语言包
+* language：语言类型
 
-设置middleware作为中间件，可以操作翻译前后的字段，可以解决一些兼容性问题，或者实现一些彩蛋的效果...
+设置 middleware 作为中间件，可以操作翻译前后的字段，可以解决一些兼容性问题，或者实现一些彩蛋的效果...
 
 代码如下：
 ```
@@ -297,7 +297,7 @@ ReactDom.render(
 等等...
 
 实际操作中发现了不兼容的问题很多，想必要做到开箱即用是不可能了~~~
-寄希望于无缝兼容 不如提供中间件接口来让使用者自行配置 o(╥﹏╥)o
+寄希望于无缝兼容，不如提供中间件接口来让使用者自行配置 o(╥﹏╥)o
 
 ### 6.1 ant-design
 例如，在 ant-design 组件库中，``<input/>``的 placeholder 属性，如不进行检测，将不会被翻译
@@ -337,9 +337,8 @@ filter.forAntDesign = (props,language) => {
 ## 七、总结
 到这里，我们的 React 国际化工具已经实现了，这里是一个简单的在线 demo
 
-![](http://vfile.meituan.net/xgfe/6460f46a93b3449c986b87414797f780255260.gif)
+<iframe src="https://codesandbox.io/embed/64zx97v9qr" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
-* codesandbox链接：https://codesandbox.io/embed/64zx97v9qr
 * 完整代码参考 github: https://github.com/ranrantu/react-i18
 
 
