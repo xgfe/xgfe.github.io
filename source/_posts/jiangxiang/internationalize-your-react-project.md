@@ -292,9 +292,8 @@ ReactDom.render(
 
 写这个工具的初衷当然是无缝兼容各种 react 项目，但事实上并不简单
 举例来说，目前出现的很多的前端组件库与这个工具有很多兼容性冲突，这些库主要有：
-1.ant-design/ant-mobile（蚂蚁金服团队的前端UI组件库，链接：https://ant.design/index-cn）
-2.element-react（饿了么团队的前端UI组件库react版本，链接：https://eleme.github.io/element-react/）
-等等...
+1. ant-design/ant-mobile（蚂蚁金服团队的前端UI组件库，链接：https://ant.design/index-cn）
+2. element-react（饿了么团队的前端UI组件库react版本，链接：https://eleme.github.io/element-react/）
 
 实际操作中发现了不兼容的问题很多，想必要做到开箱即用是不可能了~~~
 寄希望于无缝兼容，不如提供中间件接口来让使用者自行配置 o(╥﹏╥)o
