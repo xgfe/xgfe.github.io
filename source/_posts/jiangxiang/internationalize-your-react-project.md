@@ -6,7 +6,7 @@ tags:
     - 国际化
 ---
 
- React 最早由 Facebook 的软件工程师Jordan Walke创建，它在 2011 年首次部署在 Facebook 的新闻源中，由于其性能优势明显，很快获得了广泛关注和大规模的使用，如今发展已经非常成熟。
+ React 最早由 Facebook 的软件工程师 Jordan Walke 创建，它在 2011 年首次部署在 Facebook 的新闻源中，由于其性能优势明显，很快获得了广泛关注和大规模的使用，如今发展已经非常成熟。
 基于 React 的渲染原理可以实现很多有意思的功能，例如实现一个 React 的国际化工具。(React v16.3)
 
 <!--more-->
