@@ -50,7 +50,7 @@ Expires是HTTP/1.0控制网页缓存的字段，其值为服务器返回该请�
 
 1、浏览器第一次跟服务器请求一个资源，服务器在返回这个资源的同时，在respone的header加上Expires的header，如：
 
-<img width = "600px" height = "300px" src="http://vfile.meituan.net/xgfe/417893a96e4205a4c13acbc58941d25850878.png">
+<img width = "600px" height = "300px" src="http://vfile.meituan.net/xgfe/417893a96e4205a4c13acbc58941d25850878.png" alt="">
 
 2、浏览器在接收到这个资源后，会把这个资源连同所有response header一起缓存下来（所以缓存命中的请求返回的header并不是来自服务器，而是来自之前缓存的header）；
 3、浏览器再请求这个资源时，先从缓存中寻找，找到这个资源后，拿出它的Expires跟当前的请求时间比较，如果请求时间在Expires指定的时间之前，就能命中缓存，否则就不行。
