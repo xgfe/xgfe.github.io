@@ -28,7 +28,7 @@ Web缓存机制的有多种，在这里主要探讨以浏览器为载体的HTTP�
 
 浏览器与服务器通信的方式为应答模式，即：浏览器发起HTTP请求 – 服务器响应该请求。那么浏览器第一次向服务器发起该请求后拿到请求结果，会根据响应报文中HTTP头的缓存标识，决定是否缓存结果，是则将请求结果和缓存标识存入浏览器缓存中，简单的过程如下图：
 
-<img width = "600px" height = "300px" src="http://vfile.meituan.net/xgfe/fbbc80627083b6bbe7ecb9525a36189434504.webp">
+<img width = "600px" height = "300px" src="http://vfile.meituan.net/xgfe/fbbc80627083b6bbe7ecb9525a36189434504.webp" alt="">
 
 由上图我们可以知道：
 * 浏览器每次发起请求，都会先在浏览器缓存中查找该请求的结果以及缓存标识
