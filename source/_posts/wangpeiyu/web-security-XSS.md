@@ -178,13 +178,3 @@ DOM XSS指的是XSS代码并不需要服务器解析响应的直接参与，触�
 - 《白帽子讲Web安全》
 
 - https://security.tencent.com/index.php/blog/msg/107
-
-## 相关链接
-
-- http://vfile.meituan.net/xgfe/a7271f75b155dbab2e0c3fb758cbe111100565.png
-
-- http://vfile.meituan.net/xgfe/919bcf853c27bbd16656cfa83b8b6ef887889.png
-
-- http://vfile.meituan.net/xgfe/0a853e1b33a7dfaeb4aa47f12453026b97763.png
-
-- http://vfile.meituan.net/xgfe/3df441ed85fa308c54a059924acd16e0248873.png
