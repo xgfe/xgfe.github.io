@@ -8,7 +8,7 @@ tags:
 本文主要介绍了 Egg.js 在项目中的使用以及框架的扩展。
 <!--more-->
 ## Egg.js 是什么?
-﻿Egg.js 是一个强约束的 Node 框架，这也是和 Express / Koa 最大的不同，后者对开发者相对宽松，主要体现在目录结构，编写方式等均可以自定义，标准的 mvc 模式有千奇百怪的写法。
+﻿Egg.js 是一个强约束的 Node 框架，这也是和 Express / Koa 最大的不同，后者对开发者相对宽松，主要体现在目录结构、编写方式等均可以自定义，标准的 mvc 模式有千奇百怪的写法。
 
  Egg.js 奉行『约定优于配置』，他规定一定的约定，让开发者都按照统一的约定去开发，降低团队协作成本，减少差异，求同存异，提升项目阅读和维护性。但约定不等于扩展性差，相反 Egg.js 有很高的扩展性。
 
@@ -70,11 +70,8 @@ Egg.js 给我们规定的目录结构如下图：
          └── controller
              └── home.test.js
 
-﻿其中包括 controller ，router ，config 等等；然后我们需要先添加一个渲染模版，
-Eggjs 提供了很多 view 模版，这里选择 Egg-view-ejs 为例，安装完插件后需要在 config 里面开启插件，
-同时需要在 app 文件夹下新建 view 文件夹，放置页面文件。
-
-配置需要用的插件，在 config / plugin.js 中添加
+﻿其中包括 controller、router 、config 等等，然后我们需要先添加一个渲染模版；Eggjs 提供了很多 view 模版，这里选择 Egg-view-ejs 为例，安装完插件后需要在 config 里面开启插件，同时需要在 app 文件夹下新建 view 文件夹，放置页面文件。
+ 配置需要用的插件，在 config / plugin.js 中添加
 
     ﻿exports.ejs = {
         enable: true,
@@ -106,11 +103,8 @@ Eggjs 提供了很多 view 模版，这里选择 Egg-view-ejs 为例，安装完
         app: true,
     };
 
-﻿其中 defaultViewEngine 表示使用的模版，当然也可以使多种模版。mapping 设置的属性名表示 view 中文件的扩展名，属性值表示对应的模板。
-
-﻿接下来就可以编写 controller 和 router 了。
-
-定义 controller，﻿在 controller 文件夹下的 home.js 中：
+﻿其中 defaultViewEngine 表示使用的模版，当然也可以使多种模版。mapping 设置的属性名表示 view 中文件的扩展名，属性值表示对应的模板；接下来就可以编写 controller 和 router 了。
+ 定义 controller，﻿在 controller 文件夹下的 home.js 中：
 
     ﻿const Controller = require('egg').Controller;
 
@@ -145,12 +139,11 @@ Eggjs 提供了很多 view 模版，这里选择 Egg-view-ejs 为例，安装完
 
 ## 内置基础对象扩展
 
-框架包括从 Koa 继承而来的 4 个对象（ Application，Context，Request，Response )
-以及框架扩展的一些对象（ Controller，Service，Helper，Config，Logger ）。
+框架包括从 Koa 继承而来的 4 个对象（ Application、Context、Request、Response )以及框架扩展的一些对象（ Controller、Service、Helper、Config、Logger ）。
 
 ### Application 扩展
 
-app 对象指的是 Koa 的全局应用对象，全局只有一个，在应用启动时被创建。在 Controller，Middleware，Helper，Service 中都可以通过
+app 对象指的是 Koa 的全局应用对象，全局只有一个，在应用启动时被创建。在 Controller、Middleware、Helper、Service 中都可以通过
 this.app 访问到 Application 对象。框架会把 app/extend/application.js 中定义的对象与 Koa Application 的 prototype 对象进行合并，在应用启动时会基于扩展后的 prototype 生成 app 对象。这样能在其他地方使用 Application 中扩展的方法。
 
     ﻿// app/extend/application.js
@@ -181,7 +174,7 @@ Context 指的是 Koa 的请求上下文，这是请求级别的对象，每次�
 
 ### ﻿Request 和 Response 扩展
 
- ﻿ctx 上的很多属性和方法都被代理到 request 和 response 对象上，对于这些属性和方法使用 ctx 和使用 request 去访问它们是等价的，例如 ctx.url === ctx.request.url，ctx.status === ctx.response.status 。
+ ﻿ctx 上的很多属性和方法都被代理到 request 和 response 对象上，对于这些属性和方法使用 ctx 和使用 request 去访问它们是等价的，例如 ctx.url === ctx.request.url、ctx.status === ctx.response.status 。
  框架会把 app/extend/request.js 中定义的对象与内置 request 的 prototype 对象进行合并，在处理请求时会基于扩展后的 prototype 生成 request 对象；Response 的扩展和 Request 相同。
 
     ﻿// app/extend/request.js
@@ -211,7 +204,7 @@ Context 指的是 Koa 的请求上下文，这是请求级别的对象，每次�
 
 ## ﻿service 服务层
 
-﻿service 就是在复杂业务场景下用于做业务逻辑封装的一个抽象层,比如要展现的信息需要从数据库获取，还要经过一定的规则计算，才能返回用户显示。可以将数据逻辑的处理都放在 service 中
+﻿service 就是在复杂业务场景下用于做业务逻辑封装的一个抽象层，比如要展现的信息需要从数据库获取，还要经过一定的规则计算，才能返回用户显示。可以将数据逻辑的处理都放在 service 中
 
     ﻿const Service = require('egg').Service;
 
