@@ -334,3 +334,7 @@ export default (o, c) => {
 }
 ```
 将 isLeapYear 函数挂载到 Dayjs 类的原型上，所以每个 Dayjs 实例都可以使用 isLeapYear 方法。
+
+***
+## 感谢
+ 特别感谢 DaisyXL 和 Young 的支持和分析！
