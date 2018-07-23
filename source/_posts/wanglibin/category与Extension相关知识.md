@@ -6,7 +6,7 @@
 
 ---
 
-#目录
+目录
 ##### Category
 
 + category的背景和概念
@@ -24,7 +24,7 @@
 
 ---
 
-###一、Category
+一、Category
 #### 1、category的背景和概念
 
 在日常开发中，经常需要对已有类进行功能上的扩展，在学习“类别”之前，常用的类扩展方式有以下三种：
@@ -45,7 +45,7 @@
 
 &ensp;那么，在oc中，当我们想避免上述两种扩展方式的缺点，又想只对现有类进行扩展些方法，并且不用去修改原有类以及使用它的地方的代码，就用到了Category（类别）。
 
-&ensp;类别是OC的特有语法，可以通过在类上声明和实现方法来扩展现有类的功能。原则上只能增加方法，不能增加成员变量。
+&ensp;类别是OC的特有语法，可以通过在类上声明和实现方法来扩展现有类的功能。原则上只能增加方法（包括对象方法和类方法），不能增加成员变量。
 
 #### 2、category的声明及实现
 
@@ -59,7 +59,19 @@
 	@end
 #### 3、category的使用
 
-&ensp;如果需要扩展一个类，定义好此类的category ，则可以通过该类的对象直接调用category中的扩展方法。（可以扩展类方法）,同时category中也可以访问原有类.h中的属性。
+&ensp;如果需要扩展一个类，定义好此类的category ，则可以通过该类的对象直接调用category中的扩展方法。与此同时，在category中也可以访问原有类.h中的属性和方法。
+
+.h文件：
+	
+	#import <Foundation/Foundation.h>
+
+	@interface pson : NSObject<NSCoding>
+	@property (nonatomic, copy) NSString *name;
+	@property (nonatomic, assign) NSInteger age;
+	- (void) run;
+	+ (void) jump;
+	@end
+.m文件
 
 	#import "pson.h"
 
@@ -72,14 +84,29 @@
     	NSLog(@"jump");
 	}
 	@end
-此处省略category的.h文件，为person类添加eat方法，category的.m文件如下所示：
+为pson类添加eat方法，category的.m文件如下所示：
+
+
+pson+eat.h文件
+
+	#import "pson.h"
+
+	@interface pson (eat)
+	@property (nonatomic, strong) NSString *food;
+	-(void) eat;
+
+	@end
+
+pson+eat.m文件
 
 	#import "pson+eat.h"
 
 	@implementation pson (eat)
 	-(void) eat{
-   		[self number];
-    	NSLog(@"eat");
+   	//调用原有类的公共方法
+    [self run];
+	//调用原有类的非私有属性
+    NSLog(@"%@",self.name);
 	}
 	+(void) drink{
     	NSLog(@"drink");
@@ -91,8 +118,11 @@
 
 	pson *me = [[pson alloc] init];
         [me run];
+        //调用扩展类中的对象方法
         [me eat];
-        [me drink];
+        //调用扩展类中的类方法
+        [pson drink]
+
         
 #### 4、category扩展属性（变量）
 
@@ -120,7 +150,19 @@
 | OBJC _ ASSOCIATION _ RETAIN | 指定值通过线程安全的方式赋值并保留| 
 | OBJC _ ASSOCIATION _ COPY | 指定值通过线程安全的方式复制| 
 
-具体实现例子如下所示：（此处省略category的.h文件）
+具体实现例子如下所示：
+
+category的.h文件
+
+	#import "pson.h"
+
+	@interface pson (eat)
+	@property (nonatomic, strong) NSString *food;
+	-(void) eat;
+	+(void) drink;
+	@end
+	
+category的.m文件
 
 	#import "pson+eat.h"
 	#import "objc/runtime.h"
@@ -158,7 +200,7 @@ main方法中的使用如下：
     	return 0;
 	}
 	
-Extension
+二、Extension
 
 &ensp;extension 是Category的特例，少了类别的名称，是匿名分类。声明私有方法和属性的机制。具体实现在原有类的.m文件中。
 #### 1、extension的格式
