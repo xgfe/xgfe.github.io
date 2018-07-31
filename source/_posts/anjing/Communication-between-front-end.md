@@ -32,22 +32,18 @@ tags:
 （5）获取返回的数据，更新UI。
 post 请求举例：
 ```
-
-    <script type="text/javascript"> 
-        // 建立XMLHttpRequest对象       
-        var xhr = new XMLHttpRequest();        
-        xhr.open('post', '02.post.php');           
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
-        // 将数据通过send方法传递       
-        xhr.send('name=fox&age=18');            
-        xhr.onreadystatechange = function () {                 
-            if (xhr.readyState == 4 && xhr.status == 200) { 
-                //判断返回状态  
-                alert(xhr.responseText);
-            }
-        }; 
-    </script>
-
+    // 建立XMLHttpRequest对象       
+    var xhr = new XMLHttpRequest();        
+    xhr.open('post', '02.post.php');           
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+    // 将数据通过send方法传递       
+    xhr.send('name=fox&age=18');            
+    xhr.onreadystatechange = function () {                 
+        if (xhr.readyState == 4 && xhr.status == 200) { 
+            //判断返回状态  
+            alert(xhr.responseText);
+        }
+    }; 
 ```
 ### 4.实际开发中用的原生Ajax请求
 ```
@@ -131,12 +127,12 @@ ws.onopen = function (evt) {
     ws.send('hello WebSocket');
 }
 ws.onmessage = function (evt) {
-        console.log('received message' + evt.data);
-        ws.close();
-    }
+    console.log('received message' + evt.data);
+    ws.close();
+}
 ws.onclose = dunction(evt){
-        console.log('connection closed.');
-    }   
+    console.log('connection closed.');
+}   
 // ws的使用，以为按钮添加发送信息事件为例
 $("#send").click(function(){
     ws.send($("#msg").val());
@@ -145,7 +141,7 @@ $("#send").click(function(){
 ### 6.CORS 介绍
 CORS是一个W3C标准，跨域资源共享（CORS ）是一种网络浏览器的技术规范，它为Web服务器定义了一种方式，允许网页从不同的域访问其资源。而这种访问是被同源策略所禁止的。CORS系统定义了一种浏览器和服务器交互的方式来确定是否允许跨域请求。 它是一个妥协，有更大的灵活性，但比起简单地允许所有这些的要求来说更加安全。简言之，CORS就是为了让AJAX可以实现可控的跨域访问而生的。
 下图为各浏览器对于CORS的支持情况，看起来相当乐观。主流浏览器都已基本提供对跨域资源共享的支持，所以，CORS才会在国外使用的如此普遍。
-<img src="http://vfile.meituan.net/xgfe/d87439988ef5ab43251311a668d027d6233940.png">
+![](http://vfile.meituan.net/xgfe/d87439988ef5ab43251311a668d027d6233940.png)  
 使用CORS需要做服务端和前端的配置：
 #### 服务端的配置
 
@@ -164,8 +160,7 @@ CORS是一个W3C标准，跨域资源共享（CORS ）是一种网络浏览器�
 ```
 //允许跨域访问  
 HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");  
-HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE,
- PUT");  
+HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE,PUT");  
 HttpContext.Current.Response.AddHeader("Access-Control-Allow-Headers", "Test"); 
 
 ```
@@ -184,15 +179,15 @@ HTTP的头信息主要是以下几种字段：
 * text/plain
 
 简单请求如图所示：
-<img src="http://vfile.meituan.net/xgfe/63958e7743ea262c379f4466c52844a636486.png" />
+![](http://vfile.meituan.net/xgfe/63958e7743ea262c379f4466c52844a636486.png) 
 2.非简单请求：
 不满足简单请求条件的请求则要先进行预检请求，即使用OPTIONS方法发起一个预检请求到服务器，已获知服务器是否允许该实际请求。
 非简单请求如下所示：
-<img src="http://vfile.meituan.net/xgfe/cf3757d6cc10ac2d4c9c023af564900f126443.png"/>
+![](http://vfile.meituan.net/xgfe/cf3757d6cc10ac2d4c9c023af564900f126443.png) 
 浏览器与服务器之间请求只进行了一次。
 下面是PUT请求第一次返回的结果：
-<img src="http://vfile.meituan.net/xgfe/33d389422e08f9f730faa7757ef26bba81218.png" />
-<img src="http://vfile.meituan.net/xgfe/000d4cf1b6d92837affcddef925df2a176640.png" />
+![](http://vfile.meituan.net/xgfe/33d389422e08f9f730faa7757ef26bba81218.png) 
+![](http://vfile.meituan.net/xgfe/000d4cf1b6d92837affcddef925df2a176640.png) 
 通过PUT请求结果可以看出，当检测到PUT请求为非简单请求时，浏览器便会发送一个预检请求，目的是询问，自定义头部X-Custom-Header的PUT请求是否被允许，浏览器返回了所有可以请求的方法和自定义的头部（把所有可以的返回是为了避免多次预检请求），这时候预检请求成功了，便会发送真正的PUT请求。
 
 关于预检请求，需要注意一下两点：
@@ -207,7 +202,7 @@ HTTP的头信息主要是以下几种字段：
 ```
 function createCORSRequest(method, url) {
     var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
+    xhr.onreadystatechange = function() {
         if(xhr.readyState == 4) {
             if((xhr.status >= 200 && xhr.status < 300) || xhr == 304) {
                 console.log(xhr.response);
@@ -270,10 +265,8 @@ JSONP的工作原理：
         //动态创建一个script标签
         var script = util.createScript(url + '&callback=' + callbackName, charset);   
         //监听加载成功的事件，获取数据
-        script.onload = script.onreadystatechange = function () {      
-            if (!script.readyState || /loaded|complete/.test(script.readyState)) {
-                // 移除该script的DOM对象  
-                script.onload = script.onreadystatechange = null;                 
+        script.onreadystatechange = function () {      
+            if (!script.readyState || /loaded|complete/.test(script.readyState)) {              
                 if (script.parentNode) {
                     // 删除函数或变量
                     script.parentNode.removeChild(script);  
@@ -316,3 +309,11 @@ window.onhashchange = function () {
      var data = window.location.hash;
 };
 ```
+总结：
+本文主要对前后端通信的几种方式做了简单介绍，希望对大家对前后端通信方面的学习有所帮助，总结不到位的地方还请大家批评指正。
+友情参考链接：
+https://blog.csdn.net/a54654132/article/details/77604597
+https://www.cnblogs.com/yanglang/p/6720887.html
+https://www.cnblogs.com/smyhvae/p/8523576.html
+https://www.cnblogs.com/liugang-vip/p/6337580.html
+https://blog.csdn.net/qq_27905183/article/details/71023542
