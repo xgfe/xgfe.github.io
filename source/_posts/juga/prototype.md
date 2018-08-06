@@ -7,7 +7,6 @@ tags:
 
 ---
 
-本文是在学习JavaScript的原型和原型链的时候整理的学习笔记.
 
 ##如何理解JavaScript的原型?
 
