@@ -6,12 +6,12 @@ tags:
 
 ---
 
-#1、webpack简介
+# 1、webpack简介
 前端是基于多语言、多层次的编码和组织工作，其次前端产品的交付是基于浏览器，这些资源是通过增量加载的方式运行到浏览器端，如何在开发环境组织好这些碎片化的代码和资源，并且保证他们在浏览器端快速、优雅的加载和更新，就需要一个模块化系统。
 
 Webpack 是当下最热门的前端资源模块化管理和打包工具。它可以将许多松散的模块按照依赖和规则打包成符合生产环境部署的前端资源。还可以将按需加载的模块进行代码分隔，等到实际需要的时候再异步加载。通过loader的转换，任何形式的资源都可以视作模块，比如 CommonJs 模块、 AMD 模块、 ES6 模块、CSS、图片、 JSON、Coffeescript、 LESS 等。
 
-##webpack的优势
+## webpack的优势
 * 1、支持CommonJs和AMD模块，意思也就是我们基本可以无痛迁移旧项目 
 * 2、支持模块加载器和插件机制，可对模块灵活定制。babel-loader更是有效支持ES6。 
 * 3、可以通过配置，打包成多个文件。有效利用浏览器的缓存功能提升性能。 
@@ -19,9 +19,9 @@ Webpack 是当下最热门的前端资源模块化管理和打包工具。它可
 * 5、内置有source map，即使打包在一起依旧方便调试。
 
 
-##webpack核心概念
+## webpack核心概念
 Webpack具有四个核心的概念，想要入门Webpack就得先好好了解这四个核心概念。它们分别是Entry（入口）、Output（输出）、loader和Plugins（插件）。接下来详细介绍这四个核心概念。
-###1.Entry
+### 1.Entry
 Entry是Webpack的入口起点指示，它指示webpack应该从哪个模块开始着手，来作为其构建内部依赖图的开始。可以在配置文件（webpack.config.js）中配置entry属性来指定一个或多个入口点，默认为./src（webpack 4开始引入默认值）。
 具体配置方法：
 >entry: string | Array<string>
@@ -39,7 +39,7 @@ module.exports = {
 ```
 以上配置表示从app和vendors属性开始打包构建依赖树，这样做的好处在于分离自己开发的业务逻辑代码和第三方库的源码，因为第三方库安装后，源码基本就不再变化，这样分开打包有利于提升打包速度，减少了打包文件的个数。
 
-###2.Output
+### 2.Output
 Output属性告诉webpack在哪里输出它所创建的bundles，也可指定bundles的名称，默认位置为./dist。整个应用结构都会被编译到指定的输出文件夹中去，最基本的属性包括filename（文件名）和path（输出路径）。
 
 值得注意的是，即是你配置了多个入口文件，你也只能有一个输出点。
@@ -71,7 +71,7 @@ module.exports = {
 }
 ```
 
-###3.Loaders
+### 3.Loaders
 loader可以理解为webpack的编译器，它使得webpack可以处理一些非JavaScript文件，比如png、csv、xml、css、json等各种类型的文件，使用合适的loader可以让JavaScript的import导入非JavaScript模块。JavaScript只认为JavaScript文件是模块，而webpack的设计思想即万物皆模块，为了使得webpack能够认识其他“模块”，所以需要loader这个“编译器”。
 
 webpack中配置loader有两个目标：
@@ -125,7 +125,7 @@ module.exports = {
 }
 ```
 
-###4.Plugins
+### 4.Plugins
 loader用于转换非JavaScript类型的文件，而插件可以用于执行范围更广的任务，包括打包、优化、压缩、搭建服务器等等，功能十分强大。要是用一个插件，一般是先使用npm包管理器进行安装，然后在配置文件中引入，最后将其实例化后传递给plugins数组属性。
 
 插件是webpack的支柱功能，目前主要是解决loader无法实现的其他许多复杂功能，通过plugins属性使用插件：
@@ -139,13 +139,13 @@ module.exports = {
     ]
 }
 ```
-###5.Mode
+### 5.Mode
 模式（Mode）可以通过配置对象的mode属性进行配置，主要值为production或者development。两种模式的区别在于一个是为生产环境编译打包，一个是为了开发环境编译打包。生产环境模式下，webpack会自动对代码进行压缩等优化，省去了配置的麻烦。
 
 学习完以上基本概念之后，基本也就入门webpack了，因为webpack的强大就是建立在这些基本概念之上，利用webpack多样的loaders和plugins，可以实现强大的打包功能。
 
-#2、js模块化
-##2.1 命名空间
+# 2、js模块化
+## 2.1 命名空间
 命名空间是通过为项目或库创建一个全局对象，然后将所有功能添加到该全局变量中。通过减少程序中全局变量的数量，实现单全局变量，从而在具有大量函数、对象和其他变量的情况下不会造成全局污染，同时也避免了命名冲突等问题。
 
 然而，在不同的文件中给一个命名空间添加属性的时候，首先要保证这个命名空间是已经存在的，同时不对已有的命名空间造成任何破坏。可以通过非破坏性的命名空间函数实现：
@@ -205,7 +205,7 @@ KUI.utils.namespace("format");
 1.需要输入更长的字符，并且需要更长的解析时间；
 2.对单全局变量的依赖性，即任何代码都可以修改该全局实例，其他代码将获得修改后的实例。
 
-##2.2 CommonJs
+## 2.2 CommonJs
 CommonJS是nodejs也就是服务器端广泛使用的模块化机制。 
 该规范的主要内容是，模块必须通过module.exports 导出对外的变量或接口，通过 require() 来导入其他模块的输出到当前模块作用域中。
 
@@ -213,7 +213,7 @@ CommonJS是nodejs也就是服务器端广泛使用的模块化机制。
 
 如果想在多个文件分享变量，必须定义为global对象的属性。
 
-###定义模块
+### 定义模块
 在每个模块内部，module变量代表当前模块。它的exports属性是对外的接口，将模块的接口暴露出去。其他文件加载该模块，实际上就是读取module.exports变量。
 
 ```javascript
@@ -224,7 +224,7 @@ var addX = function (value) {
 module.exports.x = x;
 module.exports.addX = addX;
 ```
-###加载模块
+### 加载模块
 require方法用于加载模块，后缀名默认为.js
 
 ```javascript
@@ -238,19 +238,19 @@ var app = require('./app.js');
 如果参数字符串以“./”开头，则表示加载的是一个位于相对路径的模块文件
 如果参数字符串不以“./“或”/“开头，则表示加载的是一个默认提供的核心模块（node核心模块，或者通过全局安装或局部安装在node_modules目录中的模块）
 
-###入口文件
+### 入口文件
 一般都会有一个主文件（入口文件），在index.html中加载这个入口文件，然后在这个入口文件中加载其他文件。
 
 可以通过在package.json中配置main字段来指定入口文件。
 
-###模块缓存
+### 模块缓存
 第一次加载某个模块时，Node会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的module.exports属性。
 
-###加载机制
+### 加载机制
 CommonJS模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。
 
 由于CommonJS是同步加载模块，这对于服务器端不是一个问题，因为所有的模块都放在本地硬盘。等待模块时间就是硬盘读取文件时间，很小。但是，对于浏览器而言，它需要从服务器加载模块，涉及到网速，代理等原因，一旦等待时间过长，浏览器处于”假死”状态。
-##2.3 AMD
+## 2.3 AMD
 AMD是”Asynchronous Module Definition”的缩写，即”异步模块定义”。它采用异步方式加载模块，模块的加载不影响它后面语句的运行。 
 
 这里异步指的是不堵塞浏览器其他任务（dom构建，css渲染等），而加载内部是同步的（加载完模块后立即执行回调）。
@@ -263,7 +263,7 @@ RequireJS主要解决两个问题：
 * js加载的时候浏览器会停止页面渲染，加载文件越多，页面失去响应时间越长。
 
 
-###定义模块
+### 定义模块
 RequireJS定义了一个函数 define，它是全局变量，用来定义模块:
 
 ```javascript
@@ -289,7 +289,7 @@ define("alpha", ["require", "exports", "beta"], function (require, exports, beta
   });
 ```
 
-###加载模块
+### 加载模块
 AMD也采用require命令加载模块，但是不同于CommonJS，它要求两个参数：
 
 ```javascript
@@ -300,7 +300,7 @@ require(['math'], function(math) {
 
 第一个参数是一个数组，里面的成员是要加载的模块，第二个参数是加载完成后的回调函数。
 
-###配置
+### 配置
 require方法本身也是一个对象，它带有一个config方法，用来配置require.js运行参数。
 
 ```javascript
@@ -329,7 +329,7 @@ require（['jquery'],function($){}）
 
 shim：有些库不是AMD兼容的，这时就需要指定shim属性的值。shim可以理解成“垫片”，用来帮助require.js加载非AMD规范的库。
 
-##2.4 CMD
+## 2.4 CMD
 CMD 即Common Module Definition通用模块定义，CMD规范是国内发展出来的，就像AMD有个requireJS，CMD有个浏览器的实现SeaJS，SeaJS要解决的问题和requireJS一样，只不过在模块定义方式和模块加载（可以说运行、解析）时机上有所不同。
 
 在 CMD 规范中，一个模块就是一个文件。代码的书写格式如下:
@@ -368,7 +368,7 @@ define(['./a', './b'], function(a, b) { // 依赖必须一开始就写好
 
 ```
 
-##2.5 ES6 Module
+## 2.5 ES6 Module
 ES6正式提出了内置的模块化语法，我们在浏览器端无需额外引入requirejs来进行模块化。ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，完全可以取代 CommonJS 和 AMD 规范，成为浏览器和服务器通用的模块解决方案。
 
 ES6 模块不是对象，而是通过export命令显式指定输出的代码，再通过import命令输入。
@@ -380,7 +380,7 @@ ES6中的模块有以下特点：
 * 模块顶级作用域的 this 值为 undefined
 * 对于需要让模块外部代码访问的内容，模块必须导出它们
 
-###定义模块
+### 定义模块
 使用export关键字将任意变量、函数或者类公开给其他模块。
 
 ```javascript
@@ -410,7 +410,7 @@ function multiply(num1, num2) {
 export {multiply}
 ```
 
-###重命名模块
+### 重命名模块
 重命名想导出的变量、函数或类的名称
 
 ```javascript
@@ -422,7 +422,7 @@ export {sum as add}
 ```
 这里将本地的sum函数重命名为add导出，因此在使用此模块的时候必须使用add这个名称。
 
-###导出默认值
+### 导出默认值
 模块的默认值是使用 default 关键字所指定的单个变量、函数或类，而你在每个模块中只能设置一个默认导出。
 
 ```javascript
@@ -442,7 +442,7 @@ function sum(num1, num2) {
 export { sum as default };
 ```
 
-###加载模块
+### 加载模块
 在模块中使用import关键字来导入其他模块。 
 import 语句有两个部分，一是需要导入的标识符，二是需导入的标识符的来源模块。此处是导入语句的基本形式：
 
@@ -486,12 +486,12 @@ import { magicNumber } from "./example.js";
 
 尽管此处的模块使用了三个 import 语句，但 example.js 只会被执行一次。若同一个应用中的其他模块打算从 example.js 导入绑定，则那些模块都会使用这段代码中所用的同一个模块实例。
 
-###限制
+### 限制
 export 与 import 都有一个重要的限制，那就是它们必须被用在其他语句或表达式的外部，而不能使用在if等代码块内部。原因之一是模块语法需要让 JS 能静态判断需要导出什么，正因为此，你只能在模块的顶级作用域使用 export与import。
 
 
-#3、webpack使用
-##3.1 打包js
+# 3、webpack使用
+## 3.1 打包js
 webpack对各种模块化的支持
 
 ```javascript
@@ -535,7 +535,7 @@ define(function() {
 });
 ```
 
-###压缩JS代码：
+### 压缩JS代码：
 现在你写的JS代码，在上线之前，都是需要进行压缩的，在没有webpack和gulp这些工具前，你可能需要找一个压缩软件或者在线进行压缩，在Webpack中可以很轻松的实现JS代码的压缩，它是通过插件的方式实现的，这里我们就先来引入一个uglifyjs-webpack-plugin(JS压缩插件，简称uglify)。
 
 注意：虽然uglifyjs是插件，但是webpack版本里默认已经集成，不需要再次安装。
@@ -557,7 +557,7 @@ plugins:[
 ```
 这时候在终端中使用webpack进行打包，你会发现JS代码已经被压缩了。
 
-##3.2 编译ES6
+## 3.2 编译ES6
 在前端开发中都开始使用ES6的语法了，虽然说webpack3增加了一些ES6的转换支持，但是实际效果不是很好。所以我在开发中还是喜欢添加Babel-loader的，我也查看了一些别人的webpack配置也都增加了babel-loader，所以这节课我们学习一下如何增加Babel支持。
 
 Babel是什么？
@@ -566,7 +566,7 @@ Babel其实是一个编译JavaScript的平台，它的强大之处表现在可�
 * 使用下一代的javaScript代码(ES6,ES7….)，即使这些标准目前并未被当前的浏览器完全支持。
 * 使用基于JavaScript进行了扩展的语言，比如React的JSX。
 
-###Babel的安装与配置
+### Babel的安装与配置
 Babel其实是几个模块化的包，其核心功能位于称为babel-core的npm包中，webpack可以把其不同的包整合在一起使用，对于每一个你需要的功能或拓展，你都需要安装单独的包（用得最多的是解析ES6的babel-preset-es2015包和解析JSX的babel-preset-react包）。
 
 安装依赖包
@@ -593,7 +593,7 @@ npm install --save-dev babel-loader babel-core babel-preset-env
 ```
 
 
-###.babelrc配置
+### .babelrc配置
 虽然Babel可以直接在webpack.config.js中进行配置，但是考虑到babel具有非常多的配置选项，如果卸载webapck.config.js中会非常的雍长不可阅读，所以我们经常把配置卸载.babelrc文件里。
 
 在项目根目录新建.babelrc文件，并把配置写到文件里。
@@ -618,7 +618,7 @@ npm install --save-dev babel-loader babel-core babel-preset-env
 }
 ```
 
-###ENV：
+### ENV：
 babel-preset-env代替babel-preset-ES2015, babel官方推出了babel-preset-env，并建议在使用的时候选择env代替之前的ES20**。env为我们提供了更智能的编译选择。
 
 ```
@@ -633,12 +633,12 @@ npm install --save-dev babel-preset-env
 }
 ```
 
-##3.3 打包公共代码
+## 3.3 打包公共代码
 CommonsChunkPlugin 插件，是一个可选的用于建立一个独立文件(又称作 chunk)的功能，这个文件包括多个入口 chunk 的公共模块。
 
 通过将公共模块拆出来，最终合成的文件能够在最开始的时候加载一次，便存到缓存中供后续使用。这个带来速度上的提升，因为浏览器会迅速将公共的代码从缓存中取出来，而不是每次访问一个新页面时，再去加载一个更大的文件。
 
-###公共chunk 用于 入口chunk (entry chunk)
+### 公共chunk 用于 入口chunk (entry chunk)
 生成一个额外的 chunk 包含入口chunk 的公共模块。
 
 ```
@@ -664,7 +664,7 @@ new webpack.optimize.CommonsChunkPlugin({
 <script src="entry.bundle.js" charset="utf-8"></script>
 ```
 
-###明确第三方库 chunk
+### 明确第三方库 chunk
 将你的代码拆分成公共代码和应用代码。
 
 ```
@@ -685,7 +685,7 @@ plugins: [
 ]
 ```
 
-###将公共模块打包进父 chunk
+### 将公共模块打包进父 chunk
 使用代码拆分功能，一个 chunk 的多个子 chunk 会有公共的依赖。为了防止重复，可以将这些公共模块移入父 chunk。这会减少总体的大小，但会对首次加载时间产生不良影响。如果预期到用户需要下载许多兄弟 chunks（例如，入口 trunk 的子 chunk），那这对改善加载时间将非常有用。
 
 ```
@@ -701,7 +701,7 @@ new webpack.optimize.CommonsChunkPlugin({
 })
 ```
 
-###额外的异步 公共chunk
+### 额外的异步 公共chunk
 与上面的类似，但是并非将公共模块移动到父 chunk（增加初始加载时间），而是使用新的异步加载的额外公共chunk。当下载额外的 chunk 时，它将自动并行下载。
 
 ```
@@ -723,10 +723,10 @@ new webpack.optimize.CommonsChunkPlugin({
 })
 ```
 
-##3.4 代码分割和懒加载
+## 3.4 代码分割和懒加载
 webpack 可以帮助我们将代码分成不同的逻辑块，在需要的时候加载这些代码。
 
-###使用 require.ensure() 来拆分代码
+### 使用 require.ensure() 来拆分代码
 require.ensure() 是一种使用 CommonJS 的形式来异步加载模块的策略。在代码中通过 require.ensure([<fileurl>]) 引用模块，其使用方法如下：
 
 ```
@@ -784,7 +784,7 @@ if(page=='subPageA'){
 
 这样就会把公共模块moduleA给抽离出来。
 
-###2.import
+### 2.import
 import与require.ensure最大的区别就是，他在引入的时候会直接执行，而不需要在此require了
 
 ```
@@ -801,8 +801,8 @@ import(/*webpackChunkName:'subPageA'*/'./subPageA').then(function(){
 })
 ```
 
-##3.5 处理css
-###打包CSS
+## 3.5 处理css
+### 打包CSS
 首先，在src目录下建立css文件夹，和index.css文件，并编写如下代码：
 
 ```
@@ -820,14 +820,14 @@ import css from './css/index.css';
 ```
 CSS和引入做好后，我们就需要使用loader来解析CSS文件了，这里我们需要两个解析用的loader，分别是style-loader和css-loader。
 
-###style-loader
+### style-loader
 它是用来处理css文件中的url()等。
 用npm install 进行项目安装：
 
 ```
 npm install --save-dev style-loader
 ```
-###CSS-loader
+### CSS-loader
 它是用来将css插入到页面的style标签。
 用npm install 进行项目安装：
 
@@ -835,7 +835,7 @@ npm install --save-dev style-loader
 npm install --save-dev css-loader
 ```
 
-###loaders配置：
+### loaders配置：
 
 修改webpack.config.js中module属性中的配置代码如下：
 
@@ -852,7 +852,7 @@ module:{
     },
 ```
 
-###提取CSS
+### 提取CSS
 目前，打包后的文件中，css是打包在js代码里面的，这样不便于以后的维护，所以需要吧CSS从js中分离出来，我们需要使用插件Extract Text Plugin。
 
 安装：
@@ -889,7 +889,7 @@ module:{
 }
 ```
 
-###配置Less
+### 配置Less
 
 Less作为目前很火的CSS预处理语言，它扩展了 CSS 语言，增加了变量、Mixin、函数等特性，使 CSS 更易维护和扩展；
 
@@ -919,7 +919,7 @@ module:{
 }
 ```
 
-###配置sass
+### 配置sass
 Sass的打包和分离和less的类似，首先下载安装Sass所支持的服务与loader。
 安装：
 
@@ -946,7 +946,7 @@ module:{
     ]
 }
 ```
-###PostCSS-in-webpack
+### PostCSS-in-webpack
 CSS3是目前作为一个前端必须要掌握的技能，但是由于现在好多浏览器还是不兼容CSS3，所以前端需要多写很丑很难看的前缀代码；以前都是边查Can I Use ，边添加，这样很麻烦，现在配置一个插件postcss就可以搞定；
 
 PostCSS是一个CSS的处理平台，它可以帮助你的CSS实现更多的功能，但是今天我们就通过其中的一个加前缀的功能，初步了解一下PostCSS。
@@ -986,7 +986,7 @@ module.exports = {
 
 }
 ```
-##3.6 Tree-shaking
+## 3.6 Tree-shaking
 Tree-shaking 字面意思就是摇晃树， 其实就是去除那些引用的但却没有使用的代码。 
 Tree-shaking 概念最早由Rollup.js 提出，后来在webpack2中被引入进来，但是这个这一特性能够被支持得益于ES6 modules的静态特性。ES6的模块声明相比于传统CommonJS的同步require有着本质区别。这种modules设计保证了依赖关系是提前确定的，使得静态分析成为了可能，与运行时无关。 
 并且webpack中并没有直接对tree shaking 的配置，需要借助uglifyjs-webpack-plugin。
@@ -996,7 +996,7 @@ webpack中tree shaking主要分为两个方面
 * JS tree shaking： JS文件中定义的多个方法或者变量没有全部使用。
 * CSS tree shaking： 样式通过css选择器没有匹配到相应的DOM节点。
 
-###JS Tree-shaking
+### JS Tree-shaking
 
 将文件标记为无副作用(side-effect-free)
 在一个纯粹的 ESM 模块世界中，识别出哪些文件有副作用很简单。然而，我们的项目无法达到这种纯度，所以，此时有必要向 webpack 的 compiler 提供提示哪些代码是“纯粹部分”。
@@ -1051,7 +1051,7 @@ module.exports = {
 * 在项目 package.json 文件中，添加一个 "sideEffects" 入口。
 * 引入一个能够删除未引用代码(dead code)的压缩工具(minifier)（例如 UglifyJSPlugin）。
 
-###CSS Tree-shaking
+### CSS Tree-shaking
 像Bootstrap这样的框架往往会带有很多CSS。在项目中通常我们只使用它的一小部分。就算我们自己写CSS，随着项目的进展，CSS也会越来越多，有时候需求更改，带来了DOM结构的更改，这时候我们可能无暇关注CSS样式，造成很多CSS的冗余。
 
 PurifyCSS
@@ -1106,8 +1106,8 @@ plugins:[
 配置好上边的代码，我们可以故意在css文件里写一些用不到的属性，然后用webpack打包，你会发现没用的CSS已经自动给你删除掉了。在工作中记得一定要配置这个plugins，因为这决定你代码的质量，非常有用。
 
 
-##3.7 文件处理
-###图片处理
+## 3.7 文件处理
+### 图片处理
 在index.html文件中增加一个放置div的标签
 ```
 <div id="tupian"></div>
@@ -1162,7 +1162,7 @@ webpack.config.js文件
 * limit：是把小于500000B的文件打成Base64的格式，写入JS。
 * 写好后就可以使用webpack进行打包了，这回你会发现打包很顺利的完成了。具体的Base64的格式，你可以查看视频中的样子。
 
-####为什么只使用了url-loader
+#### 为什么只使用了url-loader
 有的小伙伴会发现我们并没有在webpack.config.js中使用file-loader，但是依然打包成功了。我们需要了解file-loader和url-loader的关系。url-loader和file-loader是什么关系呢？简答地说，url-loader封装了file-loader。url-loader不依赖于file-loader，即使用url-loader时，只需要安装url-loader即可，不需要安装file-loader，因为url-loader内置了file-loader。通过上面的介绍，我们可以看到，url-loader工作分两种情况：
 
 * 1.文件大小小于limit参数，url-loader将会把文件转为DataURL（Base64格式）；
@@ -1171,7 +1171,7 @@ webpack.config.js文件
 
 也就是说，其实我们只安装一个url-loader就可以了。但是为了以后的操作方便，我们这里就顺便安装上file-loader。
 
-####如何把图片放到指定的文件夹下
+#### 如何把图片放到指定的文件夹下
 前边两节课程，打包后的图片并没有放到images文件夹下，要放到images文件夹下，其实只需要配置我们的url-loader选项就可以了。
 
 ```
@@ -1197,7 +1197,7 @@ webpack.config.js文件
     },
 ```
 
-###CSS分离时图片路径处理
+### CSS分离时图片路径处理
 在处理css时我们已经学会如何使用extract-text-webpack-plugin插件提取css，利用extract-text-webpack-plugin插件很轻松的就把CSS文件分离了出来，但是CSS路径并不正确，很多小伙伴就在这里搞个几天还是没有头绪，网上也给出了很多的解决方案，我觉的最好的解决方案是使用publicPath解决，我也一直在用。
 
 publicPath：是在webpack.config.js文件的output选项中，主要作用就是处理静态文件路径的。
@@ -1224,8 +1224,8 @@ var website ={
 ```
 配置完成后，你再使用webpack命令进行打包，你会发现原来的相对路径改为了绝对路径，这样来讲速度更快。
 
-###处理字体文件
-####将字体图标和css打包到同一个文件中
+### 处理字体文件
+#### 将字体图标和css打包到同一个文件中
 
 ```
 {
@@ -1239,7 +1239,7 @@ var website ={
 ```
 上文中的limit一定要保证大于最大字体文件的大小，因为这个参数是告诉url-loader，如果文件小于这个参数，那么就以Data Url的方式直接构建到文件中。使用这种方式最方便，不用打包后路径的问题，但是缺点就是构建出来的文件特别大，如果线上不要使用这种方式打包。 
 
-####将字体图标独放打包到一个文件夹中
+#### 将字体图标独放打包到一个文件夹中
 
 ```
 {
@@ -1254,7 +1254,7 @@ var website ={
 ```
 打包中会遇到的问题就是路径不对，可以通过配置publicPath解决。
 
-###Json配置文件使用
+### Json配置文件使用
 在实际工作中，我们的项目都会配置一个Json的文件或者说API文件，作为项目的配置文件。有时候你也会从后台读取到一个json的文件，这节课就学习如何在webpack环境中使用Json。如果你会webpack1或者webpack2版本中，你是需要加载一个json-loader的loader进来的，但是在webpack3.x版本中，你不再需要另外引入了。
 
 读出Json内容
@@ -1271,8 +1271,8 @@ document.getElementById("json").innerHTML= json.name;
 ```
 这两行代码非常简单，第一行是引入我们的json文件，第二行驶写入到到DOM中。
 
-##3.8 html in webpack
-###生成html
+## 3.8 html in webpack
+### 生成html
 html-webpack-plugin可以根据你设置的模板，在每次运行后生成对应的模板文件，同时所依赖的CSS/JS也都会被引入，如果CSS/JS中含有hash值，则html-webpack-plugin生成的模板文件也会引入正确版本的CSS/JS文件。
 
 安装
@@ -1334,7 +1334,7 @@ module.exports = {
 * cache: 是否需要缓存，如果填写true，则文件只有在改变时才会重新生成
 * chunks: 引入的模块，这里指定的是entry中设置多个js时，在这里指定引入的js，如果不设置则默认全部引入
 
-###html中引入图片
+### html中引入图片
 html-withimg-loader
 html-withimg-loader就是我们今天的重点了，这个插件并不是很火，也是我个人喜欢的一个小loader。解决的问题就是在hmtl文件中引入<img>标签的问题。
 
@@ -1354,11 +1354,11 @@ webpack.config.js
 ```
 然后在终端中可以进行打包了。你会发现images被很好的打包了。并且路径也完全正确。
 
-#webpack环境配置
-##搭建开发环境
+# webpack环境配置
+## 搭建开发环境
 在使用webpack-cli进行打包时，通过命令webpack --watch即可开启watch模式，进入watch模式之后，一旦依赖树中的某一个模块发生了变化，webpack就会重新进行编译。
 
-###clean-webpack-plugin
+### clean-webpack-plugin
 在webpack中打包生成的文件会覆盖之前的文件，不过生成文件的时候文件名加了hash之后会每次都生成不一样的文件，这就会很麻烦，不但会生成很多冗余的文件，还很难搞清楚到底是哪个文件，这就需要引入该插件 
 
 ```
@@ -1374,7 +1374,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 new CleanWebpackPlugin(['public']);
 ```
 
-###webpack dev server
+### webpack dev server
 webpack-dev-server简介：
 
 * 是一个小型node.js express服务器
@@ -1422,7 +1422,7 @@ plugins:[
 },
 ```
 
-##代理远程接口
+## 代理远程接口
 如果你有单独的后端开发服务器 API，并且希望在同域名下发送 API 请求 ，那么代理某些 URL 会很有用。
 webpack-dev-server 使用了非常强大的 http-proxy-middleware 包。
 
@@ -1441,7 +1441,7 @@ proxy: {
 }
 ```
 
-##模块热更新
+## 模块热更新
 
 DevServer 还支持一 种叫做模块热替换( Hot Module Replacement)的技术可在不刷新整个网页的情况下 做到超 灵敏实时预览。原理是在一个源码发生变化时，只需重新编译发生变化的模块，再用新输 出 的模块替换掉浏览器中对应的老模块 。
 
@@ -1491,7 +1491,7 @@ if (module.hot) {
 其中的 module.hot 是当开启模块热替换后注入全局的 API，用于控制模块热替换的逻辑 。
 当子模块发生更新时，更新事件会一层层地向上传递，也就是从 AppComponent.js 文件传递到 main.js 文件，直到有某层的文件接收了当前变化的模块，即 main.js 文 件中定义的 module.hot.accept(['.IAppComponent'], callback)，这时就会调用 callback 函数去执行自定义逻辑。 如果事件一直往上抛，到最外层都没有文件接收它，则会直接刷新网页。
 
-##开启调试SourceMap
+## 开启调试SourceMap
 作为一个程序员每天的大部分工作就是调试自己写的程序，那我们使用了webpack后，所以代码都打包到了一起，给调试带来了麻烦，但是webpack已经为我们充分考虑好了这点，它支持生产Source Maps来方便我们的调试。
 在使用webpack时只要通过简单的devtool配置，webapck就会自动给我们生产source maps 文件，map文件是一种对应编译文件和源文件的方法，让我们调试起来更简单。
 
@@ -1517,7 +1517,7 @@ module.exports = {
   }
 }
 ```
-##设置ESLint检查代码格式
+## 设置ESLint检查代码格式
 首先，要使webpack支持eslint，就要要安装 eslint-loader ，命令如下:
 
 ```
@@ -1566,7 +1566,7 @@ module.exports = {
 
 这样，一个简单的webpack引入eslint已经完成了。
 
-#总结
+# 总结
 webpack确实是一个功能强大的模块打包工具，丰富的loader和plugin使得其功能多而强。学习webpack使得我们可以自定义自己的开发环境，无需依赖create-react-app和Vue-Cli这类脚手架，也可以针对不同的需求对代码进行不同方案的处理。
 
 
