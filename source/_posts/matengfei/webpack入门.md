@@ -265,6 +265,7 @@ RequireJS主要解决两个问题：
 
 ###定义模块
 RequireJS定义了一个函数 define，它是全局变量，用来定义模块:
+
 ```javascript
 define(id?, dependencies?, factory);
 ```
@@ -542,11 +543,13 @@ define(function() {
 引入：
 
 我们需要在webpack.config.js中引入uglifyjs-webpack-glugin插件
+
 ```
 const uglify = require('uglifyjs-webpack-plugin');
 ```
 
 引入后在plugins配置里new一个 uglify对象就可以了，代码如下。
+
 ```
 plugins:[
         new uglify()
@@ -719,6 +722,7 @@ new webpack.optimize.CommonsChunkPlugin({
   // (在提取之前需要至少三个子 chunk 共享这个模块)
 })
 ```
+
 ##3.4 代码分割和懒加载
 webpack 可以帮助我们将代码分成不同的逻辑块，在需要的时候加载这些代码。
 
@@ -726,9 +730,11 @@ webpack 可以帮助我们将代码分成不同的逻辑块，在需要的时候
 require.ensure() 是一种使用 CommonJS 的形式来异步加载模块的策略。在代码中通过 require.ensure([<fileurl>]) 引用模块，其使用方法如下：
 
 ```
-require.ensure(dependencies: String[], callback: function(require), chunkName: String)
+require.ensure(dependencies: String[], callback: function(require), chunkName: String);
 ```
+
 第一个参数指定依赖的模块，第二个参数是一个函数，在这个函数里面你可以使用 require 来加载其他的模块，webpack 会收集 ensure 中的依赖，将其打包在一个单独的文件中，在后续用到的时候使用 jsonp 异步地加载进去。
+
 
 ```
 //进行代码分割
@@ -986,6 +992,7 @@ Tree-shaking 概念最早由Rollup.js 提出，后来在webpack2中被引入进�
 并且webpack中并没有直接对tree shaking 的配置，需要借助uglifyjs-webpack-plugin。
 
 webpack中tree shaking主要分为两个方面
+
 * JS tree shaking： JS文件中定义的多个方法或者变量没有全部使用。
 * CSS tree shaking： 样式通过css选择器没有匹配到相应的DOM节点。
 
@@ -995,6 +1002,7 @@ webpack中tree shaking主要分为两个方面
 在一个纯粹的 ESM 模块世界中，识别出哪些文件有副作用很简单。然而，我们的项目无法达到这种纯度，所以，此时有必要向 webpack 的 compiler 提供提示哪些代码是“纯粹部分”。
 
 这种方式是通过 package.json 的 "sideEffects" 属性来实现的。
+
 ```
 {
   "name": "your-project",
@@ -1007,6 +1015,7 @@ webpack中tree shaking主要分为两个方面
 >「副作用」的定义是，在导入时会执行特殊行为的代码，而不是仅仅暴露一个 export 或多个 export。举例说明，例如 polyfill，它影响全局作用域，并且通常不提供 export。
 
 如果你的代码确实有一些副作用，那么可以改为提供一个数组：
+
 ```
 {
   "name": "your-project",
@@ -1022,6 +1031,7 @@ webpack中tree shaking主要分为两个方面
 从 webpack 4 开始，也可以通过 "mode" 配置选项轻松切换到压缩输出，只需设置为 "production"。
 
 webpack.config.js
+
 ```
 const path = require('path');
 
@@ -1036,9 +1046,11 @@ module.exports = {
 ```
 
 为了学会使用 tree shaking，你必须……
+
 * 使用 ES2015 模块语法（即 import 和 export）。
 * 在项目 package.json 文件中，添加一个 "sideEffects" 入口。
 * 引入一个能够删除未引用代码(dead code)的压缩工具(minifier)（例如 UglifyJSPlugin）。
+
 ###CSS Tree-shaking
 像Bootstrap这样的框架往往会带有很多CSS。在项目中通常我们只使用它的一小部分。就算我们自己写CSS，随着项目的进展，CSS也会越来越多，有时候需求更改，带来了DOM结构的更改，这时候我们可能无暇关注CSS样式，造成很多CSS的冗余。
 
@@ -1061,6 +1073,7 @@ const glob = require('glob');
 
 引入purifycss-webpack
 同样在webpack.config.js文件头部引入purifycss-webpack
+
 ```
 const PurifyCSSPlugin = require("purifycss-webpack");
 ```
@@ -1101,6 +1114,7 @@ plugins:[
 ```
 
 编写css文件，把图片作为背景显示。
+
 ```
 #tupian{
    background-image: url(../images/manhua.png);
@@ -1150,6 +1164,7 @@ webpack.config.js文件
 
 ####为什么只使用了url-loader
 有的小伙伴会发现我们并没有在webpack.config.js中使用file-loader，但是依然打包成功了。我们需要了解file-loader和url-loader的关系。url-loader和file-loader是什么关系呢？简答地说，url-loader封装了file-loader。url-loader不依赖于file-loader，即使用url-loader时，只需要安装url-loader即可，不需要安装file-loader，因为url-loader内置了file-loader。通过上面的介绍，我们可以看到，url-loader工作分两种情况：
+
 * 1.文件大小小于limit参数，url-loader将会把文件转为DataURL（Base64格式）；
 
 * 2.文件大小大于limit，url-loader会调用file-loader进行处理，参数也会直接传给file-loader。
@@ -1211,6 +1226,7 @@ var website ={
 
 ###处理字体文件
 ####将字体图标和css打包到同一个文件中
+
 ```
 {
    test:/\.(png|woff|woff2|svg|ttf|eot)$/,
@@ -1224,6 +1240,7 @@ var website ={
 上文中的limit一定要保证大于最大字体文件的大小，因为这个参数是告诉url-loader，如果文件小于这个参数，那么就以Data Url的方式直接构建到文件中。使用这种方式最方便，不用打包后路径的问题，但是缺点就是构建出来的文件特别大，如果线上不要使用这种方式打包。 
 
 ####将字体图标独放打包到一个文件夹中
+
 ```
 {
    test: /\.(woff|woff2|svg|ttf|eot)$/,
@@ -1259,15 +1276,20 @@ document.getElementById("json").innerHTML= json.name;
 html-webpack-plugin可以根据你设置的模板，在每次运行后生成对应的模板文件，同时所依赖的CSS/JS也都会被引入，如果CSS/JS中含有hash值，则html-webpack-plugin生成的模板文件也会引入正确版本的CSS/JS文件。
 
 安装
+
 ```
 npm install html-webpack-plugin --save-dev
 ```
 引入
+
 在webpack.config.js中引入：
+
 ```
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 ```
+
 配置
+
 ```
 module.exports = {
     entry: './app/index.js',
@@ -1298,6 +1320,7 @@ module.exports = {
 ```
 
 然后看一下这些参数的意义：
+
 * title: 生成的HTML模板的title，如果模板中有设置title的名字，则会忽略这里的设置
 * filename: 生成的模板文件的名字
 * template: 模板来源文件
@@ -1316,11 +1339,13 @@ html-withimg-loader
 html-withimg-loader就是我们今天的重点了，这个插件并不是很火，也是我个人喜欢的一个小loader。解决的问题就是在hmtl文件中引入<img>标签的问题。
 
 安装：
+
 ```
 npm install html-withimg-loader --save
 ```
 配置loader
 webpack.config.js
+
 ```
 {
     test: /\.(htm|html)$/i,
@@ -1336,7 +1361,9 @@ webpack.config.js
 ###clean-webpack-plugin
 在webpack中打包生成的文件会覆盖之前的文件，不过生成文件的时候文件名加了hash之后会每次都生成不一样的文件，这就会很麻烦，不但会生成很多冗余的文件，还很难搞清楚到底是哪个文件，这就需要引入该插件 
 
+```
 npm install –save-dev clean-webpack-plugin
+```
 
 ```javascript
 //webpack.config.js
@@ -1349,6 +1376,7 @@ new CleanWebpackPlugin(['public']);
 
 ###webpack dev server
 webpack-dev-server简介：
+
 * 是一个小型node.js express服务器
 * 新建一个开发服务器，可以serve我们pack以后的代码，并且当代码更新的时候自动刷新浏览器
 * 启动webpack-dev-server后，你在目标文件夹中是看不到编译后的文件的，实时编译后的文件都保存到了内存当中。
@@ -1362,6 +1390,7 @@ webpack-dev-server简介：
 浏览器访问：http://localhost:8080
 
 安装webpack-dev-server
+
 ```
 npm install webpack-dev-server --save-dev
 ```
@@ -1385,17 +1414,20 @@ plugins:[
 ```
 
 在package.json里配置运行的命令
+
 ```
 "scripts": 
 { 
 　　"start": "webpack-dev-server --inline"
 },
 ```
+
 ##代理远程接口
 如果你有单独的后端开发服务器 API，并且希望在同域名下发送 API 请求 ，那么代理某些 URL 会很有用。
 webpack-dev-server 使用了非常强大的 http-proxy-middleware 包。
 
 配置如下：
+
 ```
 proxy: {
     '/apis': {
@@ -1410,12 +1442,61 @@ proxy: {
 ```
 
 ##模块热更新
-HotModuleReplacementPlugin
+
+DevServer 还支持一 种叫做模块热替换( Hot Module Replacement)的技术可在不刷新整个网页的情况下 做到超 灵敏实时预览。原理是在一个源码发生变化时，只需重新编译发生变化的模块，再用新输 出 的模块替换掉浏览器中对应的老模块 。
+
+模块热替换技术的优势如下：
+
+* 实时预览反应更快，等待时间更短。
+* 不刷新浏览器时能保留当前网页的运行状态，例如在使用 Redux 管理数据的应用中搭配模块热替换能做到在代码更新时 Redux 中的数据保持不变。
+
+总的来说，模块热替换技术在很大程度上提升了开发效率和体验 。
+
+DevServer 默认不会开启模块热替换模式，要开启该模式，则只 需在启动时带上参数
+一-hot，完整的命令是 webpack-dev-server --hot。
+
+除了通过在启动时带上 --hot 参数，还可以通过接入 Plugin 实现，相关代码如下 :
+
+```
+canst HotModuleReplacementPlugin = require (’ webpack/lib/HotModuleReplacementPlugin ’);
+module.exports = { 
+	entry:{
+		//为每个入口都注入代理客户端
+		main: [’ webpack-dev-server/client?http://localhost:8080 /’, ’webpack/hot/dev-server ’,’. / src/main.j s ’],
+	},
+	 plugIns : [
+		//该插件的作用就是实现模块热替换，实际上若启动时带上 、 --hot 、参数，就会注入该插件，生 成 .hot-update.json 文件。
+		new HotModuleReplacementPlugin() ,
+	],
+	devServer : {
+		//告诉 DevServer 要开启 模块热替换模式 
+		hot: true ,
+	},
+};	
+
+```
+借助于 style-loader 的帮助，CSS 的模块热替换实际上是相当简单的。当更新 CSS 依赖模块时，此 loader 在后台使用 module.hot.accept 来修补(patch) <style> 标签。
+
+但当修改js文件时，我们会发现模块热替换没有生效，而是整个页面被刷新了，为了让使用者在使用模块热替换功能时能灵活地控制老模块被替换时的逻辑，webpack允许在源码中定义一些代码去做相应的处理。
+
+```
+// 只有当开启了模块热替换时 module.hot 才存在 
+if (module.hot) {
+    module.hot.accept(['.IAppComponent'],()=>{
+		//在新的 AppComponent 加载成功后重新执行组建渲染逻辑 		render(<AppComponentl>, window.document.getElementByid ('app'));
+	}) ;
+}
+```
+
+其中的 module.hot 是当开启模块热替换后注入全局的 API，用于控制模块热替换的逻辑 。
+当子模块发生更新时，更新事件会一层层地向上传递，也就是从 AppComponent.js 文件传递到 main.js 文件，直到有某层的文件接收了当前变化的模块，即 main.js 文 件中定义的 module.hot.accept(['.IAppComponent'], callback)，这时就会调用 callback 函数去执行自定义逻辑。 如果事件一直往上抛，到最外层都没有文件接收它，则会直接刷新网页。
+
 ##开启调试SourceMap
 作为一个程序员每天的大部分工作就是调试自己写的程序，那我们使用了webpack后，所以代码都打包到了一起，给调试带来了麻烦，但是webpack已经为我们充分考虑好了这点，它支持生产Source Maps来方便我们的调试。
 在使用webpack时只要通过简单的devtool配置，webapck就会自动给我们生产source maps 文件，map文件是一种对应编译文件和源文件的方法，让我们调试起来更简单。
 
 在配置devtool时，webpack给我们提供了四种选项：
+
 * source-map:在一个单独文件中产生一个完整且功能完全的文件。这个文件具有最好的source map,但是它会减慢打包速度；
 * cheap-module-source-map:在一个单独的文件中产生一个不带列映射的map，不带列映射提高了打包速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号）,会对调试造成不便。
 * eval-source-map:使用eval打包源文件模块，在同一个文件中生产干净的完整版的sourcemap，但是对打包后输出的JS文件的执行具有性能和安全的隐患。在开发阶段这是一个非常好的选项，在生产阶段则一定要不开启这个选项。
@@ -1425,6 +1506,7 @@ HotModuleReplacementPlugin
 个人意见是，如果大型项目可以使用source-map，如果是中小型项目使用eval-source-map就完全可以应对，需要强调说明的是，source map只适用于开发阶段，上线前记得修改这些调试设置。
 
 简单的配置：
+
 ```
 module.exports = {
   devtool: 'eval-source-map',
@@ -1437,11 +1519,13 @@ module.exports = {
 ```
 ##设置ESLint检查代码格式
 首先，要使webpack支持eslint，就要要安装 eslint-loader ，命令如下:
+
 ```
 npm install --save-dev eslint-loader
 ```
 
 在 webpack.config.js 中添加如下代码：
+
 ```
 {
     test: /\.js$/,
@@ -1460,6 +1544,7 @@ npm install --save-dev eslint-loader
 npm install --save-dev eslint
 ```
 最后，项目想要使用那些eslin规则，可以创建一个配置项文件 ‘.eslintrc.js’，代码如下:
+
 ```
 module.exports = {
     root: true, 
