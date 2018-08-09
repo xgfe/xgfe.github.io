@@ -784,7 +784,7 @@ if(page=='subPageA'){
 
 这样就会把公共模块moduleA给抽离出来。
 
-### 2.import
+### import
 import与require.ensure最大的区别就是，他在引入的时候会直接执行，而不需要在此require了
 
 ```
