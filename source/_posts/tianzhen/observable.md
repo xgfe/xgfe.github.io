@@ -284,6 +284,7 @@ setTimeout(unsubscribe, 1000)
 Observable 作为多个值的生产者这样的数据抽象，在使用时，我们还需要操作符。操作符是允许复杂的异步代码以声明式的方式进行轻松组合的基础代码单元。操作符本质上是一个纯函数 (pure function)，它接收一个 Observable 作为输入，并生成一个新的 Observable 作为输出。
 
 <img src="https://cn.rx.js.org/img/map.png">
+
 ```js
 const map = f => observable => create(observer => {
   observable(
@@ -297,6 +298,7 @@ const map = f => observable => create(observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/filter.png">
+
 ```js
 const filter = f => observable => create(observer => {
   observable(
@@ -310,6 +312,7 @@ const filter = f => observable => create(observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/merge.png">
+
 ```js
 const merge = (...observables) => create(observer => {
   const l = observables.length
@@ -330,6 +333,7 @@ const merge = (...observables) => create(observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/combineLatest.png">
+
 ```js
 const combineLatest = (...observables) => create(observer => {
   const l = observables.length
@@ -358,6 +362,7 @@ const combineLatest = (...observables) => create(observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/combineAll.png">
+
 ```js
 const combineAll = (...observables) => observer => {
   const l = observables.length
@@ -377,6 +382,7 @@ const combineAll = (...observables) => observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/share.png">
+
 ```js
 const share = observable => {
   let finished = false
@@ -407,6 +413,7 @@ const share = observable => {
 ```
 
 <img src="https://cn.rx.js.org/img/take.png">
+
 ```js
 const take = n => observable => create(observer => {
   if (n <= 0) {
@@ -431,6 +438,7 @@ const take = n => observable => create(observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/concat.png">
+
 ```js
 const concat = (...observables) => create(observer => {
   const l = observables.length
@@ -454,6 +462,7 @@ const concat = (...observables) => create(observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/concatMap.png">
+
 ```js
 const concatMap = f => observable => create(observer => {
   let observables = []
@@ -506,6 +515,7 @@ const concatMap = f => observable => create(observer => {
 ```
 
 <img src="https://cn.rx.js.org/img/switchMap.png">
+
 ```js
 const switchMap = f => observable => create(observer => {
   let current
@@ -554,4 +564,3 @@ const switchMap = f => observable => create(observer => {
   - [xstream](https://github.com/staltz/xstream)
   - [flyd](https://github.com/paldepind/flyd)
   - [callbag-basics](https://github.com/staltz/callbag-basics/)
-
