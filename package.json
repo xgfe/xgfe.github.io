@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "hexo": {
-    "version": "3.7.1"
+    "version": "3.3.8"
   },
   "scripts": {
     "postinstall": "./postinstall.sh"
@@ -21,8 +21,7 @@
     "hexo-renderer-ejs": "^0.1.0",
     "hexo-renderer-marked": "^0.2.4",
     "hexo-renderer-stylus": "^0.3.0",
-    "hexo-server": "^0.1.2",
-    "undefined": "^undefined"
+    "hexo-server": "^0.1.2"
   },
   "devDependencies": {}
 }
