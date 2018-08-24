@@ -8,26 +8,26 @@ tags:
 - Extension
 ---
 
-本文主要介绍category 和 Extension 的相关知识以及使用。
+本文主要介绍Category 和 Extension 的相关知识以及使用。
 <!--more-->
 
 # 目录
 ## Category
 
-- category的背景和概念
-- category的声明及实现
-- category的使用
-- category扩展属性（变量）
+- Category的背景和概念
+- Category的声明及实现
+- Category的使用
+- Category扩展属性（变量）
 
 ## Extension
 
-- extension的格式
-- extension的实现
+- Extension的格式
+- Extension的实现
 
-## category和Extension的区别
+## Category和Extension的区别
 
 ### 一、Category
-#### 1、category的背景和概念
+#### 1、Category的背景和概念
 
 在日常开发中，经常需要对已有类进行功能上的扩展，在学习“类别”之前，常用的类扩展方式有以下三种：
 
@@ -47,7 +47,7 @@ tags:
 
 类别是OC的特有语法，可以通过在类上声明和实现方法来扩展现有类的功能。原则上只能增加方法（包括对象方法和类方法），不能增加成员变量。
 
-#### 2、category的声明及实现
+#### 2、Category的声明及实现
 
     @interface 需扩展的类 （类别的名称）
     -（void）appendMethod;
@@ -57,9 +57,9 @@ tags:
 	-（void）appendMethod{
 	}
 	@end
-#### 3、category的使用
+#### 3、Category的使用
 
-如果需要扩展一个类，定义好此类的category ，则可以通过该类的对象直接调用category中的扩展方法。与此同时，在category中也可以访问原有类.h中的属性和方法。
+如果需要扩展一个类，定义好此类的Category ，则可以通过该类的对象直接调用Category中的扩展方法。与此同时，在Category中也可以访问原有类.h中的属性和方法。
 
 .h文件：
 	
@@ -84,7 +84,7 @@ tags:
     	NSLog(@"jump");
 	}
 	@end
-为pson类添加eat方法，category的.m文件如下所示：
+为pson类添加eat方法，Category的.m文件如下所示：
 
 
 pson+eat.h文件
@@ -124,13 +124,13 @@ pson+eat.m文件
         [pson drink]
 
         
-#### 4、category扩展属性（变量）
+#### 4、Category扩展属性（变量）
 
-由于category本质上是个指向类型的结构体指针，在结构体中只有方法的列表，没有属性的列表，所以理论上只能增加方法不能增加属性。
+由于Category本质上是个指向类型的结构体指针，在结构体中只有方法的列表，没有属性的列表，所以理论上只能增加方法不能增加属性。
 
-如何通过category来扩展属性呢？
+如何通过Category来扩展属性呢？
 
-无法添加属性的根本原因是：在category中@property声明属性，系统不会生成_成员变量和setter、getter。
+无法添加属性的根本原因是：在Category中@property声明属性，系统不会生成_成员变量和setter、getter。
 
 解决方法：手动添加setter和getter方法，采用的就是：关联引用（objc_setAssociatedObject和objc_getAssociatedObject）
 
@@ -152,7 +152,7 @@ objc_getAssociatedObject，接收2个参数：关联到数据的对象、键值
 
 具体实现例子如下所示：
 
-category的.h文件
+Category的.h文件
 
 	#import "pson.h"
 
@@ -162,7 +162,7 @@ category的.h文件
 	+(void) drink;
 	@end
 	
-category的.m文件
+Category的.m文件
 
 	#import "pson+eat.h"
 	#import "objc/runtime.h"
@@ -202,23 +202,23 @@ main方法中的使用如下：
 	
 ### 二、Extension
 
-extension 是Category的特例，少了类别的名称，是匿名分类。声明私有方法和属性的机制。具体实现在原有类的.m文件中。
-#### 1、extension的格式
+Extension 是Category的特例，少了类别的名称，是匿名分类。声明私有方法和属性的机制。具体实现在原有类的.m文件中。
+#### 1、Extension的格式
 
 	@interface XXX ()
 		//私有属性
 		//私有方法（如果不实现，编译时会报警,Method definition for 'XXX' not found）
 	@end
 	
-#### 2、extension的实现
+#### 2、Extension的实现
 
 - 通过单独的.h声明，在原有类的.m中导入。
 - 直接在原有类的.m中使用。
 
-## category和Extension的区别
+## Category和Extension的区别
 
-- category原则上只能增加方法；而Extension方法和变量都可以。
-- Extension声明方法没有被实现，编译器报警。category在运行时添加、Extension是编译阶段。
+- Category原则上只能增加方法；而Extension方法和变量都可以。
+- Extension声明方法没有被实现，编译器报警。Category在运行时添加、Extension是编译阶段。
 - Extension没有自己独立的实现部分。
 - Extension是私有。
 
