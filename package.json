@@ -9,7 +9,7 @@
     "postinstall": "./postinstall.sh"
   },
   "dependencies": {
-    "hexo": "^3.1.1",
+    "hexo": "^3.7.1",
     "hexo-deployer-git": "0.0.4",
     "hexo-generator-archive": "^0.1.2",
     "hexo-generator-baidu-sitemap": "0.1.1",
