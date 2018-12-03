@@ -11,7 +11,7 @@ tags:
 <!-- more -->
 
 #### React-Native 介绍
-* React-Native 在官网上给的定义是:使用 JavaScript 和 React 编写原生移动应用。在设计原理上是和 React 一致的，可以通过生命是的组件机制来搭建丰富多彩的用户界面。RN产出的不是"网页应用"，或者"HTML5应用"，RN所产出的其实是一个真正的移动应用。从感受上来说和 Objective-C 或 Java 编写的应用基本是一样的。
+* React-Native 在官网上给的定义是:使用 JavaScript 和 React 编写原生移动应用。在设计原理上是和 React 一致的，可以通过生命是的组件机制来搭建丰富多彩的用户界面。RN产出的不是“网页应用”，或者“HTML5应用”，RN所产出的其实是一个真正的移动应用。从感受上来说和 Objective-C 或 Java 编写的应用基本是一样的。
 
 * [RN官网](https://reactnative.cn/)
 
@@ -32,9 +32,11 @@ import {Style} from './TestComponentStyle'; //引入样式
 ```
 
 * 简单的计数器实现
+
 ![计数器](https://wx4.sinaimg.cn/mw690/ba56005dgy1fxkcvc2m1qj207g010dfq.jpg)
-点击加号数字动态变化+1，点击减号数字动态-1。首先这个组件由一个 <Text> 和两个  <Butto> 组件组成，其中 Text 组件中有两个变量，children 作为对外暴露的属性，写在this.props 里面，state 是组件内部的可变化的状态，写在this.state里面。
-官网上是这样描述 props 和 state :我们使用两种数据来控制一个组件：props 和 state.props 是在父组件中指定，而且一经指定，在被指定的组件的生命周期中则不再改变。对于需要改变的数据，我们需要使用 state 。
+
+点击加号数字动态变化+1，点击减号数字动态-1。首先这个组件由一个 Text 和两个  Button 组件组成，其中 Text 组件中有两个变量，children 作为对外暴露的属性，写在this.props 里面，state 是组件内部的可变化的状态，写在this.state里面。
+官网上是这样描述 props 和 state：我们使用两种数据来控制一个组件：props 和 state.props 是在父组件中指定，而且一经指定，在被指定的组件的生命周期中则不再改变。对于需要改变的数据，我们需要使用 state 。
 这里先介绍一下 render 函数部分:
 
 ```js
@@ -248,6 +250,5 @@ export default {
 虽然这里用 Redux 也实现了计数器，但是其实是杀鸡用牛刀了，这样的简单的数据重新渲染其实大可不必，用 setState 就可以了，当然 Redux 也有其优点，他让数据和我们的组件模块解耦，数据单独处理了，不需要在每一个组件中来对 state 进行管理，需要的数据从上游作为 props 传进来了。不过经常可以看到这么一句话，如果你不知道你为什么需要 Redux，那你就是不需要 Redux..   (=. = redux 对于新手真的有点不友好)
 
 #### 参考
-* [图解 Redux 数据流(一) ](https://alisec-ued.github.io/2016/11/23/%E5%9B%BE%E8%A7%A3Redux%E6%95%B0%E6%8D%AE%E6%B5%81(%E4%B8%80)/)
 * [Redux 的数据流](https://blog.csdn.net/Helloyongwei/article/details/82937808)
 * [看了我这篇 RN 你就入门了](https://www.jianshu.com/p/2a20c8485a90)
