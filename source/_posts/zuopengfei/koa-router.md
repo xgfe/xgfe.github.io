@@ -1,4 +1,4 @@
-title: koa-router源码解读
+title: koa-router 源码解读
 date: 2018-09-27 19:18:00
 categories: zuopengfei
 tags: 
@@ -7,7 +7,7 @@ tags:
 - koa-router
 ---
 
-本文通过阅读koa-router的源码归纳了koa-router涉及到的router和layer两个对象的关系；以及梳理了koa-router处理请求的整体流程。
+本文通过阅读 koa-router 的源码归纳了 koa-router 涉及到的 router 和 layer 两个对象的关系；以及梳理了 koa-router 处理请求的整体流程。
 
 
 <!-- more -->
@@ -161,7 +161,7 @@ router和layer的关系
 
 ## 源码解析
 
-### Router构造函数
+### Router 构造函数
 
 `Node`本身提供了数十个`HTTP`请求动词，`koa-router`只是实现了部分常用的：
 
@@ -347,9 +347,9 @@ Router.prototype.routes = Router.prototype.middleware = function () {
 };
 
 ```
-这里形成了一个闭包，在routes函数内部返回了一个dispatch函数作为中间件。 
+这里形成了一个闭包，在`routes`函数内部返回了一个`dispatch`函数作为中间件。 
 
-接下来看下dispatch函数的实现：
+接下来看下`dispatch`函数的实现：
 
 ```
 var dispatch = function dispatch(ctx, next) {
@@ -428,7 +428,7 @@ Router.prototype.allowedMethods = function (options) {
 };
 ```
 
-上面的代码很简单, 就是保存Router配置中允许的HTTP方法数组在闭包内部
+上面的代码很简单, 就是保存`Router`配置中允许的`HTTP`方法数组在闭包内部
 
 ```
 return function allowedMethods(ctx, next) {
@@ -505,7 +505,7 @@ return function allowedMethods(ctx, next) {
 };
 ```
 
-值得注意的是, Router.methods数组里面的方法是服务端需要实现并支持的方法, 如果客户端发送过来的请求方法不被允许, 那么这是一个服务端错误 501, 但是如果这个方法被允许, 但是找不到对应这个方法的路由处理函数(比如相同路由的POST 路由但是用GET方法来获取数据), 这是一个客户端错误405。
+值得注意的是, `Router.methods`数组里面的方法是服务端需要实现并支持的方法, 如果客户端发送过来的请求方法不被允许, 那么这是一个服务端错误`501`, 但是如果这个方法被允许, 但是找不到对应这个方法的路由处理函数(比如相同路由的`POST`路由但是用`GET`方法来获取数据), 这是一个客户端错误`405`。
 
 
 ### router.use()
@@ -564,15 +564,15 @@ router.prototype.use = function () {
 };
 ```
 
-眼尖的同学可能会看到一些http code：404, 501, 204, 405。那这个函数其实就是当所有中间件函数执行完了，并且请求出错了进行相应的处理：
+眼尖的同学可能会看到一些 http code：404, 501, 204, 405 。那这个函数其实就是当所有中间件函数执行完了，并且请求出错了进行相应的处理：
 
-+ 如果请求的方法koa-router不支持并且没有设置`throw`选项，则返回`501`(未实现)
-+ 如果是options请求，则返回 `204`(无内容)
++ 如果请求的方法`koa-router`不支持并且没有设置`throw`选项，则返回`501`(未实现)
++ 如果是`options`请求，则返回 `204`(无内容)
 + 如果请求的方法支持但没有设置`throw`选项，则返回 `405`(不允许此方法 )
 
 ### Router.prototype.match
 
-我们已经注册好了路由, 但是, 如果请求过来了, 请求是怎么匹配然后进行到相对应的处理函数去的呢? 答案就是利用 match 函数.先看一下 match 函数的代码:
+我们已经注册好了路由, 但是, 如果请求过来了, 请求是怎么匹配然后进行到相对应的处理函数去的呢? 答案就是利用`match`函数.先看一下`match`函数的代码:
 
 ```
 Router.prototype.match = function (path, method) {
@@ -609,7 +609,7 @@ Router.prototype.match = function (path, method) {
 };
 ```
 
-通过上面返回的结果集, 我们知道一个请求来临的时候, 我们可以使用正则来匹配路由是否符合, 然后在 path 数组或者 pathAndMethod 数组中找到对应的 Layer 实例对象.
+通过上面返回的结果集, 我们知道一个请求来临的时候, 我们可以使用正则来匹配路由是否符合, 然后在`path`数组或者`pathAndMethod`数组中找到对应的`Layer`实例对象.
 
 ## router处理请求的流程
 
@@ -618,13 +618,13 @@ Router.prototype.match = function (path, method) {
 
 ## 其他
 
-`koa-router`用到了第三方的node模块
+`koa-router`用到了第三方的`node`模块
 
  + [koa-compose](https://github.com/koajs/compose): 
 	提供给它一个中间件数组， 返回一个顺序执行所有中间件的执行函数。
 	 
  + [methods](https://github.com/jshttp/methods)： 
-	node中支持的http动词，就是http.METHODS，可以在终端输出看看。 
+	`node`中支持的`http`动词，就是`http.METHODS`，可以在终端输出看看。 
 
  + [path-to-regexp](https://github.com/pillarjs/path-to-regexp)： 
 	将路径字符串转换成强大的正则表达式，还可以输出路径参数。
@@ -637,3 +637,4 @@ Router.prototype.match = function (path, method) {
  + `koa-router`涉及到的`router`和`layer`的关系；
  + `koa-router`处理请求的整体流程；
  
+
