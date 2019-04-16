@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+title: webpack入门 
+=======
 title: webpack 入门 
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 date: 2018-06-24 20:31:49 
 categories: matengfei
 tags: 
@@ -9,22 +13,38 @@ Webpack 是当下最热门的前端资源模块化管理和打包工具。它可
 
 <!--more-->
 
+<<<<<<< HEAD
+# 1、webpack简介
+=======
 # 1、webpack 简介
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 前端是基于多语言、多层次的编码和组织工作，其次前端产品的交付是基于浏览器，这些资源是通过增量加载的方式运行到浏览器端，如何在开发环境组织好这些碎片化的代码和资源，并且保证他们在浏览器端快速、优雅的加载和更新，就需要一个模块化系统。
 
 
 ## webpack 的优势
+<<<<<<< HEAD
+* 1、支持CommonJs和AMD模块，意思也就是我们基本可以无痛迁移旧项目。
+* 2、支持模块加载器和插件机制，可对模块灵活定制。babel-loader更是有效支持ES6。 
+* 3、可以通过配置，打包成多个文件。有效利用浏览器的缓存功能提升性能。 
+* 4、将样式文件和图片等静态资源也可视为模块进行打包。配合loader加载器，可以支持sass，less等CSS预处理器。 
+* 5、内置有source map，即使打包在一起依旧方便调试。
+=======
 * 1、支持 CommonJs 和 AMD 模块，意思也就是我们基本可以无痛迁移旧项目。
 * 2、支持模块加载器和插件机制，可对模块灵活定制。babel-loader 更是有效支持 ES6 。 
 * 3、可以通过配置，打包成多个文件。有效利用浏览器的缓存功能提升性能。 
 * 4、将样式文件和图片等静态资源也可视为模块进行打包。配合 loader 加载器，可以支持 sass ，less 等 CSS 预处理器。 
 * 5、内置有 source map ，即使打包在一起依旧方便调试。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 
 ## webpack 核心概念
 Webpack 具有四个核心的概念，想要入门 Webpack 就得先好好了解这四个核心概念。它们分别是Entry（入口）、Output（输出）、loader 和 Plugins（插件）。接下来详细介绍这四个核心概念。
 ### 1. Entry
+<<<<<<< HEAD
+Entry 是 Webpack 的入口起点指示，它指示 webpack 应该从哪个模块开始着手，来作为其构建内部依赖图的开始。可以在配置文件（webpack.config.js）中配置 entry 属性来指定一个或多个入口点，默认为./src（ webpack 4开始引入默认值）。
+=======
 Entry 是 Webpack 的入口起点指示，它指示 webpack 应该从哪个模块开始着手，来作为其构建内部依赖图的开始。可以在配置文件（webpack.config.js）中配置 entry 属性来指定一个或多个入口点，默认为 ./src（ webpack 4开始引入默认值）。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 具体配置方法：
 
 ```js
@@ -45,7 +65,11 @@ module.exports = {
 以上配置表示从 app 和 vendors 属性开始打包构建依赖树，这样做的好处在于分离自己开发的业务逻辑代码和第三方库的源码，因为第三方库安装后，源码基本就不再变化，这样分开打包有利于提升打包速度，减少了打包文件的个数。
 
 ### 2. Output
+<<<<<<< HEAD
+Output 属性告诉webpack在哪里输出它所创建的 bundles，也可指定 bundles 的名称，默认位置为 ./dist。整个应用结构都会被编译到指定的输出文件夹中去，最基本的属性包括 filename（文件名）和 path（输出路径）。
+=======
 Output 属性告诉 webpack 在哪里输出它所创建的 bundles ，也可指定 bundles 的名称，默认位置为 ./dist。整个应用结构都会被编译到指定的输出文件夹中去，最基本的属性包括 filename（文件名）和 path（输出路径）。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 值得注意的是，即是你配置了多个入口文件，你也只能有一个输出点。
 
@@ -77,7 +101,11 @@ module.exports = {
 ```
 
 ### 3. Loaders
+<<<<<<< HEAD
+loader 可以理解为webpack的编译器，它使得webpack可以处理一些非 JavaScript 文件，比如 png、csv、xml、css、json 等各种类型的文件，使用合适的 loader 可以让 JavaScript 的 import 导入非 JavaScript 模块。JavaScript 只认为 JavaScript 文件是模块，而 webpack 的设计思想即万物皆模块，为了使得 webpack 能够认识其他“模块”，所以需要 loader 这个“编译器”。
+=======
 loader 可以理解为 webpack 的编译器，它使得 webpack 可以处理一些非 JavaScript 文件，比如 png、csv、xml、css、json 等各种类型的文件，使用合适的 loader 可以让 JavaScript 的 import 导入非 JavaScript 模块。JavaScript 只认为 JavaScript 文件是模块，而 webpack 的设计思想即万物皆模块，为了使得 webpack 能够认识其他“模块”，所以需要 loader 这个“编译器”。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 webpack 中配置 loader 有两个目标：
 
@@ -85,7 +113,11 @@ webpack 中配置 loader 有两个目标：
 
 （2）use 属性：指定 test 类型的文件应该使用哪个 loader 进行预处理。
 
+<<<<<<< HEAD
+比如webpack.config.js:
+=======
 比如 webpack.config.js :
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 ```js
 module.exports = {
@@ -106,9 +138,15 @@ module.exports = {
 
 此处需要注意的是定义 loaders 规则时，不是定义在对象的 rules 属性上，而是定义在 module 属性的 rules 属性中。
 
+<<<<<<< HEAD
+配置多个 loader：
+
+有时候，导入一个模块可能要先使用多个 loader 进行预处理，这时就要对指定类型的文件配置多个 loader 进行预处理，配置多个 loader，把 use 属性赋值为数组即可，webpack 会按照数组中 loader 的先后顺序，使用对应的 loader 依次对模块文件进行预处理。
+=======
 配置多个 loader ：
 
 有时候，导入一个模块可能要先使用多个 loader 进行预处理，这时就要对指定类型的文件配置多个 loader 进行预处理，配置多个 loader ，把 use 属性赋值为数组即可，webpack 会按照数组中 loader 的先后顺序，使用对应的 loader 依次对模块文件进行预处理。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 ```js
 {
@@ -150,7 +188,11 @@ module.exports = {
 
 学习完以上基本概念之后，基本也就入门 webpack 了，因为 webpack 的强大就是建立在这些基本概念之上，利用 webpack 多样的 loaders 和 plugins，可以实现强大的打包功能。
 
+<<<<<<< HEAD
+# 2、js模块化
+=======
 # 2、js 模块化
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 ## 2.1 命名空间
 命名空间是通过为项目或库创建一个全局对象，然后将所有功能添加到该全局变量中。通过减少程序中全局变量的数量，实现单全局变量，从而在具有大量函数、对象和其他变量的情况下不会造成全局污染，同时也避免了命名冲突等问题。
 
@@ -246,7 +288,11 @@ var app = require('./app.js');
 
 * 如果参数字符串以“/”开头，则表示加载的是一个位于绝对路径的模块文件。
 * 如果参数字符串以“./”开头，则表示加载的是一个位于相对路径的模块文件
+<<<<<<< HEAD
+* 如果参数字符串不以“./“或”/“开头，则表示加载的是一个默认提供的核心模块（ node 核心模块，或者通过全局安装或局部安装在 node_modules 目录中的模块）
+=======
 * 如果参数字符串不以“./” 或 “/”开头，则表示加载的是一个默认提供的核心模块（ node 核心模块，或者通过全局安装或局部安装在 node_modules 目录中的模块）
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 ### 入口文件
 一般都会有一个主文件（入口文件），在 index.html 中加载这个入口文件，然后在这个入口文件中加载其他文件。
@@ -343,7 +389,11 @@ require（['jquery'],function($){}）
 shim：有些库不是 AMD 兼容的，这时就需要指定 shim 属性的值。shim 可以理解成“垫片”，用来帮助require.js 加载非 AMD 规范的库。
 
 ## 2.4 CMD
+<<<<<<< HEAD
+CMD 即Common Module Definition 通用模块定义，CMD 规范是国内发展出来的，就像 AMD 有个requireJS，CMD 有个浏览器的实现 SeaJS，SeaJS 要解决的问题和 requireJS 一样，只不过在模块定义方式和模块加载（可以说运行、解析）时机上有所不同。
+=======
 CMD 即 Common Module Definition 通用模块定义，CMD 规范是国内发展出来的，就像 AMD 有个requireJS，CMD 有个浏览器的实现 SeaJS ，SeaJS 要解决的问题和 requireJS 一样，只不过在模块定义方式和模块加载（可以说运行、解析）时机上有所不同。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 在 CMD 规范中，一个模块就是一个文件。代码的书写格式如下:
 
@@ -389,7 +439,11 @@ ES6 模块不是对象，而是通过export命令显式指定输出的代码，�
 ES6 中的模块有以下特点：
 
 * 模块自动运行在严格模式下
+<<<<<<< HEAD
+* 在模块的顶级作用域创建的变量，不会被自动添加到共享的全局作用域，它们只会在模块顶级作用域的内部存在；
+=======
 * 在模块的顶级作用域创建的变量，不会被自动添加到共享的全局作用域，它们只会在模块顶级作用域的内部存在
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 * 模块顶级作用域的 this 值为 undefined
 * 对于需要让模块外部代码访问的内容，模块必须导出它们
 
@@ -504,8 +558,13 @@ import { magicNumber } from "./example.js";
 export 与 import 都有一个重要的限制，那就是它们必须被用在其他语句或表达式的外部，而不能使用在if等代码块内部。原因之一是模块语法需要让 JS 能静态判断需要导出什么，正因为此，你只能在模块的顶级作用域使用 export 与 import。
 
 
+<<<<<<< HEAD
+# 3、webpack使用
+## 3.1 打包js
+=======
 # 3、webpack 使用
 ## 3.1 打包 js
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 webpack 对各种模块化的支持
 
 ```js
@@ -549,10 +608,17 @@ define(function() {
 });
 ```
 
+<<<<<<< HEAD
+### 压缩JS代码：
+现在你写的 JS 代码，在上线之前，都是需要进行压缩的，在没有 webpack 和 gulp 这些工具前，你可能需要找一个压缩软件或者在线进行压缩，在Webpack中可以很轻松的实现JS代码的压缩，它是通过插件的方式实现的，这里我们就先来引入一个 uglifyjs-webpack-plugin ( JS 压缩插件，简称 uglify)。
+
+注意：虽然 uglifyjs 是插件，但是webpack版本里默认已经集成，不需要再次安装。
+=======
 ### 压缩 JS 代码：
 现在你写的 JS 代码，在上线之前，都是需要进行压缩的，在没有 webpack 和 gulp 这些工具前，你可能需要找一个压缩软件或者在线进行压缩，在 Webpack 中可以很轻松的实现JS代码的压缩，它是通过插件的方式实现的，这里我们就先来引入一个 uglifyjs-webpack-plugin ( JS 压缩插件，简称 uglify )。
 
 注意：虽然 uglifyjs 是插件，但是 webpack 版本里默认已经集成，不需要再次安装。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 引入：
 
@@ -572,16 +638,27 @@ plugins:[
 
 这时候在终端中使用 webpack 进行打包，你会发现 JS 代码已经被压缩了。
 
+<<<<<<< HEAD
+## 3.2 编译ES6
+在前端开发中都开始使用ES6的语法了，虽然说 webpack3 增加了一些 ES6 的转换支持，但是实际效果不是很好。所以我在开发中还是喜欢添加 Babel-loader 的，我也查看了一些别人的 webpack 配置也都增加了 babel-loader，所以这节课我们学习一下如何增加 Babel 支持。
+=======
 ## 3.2 编译 ES6
 在前端开发中都开始使用 ES6 的语法了，虽然说 webpack3 增加了一些 ES6 的转换支持，但是实际效果不是很好。所以我在开发中还是喜欢添加 Babel-loader 的，我也查看了一些别人的 webpack 配置也都增加了 babel-loader，所以这节课我们学习一下如何增加 Babel 支持。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 Babel 是什么？
 Babel 其实是一个编译 JavaScript 的平台，它的强大之处表现在可以通过便宜帮你达到以下目的：
 
 * 使用下一代的 javaScript 代码( ES6, ES7….)，即使这些标准目前并未被当前的浏览器完全支持。
+<<<<<<< HEAD
+* 使用基于 JavaScript 进行了扩展的语言，比如 React 的 JSX。
+
+### Babel的安装与配置
+=======
 * 使用基于 JavaScript 进行了扩展的语言，比如 React 的 JSX 。
 
 ### Babel 的安装与配置
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 Babel 其实是几个模块化的包，其核心功能位于称为 babel-core 的 npm 包中，webpack 可以把其不同的包整合在一起使用，对于每一个你需要的功能或拓展，你都需要安装单独的包（用得最多的是解析 ES6 的 babel-preset-es2015 包和解析 JSX 的 babel-preset-react 包）。
 
 安装依赖包
@@ -717,7 +794,11 @@ new webpack.optimize.CommonsChunkPlugin({
 ```
 
 ### 额外的异步公共 chunk
+<<<<<<< HEAD
+与上面的类似，但是并非将公共模块移动到父 chunk（增加初始加载时间），而是使用新的异步加载的额外公共chunk。当下载额外的 chunk 时，它将自动并行下载。
+=======
 与上面的类似，但是并非将公共模块移动到父 chunk（增加初始加载时间），而是使用新的异步加载的额外公共 chunk 。当下载额外的 chunk 时，它将自动并行下载。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 ```js
 new webpack.optimize.CommonsChunkPlugin({
@@ -968,7 +1049,11 @@ module:{
 ### PostCSS-in-webpack
 CSS3 是目前作为一个前端必须要掌握的技能，但是由于现在好多浏览器还是不兼容 CSS3，所以前端需要多写很丑很难看的前缀代码；以前都是边查 Can I Use ，边添加，这样很麻烦，现在配置一个插件 postcss就可以搞定；
 
+<<<<<<< HEAD
+PostCSS 是一个 CSS 的处理平台，它可以帮助你的 CSS 实现更多的功能，但是今天我们就通过其中的一个加前缀的功能，初步了解一下 PostCSS。
+=======
 PostCSS 是一个 CSS 的处理平台，它可以帮助你的 CSS 实现更多的功能，但是今天我们就通过其中的一个加前缀的功能，初步了解一下 PostCSS 。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 安装：
 
@@ -1178,7 +1263,11 @@ webpack.config.js文件
     },
 ```
 
+<<<<<<< HEAD
+* test:/\.(png|jpg|gif)/ 是匹配图片文件后缀名称。
+=======
 * test： /\.(png|jpg|gif)/ 是匹配图片文件后缀名称。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 * use：是指定使用的 loader 和 loader 的配置参数。
 * limit：是把小于 500000B 的文件打成 Base64 的格式，写入JS 。
 * 写好后就可以使用 webpack 进行打包了，这回你会发现打包很顺利的完成了。具体的 Base64 的格式，你可以查看视频中的样子。
@@ -1218,8 +1307,13 @@ webpack.config.js文件
     },
 ```
 
+<<<<<<< HEAD
+### CSS分离时图片路径处理
+在处理 css 时我们已经学会如何使用 extract-text-webpack-plugin 插件提取 css，利用 extract-text-webpack-plugin 插件很轻松的就把 CSS 文件分离了出来，但是 CSS 路径并不正确，很多小伙伴就在这里搞个几天还是没有头绪，网上也给出了很多的解决方案，我觉的最好的解决方案是使用publicPath 解决，我也一直在用。
+=======
 ### CSS 分离时图片路径处理
 在处理 css 时我们已经学会如何使用 extract-text-webpack-plugin 插件提取 css，利用 extract-text-webpack-plugin 插件很轻松的就把 CSS 文件分离了出来，但是 CSS 路径并不正确，很多小伙伴就在这里搞个几天还是没有头绪，网上也给出了很多的解决方案，我觉的最好的解决方案是使用 publicPath 解决，我也一直在用。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 publicPath：是在 webpack.config.js 文件的 output 选项中，主要作用就是处理静态文件路径的。
 
@@ -1278,7 +1372,11 @@ var website ={
 
 打包中会遇到的问题就是路径不对，可以通过配置 publicPath 解决。
 
+<<<<<<< HEAD
+### Json配置文件使用
+=======
 ### Json 配置文件使用
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 在实际工作中，我们的项目都会配置一个 Json 的文件或者说 API 文件，作为项目的配置文件。有时候你也会从后台读取到一个 json 的文件，这节课就学习如何在 webpack 环境中使用 Json。如果你会 webpack1 或者 webpack2 版本中，你是需要加载一个 json-loader 的 loader 进来的，但是在webpack3.x 版本中，你不再需要另外引入了。
 
 读出 Json 内容
@@ -1352,7 +1450,11 @@ module.exports = {
 * favicon: 指定页面图标；
 * minify: 是 html-webpack-plugin 中集成的 html-minifier ，生成模板文件压缩配置
 * caseSensitive: false, //是否大小写敏感
+<<<<<<< HEAD
+* collapseBooleanAttributes: true, //是否简写 boolean 格式的属性如：disabled="disabled" 简写为disabled 
+=======
 * collapseBooleanAttributes: true, //是否简写 boolean 格式的属性如：disabled="disabled" 简写为 disabled 
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 * collapseWhitespace: true //是否去除空格
 * hash: 是否生成hash添加在引入文件地址的末尾，类似于我们常用的时间戳
 * cache: 是否需要缓存，如果填写 true，则文件只有在改变时才会重新生成
@@ -1380,9 +1482,15 @@ webpack.config.js
 
 然后在终端中可以进行打包了。你会发现 images 被很好的打包了。并且路径也完全正确。
 
+<<<<<<< HEAD
+# webpack环境配置
+## 搭建开发环境
+在使用 webpack-cli 进行打包时，通过命令 webpack --watch即可开启 watch 模式，进入 watch 模式之后，一旦依赖树中的某一个模块发生了变化，webpack 就会重新进行编译。
+=======
 # webpack 环境配置
 ## 搭建开发环境
 在使用 webpack-cli 进行打包时，通过命令 webpack --watch 即可开启 watch 模式，进入 watch 模式之后，一旦依赖树中的某一个模块发生了变化，webpack 就会重新进行编译。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 ### clean-webpack-plugin
 在 webpack 中打包生成的文件会覆盖之前的文件，不过生成文件的时候文件名加了 hash 之后会每次都生成不一样的文件，这就会很麻烦，不但会生成很多冗余的文件，还很难搞清楚到底是哪个文件，这就需要引入该插件 
@@ -1415,7 +1523,11 @@ webpack-dev-server 简介：
 命令行：webpack-dev-server --inline
 浏览器访问：http://localhost:8080
 
+<<<<<<< HEAD
+安装webpack-dev-server
+=======
 安装 webpack-dev-server
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 
 ```js
 npm install webpack-dev-server --save-dev
@@ -1516,15 +1628,26 @@ if (module.hot) {
 其中的 module.hot 是当开启模块热替换后注入全局的 API，用于控制模块热替换的逻辑 。
 当子模块发生更新时，更新事件会一层层地向上传递，也就是从 AppComponent.js 文件传递到 main.js 文件，直到有某层的文件接收了当前变化的模块，即 main.js 文 件中定义的 module.hot.accept(['.IAppComponent'], callback)，这时就会调用 callback 函数去执行自定义逻辑。 如果事件一直往上抛，到最外层都没有文件接收它，则会直接刷新网页。
 
+<<<<<<< HEAD
+## 开启调试SourceMap
+
+作为一个程序员每天的大部分工作就是调试自己写的程序，那我们使用了webpack后，所以代码都打包到了一起，给调试带来了麻烦，但是webpack已经为我们充分考虑好了这点，它支持生产 Source Maps 来方便我们的调试。
+=======
 ## 开启调试 SourceMap
 
 作为一个程序员每天的大部分工作就是调试自己写的程序，那我们使用了webpack后，所以代码都打包到了一起，给调试带来了麻烦，但是 webpack 已经为我们充分考虑好了这点，它支持生产 Source Maps 来方便我们的调试。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 在使用 webpack 时只要通过简单的 devtool 配置，webapck 就会自动给我们生产 source maps 文件，map 文件是一种对应编译文件和源文件的方法，让我们调试起来更简单。
 
 在配置 devtool 时，webpack 给我们提供了四种选项：
 
+<<<<<<< HEAD
+* source-map: 在一个单独文件中产生一个完整且功能完全的文件。这个文件具有最好的 source map,但是它会减慢打包速度；
+* cheap-module-source-map: 在一个单独的文件中产生一个不带列映射的map，不带列映射提高了打包速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号）,会对调试造成不便。
+=======
 * source-map: 在一个单独文件中产生一个完整且功能完全的文件。这个文件具有最好的 source map ，但是它会减慢打包速度；
 * cheap-module-source-map: 在一个单独的文件中产生一个不带列映射的map ，不带列映射提高了打包速度，但是也使得浏览器开发者工具只能对应到具体的行，不能对应到具体的列（符号），会对调试造成不便。
+>>>>>>> 70f0ef78fcbc4ef41773f4ff1ac4dacf2a74dfdb
 * eval-source-map: 使用 eval 打包源文件模块，在同一个文件中生产干净的完整版的 sourcemap ，但是对打包后输出的JS文件的执行具有性能和安全的隐患。在开发阶段这是一个非常好的选项，在生产阶段则一定要不开启这个选项。
 * cheap-module-eval-source-map: 这是在打包文件时最快的生产 source map 的方法，生产的 Source map 会和打包后的 JavaScript 文件同行显示，没有影射列，和 eval-source-map 选项具有相似的缺点。
 四种打包模式，有上到下打包速度越来越快，不过同时也具有越来越多的负面作用，较快的打包速度的后果就是对执行和调试有一定的影响。
