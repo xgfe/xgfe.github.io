@@ -2,6 +2,7 @@
   let name = window.location.href;
   let idArray = name.split('/');
   let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
   const gitment = new Gitmint({
     id: id,
     owner: 'xgfe',
