@@ -1,5 +1,5 @@
 title: Category 与Extension 相关知识
-date: 2018-07-04 09:30:48。
+date: 2018-07-04 09:30:48
 categories: 
 - wanglibin 
 tags:
