@@ -1,6 +1,6 @@
 # blog
 
-博客系统基于[Hexo](http://hexo.io/)搭建，使用主题[next.mist](https://github.com/iissnan/hexo-theme-next)。采用[多说](http://duoshuo.com/)评论系统，站内搜索使用[swiftype](https://swiftype.com/)。
+博客系统基于[Hexo](http://hexo.io/)搭建，使用主题[next.mist](https://github.com/iissnan/hexo-theme-next)。站内搜索使用[swiftype](https://swiftype.com/)。
 
 ## 环境搭建
 * 基本环境
@@ -51,7 +51,10 @@ tags:                                       // 标签，可多个，无层级之
 ## 注意事项
 * 每个人得{namespace}理论上只有一个，即所有博文放在一个文件夹下
 * 创建时间发布后不可修改，因为所有博客的先后顺序只与创建时间有关，但在第一次发布时可酌情修改
+* 文件名不能出现中文，单词用中横线分割，因为文件名会直接出现再生成博文的url路径中（文件里面配置的title才是blog名）
 * 标签统一用小写，为了避免一个标签出现因大小写不同出现多个的情况，或者可以自己先查看标签云再添加，尽量不要添加辨识度低的标签
+* 记得给文章通过添加```<!--more-->```来进行全文简介
+* 贡献文章时通过fork到本人仓库修改完后提交PR的方式进行
 
 ## 后期规划
 * 增加githook，做codereview
