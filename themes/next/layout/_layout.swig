@@ -3,7 +3,7 @@
 <head>
   {% include '_partials/head.swig' %}
   <title>{% block title %}{% endblock %}</title>
-  <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="{{ config.language }}">
@@ -37,7 +37,7 @@
 
     <div class="back-to-top"></div>
   </div>
-  <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+  <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
   <script type="text/javascript" src="{{ url_for(theme.vendors) }}/jquery/index.js?v=2.1.3"></script>
 
   {# This block is used to set options before any other scripts run #}
