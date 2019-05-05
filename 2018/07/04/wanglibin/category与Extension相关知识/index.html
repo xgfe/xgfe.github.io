@@ -24,7 +24,7 @@
   <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
 
 
-  <meta name="keywords" content="Chrome Developers Tools,Debug,DevTools,">
+  <meta name="keywords" content="OC,Category,Extension,">
 
 
   <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
@@ -32,29 +32,18 @@
 
   <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
 
-<meta name="description" content="带领大家进入一个不一样的DEBUG世界">
-<meta name="keywords" content="Chrome Developers Tools,Debug,DevTools">
+<meta name="description" content="本文主要介绍Category 和 Extension 的相关知识以及使用。">
+<meta name="keywords" content="OC,Category,Extension">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Chrome Developers Tools调试篇">
-<meta property="og:url" content="http://xgfe.github.io/2016/05/16/scliuyang/ChromeDevTools2/index.html">
+<meta property="og:title" content="Category 与Extension 相关知识">
+<meta property="og:url" content="http://xgfe.github.io/2018/07/04/wanglibin/category与Extension相关知识/index.html">
 <meta property="og:site_name" content="xgfe">
-<meta property="og:description" content="带领大家进入一个不一样的DEBUG世界">
+<meta property="og:description" content="本文主要介绍Category 和 Extension 的相关知识以及使用。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/21.png">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/30.gif">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/22.png">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/23.gif">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/24.gif">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/25.png">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/26.png">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/27.png">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/28.gif">
-<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/29.gif">
-<meta property="og:updated_time" content="2019-05-05T02:41:48.393Z">
+<meta property="og:updated_time" content="2019-05-05T11:56:54.635Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chrome Developers Tools调试篇">
-<meta name="twitter:description" content="带领大家进入一个不一样的DEBUG世界">
-<meta name="twitter:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/21.png">
+<meta name="twitter:title" content="Category 与Extension 相关知识">
+<meta name="twitter:description" content="本文主要介绍Category 和 Extension 的相关知识以及使用。">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -64,7 +53,7 @@
   };
 </script>
 
-  <title> Chrome Developers Tools调试篇 | xgfe </title>
+  <title> Category 与Extension 相关知识 | xgfe </title>
   <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
 </head>
 
@@ -208,7 +197,7 @@
           
           
             
-              Chrome Developers Tools调试篇
+              Category 与Extension 相关知识
             
           
         </h1>
@@ -217,8 +206,8 @@
       <div class="post-meta">
         <span class="post-time">
           发表于
-          <time itemprop="dateCreated" datetime="2016-05-16T16:32:00+08:00" content="2016-05-16">
-            2016-05-16
+          <time itemprop="dateCreated" datetime="2018-07-04T09:30:48+08:00" content="2018-07-04">
+            2018-07-04
           </time>
         </span>
 
@@ -227,8 +216,8 @@
             &nbsp; | &nbsp; 作者
             
               <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
-                <a href="/categories/scliuyang/" itemprop="url" rel="index">
-                  <span itemprop="name">scliuyang</span>
+                <a href="/categories/wanglibin/" itemprop="url" rel="index">
+                  <span itemprop="name">wanglibin</span>
                 </a>
               </span>
 
@@ -248,11 +237,11 @@
           <span class="post-tags">
             &nbsp; | &nbsp;
             
-              <a href="/tags/Chrome-Developers-Tools/" rel="tag"><i class="icon-next-tags"></i>Chrome Developers Tools</a>
+              <a href="/tags/OC/" rel="tag"><i class="icon-next-tags"></i>OC</a>
             
-              <a href="/tags/Debug/" rel="tag"><i class="icon-next-tags"></i>Debug</a>
+              <a href="/tags/Category/" rel="tag"><i class="icon-next-tags"></i>Category</a>
             
-              <a href="/tags/DevTools/" rel="tag"><i class="icon-next-tags"></i>DevTools</a>
+              <a href="/tags/Extension/" rel="tag"><i class="icon-next-tags"></i>Extension</a>
             
           </span>
         
@@ -265,21 +254,189 @@
       
 
       
-        <span itemprop="articleBody"><p>带领大家进入一个不一样的DEBUG世界</p>
-<a id="more"></a>
-<h1 id="Chrome开发工具调试篇"><a href="#Chrome开发工具调试篇" class="headerlink" title="Chrome开发工具调试篇"></a>Chrome开发工具调试篇</h1><p>上一篇给大家介绍了一下Chrome Dev Tools的基本用法，这篇交大家如何调试javascript程序</p>
-<h2 id="目录面板"><a href="#目录面板" class="headerlink" title="目录面板"></a>目录面板</h2><p><img src="/uploads/scliuyang/ChromeDevTools/21.png" style="width:500px;"><br>可以看到上图有3个导航条，他们都存有不同域名和环境下的js和css文件。<br>Sources:包含当前网页用到的资源目录<br>Content scripts: 插件程序所在的位置<br>Snippets: 它的主要作用可以使得我们编写一些项目的测试代码时提供便捷，你知道，如果你在编辑器上编写这些代码，在发布时你必须为它们添加注释符号或者手动删除它们，而在浏览器上编写就不需要这样繁琐了。</p>
-<p>还有一个很有用的特性就是：Workspace，这个特性可以把dev tools变成代码编辑工具，首先我们来看看怎么使用这个特性<br><img src="/uploads/scliuyang/ChromeDevTools/30.gif" style="width:500px;"></p>
+        <span itemprop="articleBody"><p>本文主要介绍Category 和 Extension 的相关知识以及使用。<br><a id="more"></a></p>
+<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><h2 id="Category"><a href="#Category" class="headerlink" title="Category"></a>Category</h2><ul>
+<li>Category的背景和概念</li>
+<li>Category的声明及实现</li>
+<li>Category的使用</li>
+<li>Category扩展属性（变量）</li>
+</ul>
+<h2 id="Extension"><a href="#Extension" class="headerlink" title="Extension"></a>Extension</h2><ul>
+<li>Extension的格式</li>
+<li>Extension的实现</li>
+</ul>
+<h2 id="Category和Extension的区别"><a href="#Category和Extension的区别" class="headerlink" title="Category和Extension的区别"></a>Category和Extension的区别</h2><h3 id="一、Category"><a href="#一、Category" class="headerlink" title="一、Category"></a>一、Category</h3><h4 id="1、Category的背景和概念"><a href="#1、Category的背景和概念" class="headerlink" title="1、Category的背景和概念"></a>1、Category的背景和概念</h4><p>在日常开发中，经常需要对已有类进行功能上的扩展，在学习“类别”之前，常用的类扩展方式有以下三种：</p>
+<ul>
+<li>原有类的修改</li>
+<li>继承</li>
+<li>protocol（协议）</li>
+</ul>
+<p>针对以上三种扩展方式，</p>
 <ol>
-<li>在sources面板右键，选择add folder to workspace,选中项目目录</li>
-<li>随便选择一个项目文件，右键选择map to file system resource，选中相应的文件，这样所有的文件都会根据目录依次对应起来。</li>
+<li><p>第一种为最原始的方法；</p>
+</li>
+<li><p>第二种在继承父类的同时，也扩展自己，包括（方法和变量）。但是在面向对象的开发原则中“优先使用组合慎用继承”，因为继承在一定程度上破坏了封装性、子类随父类变动。</p>
+</li>
+<li><p>第三种协议，主要是依靠实现类的具体方法实现，当扩展功能时，需要修改原有类，协议定义过多，实现类过于庞大。</p>
+</li>
 </ol>
-<p>这样几步后workspace特性就算使用起来了，现在编辑文件都会保存到文件当中非常方便，而且当你在elemnt面板调试css时也会同步将值保存到文件当中。</p>
-<h2 id="调试面板"><a href="#调试面板" class="headerlink" title="调试面板"></a>调试面板</h2><h3 id="断点方式"><a href="#断点方式" class="headerlink" title="断点方式"></a>断点方式</h3><p>打开需要调试的js文件，并且在对应的行数上右键可以看到以下选择项<br><img src="/uploads/scliuyang/ChromeDevTools/22.png" style="width:500px;"><br>下面来依次说明选项的作用：<br>1.Blackbox Script : 黑盒文件调试法，将此文件设置为黑盒，这样在调试时将不会进入这个文件<br><img src="/uploads/scliuyang/ChromeDevTools/23.gif" style="width:500px;"><br><img src="/uploads/scliuyang/ChromeDevTools/24.gif" style="width:500px;"><br>可以看到，黑盒模式下的文件用户是无法进入的，所以在调试时可以将一些库文件设置为黑盒模式，这样调试将会清爽很多。<br>2.Add breakpoint ： 在这行添加断电<br>3.Add conditional breakpoint : 添加条件断点，只有在满足此条件的情况下才会断住程序<br><img src="/uploads/scliuyang/ChromeDevTools/25.png" style="width:500px;"></p>
-<h3 id="断点信息"><a href="#断点信息" class="headerlink" title="断点信息"></a>断点信息</h3><p><img src="/uploads/scliuyang/ChromeDevTools/26.png" style="width:300px;"><br>最上面一排按钮是控制当前断点，他们分别代表<br>1、停止断点调试<br>2、不跳入函数中去，继续执行下一行代码（F10）<br>3、跳入函数中去（F11）<br>4、从执行的函数中跳出<br>5、禁用所有的断点，不做任何调试<br>6、程序运行时遇到异常时是否中断的开关<br>7、断点是处以异步操作内部时比如ajax请求，是否记录异步操作之前的堆栈信息</p>
-<p>watch面板，可以自定义表达式并查看结果<br><img src="/uploads/scliuyang/ChromeDevTools/27.png" style="width:300px;"></p>
-<p>call stack面板，记录当前断点的堆栈信息，并且可以通过点击堆栈还原到上一个调用现场.<br><img src="/uploads/scliuyang/ChromeDevTools/28.gif" style="width:500px;"><br>这里也可以配合黑盒模式，去掉jquery库的干扰信息<br><img src="/uploads/scliuyang/ChromeDevTools/29.gif" style="width:500px;"></p>
-<p>Scope，记录当前断点变量的值<br>Breakponts,记录所有断点的位置<br>Dom breakpoints,添加的Dom监控信息。<br>XHR breakpoints 击+ 并输入 URL 包含的字符串即可监听该 URL 的 Ajax 请求，输入内容就相当于 URL 的过滤器。如果什么都不填，那么就监听所有 XHR 请求。一旦 XHR 调用触发时就会在 request.send() 的地方中断。<br>Event Listener Breakpoints 为网页添加各种类型的断点信息。如选中了Mouse中的某一项（click），当你在网页上出发这个动作（单击网页任意地方），你浏览器就是立刻断点监控该事件</p>
+<p>那么，在oc中，当我们想避免上述两种扩展方式的缺点，又想只对现有类进行扩展些方法，并且不用去修改原有类以及使用它的地方的代码，就用到了Category（类别）。</p>
+<p>类别是OC的特有语法，可以通过在类上声明和实现方法来扩展现有类的功能。原则上只能增加方法（包括对象方法和类方法），不能增加成员变量。</p>
+<h4 id="2、Category的声明及实现"><a href="#2、Category的声明及实现" class="headerlink" title="2、Category的声明及实现"></a>2、Category的声明及实现</h4><pre><code>@interface 需扩展的类 （类别的名称）
+-（void）appendMethod;
+@end
+
+@implementation 需扩展的类 （类别的名称）
+-（void）appendMethod{
+}
+@end
+</code></pre><h4 id="3、Category的使用"><a href="#3、Category的使用" class="headerlink" title="3、Category的使用"></a>3、Category的使用</h4><p>如果需要扩展一个类，定义好此类的Category ，则可以通过该类的对象直接调用Category中的扩展方法。与此同时，在Category中也可以访问原有类.h中的属性和方法。</p>
+<p>.h文件：</p>
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+
+@interface pson : NSObject&lt;NSCoding&gt;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, assign) NSInteger age;
+- (void) run;
++ (void) jump;
+@end
+</code></pre><p>.m文件</p>
+<pre><code>#import &quot;pson.h&quot;
+
+@implementation pson
+
+-(void) run{
+    NSLog(@&quot;run&quot;);
+}
++(void) jump{
+    NSLog(@&quot;jump&quot;);
+}
+@end
+</code></pre><p>为pson类添加eat方法，Category的.m文件如下所示：</p>
+<p>pson+eat.h文件</p>
+<pre><code>#import &quot;pson.h&quot;
+
+@interface pson (eat)
+@property (nonatomic, strong) NSString *food;
+-(void) eat;
+
+@end
+</code></pre><p>pson+eat.m文件</p>
+<pre><code>#import &quot;pson+eat.h&quot;
+
+@implementation pson (eat)
+-(void) eat{
+   //调用原有类的公共方法
+[self run];
+//调用原有类的非私有属性
+NSLog(@&quot;%@&quot;,self.name);
+}
++(void) drink{
+    NSLog(@&quot;drink&quot;);
+}
+@end
+</code></pre><p>在main方法中</p>
+<pre><code>pson *me = [[pson alloc] init];
+    [me run];
+    //调用扩展类中的对象方法
+    [me eat];
+    //调用扩展类中的类方法
+    [pson drink]
+</code></pre><h4 id="4、Category扩展属性（变量）"><a href="#4、Category扩展属性（变量）" class="headerlink" title="4、Category扩展属性（变量）"></a>4、Category扩展属性（变量）</h4><p>由于Category本质上是个指向类型的结构体指针，在结构体中只有方法的列表，没有属性的列表，所以理论上只能增加方法不能增加属性。</p>
+<p>如何通过Category来扩展属性呢？</p>
+<p>无法添加属性的根本原因是：在Category中@property声明属性，系统不会生成_成员变量和setter、getter。</p>
+<p>解决方法：手动添加setter和getter方法，采用的就是：关联引用（objc_setAssociatedObject和objc_getAssociatedObject）</p>
+<p>其中，</p>
+<p>objc_setAssociatedObject，接收4个参数：想关联到数据的对象、获取数据的键值、存储引用的值、关联的策略；</p>
+<p>objc_getAssociatedObject，接收2个参数：关联到数据的对象、键值</p>
+<p>常见的关联策略，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>一个普通标题</th>
+<th>一个普通标题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OBJC <em> ASSOCIATION </em> ASSIGN</td>
+<td>指定值将被简单赋值、没有保留和释放</td>
+</tr>
+<tr>
+<td>OBJC <em> ASSOCIATION </em> RETAIN _ NONATOMIC</td>
+<td>指定值通过非线程安全的方式赋值并保留</td>
+</tr>
+<tr>
+<td>OBJC <em> ASSOCIATION </em> COPY _ NONATOMIC</td>
+<td>指定值通过非线程安全的方式复制</td>
+</tr>
+<tr>
+<td>OBJC <em> ASSOCIATION </em> RETAIN</td>
+<td>指定值通过线程安全的方式赋值并保留</td>
+</tr>
+<tr>
+<td>OBJC <em> ASSOCIATION </em> COPY</td>
+<td>指定值通过线程安全的方式复制</td>
+</tr>
+</tbody>
+</table>
+<p>具体实现例子如下所示：</p>
+<p>Category的.h文件</p>
+<pre><code>#import &quot;pson.h&quot;
+
+@interface pson (eat)
+@property (nonatomic, strong) NSString *food;
+-(void) eat;
++(void) drink;
+@end
+</code></pre><p>Category的.m文件</p>
+<pre><code>#import &quot;pson+eat.h&quot;
+#import &quot;objc/runtime.h&quot;
+static NSString *key = @&quot;personEatKey&quot;;
+
+@implementation pson (eat)
+-(void) eat{
+    NSLog(@&quot;eat&quot;);
+}
+
+-(void) setFood:(NSString *)food{
+    objc_setAssociatedObject(self, &amp;key, food,     OBJC_ASSOCIATION_COPY);
+}
+
+-(NSString *) food{
+    return objc_getAssociatedObject(self, &amp;key);
+}
+@end
+</code></pre><p>main方法中的使用如下：</p>
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+#import &quot;pson.h&quot;
+#import &quot;pson+eat.h&quot;
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+
+        pson *me = [[pson alloc] init];
+        [me eat];
+        me.food = @&quot;鸡蛋&quot;;
+        NSLog(@&quot;%@&quot;,me.food);
+
+    }
+    return 0;
+}
+</code></pre><h3 id="二、Extension"><a href="#二、Extension" class="headerlink" title="二、Extension"></a>二、Extension</h3><p>Extension 是Category的特例，少了类别的名称，是匿名分类。声明私有方法和属性的机制。具体实现在原有类的.m文件中。</p>
+<h4 id="1、Extension的格式"><a href="#1、Extension的格式" class="headerlink" title="1、Extension的格式"></a>1、Extension的格式</h4><pre><code>@interface XXX ()
+    //私有属性
+    //私有方法（如果不实现，编译时会报警,Method definition for &apos;XXX&apos; not found）
+@end
+</code></pre><h4 id="2、Extension的实现"><a href="#2、Extension的实现" class="headerlink" title="2、Extension的实现"></a>2、Extension的实现</h4><ul>
+<li>通过单独的.h声明，在原有类的.m中导入。</li>
+<li>直接在原有类的.m中使用。</li>
+</ul>
+<h2 id="Category和Extension的区别-1"><a href="#Category和Extension的区别-1" class="headerlink" title="Category和Extension的区别"></a>Category和Extension的区别</h2><ul>
+<li>Category原则上只能增加方法；而Extension方法和变量都可以。</li>
+<li>Extension声明方法没有被实现，编译器报警。Category在运行时添加、Extension是编译阶段。</li>
+<li>Extension没有自己独立的实现部分。</li>
+<li>Extension是私有。</li>
+</ul>
 </span>
       
     </div>
@@ -290,13 +447,13 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/05/16/scliuyang/ChromeDevTools4/" rel="prev">内存泄露分析</a>
+              <a href="/2018/07/11/guanxiaofeng/Dayjs/" rel="prev">Day.js 源码学习</a>
             
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/16/scliuyang/ChromeDevTools1/" rel="next">Chrome Developers Tools基础篇</a>
+              <a href="/2018/06/13/wangpeiyu/web-security-XSS/" rel="next">Web 前端安全科普之 XSS</a>
             
           </div>
         </div>
@@ -431,7 +588,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Chrome开发工具调试篇"><span class="nav-number">1.</span> <span class="nav-text">Chrome开发工具调试篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#目录面板"><span class="nav-number">1.1.</span> <span class="nav-text">目录面板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试面板"><span class="nav-number">1.2.</span> <span class="nav-text">调试面板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#断点方式"><span class="nav-number">1.2.1.</span> <span class="nav-text">断点方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#断点信息"><span class="nav-number">1.2.2.</span> <span class="nav-text">断点信息</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Category"><span class="nav-number">1.1.</span> <span class="nav-text">Category</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extension"><span class="nav-number">1.2.</span> <span class="nav-text">Extension</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Category和Extension的区别"><span class="nav-number">1.3.</span> <span class="nav-text">Category和Extension的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、Category"><span class="nav-number">1.3.1.</span> <span class="nav-text">一、Category</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Category的背景和概念"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">1、Category的背景和概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、Category的声明及实现"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">2、Category的声明及实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、Category的使用"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">3、Category的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、Category扩展属性（变量）"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">4、Category扩展属性（变量）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、Extension"><span class="nav-number">1.3.2.</span> <span class="nav-text">二、Extension</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Extension的格式"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">1、Extension的格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、Extension的实现"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">2、Extension的实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Category和Extension的区别-1"><span class="nav-number">1.4.</span> <span class="nav-text">Category和Extension的区别</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

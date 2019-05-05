@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/2018/07/04/wanglibin/category%E4%B8%8EExtension%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/</loc>
+        <lastmod>2019-05-05T11:56:54.635Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/2018/12/21/rongweiwei/mysql-protocol/</loc>
         <lastmod>2019-05-05T11:28:18.939Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -47,14 +55,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/03/04/zhouyinian/React-component/</loc>
-        <lastmod>2019-05-05T02:41:48.412Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/2016/11/09/zhouxiong/vue-in-action-vue-basis/</loc>
         <lastmod>2019-05-05T02:41:48.412Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -63,8 +63,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/03/02/zhouxiong/Vue2.0+Vue-resource+Express-Server/</loc>
-        <lastmod>2019-05-05T02:41:48.411Z</lastmod>
+        <loc>http://xgfe.github.io/2018/03/04/zhouyinian/React-component/</loc>
+        <lastmod>2019-05-05T02:41:48.412Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -79,8 +79,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/05/03/zhouxiong/Thrift/</loc>
-        <lastmod>2019-05-05T02:41:48.410Z</lastmod>
+        <loc>http://xgfe.github.io/2017/03/02/zhouxiong/Vue2.0+Vue-resource+Express-Server/</loc>
+        <lastmod>2019-05-05T02:41:48.411Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -88,6 +88,14 @@
 
     <url>
         <loc>http://xgfe.github.io/2016/09/08/zhouxiong/Service-in-AngularJS/</loc>
+        <lastmod>2019-05-05T02:41:48.410Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/2017/05/03/zhouxiong/Thrift/</loc>
         <lastmod>2019-05-05T02:41:48.410Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -151,6 +159,14 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/2018/06/07/yuxue/%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D%E7%9A%84%E5%8D%81%E7%A7%8D%E6%96%B9%E6%B3%95/</loc>
+        <lastmod>2019-05-05T02:41:48.403Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/2017/06/26/zero/Looper%E5%92%8CHandler%E5%92%8CHandlerThread/</loc>
         <lastmod>2019-05-05T02:41:48.403Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -160,14 +176,6 @@
 
     <url>
         <loc>http://xgfe.github.io/2017/06/26/zero/OKIO%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
-        <lastmod>2019-05-05T02:41:48.403Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/2018/06/07/yuxue/%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D%E7%9A%84%E5%8D%81%E7%A7%8D%E6%96%B9%E6%B3%95/</loc>
         <lastmod>2019-05-05T02:41:48.403Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -303,14 +311,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/05/27/shsoul/SDWebImage%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/</loc>
-        <lastmod>2019-05-05T02:41:48.396Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/2017/02/17/shsoul/%E6%88%91%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0IOS%E5%8E%9F%E7%94%9F%E5%BC%B9%E7%AA%97%E6%95%88%E6%9E%9C%E7%9A%84/</loc>
         <lastmod>2019-05-05T02:41:48.396Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -319,7 +319,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2019/05/05/wanglibin/category%E4%B8%8EExtension%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/</loc>
+        <loc>http://xgfe.github.io/2017/05/27/shsoul/SDWebImage%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/</loc>
         <lastmod>2019-05-05T02:41:48.396Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -447,7 +447,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/10/31/lulutia/vue-lifecycle/</loc>
+        <loc>http://xgfe.github.io/2017/11/30/lwp/AbViewUtil/</loc>
         <lastmod>2019-05-05T02:41:48.387Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -455,7 +455,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/11/30/lwp/AbViewUtil/</loc>
+        <loc>http://xgfe.github.io/2017/10/31/lulutia/vue-lifecycle/</loc>
         <lastmod>2019-05-05T02:41:48.387Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -519,7 +519,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/03/24/lixiaoqiang/ios%E4%B8%AD%E5%AF%B9%E8%B1%A1%E5%85%B3%E8%81%94%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</loc>
+        <loc>http://xgfe.github.io/2017/10/18/liuhongyu/filter/</loc>
         <lastmod>2019-05-05T02:41:48.383Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -527,7 +527,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/10/18/liuhongyu/filter/</loc>
+        <loc>http://xgfe.github.io/2018/03/24/lixiaoqiang/ios%E4%B8%AD%E5%AF%B9%E8%B1%A1%E5%85%B3%E8%81%94%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</loc>
         <lastmod>2019-05-05T02:41:48.383Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -583,14 +583,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/09/17/ivanchou/layout-with-constraintlayout-by-programming/</loc>
-        <lastmod>2019-05-05T02:41:48.380Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/2017/09/07/huanglifen/html2image/</loc>
         <lastmod>2019-05-05T02:41:48.380Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -599,8 +591,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/05/26/guanxiaofeng/Eggjs/</loc>
-        <lastmod>2019-05-05T02:41:48.379Z</lastmod>
+        <loc>http://xgfe.github.io/2017/09/17/ivanchou/layout-with-constraintlayout-by-programming/</loc>
+        <lastmod>2019-05-05T02:41:48.380Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -615,7 +607,15 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2016/11/28/felix/web-secure-skill/</loc>
+        <loc>http://xgfe.github.io/2018/05/26/guanxiaofeng/Eggjs/</loc>
+        <lastmod>2019-05-05T02:41:48.379Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/2017/09/07/felix/html-parsing-and-resources-load/</loc>
         <lastmod>2019-05-05T02:41:48.378Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -623,7 +623,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/12/21/felix/react-first-kiss/</loc>
+        <loc>http://xgfe.github.io/2016/11/28/felix/web-secure-skill/</loc>
         <lastmod>2019-05-05T02:41:48.378Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -639,16 +639,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/09/07/felix/html-parsing-and-resources-load/</loc>
+        <loc>http://xgfe.github.io/2015/12/21/felix/react-first-kiss/</loc>
         <lastmod>2019-05-05T02:41:48.378Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/2015/11/30/felix/forms-in-angularjs-1.3/</loc>
-        <lastmod>2019-05-05T02:41:48.377Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -664,6 +656,14 @@
 
     <url>
         <loc>http://xgfe.github.io/2016/05/09/felix/funny-design-pattern/</loc>
+        <lastmod>2019-05-05T02:41:48.377Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/2015/11/30/felix/forms-in-angularjs-1.3/</loc>
         <lastmod>2019-05-05T02:41:48.377Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -695,7 +695,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/</loc>
+        <loc>http://xgfe.github.io/2015/10/20/chenwubai/xg-htmlhint-config-in-Sublime-Text-3/</loc>
         <lastmod>2019-05-05T02:41:48.375Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -711,7 +711,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/10/20/chenwubai/xg-htmlhint-config-in-Sublime-Text-3/</loc>
+        <loc>http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/</loc>
         <lastmod>2019-05-05T02:41:48.375Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -719,7 +719,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-pie/</loc>
+        <loc>http://xgfe.github.io/2015/11/23/chenwubai/d3-basicCharts-line/</loc>
         <lastmod>2019-05-05T02:41:48.374Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -735,8 +735,16 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/11/23/chenwubai/d3-basicCharts-line/</loc>
+        <loc>http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-pie/</loc>
         <lastmod>2019-05-05T02:41:48.374Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/2018/02/09/caominkang/ListView%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+        <lastmod>2019-05-05T02:41:48.373Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -751,8 +759,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/02/09/caominkang/ListView%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
-        <lastmod>2019-05-05T02:41:48.373Z</lastmod>
+        <loc>http://xgfe.github.io/2017/09/20/Young/DOM-size/</loc>
+        <lastmod>2019-05-05T02:41:48.372Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -768,14 +776,6 @@
 
     <url>
         <loc>http://xgfe.github.io/2017/03/16/TinySymphony/electronic-apps/</loc>
-        <lastmod>2019-05-05T02:41:48.372Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/2017/09/20/Young/DOM-size/</loc>
         <lastmod>2019-05-05T02:41:48.372Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -807,14 +807,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/12/17/HeOH/AngularJS%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/</loc>
-        <lastmod>2019-05-05T02:41:48.369Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/2015/10/21/HeOH/xg-htmlhint-for-vim/</loc>
         <lastmod>2019-05-05T02:41:48.369Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -823,8 +815,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/08/28/DaisyXL/ES6/</loc>
-        <lastmod>2019-05-05T02:41:48.368Z</lastmod>
+        <loc>http://xgfe.github.io/2015/12/17/HeOH/AngularJS%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/</loc>
+        <lastmod>2019-05-05T02:41:48.369Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -832,6 +824,14 @@
 
     <url>
         <loc>http://xgfe.github.io/2018/03/20/Catherine/AndroidZxing%E6%89%AB%E7%A0%81%E5%B0%81%E8%A3%85/</loc>
+        <lastmod>2019-05-05T02:41:48.368Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/2017/08/28/DaisyXL/ES6/</loc>
         <lastmod>2019-05-05T02:41:48.368Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
