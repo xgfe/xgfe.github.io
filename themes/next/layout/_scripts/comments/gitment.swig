@@ -1,5 +1,9 @@
 <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
   const gitment = new Gitmint({
+    id: id,
     owner: 'xgfe',
     admin: ['lulutia'],
     repo: 'xgfe.github.io',
