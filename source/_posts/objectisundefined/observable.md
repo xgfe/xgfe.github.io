@@ -9,6 +9,10 @@ tags:
 - Functional Reactive Programming
 ---
 
+本文主要是利用Rx.js介绍Observable相关的一些概念，以及通过实现Observable的创建、一些常用的操作符了解Observable的执行原理。
+
+<!-- more -->
+
 ## Observable是什么
 数据处理过程中，存在数据的生产者 (Producer) 和数据的消费者 (Consumer) ，处理方式基本分为拉取 (Pull) 和 推送 (Push)两种。
 
