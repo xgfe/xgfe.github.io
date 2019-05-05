@@ -37,7 +37,7 @@
 
     <div class="back-to-top"></div>
   </div>
-  <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+  <script type="text/javascript" src="{{ url_for(theme.vendors) }}/gitmint.browser.js"></script>
   <script type="text/javascript" src="{{ url_for(theme.vendors) }}/jquery/index.js?v=2.1.3"></script>
 
   {# This block is used to set options before any other scripts run #}
