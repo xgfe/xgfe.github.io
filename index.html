@@ -1,0 +1,1339 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="xgfe, xg, fe, 鲜果前端, 前端">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="xgfe&apos;s blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+<meta name="keywords" content="xgfe, xg, fe, 鲜果前端, 前端">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xgfe">
+<meta property="og:url" content="http://xgfe.github.io/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="xgfe&apos;s blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+<meta property="og:locale" content="zh-Hans">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="xgfe">
+<meta name="twitter:description" content="xgfe&apos;s blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column 
+   page-home 
+">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2019/05/05/wanglibin/category与Extension相关知识/" itemprop="url">
+                Category 与Extension 相关知识
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-05-05T10:41:48+08:00" content="2019-05-05">
+            2019-05-05
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/wanglibin/" itemprop="url" rel="index">
+                  <span itemprop="name">wanglibin</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/OC/" rel="tag"><i class="icon-next-tags"></i>OC</a>
+            
+              <a href="/tags/Category/" rel="tag"><i class="icon-next-tags"></i>Category</a>
+            
+              <a href="/tags/Extension/" rel="tag"><i class="icon-next-tags"></i>Extension</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>本文主要介绍Category 和 Extension 的相关知识以及使用。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2019/05/05/wanglibin/category与Extension相关知识/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </p></div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2019/04/16/zhangpeng/宏任务和微任务/" itemprop="url">
+                宏任务和微任务
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-04-16T00:00:00+08:00" content="2019-04-16">
+            2019-04-16
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/ZHANGPENG/" itemprop="url" rel="index">
+                  <span itemprop="name">ZHANGPENG</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/宏任务和微任务/" rel="tag"><i class="icon-next-tags"></i>宏任务和微任务</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>本文主要总结了宏任务和微任务。本文分为两个部分，第一部分是主要是介绍宏任务和微任务，第二部分是介绍事件循环。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2019/04/16/zhangpeng/宏任务和微任务/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2019/03/09/yangfan/debounce&throttle/" itemprop="url">
+                函数防抖与函数节流
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-03-09T16:15:00+08:00" content="2019-03-09">
+            2019-03-09
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/yangfan/" itemprop="url" rel="index">
+                  <span itemprop="name">yangfan</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/javascript/" rel="tag"><i class="icon-next-tags"></i>javascript</a>
+            
+              <a href="/tags/debounce-throttle/" rel="tag"><i class="icon-next-tags"></i>debounce&throttle</a>
+            
+              <a href="/tags/性能优化/" rel="tag"><i class="icon-next-tags"></i>性能优化</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>在开发过程中,我们经常以各种方式控制事件的触发。防抖和节流可以使我们在实现功能的同时提升用户体验和页面性能。接下来我将从概念、应用场景、及简单的代码实现来介绍防抖和节流。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2019/03/09/yangfan/debounce&throttle/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2019/02/23/wangwenming/Dagger2/" itemprop="url">
+                Dagger2 使用及原理分析
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-02-23T00:00:00+08:00" content="2019-02-23">
+            2019-02-23
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/wangwenming/" itemprop="url" rel="index">
+                  <span itemprop="name">wangwenming</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/dagger2/" rel="tag"><i class="icon-next-tags"></i>dagger2</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Dagger2 是一个编译时静态依赖注入框架，是由 Google 在Square开源的 Dagger 基础上进行修改而来。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2019/02/23/wangwenming/Dagger2/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </p></div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2019/02/20/wangqing28/浅谈当Swift中defer和inout同时起作用/" itemprop="url">
+                浅谈当Swift中defer和inout同时起作用
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-02-20T00:00:00+08:00" content="2019-02-20">
+            2019-02-20
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/wangqing28/" itemprop="url" rel="index">
+                  <span itemprop="name">wangqing28</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/iOS/" rel="tag"><i class="icon-next-tags"></i>iOS</a>
+            
+              <a href="/tags/Swift/" rel="tag"><i class="icon-next-tags"></i>Swift</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>本文针对 <code>Swift</code> 中 <code>defer</code>、<code>inout</code> 以及 <code>return</code> 时相互影响的时候的情况进行简单的分析，目的是更好的理解 <code>defer</code>、<code>inout</code> 原理以及使用场合，减少踩坑和提高<code>debug</code>效率。</p>
+<blockquote>
+<p>本文中的示例代码，均为 <code>Swift 4.2</code> 版本</p>
+</blockquote>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2019/02/20/wangqing28/浅谈当Swift中defer和inout同时起作用/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2019/01/17/luanmingyang/Angular CDK 部分功能介绍/" itemprop="url">
+                Angular CDK 部分功能介绍
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-01-17T19:31:00+08:00" content="2019-01-17">
+            2019-01-17
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/luanmingyang/" itemprop="url" rel="index">
+                  <span itemprop="name">luanmingyang</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Angular/" rel="tag"><i class="icon-next-tags"></i>Angular</a>
+            
+              <a href="/tags/Angular-CDK/" rel="tag"><i class="icon-next-tags"></i>Angular CDK</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>本文主要介绍了 Angular CDK 的部分功能，主要包括了三部分：Portal、Overlay、a11y/FocusTrap。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2019/01/17/luanmingyang/Angular CDK 部分功能介绍/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2018/12/21/rongweiwei/mysql-protocol/" itemprop="url">
+                mysql通信协议浅解
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-12-21T00:00:00+08:00" content="2018-12-21">
+            2018-12-21
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/rongweiwei/" itemprop="url" rel="index">
+                  <span itemprop="name">rongweiwei</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/nodejs/" rel="tag"><i class="icon-next-tags"></i>nodejs</a>
+            
+              <a href="/tags/mysql/" rel="tag"><i class="icon-next-tags"></i>mysql</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>计划通过本地代理远程mysql，尝试实现透明缓存中间件功能这个需求，在实现过程中，需要对mysql协议的请求和下发包进行解析以便进一步处理，网络上有大量关于mysql协议的文章，但过于分散，而且mysql协议在4.1版本做了大升级，本文将涉及到的一部分整理汇总，资料来自mysql官网，网络blog，和npm上的mysql模块源码。</p>
+<p>代码部分经过nodejs的mysql模块和php的mysqli模块验证。</p>
+<p>此次只作为对mysql协议熟悉的练习，对数据变动自动清理相应缓存建议还是使用基于binlog的解析,然后通过消息机制更新。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2018/12/21/rongweiwei/mysql-protocol/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2018/11/25/juga/浅谈React-Native与Redux数据流/" itemprop="url">
+                浅谈 React-Native 与 Redux 数据流
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-11-25T00:00:00+08:00" content="2018-11-25">
+            2018-11-25
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/juga/" itemprop="url" rel="index">
+                  <span itemprop="name">juga</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/React-Native/" rel="tag"><i class="icon-next-tags"></i>React-Native</a>
+            
+              <a href="/tags/Redux/" rel="tag"><i class="icon-next-tags"></i>Redux</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>本文是对 React-Native 组件和模块开发的一个简单的介绍，以及对于 Redux 单向数据流的深入学习。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2018/11/25/juga/浅谈React-Native与Redux数据流/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2018/11/19/zhangpeng/宏任务与微任务/" itemprop="url">
+                宏任务和微任务
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-11-19T00:00:00+08:00" content="2018-11-19">
+            2018-11-19
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/ZHANGPENG/" itemprop="url" rel="index">
+                  <span itemprop="name">ZHANGPENG</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/宏任务和微任务/" rel="tag"><i class="icon-next-tags"></i>宏任务和微任务</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>本文主要总结了宏任务和微任务。本文分为两个部分，第一部分是主要介绍事件循环，第二部分介绍宏任务和微任务。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2018/11/19/zhangpeng/宏任务与微任务/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2018/08/23/objectisundefined/observable/" itemprop="url">
+                谈谈Observable
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-08-23T12:00:00+08:00" content="2018-08-23">
+            2018-08-23
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/tianzhen/" itemprop="url" rel="index">
+                  <span itemprop="name">tianzhen</span>
+                </a>
+              </span>
+
+              
+              
+                ， 
+              
+
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/tianzhen/Observable/" itemprop="url" rel="index">
+                  <span itemprop="name">Observable</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Observable/" rel="tag"><i class="icon-next-tags"></i>Observable</a>
+            
+              <a href="/tags/RxJS/" rel="tag"><i class="icon-next-tags"></i>RxJS</a>
+            
+              <a href="/tags/Functional-Reactive-Programming/" rel="tag"><i class="icon-next-tags"></i>Functional Reactive Programming</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>本文主要是利用Rx.js介绍Observable相关的一些概念，以及通过实现Observable的创建、一些常用的操作符了解Observable的执行原理。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2018/08/23/objectisundefined/observable/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+  </nav>
+
+ </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

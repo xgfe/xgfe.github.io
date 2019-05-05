@@ -1,0 +1,768 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="html,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="学习浏览器的内部工作原理将有助于您作出更明智的决策，并理解那些最佳开发实践的个中缘由。 本文主要针对WebKit内核的浏览器。">
+<meta name="keywords" content="html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTML解析和资源加载">
+<meta property="og:url" content="http://xgfe.github.io/2017/09/07/felix/html-parsing-and-resources-load/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="学习浏览器的内部工作原理将有助于您作出更明智的决策，并理解那些最佳开发实践的个中缘由。 本文主要针对WebKit内核的浏览器。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p1.meituan.net/xgfe/6112586223b0a8894049a9ece14c0201173121.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.378Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTML解析和资源加载">
+<meta name="twitter:description" content="学习浏览器的内部工作原理将有助于您作出更明智的决策，并理解那些最佳开发实践的个中缘由。 本文主要针对WebKit内核的浏览器。">
+<meta name="twitter:image" content="http://p1.meituan.net/xgfe/6112586223b0a8894049a9ece14c0201173121.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> HTML解析和资源加载 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              HTML解析和资源加载
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-09-07T11:00:00+08:00" content="2017-09-07">
+            2017-09-07
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/felix/" itemprop="url" rel="index">
+                  <span itemprop="name">felix</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/html/" rel="tag"><i class="icon-next-tags"></i>html</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>学习浏览器的内部工作原理将有助于您作出更明智的决策，并理解那些最佳开发实践的个中缘由。</p>
+<p>本文主要针对WebKit内核的浏览器。</p>
+<a id="more"></a>
+<h2 id="渲染引擎工作流"><a href="#渲染引擎工作流" class="headerlink" title="渲染引擎工作流"></a>渲染引擎工作流</h2><p><img src="http://p1.meituan.net/xgfe/6112586223b0a8894049a9ece14c0201173121.png" alt=""></p>
+<h2 id="HTML并行加载和解析"><a href="#HTML并行加载和解析" class="headerlink" title="HTML并行加载和解析"></a>HTML并行加载和解析</h2><ul>
+<li>js是单线程的，浏览器是多线程的，chrome是多进程的</li>
+<li>浏览器的多线程：<ul>
+<li>GUI渲染线程</li>
+<li>javascript引擎线程</li>
+<li>定时器触发器线程</li>
+<li>事件触发线程</li>
+<li>异步http请求线程</li>
+<li>js引擎线程和GUI渲染线程互斥</li>
+</ul>
+</li>
+<li>浏览器加载、解析和渲染同时进行</li>
+</ul>
+<h2 id="浏览器并发请求限制"><a href="#浏览器并发请求限制" class="headerlink" title="浏览器并发请求限制"></a>浏览器并发请求限制</h2><ul>
+<li>webkit 同域并发请求限制为6</li>
+</ul>
+<h2 id="外部资源的加载规则"><a href="#外部资源的加载规则" class="headerlink" title="外部资源的加载规则"></a>外部资源的加载规则</h2><ol>
+<li>HTML【highest】：iframe，非阻塞</li>
+<li>css【highest】<ul>
+<li>css文件异步加载和解析，不影响HTML文档的解析和DOMContentLoaded事件，但是会阻塞<strong>整个</strong>DOM的渲染</li>
+<li>css文件的加载和解析会阻塞后续js文件的执行</li>
+<li>内部import的css文件，立即加入请求队伍并继续阻塞后续js文件的执行</li>
+</ul>
+</li>
+<li>javascript<ul>
+<li>js文件的加载和解析会阻塞<strong>后续</strong>DOM的解析和渲染[阻塞主线程]</li>
+<li>head里面的js文件【high】</li>
+<li>body末尾的js文件【medium】</li>
+<li>async和defer的js文件不阻塞主线程【low】</li>
+</ul>
+</li>
+<li>图片【low】:非阻塞</li>
+<li>字体文件【highest】:非阻塞</li>
+<li>其他资源基本都是非阻塞且低优先级的</li>
+<li>preload和prefetch(可能被浏览器忽略)不改变优先级</li>
+</ol>
+<p><strong>【预解析】当主线程被阻碍时，WebKit会启动另外一个线程去遍历后面的HTML网页，收集需要的资源URL，然后发送请求，这样就可以避免被阻碍。实现资源的并发下载，包括js文件。</strong></p>
+<h2 id="DOMContentLoaded-和-load事件"><a href="#DOMContentLoaded-和-load事件" class="headerlink" title="DOMContentLoaded 和 load事件"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/Events/DOMContentLoaded" target="_blank" rel="noopener">DOMContentLoaded</a> 和 <a href="https://developer.mozilla.org/en-US/docs/Web/Events/load" target="_blank" rel="noopener">load</a>事件</h2><ul>
+<li>初始HTML文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待<strong>样式表</strong>、<strong>图像</strong>和<strong>子框架</strong>完成加载；[完成DOMTree]</li>
+<li>当一个资源及其依赖资源已完成加载时，将触发load事件。</li>
+</ul>
+<h2 id="js文件非阻塞加载"><a href="#js文件非阻塞加载" class="headerlink" title="js文件非阻塞加载"></a>js文件非阻塞加载</h2><ul>
+<li>script[async]<ul>
+<li>js文件异步加载，不阻塞主线程(HTML解析，其他js执行)</li>
+<li>js文件的执行时间不可预期，不对其它流程产生影响</li>
+</ul>
+</li>
+<li>script[defer]<ul>
+<li>js文件异步加载，不阻塞主线程(HTML解析，其他js执行)</li>
+<li>js文件的执行在HTML解析完成之后，所有defer js文件按顺序先后执行<ul>
+<li>FF在DOMContentLoaded事件之前（defer的js文件会延迟DOMContentLoaded事件）</li>
+<li>WebKit内核中不影响DOMContentLoaded事件</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>XHR异步请求然后eval()执行</li>
+<li>动态插入script标签<ul>
+<li>document.write()：同script标签，但不会阻塞当前脚本后续执行</li>
+<li>动态创建script标签，再append到DOM中：同script[async]</li>
+</ul>
+</li>
+</ul>
+<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><ul>
+<li><a href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/" target="_blank" rel="noopener">浏览器的工作原理：新式网络浏览器幕后揭秘</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/17/ivanchou/layout-with-constraintlayout-by-programming/" rel="prev">ConstraintLayout 采用代码方式布局用法简介</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/07/huanglifen/html2image/" rel="next">如何将html保存成图片</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#渲染引擎工作流"><span class="nav-number">1.</span> <span class="nav-text">渲染引擎工作流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML并行加载和解析"><span class="nav-number">2.</span> <span class="nav-text">HTML并行加载和解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器并发请求限制"><span class="nav-number">3.</span> <span class="nav-text">浏览器并发请求限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外部资源的加载规则"><span class="nav-number">4.</span> <span class="nav-text">外部资源的加载规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DOMContentLoaded-和-load事件"><span class="nav-number">5.</span> <span class="nav-text">DOMContentLoaded 和 load事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#js文件非阻塞加载"><span class="nav-number">6.</span> <span class="nav-text">js文件非阻塞加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展阅读"><span class="nav-number">7.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Vue,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要总结了vue中涉及到的生命周期，并且通过实际尝试得出了其执行顺序。">
+<meta name="keywords" content="Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue生命周期总结">
+<meta property="og:url" content="http://xgfe.github.io/2017/10/31/lulutia/vue-lifecycle/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要总结了vue中涉及到的生命周期，并且通过实际尝试得出了其执行顺序。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline1.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline02.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline03.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/time04.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline05.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline06.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline09.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline10.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline11.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline12.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline13.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.387Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue生命周期总结">
+<meta name="twitter:description" content="本文主要总结了vue中涉及到的生命周期，并且通过实际尝试得出了其执行顺序。">
+<meta name="twitter:image" content="http://okzzg7ifm.bkt.clouddn.com/timeline1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Vue生命周期总结 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Vue生命周期总结
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-10-31T15:04:00+08:00" content="2017-10-31">
+            2017-10-31
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lulutia/" itemprop="url" rel="index">
+                  <span itemprop="name">lulutia</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Vue/" rel="tag"><i class="icon-next-tags"></i>Vue</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要总结了vue中涉及到的生命周期，并且通过实际尝试得出了其执行顺序。</p>
+<a id="more"></a>
+<p>在进行Vue项目开发的过程中，会不可避免的接触它的生命周期。了解每个生命周期的特性及其使用场景对于快速进行项目开发相当重要。</p>
+<h3 id="全局守卫"><a href="#全局守卫" class="headerlink" title="全局守卫"></a>全局守卫</h3><p>一般基于Vue全家桶进行开发的项目都会采用vue-router来进行路由处理。在这种情况下，全局路由钩子将会是我们接触的生命周期第一站。这块主要涉及到以下两个方法：</p>
+<ul>
+<li><p>使用router.beforeEach注册一个全局前置守卫。直白的说就是当一个导航触发时，会按照顺序执行完毕此方法里的内容后再进行跳转[resolve后]。因此，在这个周期内特别适合做<strong>全局拦截</strong>，比如判断登陆状态。这个方法接受三个参数(from, to, next)，并且以调用next方法来作为resolve的标志。next方法可以传入以下几种参数：</p>
+<ul>
+<li>不传参数如next()：进行管道中的下一个钩子，执行完后成为resolve状态，进行正常跳转</li>
+<li>传入具体的路径如next(‘/‘): 直接跳转到传入的地址，当前导航会被中断，进行新的导航</li>
+<li>传入false如next(false): 中断当前导航，保持在当前的页面</li>
+<li>传入error如next(error): error是一个Error实例，导航会被终止且该错误会被传递给router.onError()注册过的回调</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'router.beforeEach'</span>)</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用router.afterEach注册一个全局后置钩子，接受两个参数(from, to)。不接受next，也不改变导航状态</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">router.afterEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'router.afterEach'</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="根组件"><a href="#根组件" class="headerlink" title="根组件"></a>根组件</h3><p>按照正常思维来思考，当路由确定后就涉及到具体页面的渲染。因此这部分涉及到以下几个实例的生命周期：</p>
+<ul>
+<li>beforeCreate：这个阶段主要执行初始化。可以访问实例本身，但是因为实例的配置还没完成，因此<strong>访问data或者method都是没用的</strong>。</li>
+<li>created：这个阶段已经进行了实例的配置，因此可以访问data、method和computed等了。但是因为挂载还没完成，所以<strong>直接访问this.$el是没用的</strong></li>
+<li>beforeMount：这个阶段是在挂载开始之前执行，之后就会走正常的渲染逻辑</li>
+<li>mounted：在这个阶段挂载已经完成，所以<strong>访问this.$el已经能够拿到元素了</strong></li>
+<li>beforeDestroy：这个阶段在实例销毁之前调用，因为是之前，所以在这个阶段还能够访问实例本身</li>
+<li>destroyed：这个阶段表示实例已经被销毁完成了。因此所有自己本身及其子组件的绑定，监听都会销毁</li>
+</ul>
+<p>上面是一个最基本的流程。加上前面的全局路由。我们可以看见其执行先后顺序如下：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline1.png" alt=""></p>
+<p>通过上面的展示，我们得到注意点，在从A页面跳转到B页面时，<strong>A页面的beforeDestroy和destroyed方法是比全局路由的beforeEach和afterEach执行的晚的</strong>。</p>
+<p>除了上面一个最基本的流程外，还有一个很重要的环节就是<strong>更新</strong>。关于这个，有下面两个生命周期阶段：</p>
+<ul>
+<li>beforeUpdate：数据更新时调用，发生在virtual dom进行对比和渲染之前。因此在这个阶段继续更改数据不会触发重新的渲染。但是这里有几个需要注意的地方如下：<ul>
+<li>如果只是单纯的数据变化，而这个变化并没有在template里面使用，则这个函数也不会触发。</li>
+<li>在beforeUpdate里面进行的数据更新，如果与之前的一样，则virtual dom对比结果为一样，此时不会重新触发beforeUpdate和updated；如果不一样，则会触发beforeUpdate和updated，但实际updated时更新的数据为后面的，证明在这个阶段继续更改数据不会触发重新的渲染；但是如果这个阶段的数据更新是异步的，比如延迟一秒更新，实际updated会触发两次并且数据不一样，表明触发了新的绘制</li>
+<li>在beforeUpdate里面重复修改同一个数据可能导致beforeUpdate函数的无限循环，应尽量避免</li>
+</ul>
+</li>
+<li>updated：virtual dom重新渲染和打补丁之后调用。所以如果在这个阶段再进行数据的更改会又重新触发beforeUpdate，恰巧如果beforeUpdate里面有同一数据的修改则很容易导致无限循环，所以最好避免这种事情发生。这个环节后，可以使用更新后的dom。</li>
+</ul>
+<p>在添加了上面两个方法后，现在我们可以看其执行顺序如下：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline02.png" alt=""></p>
+<h3 id="子组件"><a href="#子组件" class="headerlink" title="子组件"></a>子组件</h3><p>根组件的基本生命周期探讨到一阶段了，因为现在都是组件化的思维，因此现在很自然的就会想到子组件的生命周期在全局是处于何种位置的。<br>与根组件一样，子组件也拥有beforeCreate、created、beforeMount、mounted、beforeUpdate、updated、beforeDestroy、destroyed这几个生命阶段。现在我们来看在<strong>不执行更新操作</strong>时的执行顺序：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline03.png" alt=""></p>
+<p>由上可知:</p>
+<ul>
+<li>子组件的初始化晚于根组件，但是其挂载早于根组件，即当子组件都mounted后，根组件才会mounted。具体子组件的beforeCreated时间是在根组件的beforeMount之后</li>
+<li>子组件的销毁开始时间也晚于根组件，但是只有当子组件都destroyed后，根组件才destroyed了</li>
+</ul>
+<p>那加上更新操作时会怎样呢？我们构造了一个子组件，将根组件的msg作为props传入进去，然后根据这个prop构造一个计算属性，来作为子组件的template中的一个参数。注意这里一定要使用计算属性，如果直接使用data的话，是不会更新的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;smallcomponent :msg=<span class="string">"msg"</span>/&gt;</span><br><span class="line">..........HelloWorld.vue.........</span><br><span class="line"> &lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;&#123;&#123;componentInfo&#125;&#125;&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp">...</span></span><br><span class="line"><span class="regexp"> props: &#123;</span></span><br><span class="line"><span class="regexp">      msg: &#123;</span></span><br><span class="line"><span class="regexp">        type: String</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    computed: &#123;</span></span><br><span class="line"><span class="regexp">      componentInfo () &#123;</span></span><br><span class="line"><span class="regexp">        return this.msg</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">..........Time.vue........</span></span><br></pre></td></tr></table></figure>
+<p>在上面这种情况下，我们可以得出其生命周期如下，很明显，根组件是在子组件更新完毕后才更新完毕的：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/time04.png" alt=""></p>
+<h3 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h3><p>除了上面所说的子组件，根组件里面可能还会有指令存在，总的来说指令也会有其对应的生命周期，如下来自<a href="https://cn.vuejs.org/v2/guide/custom-directive.html#main" target="_blank" rel="noopener">vue官方文档</a>：</p>
+<ul>
+<li>bind：只调用一次，指令第一次绑定到元素时调用，用这个钩子函数可以定义一个在绑定时执行一次的初始化动作</li>
+<li>inserted：被绑定元素插入父节点时调用 (父节点存在即可调用，不必存在于 document 中)</li>
+<li>update：所在组件的VNode更新时调用，但是可能发生在其孩子的VNode更新之前</li>
+<li>componentUpdated：所在组件的VNode及其孩子的VNode全部更新时调用</li>
+<li>unbind：只调用一次，指令与元素解绑时调用</li>
+</ul>
+<p>我们实现了一个指令，将根组件的msg作为值传入指令中，在最基本的状态下，他们的生命周期流程如下：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline05.png" alt=""></p>
+<p>看来指令和子组件的状态十分类似，也是在根组件beforeMount后进行bind与inserted，然后根组件才执行mounted；在解绑时，也是在根组件beforeDestroy后执行，执行完后根组件才可能执行destroyed</p>
+<p>同样，如果这时，加上更新操作，其生命流程会如下所示，很明显，根组件是在指令更新完毕后才更新完毕的：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline06.png" alt=""></p>
+<p>之前我们单独的讨论了子组件和指令，那么如果它们在一起时生命周期的顺序又是怎样呢？通过实际实验，我们得出其顺序如下，当我们在根组件里先引入子组件再引入指令时其顺序如下左图，当我们先引人指令再引人子组件时其顺序如下右图：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline09.png" alt=""></p>
+<p>很明显，这个顺序是和引人组件或者指令的先后顺序有关～</p>
+<ul>
+<li>销毁阶段谁先引入谁先销毁</li>
+<li>更新阶段，都是指令的更新靠前</li>
+<li>创建阶段，谁先引入谁先进行初始化，但总的来说挂载都在初始化之后[无论谁的初始化]</li>
+</ul>
+<h3 id="组件内的守卫"><a href="#组件内的守卫" class="headerlink" title="组件内的守卫"></a>组件内的守卫</h3><p>在前面我们已经讨论过全局守卫、根组件、子组件和指令了。但实际上对于组件而言，它还存在组件内的守卫，<a href="https://router.vuejs.org/zh-cn/advanced/navigation-guards.html" target="_blank" rel="noopener">如下</a>：</p>
+<ul>
+<li>beforeRouteEnter：在渲染该组件的对应路由被 confirm 前调用，<strong>不能</strong>获取组件实例 this，因为当守卫执行前，组件实例还没被创建</li>
+<li>beforeRouteUpdate：在当前路由改变，但是该组件被复用时调用，可以访问组件实例this</li>
+<li>beforeRouteLeave：导航离开该组件的对应路由时调用，可以访问组件实例this</li>
+</ul>
+<p>我们在根组件添加了以上几个方法，可以看见整个生命周期如下所示：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline10.png" alt=""></p>
+<p>由上可知，beforeRouteEnter是在全局守卫之后调用，而beforeRouteLeave是在全局守卫之前调用。上面我们说到在beforeRouteEnter阶段是没法访问到this的，为了解决这个问题，可以通过传一个回调给next来访问组件实例。在导航被确认的时候执行回调，并且把组件实例作为回调方法的参数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">beforeRouteEnter (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'beforeRouteEnter'</span>)</span><br><span class="line">    next(<span class="function"><span class="params">vm</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'beforeRouteEnter的next'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+<p>那么这个的触发又是在生命周期的那一环呢？</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline11.png" alt=""></p>
+<p>很明显它会在完成mounted后马上触发。所以虽然beforeRouteEnter的执行时间很早，但是它的回调执行的时间比较晚，算是最接近dom渲染的一个周期了</p>
+<h3 id="路由独享的守卫"><a href="#路由独享的守卫" class="headerlink" title="路由独享的守卫"></a>路由独享的守卫</h3><p>除了上面我们讨论的全局守卫和组件内的守卫，实际还有一个路由独享的守卫，即可以在路由配置上直接定义beforeEnter守卫。具体使用如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> Router(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">'/'</span>,</span><br><span class="line">      name: <span class="string">'Hello'</span>,</span><br><span class="line">      component: HelloWorld,</span><br><span class="line">      beforeEnter: <span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Exclusive beforeEnter'</span>)</span><br><span class="line">        next()</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">'/world'</span>,</span><br><span class="line">      name: <span class="string">'World'</span>,</span><br><span class="line">      component: Page2</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>通过实际情况我们可以得知，这个方法的调用会在全局守卫的beforeEach之后，而在组件内守卫的beforeRouteEnter之前，如下：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline12.png" alt=""></p>
+<h3 id="Vue-nextTick-amp-vm-nextTick"><a href="#Vue-nextTick-amp-vm-nextTick" class="headerlink" title="Vue.nextTick &amp; vm.$nextTick"></a>Vue.nextTick &amp; vm.$nextTick</h3><p>除了上面讨论的，还有两个和生命周期有关系的方法，如下：</p>
+<ul>
+<li><a href="https://cn.vuejs.org/v2/api/index.html#Vue-nextTick" target="_blank" rel="noopener">Vue.nextTick</a>：这是个全局API，在下次DOM更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的DOM</li>
+<li><a href="https://cn.vuejs.org/v2/api/index.html#vm-nextTick" target="_blank" rel="noopener">vm.$nextTick</a>: 将回调延迟到下次DOM更新循环之后执行。在修改数据之后立即使用它，然后等待DOM更新。它跟全局方法Vue.nextTick一样，不同的是回调的this自动绑定到调用它的实例上</li>
+</ul>
+<p>我们将这部分加上去，得到整个这篇文章探讨的生命周期过程如下：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/timeline13.png" alt=""></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://cn.vuejs.org/" target="_blank" rel="noopener">Vue.js官方文档</a></li>
+<li><a href="https://router.vuejs.org/zh-cn/index.html" target="_blank" rel="noopener">vue-router官方文档</a></li>
+<li><a href="https://segmentfault.com/a/1190000008879966" target="_blank" rel="noopener">vue生命周期探究（一）</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/16/wangyue/this/" rel="prev">this：我们不一样！</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/18/liuhongyu/filter/" rel="next">用CSS实现各种图片滤镜效果演示</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#全局守卫"><span class="nav-number">1.</span> <span class="nav-text">全局守卫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根组件"><span class="nav-number">2.</span> <span class="nav-text">根组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子组件"><span class="nav-number">3.</span> <span class="nav-text">子组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指令"><span class="nav-number">4.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件内的守卫"><span class="nav-number">5.</span> <span class="nav-text">组件内的守卫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#路由独享的守卫"><span class="nav-number">6.</span> <span class="nav-text">路由独享的守卫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue-nextTick-amp-vm-nextTick"><span class="nav-number">7.</span> <span class="nav-text">Vue.nextTick &amp; vm.$nextTick</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

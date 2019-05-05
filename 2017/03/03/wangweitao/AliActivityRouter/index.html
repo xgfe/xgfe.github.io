@@ -1,0 +1,772 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Andorid,Activity Router,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="简介android通过在intent中指定目标类名和参数实现界面之间的跳转。这种写法在activity数量少、跳转简单、开发人员较少时效果好。  如果遇到activity数量较多、跳转复杂、多人协作开发、长期的修改的情况，则可以通过activityRouter来解耦合、管理跳转逻辑等。">
+<meta name="keywords" content="Andorid,Activity Router">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ActivityRouter">
+<meta property="og:url" content="http://xgfe.github.io/2017/03/03/wangweitao/AliActivityRouter/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="简介android通过在intent中指定目标类名和参数实现界面之间的跳转。这种写法在activity数量少、跳转简单、开发人员较少时效果好。  如果遇到activity数量较多、跳转复杂、多人协作开发、长期的修改的情况，则可以通过activityRouter来解耦合、管理跳转逻辑等。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p0.meituan.net/dpnewvc/10dbcf812dadbfc530586dab3e9bfeeb582755.png">
+<meta property="og:image" content="https://p0.meituan.net/dpnewvc/2e3998e6e62a8147fc6d286f7aec34c0306557.png">
+<meta property="og:image" content="https://p0.meituan.net/dpnewvc/1e60eef57c66b8b50239dd7261613470662661.png">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/25ad81ab29548af2a57bef4a30970a4f325124.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ActivityRouter">
+<meta name="twitter:description" content="简介android通过在intent中指定目标类名和参数实现界面之间的跳转。这种写法在activity数量少、跳转简单、开发人员较少时效果好。  如果遇到activity数量较多、跳转复杂、多人协作开发、长期的修改的情况，则可以通过activityRouter来解耦合、管理跳转逻辑等。">
+<meta name="twitter:image" content="https://p0.meituan.net/dpnewvc/10dbcf812dadbfc530586dab3e9bfeeb582755.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> ActivityRouter | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              ActivityRouter
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-03-03T00:00:00+08:00" content="2017-03-03">
+            2017-03-03
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/wangweitao/" itemprop="url" rel="index">
+                  <span itemprop="name">wangweitao</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Andorid/" rel="tag"><i class="icon-next-tags"></i>Andorid</a>
+            
+              <a href="/tags/Activity-Router/" rel="tag"><i class="icon-next-tags"></i>Activity Router</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>android通过在intent中指定目标类名和参数实现界面之间的跳转。这种写法在activity数量少、跳转简单、开发人员较少时效果好。</p>
+<p> 如果遇到activity数量较多、跳转复杂、多人协作开发、长期的修改的情况，则可以通过activityRouter来解耦合、管理跳转逻辑等。</p>
+<a id="more"></a>
+<h2 id="AcitivtyRouter的主要优势"><a href="#AcitivtyRouter的主要优势" class="headerlink" title="AcitivtyRouter的主要优势"></a>AcitivtyRouter的主要优势</h2><p> ActivityRouter的最大优势在于项目中存在大量的activity、跳转关系较复杂，且后续需求变动频繁、开发人员较多或流动性大的时候，能非常方便的进行维护和开发。</p>
+<h3 id="使用原生跳转"><a href="#使用原生跳转" class="headerlink" title="使用原生跳转"></a>使用原生跳转</h3><p> 假设需要做一个包含商品列表、购物车、用户中心、商品详情、登录、订单列表、订单详情等界面的demo，跳转关系如下图所示。<br> <img src="https://p0.meituan.net/dpnewvc/10dbcf812dadbfc530586dab3e9bfeeb582755.png" alt="1. 使用原生跳转"><br> 如果按照原生的跳转方案，必须在每个跳转点使用一次startActivity。如果某些界面或服务需要先登录才能访问，则需要在跳转时添加相应的判断，如此就形成了图中的跳转情况。</p>
+<p> 一种简便的方法是在此基础上对跳转进行一些封装，这样只要维护几个静态的跳转类即可。随着参数的不同和改变、需求的变化，这种做法也会变的更加复杂。</p>
+<h3 id="使用ActivityRouter管理跳转"><a href="#使用ActivityRouter管理跳转" class="headerlink" title="使用ActivityRouter管理跳转"></a>使用ActivityRouter管理跳转</h3><p> 如果使用ActivityRouter来管理这些跳转会简便的多。所有的打开界面以及请求服务都通过ActivityRouter来完成。ActivityRouter中添加某一类操作的拦截即可完成。跳转图如下所示。</p>
+<p> <img src="https://p0.meituan.net/dpnewvc/2e3998e6e62a8147fc6d286f7aec34c0306557.png" alt="2. 使用ActivityRouter管理跳转"></p>
+<h3 id="ActivityRouter在版本迭代和维护中的优势"><a href="#ActivityRouter在版本迭代和维护中的优势" class="headerlink" title="ActivityRouter在版本迭代和维护中的优势"></a>ActivityRouter在版本迭代和维护中的优势</h3><p> 假设在原先的基础上需要添加一个活动页面，该页面有很多跳转其他页面的功能。如下图所示，有多少新的入口就需要添加多少个跳转的判断或者调用。<br> <img src="https://p0.meituan.net/dpnewvc/1e60eef57c66b8b50239dd7261613470662661.png" alt="3. 添加界面后的原生跳转"></p>
+<p> 如果是采用ActivityRouter的来管理这些路由，那么只需要调用ActivityRouter的接口即可，而拦截的逻辑根本不需要变动。<br> <img src="https://p1.meituan.net/dpnewvc/25ad81ab29548af2a57bef4a30970a4f325124.png" alt="4. 添加界面后的ActivityRouter跳转"></p>
+<h2 id="已有的开源activityRouter"><a href="#已有的开源activityRouter" class="headerlink" title="已有的开源activityRouter"></a>已有的开源activityRouter</h2><ul>
+<li><p><a href="https://github.com/mzule/ActivityRouter" target="_blank" rel="noopener">mzuleActivityRouter</a></p>
+<p>比较早的activityRouter,功能也比较健全，但是api设计不够友好，使用apt编译。</p>
+</li>
+<li><p><a href="https://github.com/alibaba/ARouter" target="_blank" rel="noopener">ARouter</a></p>
+<p>最近阿里出的一个activityRouter，可以同时支持apt和android annotation编译，api比较简单。</p>
+</li>
+<li><p><a href="https://github.com/campusappcn/AndRouter" target="_blank" rel="noopener">AndRouter</a></p>
+<p>apt编译，api设计有点反人类。</p>
+</li>
+<li><p><a href="https://github.com/chenenyu/Router" target="_blank" rel="noopener">chenenyuRouter</a></p>
+<p>android annotation编译，api比较简单，目前没有稳定版本。</p>
+</li>
+</ul>
+<h2 id="ARouter的使用"><a href="#ARouter的使用" class="headerlink" title="ARouter的使用"></a>ARouter的使用</h2><p> 本文例子使用的是ARouter。它的api简单有效，同时支持apt和android annotation的编译，能够兼容旧的项目。</p>
+<h3 id="gradle配置"><a href="#gradle配置" class="headerlink" title="gradle配置"></a>gradle配置</h3><p> 使用apt编译的gradle配置：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//项目的gradle配置</span></span><br><span class="line"><span class="keyword">buildscript</span> &#123;</span><br><span class="line">    <span class="keyword">repositories</span> &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">dependencies</span> &#123;</span><br><span class="line">        <span class="keyword">classpath</span> <span class="string">'com.neenbedankt.gradle.plugins:android-apt:1.8'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//模块的gradle配置</span></span><br><span class="line">apply plugin: <span class="string">'com.neenbedankt.android-apt'</span></span><br><span class="line"></span><br><span class="line">apt &#123;</span><br><span class="line">    arguments &#123;</span><br><span class="line">        moduleName <span class="keyword">project</span>.getName();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">	<span class="keyword">compile</span> <span class="string">"com.alibaba:arouter-api:1.0.6"</span></span><br><span class="line">	<span class="keyword">compile</span> <span class="string">"com.alibaba:arouter-annotation:1.0.1"</span></span><br><span class="line">	apt <span class="string">"com.alibaba:arouter-compiler:1.0.2"</span></span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+<p> 使用android annotation编译：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//在模块gradle中配置</span></span><br><span class="line">android &#123;</span><br><span class="line">	defaultConfig &#123;</span><br><span class="line">		...</span><br><span class="line">		javaCompileOptions &#123;</span><br><span class="line">			annotationProcessorOptions &#123;</span><br><span class="line">				arguments = [ moduleName : <span class="keyword">project</span>.getName() ]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">	<span class="keyword">compile</span> <span class="string">"com.alibaba:arouter-api:1.0.6"</span></span><br><span class="line">	<span class="keyword">compile</span> <span class="string">"com.alibaba:arouter-annotation:1.0.1"</span></span><br><span class="line">	annotationProcessor <span class="string">"com.alibaba:arouter-compiler:1.0.2"</span></span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+<p> <strong>注意:</strong></p>
+<ul>
+<li>arouter-api &gt;= 1.0.6      </li>
+<li>arouter-compiler &gt;= 1.0.2</li>
+<li>arouter-annotation &gt;= 1.0.1 </li>
+</ul>
+<p>低于上述要求版本会导致注入功能不能正常使用，不便于跳转时参数的传递。</p>
+<h3 id="初始化activityRouter"><a href="#初始化activityRouter" class="headerlink" title="初始化activityRouter"></a>初始化activityRouter</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        <span class="comment">//初始化路由</span></span><br><span class="line">        ARouter.init(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用之前必须要调用ARouter.init()方法，推荐在application中调用。</p>
+<h3 id="标注activity，注解参数"><a href="#标注activity，注解参数" class="headerlink" title="标注activity，注解参数"></a>标注activity，注解参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Route</span>(path = <span class="string">"/mall/home"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Home</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span>(name = <span class="string">"model"</span>)</span><br><span class="line">    Integer model = GOODS_LIST;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        ARouter.getInstance().inject(<span class="keyword">this</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">   	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> GOODS_LIST = <span class="number">101</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SHOPPING_CART = <span class="number">102</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> USERS = <span class="number">103</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> <strong>注意:</strong></p>
+<ul>
+<li>标注activity时，path至少包含两级目录。如/mall/home,只有/home是出错。</li>
+<li><p>注解@Autowired的name参数是通过url跳转时对应的参数名称。如:通过<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(http://KMall/mall/home?model=101)</span><br></pre></td></tr></table></figure></p>
+<p>来启动activity时，想要注入model的值就需要设置@Autowired(name = “model”)</p>
+</li>
+<li>使用@Autowired注解要记得ARouter.getInstance().inject(this)注解。</li>
+</ul>
+<h3 id="activity间路由跳转"><a href="#activity间路由跳转" class="headerlink" title="activity间路由跳转"></a>activity间路由跳转</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ARouter.getInstance()</span><br><span class="line">	.build(<span class="string">"/mall/home"</span>)</span><br><span class="line">	.withInt(<span class="string">"model"</span>, Home.GOODS_LIST)</span><br><span class="line">	.navigation()</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果需要有回调的话可以在callback中添加操作</span></span><br><span class="line">ARouter.getInstance()</span><br><span class="line">	.build(<span class="string">"/mall/home"</span>)</span><br><span class="line">	.withInt(<span class="string">"model"</span>, Home.GOODS_LIST)</span><br><span class="line">	.navigation(<span class="keyword">this</span>, <span class="keyword">new</span> NavigationCallback()&#123;</span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFound</span><span class="params">(Postcard postcard)</span> </span>&#123;</span><br><span class="line">			<span class="comment">// ...</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLost</span><span class="params">(Postcard postcard)</span> </span>&#123;</span><br><span class="line">			<span class="comment">// ...</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong></p>
+<p>  调用跳转语句前要确保ARouter已经被初始化，否则会crash.</p>
+<h3 id="接受从浏览器或者webview的跳转"><a href="#接受从浏览器或者webview的跳转" class="headerlink" title="接受从浏览器或者webview的跳转"></a>接受从浏览器或者webview的跳转</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 申明一个activity接受浏览器或者webview的跳转 --&gt;</span><br><span class="line">&lt;activity android:name=&quot;.SchemeActivity&quot;&gt;</span><br><span class="line">	&lt;intent-filter&gt;</span><br><span class="line">		&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;</span><br><span class="line">		&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;</span><br><span class="line">		&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;</span><br><span class="line">		&lt;data android:host=&quot;KMall&quot; android:scheme=&quot;sankuai&quot;/&gt;</span><br><span class="line">	&lt;/intent-filter&gt;</span><br><span class="line"></span><br><span class="line">	&lt;intent-filter&gt;</span><br><span class="line">		&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;</span><br><span class="line">		&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;</span><br><span class="line">		&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;</span><br><span class="line">		&lt;data android:host=&quot;KMall&quot; android:scheme=&quot;http&quot;/&gt;</span><br><span class="line">		&lt;data android:host=&quot;KMall&quot; android:scheme=&quot;https&quot;/&gt;</span><br><span class="line">	&lt;/intent-filter&gt;</span><br><span class="line">&lt;/activity&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接受到请求后用ARouter进行应用内跳转</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SchemeActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">		<span class="keyword">final</span> Uri uri = getIntent().getData();</span><br><span class="line"></span><br><span class="line">		ARouter.getInstance().build(uri).navigation(<span class="keyword">this</span>, <span class="keyword">new</span> NavigationCallback() &#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFound</span><span class="params">(Postcard postcard)</span> </span>&#123;</span><br><span class="line">				finish();</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLost</span><span class="params">(Postcard postcard)</span> </span>&#123;</span><br><span class="line">				finish();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="路由跳转拦截器"><a href="#路由跳转拦截器" class="headerlink" title="路由跳转拦截器"></a>路由跳转拦截器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Interceptor</span>(priority = <span class="number">1</span>, name = <span class="string">"login interceptor"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginInterceptor</span> <span class="keyword">implements</span> <span class="title">IInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Context context = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(Postcard postcard, InterceptorCallback callback)</span> </span>&#123;</span><br><span class="line">        String path = postcard.getPath();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (context.getString(routerPathOrderList).equals(path)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Config.isLogin) &#123;</span><br><span class="line">                callback.onContinue(postcard);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                unLoginNotify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (context.getString(routerPathOrderDetail).equals(path)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Config.isLogin) &#123;</span><br><span class="line">                <span class="keyword">if</span> (postcard.getExtras().getLong(<span class="string">"detailId"</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">                    showADialog(<span class="string">"orderId不能为空或0!"</span>, <span class="string">"确定"</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    callback.onContinue(postcard);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                unLoginNotify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (context.getString(routerPathGoodsDetail).equals(path)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Config.isLogin) &#123;</span><br><span class="line">                <span class="keyword">if</span> (postcard.getExtras().getLong(<span class="string">"csuId"</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">                    showADialog(<span class="string">"csuId不能为空或0"</span>, <span class="string">"确定"</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    callback.onContinue(postcard);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                unLoginNotify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (context.getString(routerPathHome).equals(path)</span><br><span class="line">                &amp;&amp; postcard.getExtras().getInt(<span class="string">"model"</span>) != Home.GOODS_LIST) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Config.isLogin) &#123;</span><br><span class="line">                callback.onContinue(postcard);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                unLoginNotify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            callback.onContinue(postcard);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">        ARouter.getInstance().inject(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">unLoginNotify</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        showADialog(<span class="string">"你需要先登录!"</span>, <span class="string">"确定"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">showADialog</span><span class="params">(String message, String action)</span> </span>&#123;</span><br><span class="line">        ARouter.getInstance().build(<span class="string">"/mall/ADialog"</span>).withString(<span class="string">"message"</span>, message).withString(<span class="string">"action"</span>, action)</span><br><span class="line">                .navigation();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong></p>
+<ul>
+<li>注解@Interceptor的priority表示优先级，拦截器按照优先级顺序依次执行，name属性只是在生成java doc的过程中有用。</li>
+<li>在拦截操作process中，如果继续跳转需要调用callback.onContinue()，如果遇到错误可以使用callback.onInterrupt()中断所有的路由。</li>
+<li>拦截器中一定要保证不需要被处理的路径能够通过callback.onContinue()继续执行下去。</li>
+<li>拦截器中不应有耗时操作，积压大量的请求会crash.</li>
+</ul>
+<h3 id="注入服务"><a href="#注入服务" class="headerlink" title="注入服务"></a>注入服务</h3><p> 服务就是一个公用的类，没有界面，可以通过ARouter来调用。可以用来做一些依赖注入，省略掉不少代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//申明服务的接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CustomToast</span> <span class="keyword">extends</span> <span class="title">IProvider</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">showDefaultStyleToast</span><span class="params">(String content)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实现服务</span></span><br><span class="line"><span class="meta">@Route</span>(path = <span class="string">"/mall/utils/toast/normal"</span>, name = <span class="string">"自定义样式Toast"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalToast</span> <span class="keyword">implements</span> <span class="title">CustomToast</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Context context = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showDefaultStyleToast</span><span class="params">(String content)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (context != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Toast.makeText(context, content, Toast.LENGTH_LONG).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span>(name = <span class="string">"/mall/utils/toast/normal"</span>)</span><br><span class="line">    CustomToast customToast;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">				<span class="comment">//注入</span></span><br><span class="line">        ARouter.getInstance().inject(<span class="keyword">this</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">		｝</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong></p>
+<ul>
+<li>接口一定要继承IProvider，否则编译不通过。而且错误信息提示不够准确，难以定位。</li>
+<li>如果只有一个服务接口的实现，那么利用@Autowired(name = “/mall/utils/toast/normal”)时可以不添加name属性。如果服务接口不止一个实现类，则需要name属性来区分。</li>
+<li>除了利用@Autowired来注解外，也可以通过(CustomToast)ARouter.getInstance().build(“/mall/utils/toast/normal”).navigation()来调用。</li>
+</ul>
+<h3 id="demo地址"><a href="#demo地址" class="headerlink" title="demo地址"></a>demo地址</h3><p> 本文的demo地址：<a href="https://github.com/thedevilking/demoCode/tree/develop/Demo_ActivityRouter" target="_blank" rel="noopener">demo</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/16/TinySymphony/electronic-apps/" rel="prev">Electron开发跨平台桌面应用</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/02/zhouxiong/Vue2.0+Vue-resource+Express-Server/" rel="next">Vue2.0+Vue-resource+Express搭建简书网站服务端</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AcitivtyRouter的主要优势"><span class="nav-number">2.</span> <span class="nav-text">AcitivtyRouter的主要优势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用原生跳转"><span class="nav-number">2.1.</span> <span class="nav-text">使用原生跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用ActivityRouter管理跳转"><span class="nav-number">2.2.</span> <span class="nav-text">使用ActivityRouter管理跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ActivityRouter在版本迭代和维护中的优势"><span class="nav-number">2.3.</span> <span class="nav-text">ActivityRouter在版本迭代和维护中的优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#已有的开源activityRouter"><span class="nav-number">3.</span> <span class="nav-text">已有的开源activityRouter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARouter的使用"><span class="nav-number">4.</span> <span class="nav-text">ARouter的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gradle配置"><span class="nav-number">4.1.</span> <span class="nav-text">gradle配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化activityRouter"><span class="nav-number">4.2.</span> <span class="nav-text">初始化activityRouter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标注activity，注解参数"><span class="nav-number">4.3.</span> <span class="nav-text">标注activity，注解参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#activity间路由跳转"><span class="nav-number">4.4.</span> <span class="nav-text">activity间路由跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接受从浏览器或者webview的跳转"><span class="nav-number">4.5.</span> <span class="nav-text">接受从浏览器或者webview的跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#路由跳转拦截器"><span class="nav-number">4.6.</span> <span class="nav-text">路由跳转拦截器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注入服务"><span class="nav-number">4.7.</span> <span class="nav-text">注入服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demo地址"><span class="nav-number">4.8.</span> <span class="nav-text">demo地址</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

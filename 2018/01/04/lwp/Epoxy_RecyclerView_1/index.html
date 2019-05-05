@@ -1,0 +1,765 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Android,Epoxy,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文仅从宏观上介绍了 Epoxy 的特色和优势，并说明了基本使用步骤。 Epoxy 是由 Airbnb 团队开发的 ，以简化使用 RecyclerView 的过程，并添加了必要的缺失功能。Airbnb 在他们的应用中的大部分页面上使用 Epoxy ，这大大提高了开发人员的经验。">
+<meta name="keywords" content="Android,Epoxy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Epoxy：构建复杂页面的框架（一）">
+<meta property="og:url" content="http://xgfe.github.io/2018/01/04/lwp/Epoxy_RecyclerView_1/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文仅从宏观上介绍了 Epoxy 的特色和优势，并说明了基本使用步骤。 Epoxy 是由 Airbnb 团队开发的 ，以简化使用 RecyclerView 的过程，并添加了必要的缺失功能。Airbnb 在他们的应用中的大部分页面上使用 Epoxy ，这大大提高了开发人员的经验。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.388Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Epoxy：构建复杂页面的框架（一）">
+<meta name="twitter:description" content="本文仅从宏观上介绍了 Epoxy 的特色和优势，并说明了基本使用步骤。 Epoxy 是由 Airbnb 团队开发的 ，以简化使用 RecyclerView 的过程，并添加了必要的缺失功能。Airbnb 在他们的应用中的大部分页面上使用 Epoxy ，这大大提高了开发人员的经验。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Epoxy：构建复杂页面的框架（一） | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Epoxy：构建复杂页面的框架（一）
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-01-04T14:13:36+08:00" content="2018-01-04">
+            2018-01-04
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lwp/" itemprop="url" rel="index">
+                  <span itemprop="name">lwp</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Android/" rel="tag"><i class="icon-next-tags"></i>Android</a>
+            
+              <a href="/tags/Epoxy/" rel="tag"><i class="icon-next-tags"></i>Epoxy</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文仅从宏观上介绍了 Epoxy 的特色和优势，并说明了基本使用步骤。</p>
+<p>Epoxy 是由 Airbnb 团队开发的 ，以简化使用 <code>RecyclerView</code> 的过程，并添加了必要的缺失功能。Airbnb 在他们的应用中的大部分页面上使用 Epoxy ，这大大提高了开发人员的经验。</p>
+<a id="more"></a>
+<p>Epoxy（环氧树脂）是一个Android库，用于在 <code>RecyclerView</code> 中构建复杂的页面。界面模型是通过自定义视图、数据绑定布局或 Litho 组件通过注释处理自动生成的。这些模型会在 <code>EpoxyController</code> 中用于声明在 <code>RecyclerView</code> 中显示哪些项目。</p>
+<p>这将抽象化 <code>ViewHolder</code> 的样板，区分项目和绑定有效负载变化，项目类型，项目ID，跨度计数等等，以简化具有多种视图类型的构建屏幕。此外，Epoxy 增加了对保存视图状态和自动比较项目变化的支持。</p>
+<h2 id="Epoxy-的特点"><a href="#Epoxy-的特点" class="headerlink" title="Epoxy 的特点"></a>Epoxy 的特点</h2><p>Android 中的 RecyclerView 是一个显示列表的强大工具，但是它的用法比较琐碎。显示复杂度高的列表是我们团队的一个常用需求，比如具有多种视图类型，分页功能，支持平板和 item 动画的列表。我们发现自己总是不断的重复相同的设置。所以 Airbnb 开发了 Epoxy 来减轻这个趋势，以简化基于列表的视图的创建，加载静态或者动态的内容。</p>
+<p>Epoxy 采用可组合的方式来创建列表。列表中的每个 item 由一个 Model 代表，Model 定义了 item 的布局，id 以及 span。Model 还负责处理数据到视图的绑定，在视图被回收的时候释放资源。如果要显示这些 Model 则把它们添加到 Epoxy 的 Adapter 中，Adapter 为你处理复杂的显示问题。</p>
+<h3 id="追踪-Item-变化"><a href="#追踪-Item-变化" class="headerlink" title="追踪 Item 变化"></a>追踪 Item 变化</h3><p>Epoxy 通过在 Models 中使用一种 Diffing 算法帮你解决了这个问题。只要你改变了 Model 的设置，Epoxy 就会找到变化然后通知 RecyclerView。这简化了你的 Adapter ，提高了性能，还顺便提供了 Item Change 动画。</p>
+<p>这个 Diffing 算法依赖于每个 Model 实现了 HashCode，这样当一个 Model 发生变化的时候就可以被检测到。Epoxy 提供了一个注解处理器，这样你的 Model 就可以为那些能代表 Model 状态的成员添加注解。一个生成的 subclass 可以为你实现正确的 HashCode 方法，同时为每个成员变量生成getter &amp; setter 方法。</p>
+<p>你还会注意到这个 Model 实现了getDefaultLayout() 来返回一个布局资源。这个资源用于 inflate 传递给 model bind 方法的 view，bind 方法中把数据设置到 view 上。另外，在 Adapter 中 layout（资源id）还被用作这个 item 的 view type id。</p>
+<h3 id="Stable-IDs-By-Default"><a href="#Stable-IDs-By-Default" class="headerlink" title="Stable IDs By Default"></a>Stable IDs By Default</h3><p>为了让功能正常工作，Epoxy默认启用了RecyclerView的stable id（要了解什么是stable id，参见RecyclerView Adapter的setHasStableIds(boolean hasStableIds)方法）。</p>
+<p>这使得diffing，item动画以及状态保存成为可能，每个model负责定义它的id,我们为动态生成的model手动设置id。比如每个neighborhood carousel model用网络请求中的neighborhood对象提供的id设置。</p>
+<p>静态视图比如header就要复杂点。它没有一个固有的id与之关联，因此我们需要制作一个。Epoxy为每个新创建的model自动生成一个id。这个id可以保证在app生命周期中不会和其他生成的model id重复，而负id被用来避免和手动设置的id重复。</p>
+<h3 id="保存-View-的状态"><a href="#保存-View-的状态" class="headerlink" title="保存 View 的状态"></a>保存 View 的状态</h3><p>Epoxy还添加了对保存视图状态的支持，这是默认的RecyclerView所缺乏的。比如，上面search设计中的carousels是可以横向滑动的，为了更好的用户体验我们想保存这个carousel的滚动位置。如果用户向下滚动之后再回到这里时他们应该看到carousel保持了原来的状态。类似的，如果他们旋转手机或者切换app之后再回来，尽管activity发生了重建，我们还是应该呈现出相同的状态。</p>
+<p>如果使用普通的RecyclerView adapter这就难以实现了。Epoxy支持保存任意model的view状态，为了做到这点，它是用了stable ids把view的状态和model id联系起来。</p>
+<p>要保存view的状态只需再model中添加如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">boolean</span> shouldSaveViewState &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Epoxy将在它离开屏幕的时候保存自己的状态，并在返回的时候恢复。默认这个设置为false，这样内存和滚动的性能就不会因为保存了不必要的视图状态而受影响。</p>
+<h3 id="Epoxy在静态内容中的应用"><a href="#Epoxy在静态内容中的应用" class="headerlink" title="Epoxy在静态内容中的应用"></a>Epoxy在静态内容中的应用</h3><p>RecyclerView通常用于显示从远程数据（比如网络或者数据库）加载的动态内容，否则使用scrollview要简单些。但是Epoxy可以让RecyclerView的使用和ScrollView一样简单，我们的详情界面就是这样做的。</p>
+<p>这种效果使用ScrollView来实现可能是最简单的。但是我们使用Epoxy配合RecyclerView可以得到更快的加载速度，也更容易实现动画。</p>
+<p>性能对我们来说至关重要，这个页面通常在用户搜索的时候展示，用户点击一个搜索结果的图片，然后使用共享元素动画切换到详情页面，为了让搜索体验良好，动画必须流畅，因此details view的加载必须非常快。</p>
+<p>让我们仔细看看这个view了解为什么它们会影响性能。首先，最顶上的图片实际是一个横向的RecyclerView，这样用户就能滑动查看房间的图片。在中间我们有一张静态的地图显示房源的位置，而在底部我们还有另一个RecyclerView，显示该地区的类似房源。而在这三个比较大的视图中间还穿插着一些文字信息和小图片。</p>
+<p>这些加在一起就得到了一个带有很多位图的非常复杂的结构。这使得测量和布局的过程要花更长的时间，同时还需要更多的内存来加载图片。</p>
+<p>另外，我们还从不同的渠道加载数据－databases, in-memory caches, 以及多个网络请求。这对为用户显示即时数据有好处，但是如果处理不好也会增加更多的时间开销。</p>
+<p>庞大的视图结构，多个bitmap，多个view刷新，这些要求使得我们有足够的理由去关注性能问题。多亏了Epoxy我们可以在兼顾这些考虑的情况下也能提供很棒的用户体验。这是因为：</p>
+<p>因为我们使用的是RecyclerView，当用户首次打开这个屏幕的时候只有一小部分视图被加载。避免了过早的加载map图片，底部的画廊以及它们之间的所有视图。这就使得布局更快，内存使用更小，过度动画更流畅。</p>
+<p>当新数据被加载的时候我们无需反复的刷新view，减小了丢帧的概率。如果遇到类似的列表请求，而那个carousel不在屏幕上，我们什么夜不用做。如果价格发生了变换，Epoxy只是更新价格标签。这增加了进入动画的流畅度，同时防止用户滚动的时候丢帧。</p>
+<p>自带Item change动画。当数据发生变化的时候我们可以以相应的动画显示，隐藏或者更新view。比如，点击翻译按钮可以插入一个加载器，当加载完成再过渡到翻译后的text，这避免了突兀的变化。</p>
+<h2 id="项目中引入-Epoxy"><a href="#项目中引入-Epoxy" class="headerlink" title="项目中引入 Epoxy"></a>项目中引入 Epoxy</h2><p>使用 gradle 依赖 Epoxy 和 Annotation Processor，目前最新版本为 2.8.0 。 <a href="https://github.com/airbnb/epoxy/releases/latest" target="_blank" rel="noopener">查看最新版本</a></p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">  implementation <span class="string">'com.airbnb.android:epoxy:2.8.0'</span></span><br><span class="line">  <span class="comment">// 依赖 Epoxy 的注解处理工具</span></span><br><span class="line">  annotationProcessor <span class="string">'com.airbnb.android:epoxy-processor:2.8.0'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="基本使用方法"><a href="#基本使用方法" class="headerlink" title="基本使用方法"></a>基本使用方法</h2><p>Epoxy 有两个主要的组件，各司其职：</p>
+<ol>
+<li><code>EpoxyModel</code>：负责列表项的样式和数据；</li>
+<li><code>EpoxyController</code>：负责列表中如何排列各种类型的 <code>EpoxyModel</code> 来显示列表项和数据。</li>
+</ol>
+<h3 id="1-创建-EpoxyModel"><a href="#1-创建-EpoxyModel" class="headerlink" title="1. 创建 EpoxyModel"></a>1. 创建 EpoxyModel</h3><p>Epoxy 根据你设置的自定义控件或布局文件来构造一个 Model 类，这个自动生成的类使用 <code>_</code> 作为类名的后缀，在 <code>EpoxyController</code> 中应该使用这个自动生成的类。</p>
+<p>下面是创建 <code>EpoxyModel</code> 类的三种方法：</p>
+<h4 id="自定义控件"><a href="#自定义控件" class="headerlink" title="自定义控件"></a>自定义控件</h4><p>通过自定义控件创建 <code>EpoxyModel</code> 的步骤如下：</p>
+<ul>
+<li>首先按照普通的自定义控件的方法创建一个 View 的子类；</li>
+<li>然后在类名上添加注解 <code>@ModelView</code> ；</li>
+<li>在需要作为 <code>EpoxyModel</code> 的属性的 setter 方法上添加 “prop” 注解（<code>@TextProp</code>、<code>@ModelProp</code>、<code>@CallbackProp</code>）。</li>
+</ul>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ModelView</span>(autoLayout = Size.MATCH_WIDTH_WRAP_HEIGHT)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeaderView</span> <span class="keyword">extends</span> <span class="title">LinearLayout</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  ... <span class="comment">// Initialization omitted</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@TextProp</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTitle</span><span class="params">(CharSequence text)</span> </span>&#123;</span><br><span class="line">    titleView.setText(text);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>项目 Rebuild 后，将会生成类 <code>HeaderViewModel_</code>，包名与 <code>HeaderView</code> 相同。</p>
+<h4 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h4><p>如果使用了 Android 的 DataBinding，你可以使用类似下面的简单方法创建布局：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">layout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">"title"</span> <span class="attr">type</span>=<span class="string">"String"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"120dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"40dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"@&#123;title&#125;"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">layout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后, 在任意合适的包中创建 <code>package-info.java</code> 文件，并添加注解 <code>@EpoxyDataBindingLayouts</code> 指定以上布局.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EpoxyDataBindingLayouts</span>(&#123;R.layout.header_view, ... <span class="comment">// other layouts &#125;)</span></span><br><span class="line"><span class="keyword">package</span> com.airbnb.epoxy.sample;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.airbnb.epoxy.EpoxyDataBindingLayouts;</span><br><span class="line"><span class="keyword">import</span> com.airbnb.epoxy.R;</span><br></pre></td></tr></table></figure>
+<p>项目 Rebuild 后，将会生成类 <code>HeaderViewBindingModel_</code>。</p>
+<h4 id="ViewHolder-方式"><a href="#ViewHolder-方式" class="headerlink" title="ViewHolder 方式"></a>ViewHolder 方式</h4><p>使用 xml 布局来创建 <code>EpoxyModel</code> ，可以继承 <code>EpoxyModelWithHolder</code> 创建一个抽象类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EpoxyModelClass</span>(layout = R.layout.header_view)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">HeaderModel</span> <span class="keyword">extends</span> <span class="title">EpoxyModelWithHolder</span>&lt;<span class="title">Holder</span>&gt; </span>&#123;</span><br><span class="line">  <span class="meta">@EpoxyAttribute</span> String title;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(Holder holder)</span> </span>&#123;</span><br><span class="line">    holder.header.setText(title);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Holder</span> <span class="keyword">extends</span> <span class="title">BaseEpoxyHolder</span> </span>&#123;</span><br><span class="line">    <span class="meta">@BindView</span>(R.id.text) TextView header;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>项目 Rebuild 后，会生成类 <code>HeaderModel_</code>，继承了抽象类 <code>HeaderModel</code> 并实现了其抽象方法。<code>HeaderModel</code> 中标注了 <code>@EpoxyAttribute</code> 注解的成员变量，会在 <code>HeaderModel_</code> 中生成 getter &amp; setter 方法。</p>
+<h3 id="2-创建-EpoxyController"><a href="#2-创建-EpoxyController" class="headerlink" title="2. 创建 EpoxyController"></a>2. 创建 EpoxyController</h3><p>Epoxy 的控制器可以指定列表显示的项目类型、数量和顺序，同时指定每个项目的数据。</p>
+<p>在最重要的 <code>buildModels</code> 方法中，我们可以添加每一项 model ，这个方法会在我们每次调用 <code>requestModelBuild</code> 方法更新数据后被触发，Epoxy 跟踪模型中的变化，并自动绑定和更新视图。</p>
+<p>下面的例子中，列表有一个头部，大量的照片列表项，最后是加载更多条。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PhotoController</span> <span class="keyword">extends</span> <span class="title">Typed2EpoxyController</span>&lt;<span class="title">List</span>&lt;<span class="title">Photo</span>&gt;, <span class="title">Boolean</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@AutoModel</span> HeaderModel_ headerModel;</span><br><span class="line">    <span class="meta">@AutoModel</span> LoaderModel_ loaderModel;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">buildModels</span><span class="params">(List&lt;Photo&gt; photos, Boolean loadingMore)</span> </span>&#123;</span><br><span class="line">      headerModel</span><br><span class="line">          .title(<span class="string">"My Photos"</span>)</span><br><span class="line">          .description(<span class="string">"My album description!"</span>)</span><br><span class="line">          .addTo(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">for</span> (Photo photo : photos) &#123;</span><br><span class="line">        <span class="keyword">new</span> PhotoModel()</span><br><span class="line">           .id(photo.id())</span><br><span class="line">           .url(photo.url())</span><br><span class="line">           .addTo(<span class="keyword">this</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      loaderModel</span><br><span class="line">          .addIf(loadingMore, <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-整合到-RecyclerView"><a href="#3-整合到-RecyclerView" class="headerlink" title="3. 整合到 RecyclerView"></a>3. 整合到 RecyclerView</h3><p>列表控件既可以使用 Android Support Library 中的 <code>RecyclerView</code>，也可以使用 Epoxy 提供的 <code>EpoxyRecyclerView</code>。推荐使用后者，更加简便。</p>
+<h4 id="RecyclerView"><a href="#RecyclerView" class="headerlink" title="RecyclerView"></a>RecyclerView</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">MyController controller = <span class="keyword">new</span> MyController();</span><br><span class="line">recyclerView.setAdapter(controller.getAdapter());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Request a model build whenever your data changes</span></span><br><span class="line">controller.requestModelBuild();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Or if you are using a TypedEpoxyController</span></span><br><span class="line">controller.setData(myData);</span><br></pre></td></tr></table></figure>
+<h4 id="EpoxyRecyclerView"><a href="#EpoxyRecyclerView" class="headerlink" title="EpoxyRecyclerView"></a>EpoxyRecyclerView</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">epoxyRecyclerView.setControllerAndBuildModels(<span class="keyword">new</span> MyController());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Request a model build on the recyclerview when data changes</span></span><br><span class="line">epoxyRecyclerView.requestModelBuild();</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>非常感谢 Airbnb 和其他开发者对此开源项目的贡献，让我们得以体验到全新的列表开发方式，并享受到了 Epoxy 的注解处理器、Diffing 算法以及通用工具带给我们的方便。</p>
+<p>本文仅从宏观上介绍了 Epoxy 的基本使用步骤，敬请期待后续文章，介绍 Epoxy 的更多细节。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://github.com/airbnb/epoxy" target="_blank" rel="noopener">GitHub - Airbnb/Epoxy</a></li>
+<li><a href="https://github.com/airbnb/epoxy/wiki" target="_blank" rel="noopener">Epoxy Wiki</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/05/hardhpp/node_crawler/" rel="prev">Node学习系列(1) -- Node实现爬虫</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/30/lwp/AbViewUtil/" rel="next">AbViewUtil屏幕适配方法</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Epoxy-的特点"><span class="nav-number">1.</span> <span class="nav-text">Epoxy 的特点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#追踪-Item-变化"><span class="nav-number">1.1.</span> <span class="nav-text">追踪 Item 变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stable-IDs-By-Default"><span class="nav-number">1.2.</span> <span class="nav-text">Stable IDs By Default</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存-View-的状态"><span class="nav-number">1.3.</span> <span class="nav-text">保存 View 的状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Epoxy在静态内容中的应用"><span class="nav-number">1.4.</span> <span class="nav-text">Epoxy在静态内容中的应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目中引入-Epoxy"><span class="nav-number">2.</span> <span class="nav-text">项目中引入 Epoxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本使用方法"><span class="nav-number">3.</span> <span class="nav-text">基本使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-创建-EpoxyModel"><span class="nav-number">3.1.</span> <span class="nav-text">1. 创建 EpoxyModel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义控件"><span class="nav-number">3.1.1.</span> <span class="nav-text">自定义控件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据绑定"><span class="nav-number">3.1.2.</span> <span class="nav-text">数据绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ViewHolder-方式"><span class="nav-number">3.1.3.</span> <span class="nav-text">ViewHolder 方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-创建-EpoxyController"><span class="nav-number">3.2.</span> <span class="nav-text">2. 创建 EpoxyController</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-整合到-RecyclerView"><span class="nav-number">3.3.</span> <span class="nav-text">3. 整合到 RecyclerView</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RecyclerView"><span class="nav-number">3.3.1.</span> <span class="nav-text">RecyclerView</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EpoxyRecyclerView"><span class="nav-number">3.3.2.</span> <span class="nav-text">EpoxyRecyclerView</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

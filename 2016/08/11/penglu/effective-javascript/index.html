@@ -1,0 +1,1594 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="javascript,读书笔记,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要是阅读Effective Javascript书籍的读书笔记。">
+<meta name="keywords" content="javascript,读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编写高质量JS代码">
+<meta property="og:url" content="http://xgfe.github.io/2016/08/11/penglu/effective-javascript/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要是阅读Effective Javascript书籍的读书笔记。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.391Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编写高质量JS代码">
+<meta name="twitter:description" content="本文主要是阅读Effective Javascript书籍的读书笔记。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 编写高质量JS代码 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              编写高质量JS代码
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-08-11T10:30:00+08:00" content="2016-08-11">
+            2016-08-11
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/penglu/" itemprop="url" rel="index">
+                  <span itemprop="name">penglu</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/javascript/" rel="tag"><i class="icon-next-tags"></i>javascript</a>
+            
+              <a href="/tags/读书笔记/" rel="tag"><i class="icon-next-tags"></i>读书笔记</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要是阅读Effective Javascript书籍的读书笔记。</p>
+<a id="more"></a>
+<h1 id="编写高质量JS代码"><a href="#编写高质量JS代码" class="headerlink" title="编写高质量JS代码"></a>编写高质量JS代码</h1><h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
+<li>让自己习惯JavaScript</li>
+<li>变量作用域</li>
+<li>使用函数</li>
+<li>对象和原型</li>
+<li>数组和字典</li>
+<li>库和API设计</li>
+<li>并发</li>
+</ul>
+<h1 id="内容详解"><a href="#内容详解" class="headerlink" title="内容详解"></a>内容详解</h1><h2 id="让自己习惯JavaScript"><a href="#让自己习惯JavaScript" class="headerlink" title="让自己习惯JavaScript"></a>让自己习惯JavaScript</h2><h3 id="了解你使用的js版本"><a href="#了解你使用的js版本" class="headerlink" title="了解你使用的js版本"></a>了解你使用的js版本</h3><ol>
+<li>决定你的应用程序支持JS的哪些版本</li>
+<li>确保你使用的任何JS的特性对于应用程序将要运行的所有环境都是支持的</li>
+<li>总是要在执行严格模式检查的环境中测试严格代码</li>
+<li>当心连接那些在不同严格模式下有不同预期的脚本<ul>
+<li><a href="http://xgfe.github.io/Basics/JavaScript/strictMode.html">严格模式注意点</a></li>
+<li>‘use strict’指令只有在脚本或函数的顶部才能生效<ul>
+<li>在开发中使用多个独立的文件，但是部署到产品环境时却需要连接成一个单一的文件。<ul>
+<li>不要将进行严格模式检查的文件和不进行严格模式检查的文件连接在一起。</li>
+<li>通过将其自身包裹在理解调用的函数表达式(IIFE)中的方式连接多个文件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="理解JavaScript的浮点数"><a href="#理解JavaScript的浮点数" class="headerlink" title="理解JavaScript的浮点数"></a>理解JavaScript的浮点数</h3><ol>
+<li>Javascript的数字都是双精度的浮点数</li>
+<li>Javascript中的整数仅仅是双精度浮点数的一个子集，而不是一个单独的数据类型</li>
+<li>位运算符将数字视为32位的有符号整数<ul>
+<li>它们将操作数转换为整数，然后使用整数位模式(被隐式的转换成32位大端的2的补码表示的整数)进行运算， 最后将结果转换为标准的Js浮点数<code>8 | 1 = 9</code></li>
+</ul>
+</li>
+<li><p>当心浮点运算中的精度陷阱</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(0.1 + 0.2) + 0.3;     // 0.6000000000000001</span><br><span class="line">0.1 + (0.2 + 0.3);     // 0.6</span><br></pre></td></tr></table></figure>
+<ul>
+<li>尽可能的采用整数数值运算，货币相关计算，通常会按比例将数值转换为最小的货币单位来进行计算，这样就可以以整数进行计算</li>
+</ul>
+</li>
+</ol>
+<h3 id="当心隐式的强制转换"><a href="#当心隐式的强制转换" class="headerlink" title="当心隐式的强制转换"></a>当心隐式的强制转换</h3><ol>
+<li>类型错误可能被隐式的强制转换所隐藏<ul>
+<li>算术运算符-、*、/、%在计算之前都会尝试将其参数转换为数字<ul>
+<li>null会被转换为0</li>
+<li>未定义变量被转换为特殊的浮点数值NaN(JS中唯一一个不等于其自身的值)<ul>
+<li>检查一个值是否为NaN: <code>a!==a</code>;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>重载的运算符+是进行加法运算还是字符串连接操作取决于其参数类型<ul>
+<li>数字和字符串一起，会将数字转换为字符串<code>1+2+&#39;3&#39; = 33</code></li>
+</ul>
+</li>
+<li><p>对象通过valueOf方法强制转换为数字，通过toString方法强制转换为字符串</p>
+<ul>
+<li><p>对象的运算符+被重载时，JS选择valueOf方法进行转换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var obj = &#123;</span><br><span class="line">    toString: function()&#123;</span><br><span class="line">        return &apos;[object MyObject]&apos;;</span><br><span class="line">    &#125;,</span><br><span class="line">    valueOf: function()&#123;</span><br><span class="line">        return 17;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&apos;object:&apos; + obj;  // &quot;object:17&quot;</span><br><span class="line">1 + obj;  // 18</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>具有valueOf方法的对象应该实现toString方法，返回一个valueOf方法产生的数字的字符串表示</p>
+</li>
+<li>测试一个值是否为未定义的值，应该使用typeof或者与undefined进行比较而不是使用真值运算<ul>
+<li>Js中7个假值: false、0、－0、””、NaN、null、undefined</li>
+<li>检查参数是否为undefined<ul>
+<li>使用typeof:<code>typeof a</code></li>
+<li>与undefined进行比较</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="原始类型优于封装对象"><a href="#原始类型优于封装对象" class="headerlink" title="原始类型优于封装对象"></a>原始类型优于封装对象</h3><ol>
+<li>当做相等比较时，原始类型的封装对象与其原始值行为不一样<ul>
+<li>JS有5个原始值类型: 布尔值、数字、字符串、null和undefined<ul>
+<li>对null进行typeof是object</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>获取和设置原始类型值的属性会隐式地创建封装对象</p>
+<ul>
+<li>当对原始值提取属性和进行方法调用时，它表现得就像已经使用了对应的对象类型封装了该值一样。</li>
+<li><p>隐式封装可以对原始值设置属性，但是对其丝毫没有影响</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&apos;hello&apos;.name = &apos;my name is hello&apos;;</span><br><span class="line">&apos;hello&apos;.name</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="避免对混合类型使用-运算符"><a href="#避免对混合类型使用-运算符" class="headerlink" title="避免对混合类型使用==运算符"></a>避免对混合类型使用==运算符</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;1.0e0&quot; == &#123;valueOf: function()&#123; return true; &#125;&#125;;  // true</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>当参数类型不同时，==运算符应用了一套难以理解的隐式强制转换规则。</p>
+<ul>
+<li><p>当两个参数属于同一类时，==和===运算符的行为是没有区别的</p>
+<p><strong>运算符的强制转换规则</strong></p>
+</li>
+</ul>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>参数类型1</th>
+<th style="text-align:center">参数类型2</th>
+<th style="text-align:right">强制转换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>null</td>
+<td style="text-align:center">undefined</td>
+<td style="text-align:right">不转换，返回true</td>
+</tr>
+<tr>
+<td>null或undefined</td>
+<td style="text-align:center">其他任何非null或undefined的类型</td>
+<td style="text-align:right">不转换总是返回false</td>
+</tr>
+<tr>
+<td>原始类型:string,number或boolean</td>
+<td style="text-align:center">Date对象</td>
+<td style="text-align:right">将原始类型转换为数字，将Date对象转换为原始类型(优先调用toString，再尝试valueOf)</td>
+</tr>
+<tr>
+<td>原始类型:string,number或boolean</td>
+<td style="text-align:center">非Date对象</td>
+<td style="text-align:right">将原始类型转换为数字，将非Date对象转换为原始类型(优先调用valueOf，再尝试toString)</td>
+</tr>
+<tr>
+<td>原始类型:string,number或boolean</td>
+<td style="text-align:center">原始类型:string,number或boolean</td>
+<td style="text-align:right">将原始类型转换为数字</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>使用===运算符，使读者不需要涉及任何的隐式强制转换就能明白你的比较运算</li>
+<li>当比较不同类型的值时，使用你自己的显示强制转换使程序的行为更清晰</li>
+</ol>
+<h3 id="了解分号插入的局限"><a href="#了解分号插入的局限" class="headerlink" title="了解分号插入的局限"></a>了解分号插入的局限</h3><ol>
+<li>分号插入规则<ul>
+<li>分号仅在}标记之前、一个或多个换行之后和程序输入的结尾被插入；</li>
+<li>分号仅在随后的输入标记不能解析时插入;</li>
+<li>分号不会做为分隔符在for循环空语句的头部被自动插入</li>
+</ul>
+</li>
+<li>在以(、[、+、-、或/字符开头的语句前绝不能省略分号;</li>
+<li>当脚本连接的时候，在脚本之间显示地插入分号;</li>
+<li>在return、throw、break、continue、++、–的参数之前绝不能换行</li>
+</ol>
+<h3 id="视字符串为16位的代码单元序列"><a href="#视字符串为16位的代码单元序列" class="headerlink" title="视字符串为16位的代码单元序列"></a>视字符串为16位的代码单元序列</h3><ol>
+<li>JavaScript字符串由16位的代码单元组成，而不是由Unicode代码点组成<ul>
+<li>Unicode编码标准:UTF-8、UTF-16、UTF-32</li>
+<li>JavaScript允许直接用码点表示Unicode字符，写法是”反斜杠+u+码点”</li>
+</ul>
+</li>
+<li>JavaScript使用两个代码单元表示2^16及其以上的Unicode代码点。这两个代码单元被称为代理对<ul>
+<li>字符串的属性和方法(length、charAt、charCodeAt)都是基于代码单元层级</li>
+<li>一个JS字符串的元素是一个16位的代码单元</li>
+</ul>
+</li>
+<li>代理对甩开了字符串元素计数，length、charAt、charCodeAt方法以及正则表达式模式(例如’.’)受到影响</li>
+<li>使用第三方的库编写可识别代码点的字符串操作</li>
+<li>每当你使用一个含有字符串操作的库时，你都需要查阅该库文档，看它如何处理代码点的整个范围<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;\u221a&quot; === √</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="变量作用域"><a href="#变量作用域" class="headerlink" title="变量作用域"></a>变量作用域</h2><h3 id="尽量少用全局对象"><a href="#尽量少用全局对象" class="headerlink" title="尽量少用全局对象"></a>尽量少用全局对象</h3><ul>
+<li>避免声明全局变量，尽量声明局部变量<ul>
+<li>全局变量会污染共享的公共命名空间，并可能导致意外的命名冲突</li>
+</ul>
+</li>
+<li>避免对全局对象添加属性<ul>
+<li>声明全局变量两种方法: 在全局作用域中使用var声明它；将其加入到全局对象中.</li>
+<li>在web浏览器中，全局对象被绑定到全局的window变量:<code>foo == this.foo == window.foo</code></li>
+</ul>
+</li>
+<li>使用全局对象来做平台特性检测。</li>
+</ul>
+<h3 id="始终声明局部变量"><a href="#始终声明局部变量" class="headerlink" title="始终声明局部变量"></a>始终声明局部变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function swap(a, i, j)&#123;</span><br><span class="line">	temp = a[i];  // global</span><br><span class="line">	a[i] = a[j];</span><br><span class="line">	a[j] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>始终是用var声明新的局部变量</li>
+<li>考虑使用lint工具帮助检查未绑定的变量</li>
+</ul>
+<h3 id="避免使用with"><a href="#避免使用with" class="headerlink" title="避免使用with"></a>避免使用with</h3><h3 id="熟练掌握闭包"><a href="#熟练掌握闭包" class="headerlink" title="熟练掌握闭包"></a>熟练掌握闭包</h3><ul>
+<li><p>理解闭包</p>
+<ul>
+<li><p>Js允许你引用在当前函数以外定义的变量</p>
+</li>
+<li><p>即使外部函数已返回，当前函数仍然可以引用在外部函数所定义的变量</p>
+</li>
+<li>闭包可以更新外部变量的值(闭包存储的是外部变量的引用，而不是它们的值的副本)</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>函数可以引用定义在其外部作用域的变量</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function makeSandwich()&#123;</span><br><span class="line">	var magicIngredient = &apos;peanut butter&apos;;</span><br><span class="line">	function make(filling)&#123;</span><br><span class="line">		return magicIngredient + &quot; and &quot; + filling;</span><br><span class="line">	&#125;</span><br><span class="line">	return make(&apos;jelly&apos;);</span><br><span class="line">&#125;</span><br><span class="line">makeSandwich(); // &quot;peanut butter and jelly&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>闭包比创建它们的函数有更长的生命周期</p>
+<ul>
+<li>Js函数值还在内部存储它们可能会引用的定义在其封闭作用域的变量，而那些在其所涵盖的作用域内跟踪变量的函数被称为闭包。</li>
+<li><p>构建闭包的字面量语法－－函数表达式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function makeSandwich()&#123;</span><br><span class="line">    return function (filling)&#123;</span><br><span class="line">        return magicIngredient + &quot; and &quot; + filling;</span><br><span class="line">    &#125;</span><br><span class="line"> 	&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>闭包在内部存储其外部变量的引用，并能读写这些变量</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function  box()&#123;</span><br><span class="line">    var val = undefined;</span><br><span class="line">    return &#123;</span><br><span class="line">        set: function(newVal)&#123; val = newVal;&#125;,</span><br><span class="line">        get: function()&#123; return val; &#125;,</span><br><span class="line">        type: function()&#123; return typeof val;&#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line">var b = box();</span><br><span class="line">b.type(); //&quot;undefined&quot;</span><br><span class="line">b.set(98.6);</span><br><span class="line">b.get();  // 98.6</span><br><span class="line">b.type();  // &quot;number&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="理解变量声明提升"><a href="#理解变量声明提升" class="headerlink" title="理解变量声明提升"></a>理解变量声明提升</h3><ol>
+<li>在代码块中的变量声明会被隐式的提升到封闭函数的顶部<ul>
+<li>把声明看作由两部分组成，即声明和赋值。JS隐式地提升声明部分到封闭函数的顶部，而将赋值留在原地</li>
+</ul>
+</li>
+<li><p>重声明变量被视为单个变量</p>
+<ul>
+<li><p>js没有块级作用域除了try…catch，try…catch将捕获的异常绑定到一个变量，该变量的作用域只是catch语句块。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    var x = &quot;var&quot;, result = [];</span><br><span class="line">    result.push(x);</span><br><span class="line">    try&#123;</span><br><span class="line">        throw &apos;expection&apos;;</span><br><span class="line">    &#125; catch(x)&#123;</span><br><span class="line">        x = &apos;catch&apos;;</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(x);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line">test(); // [&quot;var&quot;, &quot;var&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>考虑手动提升局部变量的声明，从而避免混淆</p>
+</li>
+</ol>
+<h3 id="使用立即调用的函数表达式创建局部作用域"><a href="#使用立即调用的函数表达式创建局部作用域" class="headerlink" title="使用立即调用的函数表达式创建局部作用域"></a>使用立即调用的函数表达式创建局部作用域</h3><ol>
+<li><p>理解绑定与赋值的区别</p>
+<ul>
+<li><p>运行时进入一个作用域，js会为每一个绑定到该作用域的变量在内存中分配一个‘槽(slot)’</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function wrapElements(a) &#123;</span><br><span class="line">	var result = [], i, n;  // 分配三个槽</span><br><span class="line">	for(i = 0, n = a.length; i &lt; n; i++)&#123;</span><br><span class="line">	   result[i] = function()&#123;  // 闭包,a[i]存储的是引用,i共享一个槽</span><br><span class="line">	       return a[i];</span><br><span class="line">	   &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return result;</span><br><span class="line">&#125;</span><br><span class="line">var wrapped = wrapElements([10, 20, 30, 40, 50]);</span><br><span class="line">var f = wrapped[0];</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>闭包通过引用而不是值捕获它们的外部变量</p>
+</li>
+<li><p>使用立即调用函数表达式(IIFE)来创建局部作用域</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function wrapElements(a) &#123;</span><br><span class="line">    var result = [], i, n;</span><br><span class="line">    for(i = 0, n = a.length; i &lt; n; i++)&#123;</span><br><span class="line">        (function()&#123;</span><br><span class="line">            var j = i;</span><br><span class="line">            result[i] = function()&#123;</span><br><span class="line">                return a[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)();</span><br><span class="line">        /**</span><br><span class="line">       (function(j)&#123;</span><br><span class="line">            result[i] = function()&#123;</span><br><span class="line">                return a[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)(i);</span><br><span class="line">        **/</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line">var wrapped = wrapElements([10, 20, 30, 40, 50]);</span><br><span class="line">var f = wrapped[0];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当心在立即调用的函数表达式中包裹代码块可能改变其行为的情形。</p>
+<ul>
+<li>代码块不能包含任何跳出块的break语句和continue语句</li>
+<li>如果代码块引用了this或arguments变量，IIFE将会改变它们的含义</li>
+</ul>
+</li>
+</ol>
+<h3 id="当心命名函数表达式笨拙的作用域"><a href="#当心命名函数表达式笨拙的作用域" class="headerlink" title="当心命名函数表达式笨拙的作用域"></a>当心命名函数表达式笨拙的作用域</h3><ol>
+<li><p>在Error对象和调试器中使用命名函数表达式改进栈跟踪</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var f = function double(x)&#123; return x*2; &#125;</span><br><span class="line">// 此语句将该函数绑定到变量f而不是变量double</span><br></pre></td></tr></table></figure>
+<ul>
+<li>匿名和命名函数表达式区别: 后者会绑定到与其函数名相同的变量上，该变量将作为函数内的一个局部变量</li>
+<li>在跟踪栈中，函数表达式的名称通常作为其入口使用</li>
+</ul>
+</li>
+<li>在ES3和有问题的JS环境中谨记函数表达式作用域会被Object.prototype污染<ul>
+<li>在ES3中，JS引擎被要求将命名函数表达式的作用域表示为一个对象，该作用域对象继承了Object.prototype的属性</li>
+</ul>
+</li>
+<li>谨记在错误百出的js环境中会提升命名函数表达式声明，并导致命名函数表达式的重复存储</li>
+<li>考虑避免使用命名函数表达式或在发布前删除函数名</li>
+<li>如果你将代码发布到正确实现的ES5环境中，那么你没有什么好担心的</li>
+</ol>
+<h3 id="当心局部块函数声明笨拙的作用域"><a href="#当心局部块函数声明笨拙的作用域" class="headerlink" title="当心局部块函数声明笨拙的作用域"></a>当心局部块函数声明笨拙的作用域</h3><ol>
+<li><p>始终将函数声明置于程序或被包含的函数的最外层以避免不可移植的行为</p>
+<ul>
+<li><p>始终避免将函数声明置于局部块或子语句中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function f()&#123; return &apos;global&apos;; &#125;</span><br><span class="line">function test(x)&#123;</span><br><span class="line">    var result = [];</span><br><span class="line">    if(x)&#123;</span><br><span class="line">        function f()&#123;</span><br><span class="line">            return &apos;local&apos;;</span><br><span class="line">        &#125;</span><br><span class="line">        result.push(f());</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(f());</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line">test(true);</span><br><span class="line">test(false);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>使用var声明和有条件的赋值语句替代有条件的函数声明</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function f()&#123; return &apos;global&apos;; &#125;</span><br><span class="line">function test(x)&#123;</span><br><span class="line">    var g = f;</span><br><span class="line">    var result = [];</span><br><span class="line">    if(x)&#123;</span><br><span class="line">        g = function f()&#123;</span><br><span class="line">            return &apos;local&apos;;</span><br><span class="line">        &#125;</span><br><span class="line">        result.push(g());</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(g());</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line">test(true);</span><br><span class="line">test(false);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="避免使用eval创建局部变量"><a href="#避免使用eval创建局部变量" class="headerlink" title="避免使用eval创建局部变量"></a>避免使用eval创建局部变量</h3><ol>
+<li><p>避免使用eval函数创建的变量污染调用者的作用域</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function test(x)&#123;</span><br><span class="line">	eval(&apos;var y = x;&apos;)</span><br><span class="line">	return y;</span><br><span class="line">&#125;</span><br><span class="line">test(&apos;hello&apos;); // hello</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果eval函数代码可能创建全局变量，将此调用封装到嵌套的函数中以防止作用域污染</p>
+</li>
+</ol>
+<h3 id="间接调用eval函数优于直接调用"><a href="#间接调用eval函数优于直接调用" class="headerlink" title="间接调用eval函数优于直接调用"></a>间接调用eval函数优于直接调用</h3><ol>
+<li><p>将eval函数同一个毫无意义的字面量包裹在序列表达式中以达到强制使用间接调用eval函数的目的</p>
+<ul>
+<li>eval函数具有访问调用它那时的整个作用域的能力</li>
+<li><p>函数调用涉及eval标识符,被认为是一种”直接”调用eval函数的方式</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 直接调用</span><br><span class="line">var x = &apos;global&apos;;</span><br><span class="line">function test()&#123;</span><br><span class="line">   var x = &apos;local&apos;;</span><br><span class="line">   return eval(&apos;x&apos;);  // &apos;local&apos;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br><span class="line">// 间接调用</span><br><span class="line">var x = &apos;global&apos;;</span><br><span class="line">function test()&#123;</span><br><span class="line">   var x = &apos;local&apos;;</span><br><span class="line">   var f = eval;</span><br><span class="line">   return f(&apos;x&apos;);  // global</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>绑定eval函数到另一个变量名，通过该变量名调用函数会使代码失去对所有局部作用域的访问能力</p>
+</li>
+</ul>
+</li>
+<li>尽可能间接调用eval函数，而不要直接调用eval函数<ul>
+<li>编写间接调用eval函数的另一种简洁方式是使用表达式序列运算符(,)和一个明显毫无意义的数字字面量｀(0, eval)(src)｀</li>
+<li>直接调用eval函数性能上的损耗是相当高昂的(需要承担直接调用eval函数导致其包含的函数以及所有直到函数最外层的函数运行相当缓慢的风险)</li>
+</ul>
+</li>
+</ol>
+<h2 id="使用函数"><a href="#使用函数" class="headerlink" title="使用函数"></a>使用函数</h2><h3 id="理解函数调用、方法调用及构造函数调用之间的不同"><a href="#理解函数调用、方法调用及构造函数调用之间的不同" class="headerlink" title="理解函数调用、方法调用及构造函数调用之间的不同"></a>理解函数调用、方法调用及构造函数调用之间的不同</h3><ul>
+<li><p>JS中函数，方法，类的构造函数是单个构造对象的不同使用模式</p>
+<ul>
+<li><p>函数调用</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function hello(userName)&#123;</span><br><span class="line">   	return &quot;hello,&quot; + userName;</span><br><span class="line">&#125;</span><br><span class="line">hello(&apos;pl&apos;);  // &quot;hello,pl&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法调用:对象的属性恰好是函数</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var obj = &#123;</span><br><span class="line">   hello: function()&#123;</span><br><span class="line">       return &apos;hello,&apos; + this.userName;</span><br><span class="line">   &#125;,</span><br><span class="line">   userName: &apos;pl&apos;</span><br><span class="line">&#125;</span><br><span class="line">obj.hello(); // &quot;hello,pl&quot;</span><br><span class="line">var obj2 = &#123;</span><br><span class="line">    hello: obj.hello,</span><br><span class="line">    userName: &apos;rabbit&apos;</span><br><span class="line">&#125;;</span><br><span class="line">obj2.hello();  // &quot;hello,rabbit&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法调用中是由调用表达式自身来确定this变量的绑定。绑定到this变量的对象被称为调用接收者</li>
+<li><p>ES5的严格模式将this变量的默认值绑定值改为undefined</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">    // &apos;use strict&apos;;</span><br><span class="line">    console.log(this);</span><br><span class="line">    return &quot;hello,&quot; + this.userName;</span><br><span class="line">&#125;</span><br><span class="line">hello();</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>通过构造函数使用</p>
+<ul>
+<li>使用new操作符来调用函数，则视其为构造函数。构造函数调用将一个全新的对象作为this变量的值，并隐式返回这个新对象作为调用结果。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="熟练掌握高阶函数"><a href="#熟练掌握高阶函数" class="headerlink" title="熟练掌握高阶函数"></a>熟练掌握高阶函数</h3><ol>
+<li>高阶函数是那些将函数作为参数或返回值的函数</li>
+<li>熟练掌握现有库中的高阶函数<ul>
+<li>Array.prototype.sort、forEach、map、filter等</li>
+</ul>
+</li>
+<li><p>学会发现可以被高阶函数所取代的常见的编码模式</p>
+<ul>
+<li><p>需要引入高阶函数抽象的信号是出现重复或相似的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// 使用英文字母创建一些字符串</span><br><span class="line">var aIndex = &quot;a&quot;.charCodeAt(0);</span><br><span class="line">var alphabet = &quot;&quot;;</span><br><span class="line">for(var i = 0; i &lt; 26; i++)&#123;</span><br><span class="line">    alphabet += String.fromCharCode(aIndex + i);</span><br><span class="line">&#125;</span><br><span class="line">alphabet; //&quot;abcdefghijklmnopqrstuvwxyz&quot;</span><br><span class="line">// 生成一个包含数字的字符串</span><br><span class="line">var digits = &quot;&quot;;</span><br><span class="line">for(var i = 0; i &lt; 10; i++)&#123;</span><br><span class="line">    digits += i;</span><br><span class="line">&#125;</span><br><span class="line">digits;  // &quot;0123456789&quot;</span><br><span class="line">// 创建一个随机的字符串</span><br><span class="line">var aIndex = &quot;a&quot;.charCodeAt(0);</span><br><span class="line">var random = &quot;&quot;;</span><br><span class="line">for(var i=0; i&lt;8; i++)&#123;</span><br><span class="line">	random += String.fromCharCode(Math.floor(Math.random() * 26) + aIndex);</span><br><span class="line">&#125;</span><br><span class="line">random;  //&quot;uraugvrx&quot;</span><br><span class="line">// 上面三种，都是创建一个字符串，只是创建的方式不同</span><br><span class="line">function buildString(n, callback)&#123;</span><br><span class="line">	var result = &quot;&quot;;</span><br><span class="line">	for(var i=0; i&lt;n; i++)&#123;</span><br><span class="line">		result = callback(i);</span><br><span class="line">	&#125;</span><br><span class="line">	return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="使用call方法自定义接收者来调用方法"><a href="#使用call方法自定义接收者来调用方法" class="headerlink" title="使用call方法自定义接收者来调用方法"></a>使用call方法自定义接收者来调用方法</h3><ol>
+<li><p>使用call方法自定义接收者来调用此函数</p>
+<ul>
+<li><p>通常，函数或方法的接收者(即绑定到特殊关键字this的值)是由调用者的语法决定的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">obj.temporary = f;</span><br><span class="line">var result = obj.temporary(arg1, arg2, arg3);</span><br><span class="line">delete obj.temporary;</span><br><span class="line">// 使用call</span><br><span class="line">f.call(obj, arg1, arg2, arg3);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>使用call方法可以调用在给定的对象中不存在的方法</p>
+</li>
+<li>使用call方法定义高阶函数允许使用者给回调函数指定接收者</li>
+</ol>
+<h3 id="使用apply方法通过不同数量的参数调用函数"><a href="#使用apply方法通过不同数量的参数调用函数" class="headerlink" title="使用apply方法通过不同数量的参数调用函数"></a>使用apply方法通过不同数量的参数调用函数</h3><ol>
+<li>使用apply方法指定一个可计算的参数数组来调用可变参数的函数<ul>
+<li>可变参数或可变元的函数(函数的元数是指其期望的参数个数)</li>
+<li>apply方法需要一个参数数组，然后将数组的每一个元素作为调用的单独参数调用该函数，除了参数数组，apply方法指定第一个参数绑定到被调用函数的this变量</li>
+</ul>
+</li>
+<li>使用apply方法的第一个参数给可变参数的方法提供一个接收者</li>
+</ol>
+<h3 id="使用arguments创建可变参数的函数"><a href="#使用arguments创建可变参数的函数" class="headerlink" title="使用arguments创建可变参数的函数"></a>使用arguments创建可变参数的函数</h3><ol>
+<li>使用隐式的arguments对象实现可变参数的函数<ul>
+<li>JS给每个函数都隐式地提供了一个名为arguments的局部变量。arguments对象给实参提供了一个类似数组的接口。</li>
+</ul>
+</li>
+<li>考虑对可变参数的函数提供一个额外的固定元数的版本，从而使使用者无需借助apply方法</li>
+</ol>
+<h3 id="永远不要修改arguments对象"><a href="#永远不要修改arguments对象" class="headerlink" title="永远不要修改arguments对象"></a>永远不要修改arguments对象</h3><ol>
+<li>永远不要修改arguments对象</li>
+<li><p>使用[].slice.call(arguments)将arguments对象复制到一个真正的数组中再进行修改</p>
+<ul>
+<li>arguments对象自身并不是标准的Array类型的实例，因此，不能直接调用arguments.shift()方法</li>
+<li><p>所有命名参数都是arguments对象中对应索引的别名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function callMethod(obj, method)&#123;</span><br><span class="line">    var shift = [].shift;</span><br><span class="line">    console.log(arguments);</span><br><span class="line">    shift.call(arguments);</span><br><span class="line">    shift.call(arguments);</span><br><span class="line">    console.log(obj);</span><br><span class="line">    console.log(method);</span><br><span class="line">    return obj[method].apply(obj, arguments);</span><br><span class="line">&#125;</span><br><span class="line">var obj = &#123;</span><br><span class="line">    add: function(x, y)&#123;return x + y;&#125;</span><br><span class="line">&#125;;</span><br><span class="line">callMethod(obj, &apos;add&apos;, 17, 29);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在严格模式下，函数参数不支持对其arguments对象取别名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function strict(x)&#123;</span><br><span class="line">    &quot;use strict&quot;;</span><br><span class="line">    arguments[0] = &quot;modified&quot;;</span><br><span class="line">    return x === arguments[0];</span><br><span class="line">&#125;</span><br><span class="line">function nonstrict(x)&#123;</span><br><span class="line">    arguments[0] = &apos;modified&apos;;</span><br><span class="line">    return x === arguments[0];</span><br><span class="line">&#125;</span><br><span class="line">strict(&quot;unmodified&quot;); // false</span><br><span class="line">nonstrict(&apos;unmodified&apos;); // true</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="使用变量保存arguments的引用"><a href="#使用变量保存arguments的引用" class="headerlink" title="使用变量保存arguments的引用"></a>使用变量保存arguments的引用</h3><ol>
+<li>当引用arguments时当心函数嵌套层级</li>
+<li>绑定一个明确作用域的引用到arguments变量，从而可以在嵌套的函数中引用它。<ul>
+<li>一个新的arguments变量会被隐式的绑定到每个函数体内</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">function values()&#123;</span><br><span class="line">    var i = 0, n = arguments.length;</span><br><span class="line">   //  var args = [].slice.call(arguments, 0);</span><br><span class="line">    return &#123;</span><br><span class="line">        hasNext: function()&#123;</span><br><span class="line">            return i &lt; n;</span><br><span class="line">        &#125;,</span><br><span class="line">        next: function()&#123;</span><br><span class="line">            if( i &gt;= n )&#123;</span><br><span class="line">                throw  new Error(&apos;end of iteration&apos;);</span><br><span class="line">            &#125;</span><br><span class="line">            return arguments[i++];</span><br><span class="line">         // return args[i++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var it = values(1, 4, 1, 4, 2, 1, 3, 5, 6);</span><br><span class="line">it.next();</span><br></pre></td></tr></table></figure>
+<h3 id="使用bind方法提取具有确定接收者的方法"><a href="#使用bind方法提取具有确定接收者的方法" class="headerlink" title="使用bind方法提取具有确定接收者的方法"></a>使用bind方法提取具有确定接收者的方法</h3><ol>
+<li>要注意，提取一个方法不会将方法的接收者绑定到该方法的对象上</li>
+<li>当给高阶函数传递对象方法时,使用匿名函数在适当的接收者上调用该方法</li>
+<li>使用bind方法创建绑定到适当函数接收者的函数</li>
+</ol>
+<h3 id="使用bind方法实现函数柯里化"><a href="#使用bind方法实现函数柯里化" class="headerlink" title="使用bind方法实现函数柯里化"></a>使用bind方法实现函数柯里化</h3><ol>
+<li><p>使用bind方法实现函数柯里化，即创建一个固定需求参数子集的委托函数</p>
+<ul>
+<li><p>在计算机科学中，柯里化（英语：Currying），又译为卡瑞化或加里化，是把接受多个参数的函数变换成接受一个单一参数的函数，并且返回接受余下的参数而且返回结果的新函数的技术.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function simpleURL(protocol, domain, path)&#123;</span><br><span class="line">    return protocol + &apos;://&apos; + domain + &apos;/&apos; + path;</span><br><span class="line">&#125;</span><br><span class="line">var urls = paths.map(function (path) &#123;</span><br><span class="line">    return simpleURL(&apos;http&apos;, siteDomain, path);  // 第一个和第二个参数固定</span><br><span class="line">&#125;);</span><br><span class="line">// 使用bind实现函数柯里化</span><br><span class="line">var urls = paths.map(simpleURL.bind(null, &apos;http&apos;, siteDomain));</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>传入null或undefined作为接收者的参数来实现函数柯里化，从而忽略其接收者</p>
+</li>
+</ol>
+<h3 id="使用闭包而不是字符串来封装代码"><a href="#使用闭包而不是字符串来封装代码" class="headerlink" title="使用闭包而不是字符串来封装代码"></a>使用闭包而不是字符串来封装代码</h3><ol>
+<li>当将字符串传递给eval函数以执行它们的API时，绝不要在字符串中包含局部变量引用<ul>
+<li>eval函数会将出现在字符串中的所有变量引用作为全局变量来解释</li>
+</ul>
+</li>
+<li>接受函数调用的API优于使用eval函数执行字符串的API<ul>
+<li>函数是一种将代码作为数据结构存储的便利方式</li>
+</ul>
+</li>
+</ol>
+<h3 id="不要信赖函数对象的toString方法"><a href="#不要信赖函数对象的toString方法" class="headerlink" title="不要信赖函数对象的toString方法"></a>不要信赖函数对象的toString方法</h3><ol>
+<li>当调用函数的toString方法时，并没有要求JS引擎能够精确地获取到函数的源代码<ul>
+<li>ECMAScript标准对函数对象的toString方法的返回结果(即该字符串)并没有任何要求</li>
+</ul>
+</li>
+<li>由于在不同的引擎下调用toString方法的结果可能不同，所以绝不要信赖函数源代码的详细细节</li>
+<li>toString方法的执行结果并不会暴露存储在闭包中的局部变量值</li>
+<li>通常情况下，应该避免使用函数对象的toString方法</li>
+</ol>
+<h3 id="避免使用非标准的栈检查属性"><a href="#避免使用非标准的栈检查属性" class="headerlink" title="避免使用非标准的栈检查属性"></a>避免使用非标准的栈检查属性</h3><ol>
+<li>避免使用非标准的arguments.caller和arguments.callee属性，因为它们不具备良好的移植性<ul>
+<li>现在宿主环境中已经不支持arguments.caller，但还支持arguments.callee(其指向使用该arguments对象被调用的函数，它除了允许匿名函数递归地引用其自身没有更多用途)</li>
+</ul>
+</li>
+<li>避免使用非标准的函数对象calller属性，因为在包涵全部栈信息方面，它是不可靠的。<ul>
+<li>调用栈事指当前正在执行的活动函数链</li>
+<li>栈跟踪是一个提供当前调用栈快照的数据结构</li>
+<li>ES5中如果试图获取严格函数或arguments对象的caller或callee属性都将抛出一个错误</li>
+</ul>
+</li>
+</ol>
+<h2 id="对象和原型"><a href="#对象和原型" class="headerlink" title="对象和原型"></a>对象和原型</h2><h3 id="理解prototype、getPrototypeOf和proto之间的不同"><a href="#理解prototype、getPrototypeOf和proto之间的不同" class="headerlink" title="理解prototype、getPrototypeOf和proto之间的不同"></a>理解prototype、getPrototypeOf和<strong>proto</strong>之间的不同</h3><ol>
+<li>原型包括三个独立但相关的访问器<ul>
+<li>C.prototype用于建立由new C()创建的对象的原型</li>
+<li>Object.getPrototypeOf(obj)是ES5中用来获取obj对象的原型对象的标准方法</li>
+<li><code>obj.__proto__</code>是获取obj对象的原型对象的非标准方法</li>
+</ul>
+</li>
+<li><p>类是由一个构造函数和一个关联的原型组成的一种设计模式</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// User看成一个类,User函数给该类提供了一个公告的构造函数,</span><br><span class="line">// 而User.prototype是实例之间共享方法的一个内部实现</span><br><span class="line">function User(name, password)&#123;</span><br><span class="line">   	this.name = name;</span><br><span class="line">   	this.password = password;</span><br><span class="line">&#125;</span><br><span class="line">User.prototype.toString = function()&#123;</span><br><span class="line">    return &quot;[User &quot;  + this.name + &quot;]&quot;;</span><br><span class="line">&#125;;</span><br><span class="line">User.prototype.checkPassword = function(password)&#123;</span><br><span class="line">    return password === this.password;</span><br><span class="line">&#125;;</span><br><span class="line">var user = new User(&apos;admin&apos;, &apos;root&apos;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="使用Object-getPrototypeOf函数而不使用proto属性"><a href="#使用Object-getPrototypeOf函数而不使用proto属性" class="headerlink" title="使用Object.getPrototypeOf函数而不使用proto属性"></a>使用Object.getPrototypeOf函数而不使用<strong>proto</strong>属性</h3><ol>
+<li>使用符合标准的Object.getPrototypeOf函数而不要使用非标准的<strong>proto</strong>属性</li>
+<li><p>在支持<strong>proto</strong>属性的非ES5环境中实现Object.getPrototypeOf函数</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if(typeof Object.getPrototypeOf === &apos;undefined&apos;)&#123;</span><br><span class="line">	Object.getPrototypeOf = function(obj)&#123;</span><br><span class="line">		 var t = typeof obj;</span><br><span class="line">		 if(!obj || (t !== &apos;object&apos; &amp;&amp; t !== &apos;function&apos;))&#123;</span><br><span class="line">		 	throw new TypeError(&apos;not an object&apos;);</span><br><span class="line">		 &#125;</span><br><span class="line">		 return obj.__proto__;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="始终不要修改-proto-属性"><a href="#始终不要修改-proto-属性" class="headerlink" title="始终不要修改__proto__属性"></a>始终不要修改<code>__proto__</code>属性</h3><ol>
+<li>始终不要修改对象的<code>__proto__</code>属性<ul>
+<li><code>__proto__</code>具有修改对象原型链接的能力</li>
+<li>可移植性问题:并不是所有平台都支持改变对象原型的特性</li>
+<li>修改<code>__proto__</code>属性实际上改变了继承结构本身，这可能是最具破坏性的修改</li>
+<li>为了保持行为的可预测性</li>
+</ul>
+</li>
+<li>使用 Object.create函数给新对象设置自定义的原型<ul>
+<li>使用ES5中的Object.create函数来创建一个具有自定义原型链的新对象 <code>Object.create(proto, [ propertiesObject ])</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="使构造函数与new操作符无关"><a href="#使构造函数与new操作符无关" class="headerlink" title="使构造函数与new操作符无关"></a>使构造函数与new操作符无关</h3><ol>
+<li><p>通过使用new操作符或Object.create方法在构造函数定义中调用自身使得该构造函数与调用语法无关。</p>
+<ul>
+<li>如果使用者忘记使用new关键字，那么函数的接收者将是全局对象</li>
+<li><p>使用严格的构造函数至少会帮助调用者尽早地发现该Bug并修复它</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function User(name, password)&#123;</span><br><span class="line">	//   &quot;use strict&quot;;</span><br><span class="line">   	this.name = name;</span><br><span class="line">   	this.password = password;</span><br><span class="line">&#125;</span><br><span class="line">var user = User(&apos;admin&apos;, &apos;root&apos;);</span><br><span class="line">user;    // undefined</span><br><span class="line">name;   //&quot;admin&quot;</span><br><span class="line">password; // &quot;root&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检查函数的接收者是否是一个正确的User实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function User(name, password)&#123;</span><br><span class="line">    if(!(this instanceof User))&#123;</span><br><span class="line">        return new User(name, password);</span><br><span class="line">    &#125;</span><br><span class="line">    this.name = name;</span><br><span class="line">    this.password = password;</span><br><span class="line">&#125;</span><br><span class="line">// 该函数需要额外的函数调用，代价有点高，并且它很难适用于可变参数函数</span><br><span class="line">function User(name, password)&#123;</span><br><span class="line">    var self = this instanceof User ? this : Object.create(User.prototype);</span><br><span class="line">    self.name = name;</span><br><span class="line">    self.password = password;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Object.create兼容函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 简单参数版本</span><br><span class="line">if(typeof Object.create === &quot;undefined&quot;)&#123;</span><br><span class="line">    Object.create = function(prototype)&#123;</span><br><span class="line">        function C()&#123;&#125;;</span><br><span class="line">        C.prototype = prototype;</span><br><span class="line">        return new C();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JavaScript允许表达式的结果可以被构造函数中的显示return语句所覆盖</p>
+</li>
+</ul>
+</li>
+<li>当一个函数期望使用new操作符调用时,清晰地文档化该函数。</li>
+</ol>
+<h3 id="在原型中存储方法"><a href="#在原型中存储方法" class="headerlink" title="在原型中存储方法"></a>在原型中存储方法</h3><ol>
+<li>将方法存储在实例对象中将创建该函数的多个副本，因为每一个实例对象都有一份副本</li>
+<li><p>将方法存储于原型优于存储在实例对象中</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function User(name, password)&#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">    this.password = password;</span><br><span class="line">    this.toString = function()&#123;</span><br><span class="line">        return &quot;[User &quot;  + this.name + &quot;]&quot;;</span><br><span class="line">    &#125;;</span><br><span class="line">    this.checkPassword = function(password)&#123;</span><br><span class="line">        return password === this.password;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="使用闭包存储私有数据"><a href="#使用闭包存储私有数据" class="headerlink" title="使用闭包存储私有数据"></a>使用闭包存储私有数据</h3><ol>
+<li>闭包变量是私有的，只能通过局部的引用获取<ul>
+<li>闭包: 将数据存储到封闭的变量中而不提供对这些变量的直接访问，获取闭包内部结构的唯一方式是该函数显示地提供获取它的途径</li>
+<li>对象和闭包具有相反策略:对象的属性会被自动地暴露出去，然而闭包中的变量会被自动地隐藏起来</li>
+</ul>
+</li>
+<li><p>将局部变量作为私有数据从而通过方法实现信息隐蔽</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function User(name, password)&#123;</span><br><span class="line">    this.toString = function()&#123;</span><br><span class="line">        return &quot;[User &quot;  + name + &quot;]&quot;;</span><br><span class="line">    &#125;;</span><br><span class="line">    this.checkPassword = function(password)&#123;</span><br><span class="line">        return password === password;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line">// 缺点: 这些方法必须置于实例对象中</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="只将实例状态存储在实例对象中"><a href="#只将实例状态存储在实例对象中" class="headerlink" title="只将实例状态存储在实例对象中"></a>只将实例状态存储在实例对象中</h3><ol>
+<li><p>共享可变数据可能会出问题，因为原型是被其所有的实例共享的。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function Tree(x)&#123;</span><br><span class="line">    this.value = x;</span><br><span class="line">&#125;</span><br><span class="line">Tree.prototype = &#123;</span><br><span class="line">    children: [],</span><br><span class="line">    addChild: function(x)&#123;</span><br><span class="line">        this.children.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">var left = new Tree(2);</span><br><span class="line">left.addChild(1);</span><br><span class="line">left.addChild(3);</span><br><span class="line">var right = new Tree(6);</span><br><span class="line">right.addChild(5);</span><br><span class="line">right.addChild(7);</span><br><span class="line">right.children;  //[1, 3, 5, 7]</span><br><span class="line">left.children;  //[1, 3, 5, 7]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将可变的实例状态存储在实例对象中</p>
+<ul>
+<li>一般情况下，任何不可变的数据可以被存储在原型中从而被安全地共享</li>
+<li>在原型对象中最常见的数据是方法，而每个实例的状态都存储在实例对象中</li>
+</ul>
+</li>
+</ol>
+<h3 id="认识到this变量的隐式绑定问题"><a href="#认识到this变量的隐式绑定问题" class="headerlink" title="认识到this变量的隐式绑定问题"></a>认识到this变量的隐式绑定问题</h3><ol>
+<li>this变量的作用域总是由其最近的封闭函数所确定</li>
+<li>使用一个局部变量(通常命名为self,me或that)使得this绑定对于内部函数是可以用的</li>
+</ol>
+<h3 id="在子类的构造函数中调用父类的构造函数"><a href="#在子类的构造函数中调用父类的构造函数" class="headerlink" title="在子类的构造函数中调用父类的构造函数"></a>在子类的构造函数中调用父类的构造函数</h3><ol>
+<li>在子类构造函数中显示地传入this作为显示的接收者调用父类构造函数</li>
+<li>使用Object.create函数来构造子类的原型对象以避免调用父类的构造函数</li>
+</ol>
+<h3 id="不要重用父类的属性名"><a href="#不要重用父类的属性名" class="headerlink" title="不要重用父类的属性名"></a>不要重用父类的属性名</h3><ol>
+<li>留意父类使用的所有属性名<ul>
+<li>如果在继承体系中的两个类指向相同的属性名，那么它们指向的是同一个属性。</li>
+</ul>
+</li>
+<li>不要在子类中重用父类的属性名</li>
+</ol>
+<h3 id="避免继承标准类"><a href="#避免继承标准类" class="headerlink" title="避免继承标准类"></a>避免继承标准类</h3><ol>
+<li><p>继承标准类往往会由于一些特殊的内部属性(如[[Class]])而被破坏</p>
+<ul>
+<li><p>JS标准规定它具有一些不可见的内部属性，称为[[Class]]</p>
+<p>| [[CLass]]     | constructor   |<br>| ————- |:————-:|<br>|”Array”    | new Array(…),[…]|<br>|”Boolean”    | new Boolean(…)|<br>|”Date”    | new Date(…)|<br>|”Error”    | new Error(…),new EvalError(),new RangeError(),new ReferenceError(),new SyntaxError(),new TypeError(),new URIError()|<br>|”Function”    | new Function(…),function(…){…}|<br>|”JSON”    | JSON|<br>|”Math”    | Math |<br>|”Number”    | new Number(…)|<br>|”Object”    | new Object(…), {…}, new MyClass(…)|<br>|”RegExp”    | new RegExp(…), /…/|<br>|”String”    | new String(…)|</p>
+<ul>
+<li>基于这个原因，最好避免继承一下的标准类: Array、Boolean、Date、Function、Number、RegExp或String</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用属性委托优于继承标准类</li>
+</ol>
+<h3 id="将原型视为实现细节"><a href="#将原型视为实现细节" class="headerlink" title="将原型视为实现细节"></a>将原型视为实现细节</h3><ol>
+<li>对象是接口，原型是实现<ul>
+<li>使用者与一个对象最基本的交互就是获取其属性值和调用其方法。</li>
+<li>原型是一种对象行为的实现细节。</li>
+<li>JS提供内省机制来检查对象的细节<ul>
+<li>Object.prototype.hasOwnProperty方法确定一个属性是否为对象’自己的’属性</li>
+<li>Object.getPrototypeOf和<code>__proto__</code>特性允许程序员遍历对象的原型链并单独查询其原型对象</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>避免检查你无法控制的对象的原型结构</li>
+<li>避免检查实现在你无法控制的对象内部的属性</li>
+</ol>
+<h3 id="避免使用轻率的猴子补丁"><a href="#避免使用轻率的猴子补丁" class="headerlink" title="避免使用轻率的猴子补丁"></a>避免使用轻率的猴子补丁</h3><ol>
+<li>避免使用轻率的猴子补丁<ul>
+<li>猴子补丁: 对象共享原型，每个对象都可以增加、删除或修改原型的属性的实践。</li>
+<li>当多个库以不兼容的方式给同一个原型打猴子补丁时问题就出现了。</li>
+</ul>
+</li>
+<li>记录程序库所执行的所有猴子补丁<ul>
+<li>两个以冲突的方式给原型打猴子补丁的程序不能在同一个程序中使用</li>
+</ul>
+</li>
+<li>考虑通过将修改置于一个导出函数中，使猴子补丁称为可选的</li>
+<li><p>使用猴子补丁为缺失的标准API提供polyfills</p>
+<ul>
+<li><p>通过使用带有测试条件的守护猴子补丁来安全地弥补平台的差距</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if(typeof Array.prototype.map !== &apos;function&apos;)&#123;</span><br><span class="line">    Array.prototype.map = function(f, thisArg)&#123;</span><br><span class="line">        var result = [];</span><br><span class="line">        for(var i = 0; i &lt; thisArg.length; i++)&#123;</span><br><span class="line">            result[i] = f.call(thisArg, this[i], i);</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="数组和字典"><a href="#数组和字典" class="headerlink" title="数组和字典"></a>数组和字典</h2><h3 id="使用Object的直接实例构造轻量级的字典"><a href="#使用Object的直接实例构造轻量级的字典" class="headerlink" title="使用Object的直接实例构造轻量级的字典"></a>使用Object的直接实例构造轻量级的字典</h3><ol>
+<li>使用对象字面量构建轻量级字典</li>
+<li><p>轻量级字典应该是Object.prototype的直接子类，以使for…in循环免受原型污染</p>
+<ul>
+<li><p>原型污染是指当枚举字典的条目时，原型对象中的属性可能会导致出现一些不期望的属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function NaiveDict()&#123;&#125;</span><br><span class="line">NaiveDict.prototype.count = function()&#123;</span><br><span class="line">    var i = 0;</span><br><span class="line">    for(var name in this)&#123;</span><br><span class="line">        i++;</span><br><span class="line">        console.log(name)</span><br><span class="line">    &#125;</span><br><span class="line">    return i;</span><br><span class="line">&#125;;</span><br><span class="line">NaiveDict.prototype.toString = function()&#123;</span><br><span class="line">    return &quot;[object NaiveDict]&quot;;</span><br><span class="line">&#125;;</span><br><span class="line">var dict = new NaiveDict();</span><br><span class="line">dict.alice = 34;</span><br><span class="line">dict.bob = 24;</span><br><span class="line">dict.chris = 62;</span><br><span class="line">dict.count();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将Object的直接实例作为字典，而不是其子类，当然也不是数组</p>
+<ul>
+<li>所有人都不应当增加属性到Object.prototype中，因为这样做可能会污染for…in循环，但是增加属性到Array.prototype中是合理的</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var dict = &#123;&#125;;</span><br><span class="line">dict.alice = 34;</span><br><span class="line">dict.bob = 24;</span><br><span class="line">dict.chris = 62;</span><br><span class="line">var names = [];</span><br><span class="line">for(var name in dict)&#123;</span><br><span class="line">    names.push(name);</span><br><span class="line">&#125;</span><br><span class="line">names;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="使用null原型以防止原型污染"><a href="#使用null原型以防止原型污染" class="headerlink" title="使用null原型以防止原型污染"></a>使用null原型以防止原型污染</h3><ol>
+<li><p>在ES5中环境中，使用Object.create(null)创建的自由原型的空对象是不太容易被污染的。</p>
+<ul>
+<li><p>防止原型污染的最简单方式之一就是一开始就不要使用原型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var x = Object.create(null);</span><br><span class="line">Object.getPrototypeOf(x) === null;  // true</span><br><span class="line">// 使用__proto__</span><br><span class="line">var o = &#123;__proto__: null&#125;;</span><br><span class="line">o instanceof Object; // false</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>在一些较老的环境中，考虑使用{<code>__proto__</code>:null}</p>
+</li>
+<li>但是要注意<code>__proto__</code>既不标准，也不是完全可移植的，并且可能会在未来的JS环境中去除</li>
+<li>绝不要使用”<code>__proto__</code>“名作为字典中的key,因为一些环境将其作为特殊的属性对待</li>
+</ol>
+<h3 id="使用hasOwnProperty方法以避免原型污染"><a href="#使用hasOwnProperty方法以避免原型污染" class="headerlink" title="使用hasOwnProperty方法以避免原型污染"></a>使用hasOwnProperty方法以避免原型污染</h3><ol>
+<li>使用hasOwnProperty方法避免原型污染</li>
+<li><p>使用词法作用域和call方法避免覆盖hasOwnProperty方法</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var hasOwn = Object.prototype.hasOwnProperty;</span><br><span class="line">// 更加简明</span><br><span class="line">var hasOwn = &#123;&#125;.hasOwnProperty;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>考虑在封装hasOwnProperty测试样板代码的类中实现字典操作</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function Dict(elements)&#123;</span><br><span class="line">    this.elements = elements || &#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line">Dict.prototype.has = function(key)&#123;</span><br><span class="line">    return &#123;&#125;.hasOwnProperty.call(this.elements, key);</span><br><span class="line">&#125;;</span><br><span class="line">Dict.prototype.get = function (key) &#123;</span><br><span class="line">    return this.has(key) ? this.elements[key] : undefined;</span><br><span class="line">&#125;;</span><br><span class="line">Dict.prototype.set = function(key, val)&#123;</span><br><span class="line">    this.elements[key] = val;</span><br><span class="line">&#125;;</span><br><span class="line">Dict.prototype.remove = function (key) &#123;</span><br><span class="line">    delete this.elements[key];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用字典类避免将”<code>__proto__</code>“作为key来使用</p>
+</li>
+</ol>
+<h3 id="使用数组而不要使用字典来存储有序集合"><a href="#使用数组而不要使用字典来存储有序集合" class="headerlink" title="使用数组而不要使用字典来存储有序集合"></a>使用数组而不要使用字典来存储有序集合</h3><ol>
+<li>使用for…in循环来枚举对象属性应当与顺序无关<ul>
+<li>for…in循环会挑选一定的顺序来枚举对象的属性，如果要依赖一个数据结构中的条目顺序，请使用数组而不是字典</li>
+</ul>
+</li>
+<li>如果聚集运算字典中的数据，确保聚集操作与顺序无关</li>
+<li>使用数组而不是字典来存储有序集合</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var ratings = &#123;</span><br><span class="line">    &quot;Good Will Hunting&quot;: 0.8,</span><br><span class="line">    &quot;Mystic River&quot;: 0.7,</span><br><span class="line">    &quot;21&quot;: 0.6,</span><br><span class="line">    &quot;Doubt&quot;: 0.9</span><br><span class="line">&#125;;</span><br><span class="line">var total = 0, count = 0;</span><br><span class="line">for(var key in ratings)&#123;</span><br><span class="line">    total += ratings[key];</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br><span class="line">total /= count;</span><br><span class="line">console.log(total);  // 0.7499999999999999</span><br><span class="line">(0.8 + 0.7 + 0.6 + 0.9)/4;   // 0.75</span><br></pre></td></tr></table></figure>
+<h3 id="绝不要在Object-prototype中增加可枚举的属性"><a href="#绝不要在Object-prototype中增加可枚举的属性" class="headerlink" title="绝不要在Object.prototype中增加可枚举的属性"></a>绝不要在Object.prototype中增加可枚举的属性</h3><ol>
+<li>避免在Object.prototype中增加属性<ul>
+<li>如果想允许对字典对象使用for…in循环，那么不要在共享的Object.prototype中增加可枚举的属性</li>
+</ul>
+</li>
+<li>考虑编写一个函数代替Object.prototype方法</li>
+<li>如果你确实需要在Object.prototype中增加属性，使用ES5中国的Object.defineProperty方法将它们定义为不可枚举的属性<ul>
+<li>Object.defineProperty方法可以定一个对象的属性并指定该属性的元数据</li>
+</ul>
+</li>
+</ol>
+<h3 id="避免在枚举期间修改对象"><a href="#避免在枚举期间修改对象" class="headerlink" title="避免在枚举期间修改对象"></a>避免在枚举期间修改对象</h3><ol>
+<li><p>当使用for…in循环枚举一个对象的属性时，确保不要修改该对象</p>
+<ul>
+<li><p>如果被枚举的对象在枚举期间添加了新的属性，那么在枚举期间并不能保证新添加的属性能被访问。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">function Member(name) &#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">    this.friends = [];</span><br><span class="line">&#125;</span><br><span class="line">var a = new Member(&apos;Alice&apos;),</span><br><span class="line">    b = new Member(&apos;Bob&apos;),</span><br><span class="line">    c = new Member(&apos;Carol&apos;),</span><br><span class="line">    d = new Member(&apos;Dieter&apos;),</span><br><span class="line">    e = new Member(&apos;Eli&apos;),</span><br><span class="line">    f = new Member(&apos;Fatima&apos;);</span><br><span class="line">a.friends.push(b);</span><br><span class="line">b.friends.push(c);</span><br><span class="line">c.friends.push(e);</span><br><span class="line">d.friends.push(b);</span><br><span class="line">e.friends.push(d,f);</span><br><span class="line">Member.prototype.inNetwork = function(other)&#123;</span><br><span class="line">    var visited = &#123;&#125;;</span><br><span class="line">    var workset = &#123;&#125;;</span><br><span class="line">    workset[this.name] = this;</span><br><span class="line">    for(name in workset)&#123;</span><br><span class="line">        var member = workset[name];</span><br><span class="line">        delete workset[name];</span><br><span class="line">        if(name in visited)&#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[name] = member;</span><br><span class="line">        if(member === other) &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        member.friends.forEach(function(friend)&#123;</span><br><span class="line">            workset[friend.name] = friend;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;;</span><br><span class="line">a.inNetwork(f);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>当迭代一个对象时，如果该对象的内容可能会在循环期间被改变，应该使用while循环或经典的for循环来代替for…in循环</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Member.prototype.inNetwork = function(other)&#123;</span><br><span class="line">    var visited = &#123;&#125;;</span><br><span class="line">    var workset = [this];</span><br><span class="line">    while(workset.length &gt; 0)&#123;</span><br><span class="line">        var member = workset.pop();</span><br><span class="line">        console.log(member);</span><br><span class="line">        if(member.name in visited)&#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        visited[member.name] = member;</span><br><span class="line">        if(member === other) &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        member.friends.forEach(function(friend)&#123;</span><br><span class="line">            workset.push(friend);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;;</span><br><span class="line">a.inNetwork(f);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为了在不断变化的数据结构中能够预测枚举，考虑使用一个有序的数据结构，例如数组而不要使用字典对象</p>
+</li>
+</ol>
+<h3 id="数组迭代要优先使用for循环而不是for…in循环"><a href="#数组迭代要优先使用for循环而不是for…in循环" class="headerlink" title="数组迭代要优先使用for循环而不是for…in循环"></a>数组迭代要优先使用for循环而不是for…in循环</h3><ol>
+<li>迭代数组的索引属性应当总是使用for循环而不是for…in循环</li>
+<li>考虑在循环之前将数组的长度存储在一个局部变量中以避免重新计算数组长度<ul>
+<li>保证避免重新计算scores.length是安全的</li>
+<li>循环的终止条件是简单且确定的</li>
+</ul>
+</li>
+</ol>
+<h3 id="迭代方法优于循环"><a href="#迭代方法优于循环" class="headerlink" title="迭代方法优于循环"></a>迭代方法优于循环</h3><ol>
+<li>使用迭代方法(如Array.prototype.forEach和Array.prototype.map)替换for循环使得代码更可读，并且避免了重复循环控制逻辑<ul>
+<li>Array.prototype.forEach，代码简单可读，且消除了终止条件和任何数组索引</li>
+<li>Array.prototype.map，对数组的每个元素进行一些操作后建立一个新的数组，该方法模式更简单和优雅</li>
+<li>Array.prototype.filter，用于计算一个新的数组，该数组包含现有数组的一些元素</li>
+</ul>
+</li>
+<li>使用自定义的迭代函数来抽象未被标准库支持的常见循环模式</li>
+<li>在需要提前终止循环的情况下，仍然推荐使用传统的循环。另外，some和every方法也可用于提前退出<ul>
+<li>循环只有一点优于迭代函数，那就是前者有控制流操作，如break和continue</li>
+<li>迭代中可以使用一个内部异常来终止循环，但这既尴尬又效率低下</li>
+</ul>
+</li>
+</ol>
+<h3 id="在类数组对象上复用通用的数组方法"><a href="#在类数组对象上复用通用的数组方法" class="headerlink" title="在类数组对象上复用通用的数组方法"></a>在类数组对象上复用通用的数组方法</h3><ol>
+<li><p>对于类数组对象，通过提取方法对象并使用call方法来复用通用的Array方法</p>
+<ul>
+<li><p>字符串也表现为不可变的数组，因为它们是可索引的，并且其长度也可以通过length属性获取，因此Array.prototype中的方法操作字符串时并不会修改原始数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var str = &apos;abcdef&apos;;</span><br><span class="line">var result = [].map.call(str, function(s)&#123;</span><br><span class="line">    return s.toUpperCase();</span><br><span class="line">&#125;);</span><br><span class="line">result;  //[&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>任意一个具有索引属性和恰当length属性的对象都可以使用通用的Array方法</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var arrayLike = &#123;&apos;0&apos;:&apos;a&apos;, &apos;1&apos;:&apos;C&apos;, length:2&#125;;</span><br><span class="line">var result = [].map.call(arrayLike, function(s)&#123;</span><br><span class="line">    return s.toUpperCase();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="数组字面量优于数组构造函数"><a href="#数组字面量优于数组构造函数" class="headerlink" title="数组字面量优于数组构造函数"></a>数组字面量优于数组构造函数</h3><ol>
+<li>如果数组构造函数第一个参数是数字则数组的构造函数行为是不同的<ul>
+<li>首先必须确保，没有人重新包装过Array变量</li>
+<li>确保没人修改过全局的Array变量</li>
+<li>如果使用单个数字参数来调用Array构造函数，效果完全不同<code>[17]与Array(17)</code></li>
+</ul>
+</li>
+<li>使用数组字面量替代数组构造函数<ul>
+<li>字面量是一种表示数组的优雅的方法</li>
+</ul>
+</li>
+</ol>
+<h2 id="库和API设计"><a href="#库和API设计" class="headerlink" title="库和API设计"></a>库和API设计</h2><h3 id="保持一致性的约定"><a href="#保持一致性的约定" class="headerlink" title="保持一致性的约定"></a>保持一致性的约定</h3><ol>
+<li>在变量命名和函数标签中使用一致的约定<ul>
+<li>学习曲线尽可能的简单</li>
+<li>约定参数的顺序,确保参数总是以相同的顺序出现</li>
+<li>需要尽可能详尽的稳定</li>
+</ul>
+</li>
+<li>不要偏离用户在他们开发平台中很可能遇到的约定</li>
+</ol>
+<h3 id="将undefined看做’没有值’"><a href="#将undefined看做’没有值’" class="headerlink" title="将undefined看做’没有值’"></a>将undefined看做’没有值’</h3><ol>
+<li>避免使用undefined表示任何非特定值<ul>
+<li>当JS无法提供具体的值时，就产生undefined<ul>
+<li>未赋值的变量的初始值即为undefined</li>
+<li>访问对象中不存在的属性也会产生undefined</li>
+<li>一个函数体结尾使用未带参数的return语句，或未使用return语句都会产生返回值undefined</li>
+<li>未给参数提供实参则该函数参数值为undefined</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>使用描述性的字符串值或命名布尔属性的对象，而不要使用undefined或null来代表特定应用标志</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">element.highlight(undefined); //use a random color</span><br><span class="line">element.highlight(&apos;random&apos;); //use a random color</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>提供参数默认值应当采用测试undefined的方式，而不是检查arguments.length</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function Server(port, hostname)&#123;</span><br><span class="line">    if(arguments.length &lt; 2)&#123;</span><br><span class="line">        hostname = &apos;localhost&apos;;</span><br><span class="line">    &#125;</span><br><span class="line">    // hostname = String(hostname || &apos;localhost&apos;);</span><br><span class="line">    hostname = String(hostname);</span><br><span class="line">    console.log(hostname);</span><br><span class="line">    // ...</span><br><span class="line">&#125;</span><br><span class="line">var hostname;</span><br><span class="line">var port = 8080;</span><br><span class="line">Server(port, hostname);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在允许0、NaN或空字符串为有效参数的地方，绝不要通过真值测试来实现参数默认值</p>
+</li>
+</ol>
+<h3 id="接收关键字参数的选项对象"><a href="#接收关键字参数的选项对象" class="headerlink" title="接收关键字参数的选项对象"></a>接收关键字参数的选项对象</h3><ol>
+<li>使用选项对象使得API更具可读性、更容易记忆<ul>
+<li>JS提供了一个简单、轻量的惯用法:选项对象(options object)</li>
+</ul>
+</li>
+<li>所有通过选项对象提供的参数应当被视为可选的<ul>
+<li>选项对象所有参数都是可选的</li>
+<li>习惯上，选项对象仅包括可选参数，因此省略掉整个对象甚至是可能的</li>
+<li>如果有一个或者两个必选参数，最好使它们独立于选项对象</li>
+</ul>
+</li>
+<li>使用extend函数抽象出从选项对象中提取值的逻辑<ul>
+<li>有用的抽象(对象扩展或合并函数)</li>
+<li>枚举对象的属性，并当这些属性不是undefined时将其复制到目标对象中</li>
+<li>使用或(||)操作符是一种提供默认参数值有效但非一致的策略，一致性是库设计的一个良好目标，它给API的使用者带来更好的可选测性</li>
+</ul>
+</li>
+</ol>
+<h3 id="避免不必要的状态"><a href="#避免不必要的状态" class="headerlink" title="避免不必要的状态"></a>避免不必要的状态</h3><ol>
+<li>尽可能地使用无状态的API<ul>
+<li>API有时被归为两类:有状态和无状态的</li>
+<li>无状态的API提供的函数或方法的行为只取决于输入。字符串的方法是无状态的</li>
+<li>Date对象的方法是有状态的</li>
+<li>相比于有状态的API，无状态的API会自动重用默认值</li>
+</ul>
+</li>
+<li>如果API是有状态的，标示出每个操作与哪些状态有关联</li>
+</ol>
+<h3 id="使用结构类型设计灵活的接口"><a href="#使用结构类型设计灵活的接口" class="headerlink" title="使用结构类型设计灵活的接口"></a>使用结构类型设计灵活的接口</h3><ol>
+<li>使用结构类型(也称鸭子类型)来设计灵活的对象接口</li>
+<li>结构接口更灵活、更轻量，所以应该避免使用继承</li>
+<li>针对单元测试，使用mock对象即接口的替代实现来提供可复验的行为</li>
+</ol>
+<h3 id="区分数组对象和类数组对象"><a href="#区分数组对象和类数组对象" class="headerlink" title="区分数组对象和类数组对象"></a>区分数组对象和类数组对象</h3><ol>
+<li>绝不重载与其它类型有重叠的结构类型</li>
+<li>当重载一个结构类型与其它类型时，先测试其它类型</li>
+<li>当重载其它对象类型时，接收真数组而不是类数组对象</li>
+<li>文档标注你的API是否接收针数组或类数组值</li>
+<li>使用ES5提供的Array.isArray方法测试真数组</li>
+</ol>
+<h3 id="避免过度的强制转换"><a href="#避免过度的强制转换" class="headerlink" title="避免过度的强制转换"></a>避免过度的强制转换</h3><ol>
+<li>避免强制转换和重载的复用<ul>
+<li>强制转换会将方法的参数强制转换从而完全破坏重载</li>
+<li><a href="http://baike.baidu.com/link?url=4K_F59Sw4JtanVpVeXzvXrph47UpLAkPPzuRGq34MKnKYa7WQyiXmuZX6u6gatKDm2L0qnOnWaEGATgOnTWBma" target="_blank" rel="noopener">方法重载</a></li>
+</ul>
+</li>
+<li>考虑防御性地监视非预期的输入<ul>
+<li>防御式编程:试图以额外的检查来抵御潜在的错误(抵御所有的错误是不可能的)</li>
+<li>防御式编程可以帮助更早的捕获错误，但是其可能扰乱代码库并潜在地影响应用程序的性能。</li>
+<li>是否使用防御式编程:成本(不得不编写和执行额外测试的数量)和收益(更早捕获错误数，节省开发和调试时间)</li>
+</ul>
+</li>
+</ol>
+<h3 id="支持方法链"><a href="#支持方法链" class="headerlink" title="支持方法链"></a>支持方法链</h3><ul>
+<li><p>使用方法链来连接无状态的操作</p>
+<ul>
+<li>重复的方法调用风格叫做方法链.</li>
+<li>消除临时变量，中间结果只是得到最终结果的一个重要步骤而已</li>
+<li>方法链的方式非常灵活</li>
+<li><p>如果一个API产生了1个接口对象，调用这个接口对象的方法产生的对象如果具有相同的接口，那么就可以使用方法链</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function escapeBasicHTML(str)&#123;</span><br><span class="line">   	return str.replace(/&amp;/g, &quot;&amp;amp;&quot;)</span><br><span class="line">               .replace(/&lt;/g, &quot;&amp;lt;&quot;)</span><br><span class="line">               .replace(/&gt;/g, &quot;&amp;gt;&quot;)</span><br><span class="line">               .replace(/&quot;/g, &quot;&amp;quot;&quot;)</span><br><span class="line">               .replace(/&apos;/g, &quot;&amp;apos;&quot;)</span><br><span class="line">&#125;</span><br><span class="line">var html = &apos;&lt;span class=&quot;vote-count&quot;&gt;175&lt;/span&gt;&apos;</span><br><span class="line">escapeBasicHTML(html);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>通过在无状态的方法中返回新对象来支持方法链</p>
+</li>
+<li><p>通过在有状态的方法中返回this来支持方法链</p>
+<ul>
+<li>有状态的API的方法链有时被称为流畅式(fluent style,一个对单个对象调用多个方法的内置的语法)</li>
+<li><p>前端库jQuery普遍采用这种方法，它有一组(无状态的)方法用于从用户界面元素中查询网页,还有一组(有状态的)方法用于更新这些元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(&apos;#notification&apos;)     // 查找notification元素</span><br><span class="line">    .html(&apos;Server not responding.&apos;)   // 设置notification消息</span><br><span class="line">    .removeClass(&apos;info&apos;)    // 移除设置样式</span><br><span class="line">    .addClass(&apos;error&apos;)    // 添加样式</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><p>JS是一种嵌入式的脚本语言，JS不是以独立的应用程序运行，而是作为大型应用程序环境下的脚本运行。</p>
+<p>使用事件和异步API是JS编程的基础部分。</p>
+<h3 id="不要阻塞I-O事件队列"><a href="#不要阻塞I-O事件队列" class="headerlink" title="不要阻塞I/O事件队列"></a>不要阻塞I/O事件队列</h3><ol>
+<li>异步API使用回调函数来延缓处理代价高昂的操作以避免阻塞主应用程序.<ul>
+<li>异步的API用在基于事件的环境中事安全的，因为它们迫使应用程序逻辑在一个独立的事件循环‘轮询’中继续处理</li>
+</ul>
+</li>
+<li>JS并发地接收事件，但会使用一个事件队列按序地处理事件处理程序<ul>
+<li>并行执行子计算:允许程序的一部分停下来等待(阻塞)一个低速的输入，而程序的另一部分可以继续进行独立的工作</li>
+</ul>
+</li>
+<li>在应用程序事件队列中绝不要使用阻塞的I/O<ul>
+<li>大多数的I/O操作都提供了异步的或非阻塞的API</li>
+</ul>
+</li>
+</ol>
+<h3 id="在异步序列中使用嵌套或命名的回调函数"><a href="#在异步序列中使用嵌套或命名的回调函数" class="headerlink" title="在异步序列中使用嵌套或命名的回调函数"></a>在异步序列中使用嵌套或命名的回调函数</h3><ol>
+<li>使用嵌套或命名的回调函数按顺序地执行多个异步操作<ul>
+<li>理解操作序列的最简单的方式是异步API是发起操作而不是执行操作</li>
+</ul>
+</li>
+<li>尝试在过多的嵌套的回调函数和尴尬的命名的非嵌套回调函数之间取得平衡<ul>
+<li>嵌套的异步操作很容易，但当扩展到更长的序列时会很快变得笨拙</li>
+<li>减少过多嵌套的方法之一是将嵌套的回调函数作为命名的函数</li>
+</ul>
+</li>
+<li>避免将可被并行执行的操作顺序化</li>
+</ol>
+<h3 id="当心丢弃错误"><a href="#当心丢弃错误" class="headerlink" title="当心丢弃错误"></a>当心丢弃错误</h3><ol>
+<li>通过编写共享的错误处理函数来避免复制和粘贴错误处理代码</li>
+<li>确保明确地处理所有的错误条件以避免丢弃错误<ul>
+<li>多部的处理通常被分隔到事件队列的单独轮次中</li>
+<li>异步的API甚至不可能抛出异常，异步的API倾向于将错误表示为回调函数的特定参数，或使用一个附加的错误处理回调函数(有事被称为errbacks)</li>
+<li>另一种错误处理API，主要一个回调函数，该回调函数的第一个参数如果有错误发生那就表示为一个错误，否则就为一个假值,比如null</li>
+</ul>
+</li>
+</ol>
+<h3 id="对异步循环使用递归"><a href="#对异步循环使用递归" class="headerlink" title="对异步循环使用递归"></a>对异步循环使用递归</h3><ol>
+<li><p>循环不能是异步的</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function downloadOneSync(urls)&#123;</span><br><span class="line">    for(var i = 0; n = urls.length; i++)&#123;</span><br><span class="line">        try&#123;</span><br><span class="line">            return downloadSync(urls[i]);</span><br><span class="line">        &#125;catch(e)&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    throw new Error(&apos;all downloads failed&apos;);</span><br><span class="line">&#125;</span><br><span class="line">// 以上使用循环，会启动所有下载</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用递归函数再事件循环的单独轮次中执行迭代</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function downloadOneSync(urls, onsuccess, onerror)&#123;</span><br><span class="line">    var n = urls.length;</span><br><span class="line">    function tryNextURL(i)&#123;</span><br><span class="line">        if(i &gt;= n)&#123;</span><br><span class="line">            onerror(&apos;all downloads failed&apos;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        downloadSync(urls[i], onsuccess, function()&#123;</span><br><span class="line">            tryNextURL(i + 1);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    tryNextURL(0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在事件循环的单独轮次中执行递归，并不会导致调用栈溢出</p>
+<ul>
+<li>JS环境通常在内存中会保存一块固定的区域，称为调用栈，用于记录函数调用返回前下一步该做什么。</li>
+<li>当一个程序执行中有太多的函数调用，它会耗尽栈空间，最终抛出异常。这种情况被称为栈溢出</li>
+</ul>
+</li>
+</ol>
+<h3 id="不要在计算时阻塞事件队列"><a href="#不要在计算时阻塞事件队列" class="headerlink" title="不要在计算时阻塞事件队列"></a>不要在计算时阻塞事件队列</h3><ol>
+<li>避免在主事件队列中执行代价高昂的算法<ul>
+<li>为了保持客户端应用程序的高度交互性和确保所有传入的请求在服务器应用程序中得到充分的服务，保持事件循环的每个轮次尽可能短是至关重要的。</li>
+<li>一个页面的用户界面无响应多数是由于在运行JS代码</li>
+</ul>
+</li>
+<li>在支持Worker API的平台，该API可以用来在一个独立的事件队列中运行长计算程序</li>
+<li>在Worker API不可用或代价昂贵的环境中，考虑将计算程序分解到事件循环的多个轮次中</li>
+</ol>
+<h3 id="使用计数器来执行并行操作"><a href="#使用计数器来执行并行操作" class="headerlink" title="使用计数器来执行并行操作"></a>使用计数器来执行并行操作</h3><ol>
+<li><p>JS应用程序中的事件发生是不确定的，即顺序是不可预测的</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function downloadAllAsync(urls, onsuccess, onerror)&#123;</span><br><span class="line">    var result = [], length = urls.length;</span><br><span class="line">    if(length === 0)&#123;</span><br><span class="line">        setTimeout(onsuccess.bind(null, result), 0);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    urls.forEach(function(url)&#123;</span><br><span class="line">        downloadSync(url, function(text)&#123;</span><br><span class="line">            if(result)&#123;</span><br><span class="line">                result.push(text);</span><br><span class="line">                if(result.length === urls.length)&#123;</span><br><span class="line">                    onsuccess(result);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, function(error)&#123;</span><br><span class="line">            if(result)&#123;</span><br><span class="line">                result = null;</span><br><span class="line">                onerror(error);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">// 以上代码异步的启动文件下载，当文件下载完成就会将中间结果保存在result数组的末尾，因此保存下载文件内容的数组的顺序是未知的，因此调用者无法找出哪个结果对应哪个文件</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果行为不可预知，则不能信赖程序中不确定的行为，即程序的执行顺序不能保证与事件发生的顺序一致</li>
+</ul>
+</li>
+<li><p>使用计数器避免并行操作中的数据竞争</p>
+<ul>
+<li><p>数据竞争是指多个并发操作可以修改共享的数据结构，这取决于它们发生的顺序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function downloadAllAsync(urls, onsuccess, onerror)&#123;</span><br><span class="line">   var result = [], pending = urls.length;</span><br><span class="line">   if(pending === 0)&#123;</span><br><span class="line">       setTimeout(onsuccess.bind(null, result), 0);</span><br><span class="line">       return;</span><br><span class="line">   &#125;</span><br><span class="line">   urls.forEach(function(url, i)&#123;</span><br><span class="line">       downloadSync(url, function(text)&#123;</span><br><span class="line">           if(result)&#123;</span><br><span class="line">               result[i] = text;  //存储在固定index</span><br><span class="line">               pending--;</span><br><span class="line">               if(pending === 0)&#123;</span><br><span class="line">                   onsuccess(result);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;, function(error)&#123;</span><br><span class="line">           if(result)&#123;</span><br><span class="line">               result = null;</span><br><span class="line">               onerror(error);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;)</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="绝不要同步地调用异步的回调函数"><a href="#绝不要同步地调用异步的回调函数" class="headerlink" title="绝不要同步地调用异步的回调函数"></a>绝不要同步地调用异步的回调函数</h3><ol>
+<li>即使可以立即得到数据，也绝不要同步地调用异步回调函数</li>
+<li>同步地调用异步的回调函数扰乱了预期的操作序列，并可能导致意想不到的交错代码</li>
+<li>同步地调用异步的回调函数可能导致栈溢出或错误地处理程序</li>
+<li>使用异步的API，比如setTimeout函数来调度异步回调函数，使其运行于另一个回合</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var cache = new Dict();</span><br><span class="line">function downloadCachingAsync(url, onsuccess, onerror)&#123;</span><br><span class="line">    if(cache.has(url))&#123;</span><br><span class="line">        onsuccess(cache.get(url));  // 同步调用</span><br><span class="line">        // var cached = cache.get(url);</span><br><span class="line">        // setTimeout(onsuccess.bind(null, cached), 0);  // 异步调用</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    return downloadAsync(url, function(file)&#123;</span><br><span class="line">        cache.set(url, file);</span><br><span class="line">        onsuccess(file);</span><br><span class="line">    &#125;, onerror);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用promise模式清洁异步逻辑"><a href="#使用promise模式清洁异步逻辑" class="headerlink" title="使用promise模式清洁异步逻辑"></a>使用promise模式清洁异步逻辑</h3><ol>
+<li>promise代表最终值，即并行操作完成时最终产生的结果<ul>
+<li>基于promise的API不接收回调函数作为参数,相反它返回一个promise对象，该对象通过其自身的then方法接收回调函数。</li>
+<li>传递给then的回调函数不仅产生影响，也可以产生结果(resolve中返回值在下一个then中接收)</li>
+</ul>
+</li>
+<li>使用promise组合不同的并行操作<ul>
+<li>promise.all、promise.race等</li>
+</ul>
+</li>
+<li>使用promise模式的API避免数据竞争</li>
+<li>在要求有意的竞争条件时使用select(也被称为choose)</li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ol>
+<li>函数<a href="http://www.cnblogs.com/pigtail/p/3447660.html" target="_blank" rel="noopener">柯里化</a></li>
+<li><a href="[http://www.ruanyifeng.com/blog/2014/12/unicode.html">Unicode与JS</a></li>
+<li><a href="https://book.douban.com/subject/25786138/" target="_blank" rel="noopener">Effective JavaScript</a></li>
+</ol>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/12/y8n/angular-directive-attributes/" rel="prev">Angular指令中的属性</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/13/zhiqin/PaperSourceCode/" rel="next">Paper源码分析（Android上的`NoSql`）</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#编写高质量JS代码"><span class="nav-number">1.</span> <span class="nav-text">编写高质量JS代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录"><span class="nav-number">2.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内容详解"><span class="nav-number">3.</span> <span class="nav-text">内容详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#让自己习惯JavaScript"><span class="nav-number">3.1.</span> <span class="nav-text">让自己习惯JavaScript</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#了解你使用的js版本"><span class="nav-number">3.1.1.</span> <span class="nav-text">了解你使用的js版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解JavaScript的浮点数"><span class="nav-number">3.1.2.</span> <span class="nav-text">理解JavaScript的浮点数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当心隐式的强制转换"><span class="nav-number">3.1.3.</span> <span class="nav-text">当心隐式的强制转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始类型优于封装对象"><span class="nav-number">3.1.4.</span> <span class="nav-text">原始类型优于封装对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免对混合类型使用-运算符"><span class="nav-number">3.1.5.</span> <span class="nav-text">避免对混合类型使用==运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#了解分号插入的局限"><span class="nav-number">3.1.6.</span> <span class="nav-text">了解分号插入的局限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视字符串为16位的代码单元序列"><span class="nav-number">3.1.7.</span> <span class="nav-text">视字符串为16位的代码单元序列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量作用域"><span class="nav-number">3.2.</span> <span class="nav-text">变量作用域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#尽量少用全局对象"><span class="nav-number">3.2.1.</span> <span class="nav-text">尽量少用全局对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#始终声明局部变量"><span class="nav-number">3.2.2.</span> <span class="nav-text">始终声明局部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免使用with"><span class="nav-number">3.2.3.</span> <span class="nav-text">避免使用with</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#熟练掌握闭包"><span class="nav-number">3.2.4.</span> <span class="nav-text">熟练掌握闭包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解变量声明提升"><span class="nav-number">3.2.5.</span> <span class="nav-text">理解变量声明提升</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用立即调用的函数表达式创建局部作用域"><span class="nav-number">3.2.6.</span> <span class="nav-text">使用立即调用的函数表达式创建局部作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当心命名函数表达式笨拙的作用域"><span class="nav-number">3.2.7.</span> <span class="nav-text">当心命名函数表达式笨拙的作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当心局部块函数声明笨拙的作用域"><span class="nav-number">3.2.8.</span> <span class="nav-text">当心局部块函数声明笨拙的作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免使用eval创建局部变量"><span class="nav-number">3.2.9.</span> <span class="nav-text">避免使用eval创建局部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#间接调用eval函数优于直接调用"><span class="nav-number">3.2.10.</span> <span class="nav-text">间接调用eval函数优于直接调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用函数"><span class="nav-number">3.3.</span> <span class="nav-text">使用函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#理解函数调用、方法调用及构造函数调用之间的不同"><span class="nav-number">3.3.1.</span> <span class="nav-text">理解函数调用、方法调用及构造函数调用之间的不同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#熟练掌握高阶函数"><span class="nav-number">3.3.2.</span> <span class="nav-text">熟练掌握高阶函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用call方法自定义接收者来调用方法"><span class="nav-number">3.3.3.</span> <span class="nav-text">使用call方法自定义接收者来调用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用apply方法通过不同数量的参数调用函数"><span class="nav-number">3.3.4.</span> <span class="nav-text">使用apply方法通过不同数量的参数调用函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用arguments创建可变参数的函数"><span class="nav-number">3.3.5.</span> <span class="nav-text">使用arguments创建可变参数的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#永远不要修改arguments对象"><span class="nav-number">3.3.6.</span> <span class="nav-text">永远不要修改arguments对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用变量保存arguments的引用"><span class="nav-number">3.3.7.</span> <span class="nav-text">使用变量保存arguments的引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用bind方法提取具有确定接收者的方法"><span class="nav-number">3.3.8.</span> <span class="nav-text">使用bind方法提取具有确定接收者的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用bind方法实现函数柯里化"><span class="nav-number">3.3.9.</span> <span class="nav-text">使用bind方法实现函数柯里化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用闭包而不是字符串来封装代码"><span class="nav-number">3.3.10.</span> <span class="nav-text">使用闭包而不是字符串来封装代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不要信赖函数对象的toString方法"><span class="nav-number">3.3.11.</span> <span class="nav-text">不要信赖函数对象的toString方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免使用非标准的栈检查属性"><span class="nav-number">3.3.12.</span> <span class="nav-text">避免使用非标准的栈检查属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象和原型"><span class="nav-number">3.4.</span> <span class="nav-text">对象和原型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#理解prototype、getPrototypeOf和proto之间的不同"><span class="nav-number">3.4.1.</span> <span class="nav-text">理解prototype、getPrototypeOf和proto之间的不同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Object-getPrototypeOf函数而不使用proto属性"><span class="nav-number">3.4.2.</span> <span class="nav-text">使用Object.getPrototypeOf函数而不使用proto属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#始终不要修改-proto-属性"><span class="nav-number">3.4.3.</span> <span class="nav-text">始终不要修改__proto__属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使构造函数与new操作符无关"><span class="nav-number">3.4.4.</span> <span class="nav-text">使构造函数与new操作符无关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在原型中存储方法"><span class="nav-number">3.4.5.</span> <span class="nav-text">在原型中存储方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用闭包存储私有数据"><span class="nav-number">3.4.6.</span> <span class="nav-text">使用闭包存储私有数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#只将实例状态存储在实例对象中"><span class="nav-number">3.4.7.</span> <span class="nav-text">只将实例状态存储在实例对象中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认识到this变量的隐式绑定问题"><span class="nav-number">3.4.8.</span> <span class="nav-text">认识到this变量的隐式绑定问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在子类的构造函数中调用父类的构造函数"><span class="nav-number">3.4.9.</span> <span class="nav-text">在子类的构造函数中调用父类的构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不要重用父类的属性名"><span class="nav-number">3.4.10.</span> <span class="nav-text">不要重用父类的属性名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免继承标准类"><span class="nav-number">3.4.11.</span> <span class="nav-text">避免继承标准类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将原型视为实现细节"><span class="nav-number">3.4.12.</span> <span class="nav-text">将原型视为实现细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免使用轻率的猴子补丁"><span class="nav-number">3.4.13.</span> <span class="nav-text">避免使用轻率的猴子补丁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组和字典"><span class="nav-number">3.5.</span> <span class="nav-text">数组和字典</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Object的直接实例构造轻量级的字典"><span class="nav-number">3.5.1.</span> <span class="nav-text">使用Object的直接实例构造轻量级的字典</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用null原型以防止原型污染"><span class="nav-number">3.5.2.</span> <span class="nav-text">使用null原型以防止原型污染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用hasOwnProperty方法以避免原型污染"><span class="nav-number">3.5.3.</span> <span class="nav-text">使用hasOwnProperty方法以避免原型污染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用数组而不要使用字典来存储有序集合"><span class="nav-number">3.5.4.</span> <span class="nav-text">使用数组而不要使用字典来存储有序集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绝不要在Object-prototype中增加可枚举的属性"><span class="nav-number">3.5.5.</span> <span class="nav-text">绝不要在Object.prototype中增加可枚举的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免在枚举期间修改对象"><span class="nav-number">3.5.6.</span> <span class="nav-text">避免在枚举期间修改对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组迭代要优先使用for循环而不是for…in循环"><span class="nav-number">3.5.7.</span> <span class="nav-text">数组迭代要优先使用for循环而不是for…in循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#迭代方法优于循环"><span class="nav-number">3.5.8.</span> <span class="nav-text">迭代方法优于循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在类数组对象上复用通用的数组方法"><span class="nav-number">3.5.9.</span> <span class="nav-text">在类数组对象上复用通用的数组方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组字面量优于数组构造函数"><span class="nav-number">3.5.10.</span> <span class="nav-text">数组字面量优于数组构造函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#库和API设计"><span class="nav-number">3.6.</span> <span class="nav-text">库和API设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#保持一致性的约定"><span class="nav-number">3.6.1.</span> <span class="nav-text">保持一致性的约定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将undefined看做’没有值’"><span class="nav-number">3.6.2.</span> <span class="nav-text">将undefined看做’没有值’</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接收关键字参数的选项对象"><span class="nav-number">3.6.3.</span> <span class="nav-text">接收关键字参数的选项对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免不必要的状态"><span class="nav-number">3.6.4.</span> <span class="nav-text">避免不必要的状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用结构类型设计灵活的接口"><span class="nav-number">3.6.5.</span> <span class="nav-text">使用结构类型设计灵活的接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区分数组对象和类数组对象"><span class="nav-number">3.6.6.</span> <span class="nav-text">区分数组对象和类数组对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免过度的强制转换"><span class="nav-number">3.6.7.</span> <span class="nav-text">避免过度的强制转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持方法链"><span class="nav-number">3.6.8.</span> <span class="nav-text">支持方法链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发"><span class="nav-number">3.7.</span> <span class="nav-text">并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不要阻塞I-O事件队列"><span class="nav-number">3.7.1.</span> <span class="nav-text">不要阻塞I/O事件队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在异步序列中使用嵌套或命名的回调函数"><span class="nav-number">3.7.2.</span> <span class="nav-text">在异步序列中使用嵌套或命名的回调函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当心丢弃错误"><span class="nav-number">3.7.3.</span> <span class="nav-text">当心丢弃错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对异步循环使用递归"><span class="nav-number">3.7.4.</span> <span class="nav-text">对异步循环使用递归</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不要在计算时阻塞事件队列"><span class="nav-number">3.7.5.</span> <span class="nav-text">不要在计算时阻塞事件队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用计数器来执行并行操作"><span class="nav-number">3.7.6.</span> <span class="nav-text">使用计数器来执行并行操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绝不要同步地调用异步的回调函数"><span class="nav-number">3.7.7.</span> <span class="nav-text">绝不要同步地调用异步的回调函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用promise模式清洁异步逻辑"><span class="nav-number">3.7.8.</span> <span class="nav-text">使用promise模式清洁异步逻辑</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

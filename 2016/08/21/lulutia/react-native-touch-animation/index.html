@@ -1,0 +1,1054 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="React Native,touches,animation,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="React-Native触摸  在移动应用开发中，触摸和动画是不可忽视的两个方面。React-Native针对手势处理，提供了几组API，为基本的点击手势和复杂的滑动等都提供了相应的解决方案。  相比web端的手势，React-Native应用中的手势要复杂很多。在初次进行React-Native的组件Picker封装时，需要涉及到模拟原生iOS滚轮的行为实现，针对这部分需要涉及到React-Na">
+<meta name="keywords" content="React Native,touches,animation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React-Native 触摸与动画">
+<meta property="og:url" content="http://xgfe.github.io/2016/08/21/lulutia/react-native-touch-animation/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="React-Native触摸  在移动应用开发中，触摸和动画是不可忽视的两个方面。React-Native针对手势处理，提供了几组API，为基本的点击手势和复杂的滑动等都提供了相应的解决方案。  相比web端的手势，React-Native应用中的手势要复杂很多。在初次进行React-Native的组件Picker封装时，需要涉及到模拟原生iOS滚轮的行为实现，针对这部分需要涉及到React-Na">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/init.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/show.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/strange.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/move.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/release.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/release2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/multiple.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/doge.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/animation3.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/animation.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/animation2.gif">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.386Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React-Native 触摸与动画">
+<meta name="twitter:description" content="React-Native触摸  在移动应用开发中，触摸和动画是不可忽视的两个方面。React-Native针对手势处理，提供了几组API，为基本的点击手势和复杂的滑动等都提供了相应的解决方案。  相比web端的手势，React-Native应用中的手势要复杂很多。在初次进行React-Native的组件Picker封装时，需要涉及到模拟原生iOS滚轮的行为实现，针对这部分需要涉及到React-Na">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/init.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> React-Native 触摸与动画 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              React-Native 触摸与动画
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-08-21T12:48:00+08:00" content="2016-08-21">
+            2016-08-21
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lulutia/" itemprop="url" rel="index">
+                  <span itemprop="name">lulutia</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/React-Native/" rel="tag"><i class="icon-next-tags"></i>React Native</a>
+            
+              <a href="/tags/touches/" rel="tag"><i class="icon-next-tags"></i>touches</a>
+            
+              <a href="/tags/animation/" rel="tag"><i class="icon-next-tags"></i>animation</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h1 id="React-Native触摸"><a href="#React-Native触摸" class="headerlink" title="React-Native触摸"></a>React-Native触摸</h1><p>  在移动应用开发中，触摸和动画是不可忽视的两个方面。React-Native针对手势处理，提供了几组API，为基本的点击手势和复杂的滑动等都提供了相应的解决方案。<br>  相比web端的手势，React-Native应用中的手势要复杂很多。在初次进行React-Native的组件<a href="https://github.com/xgfe/react-native-picker-xg" target="_blank" rel="noopener">Picker</a>封装时，需要涉及到模拟原生iOS滚轮的行为实现，针对这部分需要涉及到React-Native中的触摸实现，此作为选题的初衷。如果刚刚接触要搭建环境balabala，可以参考<a href="http://memory.lulutia.com/2016/05/27/RN/" target="_blank" rel="noopener">基本环境搭建</a>。</p>
+<a id="more"></a>
+<h2 id="Touch-手势"><a href="#Touch-手势" class="headerlink" title="Touch 手势"></a>Touch 手势</h2><p>  在web开发中click操作是最常用的一个行为，其对应到移动端的开发中即是touch手势。在web开发中，浏览器内部实现了click事件，我们只需要使用<code>onclick</code>或者<code>addEventListener(&#39;click&#39;, callback)</code>来进行click事件的绑定。在React-Native中，其也提供了四个与touch相关的组件来实现基本的touch行为。</p>
+<h3 id="TouchableHighlight"><a href="#TouchableHighlight" class="headerlink" title="TouchableHighlight"></a>TouchableHighlight</h3><ul>
+<li>本组件用于封装视图，使其可以正确响应触摸操作。当按下的时候，封装的视图的不透明度会降低，同时会有一个底层的颜色透过而被用户看到，使得视图变暗或变亮。</li>
+<li>在底层实现上，实际会创建一个新的视图到视图层级中。</li>
+<li><code>TouchableHighlight</code>只支持一个子节点，如果你希望包含多个子组件，用一个View来包装它们</li>
+<li>本组件继承了所有<code>TouchableWithoutFeedback</code>的属性。</li>
+</ul>
+<h3 id="TouchableNativeFeedback"><a href="#TouchableNativeFeedback" class="headerlink" title="TouchableNativeFeedback"></a>TouchableNativeFeedback</h3><ul>
+<li>本组件用于封装视图，使其可以正确响应触摸操作（仅限Android平台）。</li>
+<li>底层实现上，实际会创建一个新的<code>RCTView</code>结点替换当前的子View，并附带一些额外的属性。</li>
+<li>只支持一个单独的View实例作为子节点。</li>
+<li>本组件继承了所有<code>TouchableWithoutFeedback</code>的属性</li>
+</ul>
+<h3 id="TouchableOpacity"><a href="#TouchableOpacity" class="headerlink" title="TouchableOpacity"></a>TouchableOpacity</h3><ul>
+<li>本组件用于封装视图，使其可以正确响应触摸操作。</li>
+<li>当按下的时候，封装的视图的不透明度会降低。(此组件与<code>TouchableHighlight</code>的区别在于并没有额外的颜色变化，更适于一般场景)</li>
+<li>本组件继承了所有<code>TouchableWithoutFeedback</code>的属性</li>
+</ul>
+<h3 id="TouchableWithoutFeedback"><a href="#TouchableWithoutFeedback" class="headerlink" title="TouchableWithoutFeedback"></a>TouchableWithoutFeedback</h3><ul>
+<li>除非你有一个很好的理由，否则不要用这个组件。(因为此组件对响应触屏操作的元素在触屏后没有任何视觉反馈)</li>
+<li><code>TouchableWithoutFeedback</code>只支持一个子节点</li>
+</ul>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>使用以上四个组件我们可以实现一个简单例子如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  View,</span><br><span class="line">  TouchableHighlight,</span><br><span class="line">  TouchableWithoutFeedback,</span><br><span class="line">  TouchableNativeFeedback,</span><br><span class="line">  TouchableOpacity </span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> start = <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">touch</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  _onPressIn()&#123;</span><br><span class="line">     start = <span class="built_in">Date</span>.now();</span><br><span class="line">     <span class="built_in">console</span>.log(start);</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">"press in"</span>)</span><br><span class="line">   &#125;;</span><br><span class="line">   _onPressOut()&#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">"press out"</span>);</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">"pressout "</span>+(<span class="built_in">Date</span>.now()-start))</span><br><span class="line">   &#125;;</span><br><span class="line">   _onPress()&#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">"press"</span>)</span><br><span class="line">   &#125;;</span><br><span class="line">   _onLonePress()&#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">"long press "</span>+(<span class="built_in">Date</span>.now()-start))</span><br><span class="line">   &#125;;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"begin render"</span>);</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">     &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">        &lt;TouchableWithoutFeedback</span><br><span class="line">         style=&#123;styles.touchable&#125;</span><br><span class="line">        onPressIn=&#123;<span class="keyword">this</span>._onPressIn&#125;</span><br><span class="line">        onPressOut=&#123;<span class="keyword">this</span>._onPressOut&#125;</span><br><span class="line">        onPress=&#123;<span class="keyword">this</span>._onPress&#125;</span><br><span class="line">        onLongPress=&#123;<span class="keyword">this</span>._onLonePress&#125;&gt;</span><br><span class="line">          &lt;View style=&#123;[styles.button, styles.test1]&#125;&gt;</span><br><span class="line">          &lt;Text&gt;TouchableWithoutFeedback&lt;<span class="regexp">/Text&gt;&lt;/</span>View&gt;</span><br><span class="line">        &lt;<span class="regexp">/TouchableWithoutFeedback&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">        &lt;TouchableNativeFeedback</span></span><br><span class="line"><span class="regexp">       ......</span></span><br><span class="line"><span class="regexp">         &gt;</span></span><br><span class="line"><span class="regexp">          &lt;View style=&#123;[styles.button, styles.test2]&#125;&gt;</span></span><br><span class="line"><span class="regexp">          &lt;Text&gt;TouchableNativeFeedback&lt;/</span>Text&gt;<span class="xml"><span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        &lt;<span class="regexp">/TouchableNativeFeedback&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">        &lt;TouchableOpacity </span></span><br><span class="line"><span class="regexp">       ......</span></span><br><span class="line"><span class="regexp">         &gt;</span></span><br><span class="line"><span class="regexp">          &lt;View style=&#123;styles.button&#125;&gt;</span></span><br><span class="line"><span class="regexp">          &lt;Text&gt;TouchableOpacity&lt;/</span>Text&gt;<span class="xml"><span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        &lt;<span class="regexp">/TouchableOpacity&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">        &lt;TouchableHighlight</span></span><br><span class="line"><span class="regexp">        ......</span></span><br><span class="line"><span class="regexp">         &gt;</span></span><br><span class="line"><span class="regexp">          &lt;View style=&#123;styles.button&#125;&gt;</span></span><br><span class="line"><span class="regexp">          &lt;Text&gt;TouchableHighlight&lt;/</span>Text&gt;<span class="xml"><span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        &lt;<span class="regexp">/TouchableHighlight&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>View&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">......</span><br><span class="line">AppRegistry.registerComponent(<span class="string">'touch'</span>, () =&gt; touch);</span><br></pre></td></tr></table></figure>
+<p>上面代码中，我们将一个View作为容器，然后分别设置了四个view作为按钮，为了给按钮绑定touch手势，我们将上述四个和touch相关的组件分别作为按钮的包裹层。效果如下：</p>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/init.png" alt=""></p>
+<p>上面代码中，我们分别为每个组件绑定了以下四个方法(这四个方法是React-Native帮助用户实现的):</p>
+<ul>
+<li>onPress</li>
+<li>onPressIn</li>
+<li>onPressOut</li>
+<li>onLongPress</li>
+</ul>
+<p>当我们分别点击这四个按钮是，会发生以下几个事情：</p>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/show.png" alt=""></p>
+<ul>
+<li>在模拟机上<code>TouchableWithoutFeedback</code>和<code>TouchableOpacity</code>进行快速点击会触发整个pressIn -&gt; pressOut -&gt; press过程。</li>
+<li>在模拟机上<code>TouchableNativeFeedback</code>和<code>TouchableHight</code>进行快速点击则会在pressIn -&gt; pressOut -&gt; press过程和直接press中不定期切换。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/strange.png" alt=""></p>
+<ul>
+<li>在真机上，所有的按钮均会触发整个press in -&gt; press out -&gt;press过程。</li>
+</ul>
+<p>针对以上情况，我们通过打点计时的方式可以看出以下几点:</p>
+<ul>
+<li>对于<code>TouchableNativeFeedback</code>和<code>TouchableHight</code>，当pressIn和pressOut的时间差小于某个阈值的时候会直接触发press事件。而<code>TouchableWithoutFeedback</code>和<code>TouchableOpacity</code>似乎不存在这个阈值，或者说至少这个阈值相当容易超过。简单而言，对于快速点击的“快”，这几个组件的内部处理估计有所差异。</li>
+<li>对<code>TouchableNativeFeedback</code>和<code>TouchableHight</code>的touch与对<code>TouchableWithoutFeedback</code>和<code>TouchableOpacity</code>的touch的反应速度是不一样的。</li>
+<li>模拟机的反应速度与真机的反应速度存在一定的差距。</li>
+<li>在进行事件绑定时如果对<code>TouchableNativeFeedback</code>和<code>TouchableHight</code>只进行pressIn或者pressOut的绑定，则实际上有可能是不会触发的。</li>
+<li>在对这几个组件点击时有一个比较明显的“按”的操作，则一定会触发pressIn事件，如果绑定了longPress事件，则同时会触发longPress事件，此时不会触发press事件，此时的流程是pressIn -&gt; longPress -&gt; pressOut。如果没有绑定longPress事件，则会触发press事件，此时的流程是pressIn -&gt; pressOut -&gt; press。</li>
+</ul>
+<p>以上情况主要是针对“点击态”进行分析，但实际上原生应用还有一个很重要的部分即：选择中途撤销触摸事件。最简单的例子是，我们按住了一个按钮，此时我们改变主意并不想按这个按钮了，我们可以比平时多按一会儿，接着将手指划开，此时就撤销了刚才的事件，就像我们根本没点击过一样。我们对上述组件分别进行此操作均得出结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/move.png" alt=""></p>
+<ul>
+<li>如果同时绑定了pressIn, pressOut和press事件， 并且没有绑定longPress事件，则当pressIn事件触发后，如果用户的手指在绑定的组件中释放，那么会连续触发pressIn -&gt; pressOut -&gt;press事件，如果用户的手指是在绑定的组件外部释放，则在手指移出边界的瞬间就会触发pressOut事件，并且此时不会触发press事件，相当于操作被取消了。</li>
+<li>如果在绑定了pressIn, pressOut, press的同时还绑定了longPress事件，则用户的手指在绑定的组件中释放会触发事件的流程是pressIn -&gt; longPress -&gt; pressOut， 如果用户的手指是在绑定的组件外部释放，则其触发的事件流程为pressIn -&gt; longPress -&gt;pressOut(在移出的瞬间触发)。</li>
+<li>通过打点计时会发现，longPress的触发也呈现出<code>TouchableNativeFeedback</code>和<code>TouchableHight</code>比较接近，<code>TouchableWithoutFeedback</code>和<code>TouchableOpacity</code>比较接近的特征。</li>
+</ul>
+<h2 id="gesture-responder-system"><a href="#gesture-responder-system" class="headerlink" title="gesture responder system"></a>gesture responder system</h2><p>对于大部分交互来说，可以运用上述的四个touch组件进行实现，但是如果交互比较复杂，则需要引入React-Native的gesture responder system</p>
+<h3 id="responder"><a href="#responder" class="headerlink" title="responder"></a>responder</h3><p>是React-Native中响应手势的基本单位。具体来说，就是view组件，任何一个view组件都是一个潜在的responder。在一个React-Native应用中只能存在一个responder。</p>
+<h3 id="responder如何响应手势操作"><a href="#responder如何响应手势操作" class="headerlink" title="responder如何响应手势操作"></a>responder如何响应手势操作</h3><ul>
+<li>激活某个responder由<code>onStartShouldSetResponder</code>以及<code>onMoveShouldSetResponder</code>两个方法来操作，当用户通过触摸或者滑动来开始事件时，上面两个方法需要返回true。</li>
+<li>如果组件被激活，此时<code>onResponderGrant</code>方法被调用。为了良好的反馈，此时最好去改变组件的颜色或者透明度来提示用户此组件被激活了。</li>
+<li>用户滑动手指，<code>onResponderMove</code>方法被调用。</li>
+<li>用户的手指离开屏幕，<code>onResponderRelease</code>方法被调用，此时组件其自身样式复原以提示操作完成。</li>
+<li>到现在为止，整个流程为: 响应touch或者move手势 -&gt; grant被激活 -&gt; move -&gt; release</li>
+</ul>
+<p>示例代码如下(当然这里代码写的比较随意，但功能是能实现的)：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  View</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> gestureHandlers = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">touch</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props, context) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props, context);</span><br><span class="line">    <span class="keyword">this</span>.config = &#123;</span><br><span class="line">      changeX: <span class="number">0</span>,</span><br><span class="line">      changeY: <span class="number">0</span>,</span><br><span class="line">      xDiff: <span class="number">0</span>,</span><br><span class="line">      yDiff: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      bg: <span class="string">'white'</span>,</span><br><span class="line">      left: <span class="number">0</span>,</span><br><span class="line">      top: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  componentWillMount()&#123;</span><br><span class="line">    gestureHandlers = &#123;</span><br><span class="line">    onStartShouldSetResponder: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(e.nativeEvent); </span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"start"</span>);</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onMoveShouldSetResponder: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(<span class="string">"move begin"</span>); <span class="keyword">return</span> <span class="literal">true</span>&#125;,</span><br><span class="line">    onResponderGrant: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"grant"</span>);</span><br><span class="line">      <span class="keyword">this</span>.config.changeY = e.nativeEvent.pageY;</span><br><span class="line">      <span class="keyword">this</span>.config.changeX = e.nativeEvent.pageX;</span><br><span class="line">      <span class="keyword">this</span>.setState(&#123;<span class="attr">bg</span>: <span class="string">'red'</span>&#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    onResponderMove: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"moving"</span>); </span><br><span class="line">      <span class="keyword">this</span>.config.yDiff = e.nativeEvent.pageY - <span class="keyword">this</span>.config.changeY;</span><br><span class="line">      <span class="keyword">this</span>.config.xDiff = e.nativeEvent.pageX - <span class="keyword">this</span>.config.changeX;</span><br><span class="line">      <span class="keyword">this</span>.state.left = <span class="keyword">this</span>.state.left + <span class="keyword">this</span>.config.xDiff;</span><br><span class="line">      <span class="keyword">this</span>.state.top = <span class="keyword">this</span>.state.top + <span class="keyword">this</span>.config.yDiff;</span><br><span class="line">      <span class="keyword">this</span>.config.changeY = e.nativeEvent.pageY;</span><br><span class="line">      <span class="keyword">this</span>.config.changeX = e.nativeEvent.pageX;</span><br><span class="line">      <span class="keyword">this</span>.setState(&#123;<span class="attr">left</span>: <span class="keyword">this</span>.state.left, <span class="attr">top</span>: <span class="keyword">this</span>.state.top&#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    onResponderRelease: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(<span class="string">"release"</span>); <span class="keyword">this</span>.setState(&#123;<span class="attr">bg</span>: <span class="string">'white'</span>&#125;)&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"begin render"</span>);</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">     &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">      &lt;Text&gt;Begin&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">       &lt;View</span></span><br><span class="line"><span class="regexp">         &#123;...gestureHandlers&#125;</span></span><br><span class="line"><span class="regexp">         style=&#123;[styles.rect, &#123;</span></span><br><span class="line"><span class="regexp">          "backgroundColor": this.state.bg,</span></span><br><span class="line"><span class="regexp">          "left": this.state.left,</span></span><br><span class="line"><span class="regexp">          "top": this.state.top        </span></span><br><span class="line"><span class="regexp">         &#125;]&#125;&gt;</span></span><br><span class="line"><span class="regexp">       &lt;/</span>View&gt;</span><br><span class="line">      &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp"> container: &#123;</span></span><br><span class="line"><span class="regexp">    flex: 1,</span></span><br><span class="line"><span class="regexp">    justifyContent: 'center',</span></span><br><span class="line"><span class="regexp">    alignItems: 'center',</span></span><br><span class="line"><span class="regexp">    backgroundColor: '#F5FCFF',</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  rect: &#123;</span></span><br><span class="line"><span class="regexp">    width: 200,</span></span><br><span class="line"><span class="regexp">    height: 200,</span></span><br><span class="line"><span class="regexp">    borderWidth: 1,</span></span><br><span class="line"><span class="regexp">    borderColor: 'black',</span></span><br><span class="line"><span class="regexp">    position: 'absolute'</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">AppRegistry.registerComponent('touch', () =&gt; touch);</span></span><br></pre></td></tr></table></figure>
+<p>在上面这段代码中，其执行顺序如下：</p>
+<ul>
+<li>界面初次渲染</li>
+<li>当我们点击白色的正方形时，会调用<code>onStartShouldSetResponder</code>方法，此时返回true，表示其被激活</li>
+<li>因为其被激活，所以调用<code>onResponderGrant</code>方法，颜色变为红色，记录touch相对于root element的位置，然后重新渲染</li>
+<li>开始移动，调用<code>onResponderMove</code>方法，计算移动的距离，改变布局，然后重新渲染 (此过程会不断重复)</li>
+<li>手指松开，调用<code>onResponderRelease</code>方法，颜色变白，重新渲染，事件结束</li>
+</ul>
+<p>在上述的几个方法中，都提供了一个参数evt，evt是一个touch事件，其下面的nativeEvent是一个对象，里面记录的信息对于进行复杂手势的合成相当有用。具体而言它主要提供了下述信息：</p>
+<ul>
+<li>changedTouches: 一个数组保存着自上次事件后所有有变化的touch事件</li>
+<li>identifier: touch的ID</li>
+<li>locationX: 相对于当前元素的touch的X位置</li>
+<li>locationY: 相对于当前元素的touch的Y位置</li>
+<li>pageX: 相对于根元素的touch的X位置</li>
+<li>pageY: 相对于根元素的touch的Y位置</li>
+<li>target: 接受touch事件的元素的节点id</li>
+<li>timestamp: touch的时间标示</li>
+<li>touches: 一个数组保存着现在屏幕上的所有touch</li>
+</ul>
+<h3 id="处理冲突"><a href="#处理冲突" class="headerlink" title="处理冲突"></a>处理冲突</h3><h4 id="情况一"><a href="#情况一" class="headerlink" title="情况一"></a>情况一</h4><p>考虑一个情况，应用中存在多个responder，已经激活了一个而且没释放时又想去激活另外一个，注意在一个React-Native应用中只能存在一个responder。所以此时，就存在一个协商的过程。对于这种情况，React-Native提供了一个<code>onResponderTerminationRequest</code>方法。</p>
+<ul>
+<li>已经激活的responder不愿意放弃主动权，此时<code>onResponderTerminationRequest</code>返回false，待激活的responder的<code>onResponderReject</code>方法会被调用，其保持不被激活的状态进行等待</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/release.png" alt=""></p>
+<ul>
+<li>已经激活的responder愿意放弃主动权，此时<code>onResponderTerminationRequest</code>返回true，待激活的responder的<code>onResponderGrant</code>方法会被调用变为激活状态，而之前激活的responder的<code>onResponderTerminate</code>方法会被调用，其被释放。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/release2.png" alt=""></p>
+<ul>
+<li>注意这种responder锁的转移只能在increasingly “higher” views上执行，即现在responder的祖先元素上。</li>
+<li>现阶段这部分有个<a href="https://github.com/facebook/react/issues/6217" target="_blank" rel="noopener">onResponderGrant called before onResponderTerminate的问题</a>，因为在实现方式上有所争议，所以如果使用这两个方法最好注意下顺序的问题。</li>
+<li>Touch starts，moves，scolls能够生成一个responder的ID。</li>
+<li>通过capture/bubble来<code>startShouldSetResponder</code>/<code>moveShouldSetResponder</code> 一个合适的地方。</li>
+<li>如果当前没有responder，那么这个合适的地方就是初始事件的targetID。</li>
+<li>协商过程发生，具体如下图所示。</li>
+<li>滚动的views会自动成为responder。因为不是构建在responer system基础上的平台层面的滚动view开始后，激活状态的responder必须被告知现在responder锁并不在其上了，系统已经接管了。</li>
+<li>注意在responder的转移过程中，如果之前sponder手势没有释放，则此时虽然新的responder可以触发，也没法释放(因为此时没释放的touch处于现在responder的后代元素里)。<code>onResponderRelease</code>事件会在当前responder的实例及其后代都没touch时触发，并且释放掉responder锁。</li>
+</ul>
+<p>总的流程图：</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">    Negotiation Performed</span><br><span class="line">                                             +-----------------------+</span><br><span class="line">                                            /                         \</span><br><span class="line">Process low level events to    +     Current Responder      +   wantsResponderID</span><br><span class="line">determine who to perform negot-|   (if any exists at all)   |</span><br><span class="line">iation/transition              | Otherwise just pass through|</span><br><span class="line">-------------------------------+----------------------------+------------------+</span><br><span class="line">Bubble to find first ID        |                            |</span><br><span class="line">to return true:wantsResponderID|                            |</span><br><span class="line">                               |                            |</span><br><span class="line">     +-------------+           |                            |</span><br><span class="line">     | onTouchStart|           |                            |</span><br><span class="line">     +------+------+     none  |                            |</span><br><span class="line">            |            return|                            |</span><br><span class="line">+-----------v-------------+true| +------------------------+ |</span><br><span class="line">|onStartShouldSetResponder|-----&gt;|onResponderStart (cur)  |&lt;-----------+</span><br><span class="line">+-----------+-------------+    | +------------------------+ |          |</span><br><span class="line">            |                  |                            | +--------+-------+</span><br><span class="line">            | returned true for|       false:REJECT +--------&gt;|onResponderReject</span><br><span class="line">            | wantsResponderID |                    |       | +----------------+</span><br><span class="line">            | (now attempt     | +------------------+-----+ |</span><br><span class="line">            |  handoff)        | |   onResponder          | |</span><br><span class="line">            +-------------------&gt;|      TerminationRequest| |</span><br><span class="line">                               | +------------------+-----+ |</span><br><span class="line">                               |                    |       | +----------------+</span><br><span class="line">                               |         true:GRANT +--------&gt;|onResponderGrant|</span><br><span class="line">                               |                            | +--------+-------+</span><br><span class="line">                               | +------------------------+ |          |</span><br><span class="line">                               | |   onResponderTerminate |&lt;-----------+</span><br><span class="line">                               | +------------------+-----+ |</span><br><span class="line">                               |                    |       | +----------------+</span><br><span class="line">                               |                    +--------&gt;|onResponderStart|</span><br><span class="line">                               |                            | +----------------+</span><br><span class="line">Bubble to find first ID        |                            |</span><br><span class="line">to return true:wantsResponderID|                            |</span><br><span class="line">                               |                            |</span><br><span class="line">     +-------------+           |                            |</span><br><span class="line">     | onTouchMove |           |                            |</span><br><span class="line">     +------+------+     none  |                            |</span><br><span class="line">            |            return|                            |</span><br><span class="line">+-----------v-------------+true| +------------------------+ |</span><br><span class="line">|onMoveShouldSetResponder |-----&gt;|onResponderMove (cur)   |&lt;-----------+</span><br><span class="line">+-----------+-------------+    | +------------------------+ |          |</span><br><span class="line">            |                  |                            | +--------+-------+</span><br><span class="line">            | returned true for|       false:REJECT +--------&gt;|onResponderRejec|</span><br><span class="line">            | wantsResponderID |                    |       | +----------------+</span><br><span class="line">            | (now attempt     | +------------------+-----+ |</span><br><span class="line">            |  handoff)        | |   onResponder          | |</span><br><span class="line">            +-------------------&gt;|      TerminationRequest| |</span><br><span class="line">                               | +------------------+-----+ |</span><br><span class="line">                               |                    |       | +----------------+</span><br><span class="line">                               |         true:GRANT +--------&gt;|onResponderGrant|</span><br><span class="line">                               |                            | +--------+-------+</span><br><span class="line">                               | +------------------------+ |          |</span><br><span class="line">                               | |   onResponderTerminate |&lt;-----------+</span><br><span class="line">                               | +------------------+-----+ |</span><br><span class="line">                               |                    |       | +----------------+</span><br><span class="line">                               |                    +--------&gt;|onResponderMove |</span><br><span class="line">                               |                            | +----------------+</span><br><span class="line">                               |                            |</span><br><span class="line">                               |                            |</span><br><span class="line">      Some active touch started|                            |</span><br><span class="line">      inside current responder | +------------------------+ |</span><br><span class="line">      +-------------------------&gt;|      onResponderEnd    | |</span><br><span class="line">      |                        | +------------------------+ |</span><br><span class="line">  +---+---------+              |                            |</span><br><span class="line">  | onTouchEnd  |              |                            |</span><br><span class="line">  +---+---------+              |                            |</span><br><span class="line">      |                        | +------------------------+ |</span><br><span class="line">      +-------------------------&gt;|     onResponderEnd     | |</span><br><span class="line">      No active touches started| +-----------+------------+ |</span><br><span class="line">      inside current responder |             |              |</span><br><span class="line">                               |             v              |</span><br><span class="line">                               | +------------------------+ |</span><br><span class="line">                               | |    onResponderRelease  | |</span><br><span class="line">                               | +------------------------+ |</span><br><span class="line">                               |                            |</span><br><span class="line">                               +                            + *</span><br></pre></td></tr></table></figure>
+</code></pre><h4 id="情况二"><a href="#情况二" class="headerlink" title="情况二"></a>情况二</h4><p>再考虑一个情况，<code>onStartShouldSetResponder</code>和<code>onMoveShouldSetResponder</code>都遵循冒泡机制，最顶部的responder会进行事件响应。这就意味着当有多个view对于<code>*ShouldSetResponder</code>返回true时，实际上是最顶层的组件将会成为被激活的responder，但如果我们不希望这样呢，此时我们希望自定义响应事件的responder。React-Native针对此种情况提供了<code>onStartShouldSetResponderCapture</code>和<code>onMoveShouldSetResponderCapture</code>两个方法。当我们希望的responder的这两个方法中任意一个返回true时，即使它并不在最顶层，唯一一个responder的位置也会被它占据。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">touch</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props, context) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props, context);</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      bg: <span class="string">'red'</span>,</span><br><span class="line">      bg1: <span class="string">'pink'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  componentWillMount()&#123;</span><br><span class="line">    <span class="keyword">this</span>.gestureHandlers = &#123;</span><br><span class="line">      onStartShouldSetResponder: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"start"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">      onMoveShouldSetResponder: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(<span class="string">"move begin"</span>); <span class="keyword">return</span> <span class="literal">true</span>&#125;,</span><br><span class="line">      onResponderGrant: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"grant"</span>);</span><br><span class="line">        <span class="keyword">this</span>.setState(&#123;<span class="attr">bg</span>: <span class="string">'orange'</span>&#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">      onResponderMove: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"moving"</span>); </span><br><span class="line">    &#125;,</span><br><span class="line">      onResponderRelease: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"release"</span>); </span><br><span class="line">        <span class="keyword">this</span>.setState(&#123;<span class="attr">bg</span>: <span class="string">'red'</span>&#125;)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">//最关键的两句：加上下面两句则响应者会变化</span></span><br><span class="line">      onStartShouldSetResponderCapture: <span class="function"><span class="params">()</span> =&gt;</span> <span class="literal">true</span>,</span><br><span class="line">      onMoveShouldSetResponderCapture: <span class="function"><span class="params">()</span>=&gt;</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>.gestureHandlers2 = &#123;</span><br><span class="line">      onStartShouldSetResponder: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"start1"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">      onMoveShouldSetResponder: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;<span class="built_in">console</span>.log(<span class="string">"move begin"</span>); <span class="keyword">return</span> <span class="literal">true</span>&#125;,</span><br><span class="line">      onResponderGrant: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"grant1"</span>);</span><br><span class="line">        <span class="keyword">this</span>.setState(&#123;<span class="attr">bg1</span>: <span class="string">'red'</span>&#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">      onResponderMove: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"moving1"</span>); </span><br><span class="line">    &#125;,</span><br><span class="line">      onResponderRelease: <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"release1"</span>); </span><br><span class="line">        <span class="keyword">this</span>.setState(&#123;<span class="attr">bg1</span>: <span class="string">'pink'</span>&#125;)</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">     &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">       &lt;View </span><br><span class="line">        &#123;...this.gestureHandlers&#125;</span><br><span class="line">        style=&#123;[styles.rectBig, &#123;</span><br><span class="line">          <span class="string">"backgroundColor"</span>: <span class="keyword">this</span>.state.bg</span><br><span class="line">        &#125;]&#125;&gt;</span><br><span class="line">        &lt;View</span><br><span class="line">         &#123;...this.gestureHandlers2&#125;</span><br><span class="line">         style=&#123;[styles.rect,  &#123;</span><br><span class="line">          <span class="string">"backgroundColor"</span>: <span class="keyword">this</span>.state.bg1    </span><br><span class="line">         &#125;]&#125;&gt;</span><br><span class="line">        &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>View&gt;</span><br><span class="line">      </span><br><span class="line">        &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp"> container: &#123;</span></span><br><span class="line"><span class="regexp">    flex: 1,</span></span><br><span class="line"><span class="regexp">    justifyContent: 'center',</span></span><br><span class="line"><span class="regexp">    alignItems: 'center',</span></span><br><span class="line"><span class="regexp">    backgroundColor: '#F5FCFF',</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  rect: &#123;</span></span><br><span class="line"><span class="regexp">    width: 100,</span></span><br><span class="line"><span class="regexp">    height: 100,</span></span><br><span class="line"><span class="regexp">   </span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  rectBig: &#123;</span></span><br><span class="line"><span class="regexp">    width: 200,</span></span><br><span class="line"><span class="regexp">    height: 200,</span></span><br><span class="line"><span class="regexp">    justifyContent: 'center',</span></span><br><span class="line"><span class="regexp">    alignItems: 'center',</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">AppRegistry.registerComponent('touch', () =&gt; touch);</span></span><br></pre></td></tr></table></figure>
+<h3 id="其他注意点"><a href="#其他注意点" class="headerlink" title="其他注意点"></a>其他注意点</h3><ul>
+<li><code>onResponderRelease</code>方法其实响应的是touchUp，这就意味着它只监听手指的抬起，对于组件上的越界等并没有监测。所以如果在触发的responder上进行滑动，手指划出其边界后继续滑动如果不进行判定的话，并不会自动拦截事件。</li>
+<li>e.nativeEvent其中的pageX和pageY在滑动时是会实时变化的，但是locationX和locationY并不会。</li>
+<li>如果组件一设置了<code>onStartShouldSetResponder</code>与<code>onResponderTerminationRequest</code>返回true，组件二设置了<code>onMoveShouldSetResponder</code>，则在组件一中点击且滑动会触发组件二的行为。因此要特别注意<code>onStartShouldSetResponder</code>与<code>onMoveShouldSetResponder</code>的同时使用。</li>
+</ul>
+<h2 id="PanResponder"><a href="#PanResponder" class="headerlink" title="PanResponder"></a>PanResponder</h2><p>PanResponder是React－Native提供的一套抽象方法，和gesture responder system比起来，其抽象程度更高，使用起来更加方便。具体的说它在基本的evt参数之外，还提供了另外一个参数gestureState。gestureState是一个对象，包含了以下信息：</p>
+<ul>
+<li>stateID: gestureState的ID，在屏幕上保持至少一个触发动作的时间</li>
+<li>moveX: 最近动态触发的最新的屏幕坐标</li>
+<li>x0: 应答器横向的屏幕坐标</li>
+<li>y0: 应答器纵向的屏幕坐标</li>
+<li>dx: 触发开始后累积的横向动作距离</li>
+<li>dy: 触发开始后累积的纵向动作距离</li>
+<li>vx: 当前手势的纵向速度</li>
+<li>vy: 当前手势的纵向速度</li>
+<li>numberActiveTouch: numberActiveTouch</li>
+</ul>
+<p>PanResponder可以将几个触发调节为一个单一的触发动作，可以用来识别简单的多点触发动作。<br>我们来举个栗子～尝试实现一个基于React-Native的多点触摸的Zoom的功能，这里只是为了说明功能而进行的简单示例，要实现一个性能功能完好的Zoom还是不容易滴。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  PanResponder,</span><br><span class="line">  View</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">touch</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props, context) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props, context);</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">        bg: <span class="string">'red'</span>,</span><br><span class="line">        bg1: <span class="string">'pink'</span>,</span><br><span class="line">        width: <span class="number">300</span>,</span><br><span class="line">        height: <span class="number">300</span>,</span><br><span class="line">        distant: <span class="number">0</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  componentWillMount()&#123;</span><br><span class="line">    <span class="keyword">this</span>.gestureHandlers = PanResponder.create(&#123;</span><br><span class="line">      onStartShouldSetPanResponder: <span class="keyword">this</span>._handleStartShouldSetPanResponder.bind(<span class="keyword">this</span>),</span><br><span class="line">      onMoveShouldSetPanResponder: <span class="keyword">this</span>._handleMoveShouldSetPanResponder.bind(<span class="keyword">this</span>),</span><br><span class="line">      onPanResponderGrant: <span class="keyword">this</span>._handlePanResponderGrant.bind(<span class="keyword">this</span>),</span><br><span class="line">      onPanResponderMove: <span class="keyword">this</span>._handlePanResponderMove.bind(<span class="keyword">this</span>),</span><br><span class="line">      onPanResponderRelease: <span class="keyword">this</span>._handlePanResponderEnd.bind(<span class="keyword">this</span>),</span><br><span class="line">      onPanResponderTerminate: <span class="keyword">this</span>._handlePanResponderEnd.bind(<span class="keyword">this</span>),</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  _handleStartShouldSetPanResponder(e, gestureState)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"start"</span> + <span class="string">" "</span> + gestureState.numberActiveTouches);</span><br><span class="line">    <span class="keyword">return</span> gestureState.numberActiveTouches === <span class="number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  _handleMoveShouldSetPanResponder(e, gestureState)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"move start"</span> + <span class="string">" "</span> + gestureState.numberActiveTouches);</span><br><span class="line">    <span class="keyword">return</span> gestureState.numberActiveTouches === <span class="number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _handlePanResponderGrant(e, gestureState)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"grant"</span> + <span class="string">" "</span> + gestureState.numberActiveTouches);</span><br><span class="line">    <span class="keyword">if</span> (gestureState.numberActiveTouches === <span class="number">2</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.setState(&#123;<span class="attr">bg</span>: <span class="string">'orange'</span>&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _handlePanResponderEnd(e, gestureState)&#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;<span class="attr">bg</span>: <span class="string">'red'</span>&#125;);</span><br><span class="line">    <span class="built_in">console</span>.log(gestureState);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  _handlePanResponderMove(e, gestureState)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(gestureState.numberActiveTouches + <span class="string">" "</span> + e.nativeEvent.touches.length);</span><br><span class="line">    <span class="keyword">if</span> (gestureState.numberActiveTouches === <span class="number">2</span>) &#123;</span><br><span class="line">          <span class="keyword">this</span>.setState(&#123;<span class="attr">bg</span>: <span class="string">'orange'</span>&#125;);</span><br><span class="line">          <span class="keyword">var</span> dx = <span class="built_in">Math</span>.abs(e.nativeEvent.touches[<span class="number">0</span>].pageX - e.nativeEvent.touches[<span class="number">1</span>].pageX);</span><br><span class="line">          <span class="keyword">var</span> dy = <span class="built_in">Math</span>.abs(e.nativeEvent.touches[<span class="number">0</span>].pageY - e.nativeEvent.touches[<span class="number">1</span>].pageY);</span><br><span class="line">          <span class="keyword">var</span> distant = <span class="built_in">Math</span>.sqrt(dx*dx + dy*dy);</span><br><span class="line">          <span class="keyword">if</span> (distant &gt; <span class="keyword">this</span>.state.distant) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"bigger"</span>);</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"smaller"</span>);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">this</span>.setState(&#123;<span class="attr">distant</span>: distant&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">     &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">       &lt;View </span><br><span class="line">        &#123;...this.gestureHandlers.panHandlers&#125;</span><br><span class="line">        style=&#123;[styles.rectBig, &#123;</span><br><span class="line">          <span class="string">"backgroundColor"</span>: <span class="keyword">this</span>.state.bg,</span><br><span class="line">          <span class="string">"width"</span>: <span class="keyword">this</span>.state.width,</span><br><span class="line">          <span class="string">"height"</span>: <span class="keyword">this</span>.state.height</span><br><span class="line">        &#125;]&#125;&gt;</span><br><span class="line">        &lt;<span class="regexp">/View&gt; </span></span><br><span class="line"><span class="regexp">    &lt;/</span>View&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = StyleSheet.create(&#123;</span><br><span class="line"> container: &#123;</span><br><span class="line">    flex: <span class="number">1</span>,</span><br><span class="line">    justifyContent: <span class="string">'center'</span>,</span><br><span class="line">    alignItems: <span class="string">'center'</span>,</span><br><span class="line">    backgroundColor: <span class="string">'#F5FCFF'</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  rectBig: &#123;</span><br><span class="line">    justifyContent: <span class="string">'center'</span>,</span><br><span class="line">    alignItems: <span class="string">'center'</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">AppRegistry.registerComponent(<span class="string">'touch'</span>, () =&gt; touch);</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/multiple.png" alt=""></p>
+<p>通过代码可以看出：</p>
+<ul>
+<li>在<code>onStartShouldSetPanResponder</code>方法里我们判断了激活的touches的数量，我们希望Zoom是由两个触发源共同构建的，所以只有当前界面touches为2时才会返回true，也才会触发<code>onPanResponderGrant</code>方法。</li>
+<li>接着在<code>onPanResponderGrant</code>方法里，我们改变背景色，注意提供用户友好的touch反馈是值得推荐的。</li>
+<li>接下去，当我们移动时，触发<code>onPanResponderMove</code>方法，我们可以通过evt.nativeEvent.touches获取两个触发源及其位置。然后我们计算它们的相对位置，只要两者之间的距离缩短则表示缩小，两者的距离扩大则表示放大。[以上可以通过log看出大小变化，实际的放大缩小还需要实时变换style来实现]</li>
+<li>这里注意，当我们在<code>onStartShouldSetPanResponder</code>里返回true后<code>onPanResponderGrant</code>方法调用，且<code>onPanResponderRelease</code>没调用时，我们增加触发源并不会调用<code>onStartShouldSetPanResponder</code>。相反，只要<code>onStartShouldSetPanResponder</code>没返回true，每增加一个触发源都会调用<code>onStartShouldSetPanResponder</code>。</li>
+</ul>
+<h3 id="其他注意点-1"><a href="#其他注意点-1" class="headerlink" title="其他注意点"></a>其他注意点</h3><ul>
+<li>如果触发源比较多，我们可以使用evt.nativeEvent.touches[i].identifier来进行标示</li>
+<li>通过gestureState.vx和gestureState.vy，我们可以更好的模拟物理世界，为我们结合动画的制作提供了便利。</li>
+<li>模拟机上快速点击(比如触摸板上的快速点击)，触发整个流程的速度特别快，中间过程的变化可能肉眼看不出来(比如<code>onPanResponderGrant</code>颜色改变之后又<code>onPanResponderRelease</code>复原这种)。</li>
+<li><em>如果是带borderRadius样式的元素绑定事件，其原有区域也能触发事件(关于这部分没找到特别好的解决办法，react native自带的四种组件也会有这个问题)。</em></li>
+<li>React-Native的触摸都是在JS线程里面进行的，而原生的都是在UI线程上进行的，所以不可避免的运用React-Native来实现触摸性能上不如原生的。</li>
+</ul>
+<h1 id="React－Native动画"><a href="#React－Native动画" class="headerlink" title="React－Native动画"></a>React－Native动画</h1><p>上面介绍的主要是React－Native的触摸部分，对于手机应用而言，除了触摸之外，动画也是相当重要的一部分，并且触摸加动画能够实现很多很赞的效果，接下来我们就来看下React-Native中的动画。总的来说，React-Native中关于动画有三个系统，分别为Animated，LayoutAnimation，导航器场景切换(此部分与具体组件层面挂钩，这里暂时不做讨论)。</p>
+<h2 id="Animated"><a href="#Animated" class="headerlink" title="Animated"></a>Animated</h2><h3 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h3><p>用于创建更精细的交互控制的动画</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>容易实现各种动画和交互</li>
+<li>具备极高的性能</li>
+<li>仅关注动画的输入和输出声明</li>
+<li>配置是声明式的，序列化好配置，可在高优先级的线程执行动画</li>
+<li>动画的顺序执行由start/stop方法来控制</li>
+</ul>
+<h3 id="核心API"><a href="#核心API" class="headerlink" title="核心API"></a>核心API</h3><p>Animated提供了三个动画组件，分别是Animated.View, Animated.Text, Animated.Image</p>
+<ul>
+<li><p>值类型：</p>
+<ul>
+<li><p>Value：用于单个值</p>
+<ul>
+<li>new Animated.Value(0): 可以作为属性传递给动画组件，但属性只能收取基本类型的值</li>
+<li>setVAlue: new Animated.Value()实例上的方法，允许外部代码控制实例内部的值并且不触发中间状态的动画，如果中间使用了插值计算则会得到正确的值但依然不会触发动画</li>
+<li><p>interpolate: 插值计算时使用(注意其中的inputRange必须是升序)</p>
+<ul>
+<li>clamp: 不会超过边界值</li>
+<li>identity: 超过边界值后直接变为input的值</li>
+<li>extend(default): 会超过边界值</li>
+<li>注意用插值进行颜色转换时对hex没用，只对rgb, rgba, hsl和其他数字格式。</li>
+<li>插值还可以进行角度转换比如<code>outputRange[&#39;0deg`, `15deg`]</code>，也可运用<code>outputRange: [&#39;0rad`, `0.0872665rad`]</code>，1弧度大概等于57.2958度。        </li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._animatedValue = <span class="keyword">new</span> Animated.ValueXY();</span><br><span class="line"><span class="keyword">this</span>._opacityAnimation = <span class="keyword">this</span>._animatedValue.x.interpolate(&#123;</span><br><span class="line">    inputRange: [<span class="number">0</span>, <span class="number">150</span>],</span><br><span class="line">    outputRange: [<span class="number">1</span>, <span class="number">.2</span>],</span><br><span class="line">    extrapolate: <span class="string">'clamp'</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>addListener: 动画是异步的，但可以通过此方法监听动画值的改变，但记得不使用时remove掉</p>
+</li>
+<li><p>removeListener: 取消监听，传入的参数是addListener返回的string</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._animatedValue = <span class="keyword">new</span> Animated.Value(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">var</span> animatedListenerId = <span class="keyword">this</span>._animatedValue.addListener(<span class="function">(<span class="params">&#123;value&#125;</span>) =&gt;</span> <span class="keyword">this</span>._value = value);</span><br><span class="line"><span class="keyword">this</span>._animatedValue.removeListener(animatedListenerId);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>removeAllListeners: 取消所有监听</p>
+</li>
+<li>stopAnimation: 终止动画，回调里面有当前动画停止时的值</li>
+</ul>
+</li>
+<li><p>ValueXY：用于向量值，一般要处理位置或者手势时使用</p>
+<ul>
+<li>new Animated.ValueXY(): 初始值是{x:0, y:0}</li>
+<li>getLayout: 将{x, y}转换为{left, top}以便用于style，当使用这个方法时，组件的position必须为absolute</li>
+<li>getTranslateTransform: 将一个{x, y} 组合转换为一个可用的位移变换(translation transform), 不必关心其现在的布局</li>
+<li>setOffset: 在设定的值上的偏移</li>
+<li>flattenOffset: 获取offset内的值并将它加到animated value的base上然后重置offset为0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>动画类型：</p>
+<ul>
+<li>spring(friction:摩擦力{7}, tension:张力{40}): 基础的单次弹跳物理模型</li>
+<li><p>decay(velocity:起始速度, deceleration:速度衰减比例{0.997}): 以一个初始速度开始并且逐渐减慢停止，此部分与PanResponder很好结合</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._animatedValue = <span class="keyword">new</span> Animated.ValueXY();</span><br><span class="line"></span><br><span class="line">Animated.decay(<span class="keyword">this</span>._animatedValue, &#123;   <span class="comment">// coast to a stop</span></span><br><span class="line">    velocity: &#123;<span class="attr">x</span>: gestureState.vx, <span class="attr">y</span>: gestureState.vy&#125;, <span class="comment">// velocity from gesture release</span></span><br><span class="line">    deceleration: <span class="number">0.997</span>,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>timing(duration:动画持续时间{500毫秒}, easing:渐变函数，delay:延迟开始动画{0}): 时间范围映射到渐变的值 <a href="https://github.com/facebook/react-native/blob/master/Libraries/Animated/src/Easing.js" target="_blank" rel="noopener">easing可以选择的值</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="动画过程"><a href="#动画过程" class="headerlink" title="动画过程"></a>动画过程</h3><ul>
+<li>动画开始: 调用start方法(里面允许回调，因此可以实现循环动画，这里使用了interpolate实际只有一个变量)</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">_rotateTime() &#123;</span><br><span class="line">    <span class="keyword">this</span>._animatedValue.setValue(&#123;<span class="attr">x</span>:<span class="number">0</span>,<span class="attr">y</span>:<span class="number">0</span>&#125;);</span><br><span class="line">    Animated.timing(<span class="keyword">this</span>._animatedValue, &#123;</span><br><span class="line">      toValue: <span class="number">360</span>,</span><br><span class="line">      duration: <span class="number">1500</span>,</span><br><span class="line">      easing: Easing.linear</span><br><span class="line">    &#125;).start(<span class="function"><span class="params">()</span> =&gt;</span> &#123;<span class="keyword">this</span>._rotateTime()&#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/doge.gif" alt=""></p>
+<ul>
+<li>动画正常结束: 回调函数调用时的参数为{finished: true}</li>
+<li>动画正常结束之前调用stop结束: 回调函数调用时的参数为{finished: false}</li>
+</ul>
+<h3 id="组合动画"><a href="#组合动画" class="headerlink" title="组合动画"></a>组合动画</h3><ul>
+<li>parallel(同时执行)</li>
+<li>sequence(顺序执行)</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._opacityAnimationValue = <span class="keyword">new</span> Animated.Value(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">this</span>._moveAnimationValue = <span class="keyword">new</span> Animated.ValueXY();</span><br><span class="line">Animated.sequence([</span><br><span class="line">    Animated.timing(<span class="keyword">this</span>._moveAnimationValue, &#123;</span><br><span class="line">        toValue: <span class="number">100</span>,</span><br><span class="line">        duration: <span class="number">500</span></span><br><span class="line">    &#125;),</span><br><span class="line">    Animated.timing(<span class="keyword">this</span>._opacityAnimationValue, &#123;</span><br><span class="line">        toValue: <span class="number">0</span>,</span><br><span class="line">        duration: <span class="number">200</span></span><br><span class="line">    &#125;)</span><br><span class="line">]).start()</span><br><span class="line">&lt;Animated.View style=&#123;&#123;<span class="attr">opacity</span>: <span class="keyword">this</span>._opacityAnimationValue, <span class="attr">transform</span>: <span class="keyword">this</span>._moveAnimationValue.getTranslateTransform()&#125;&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>stagger(错峰执行)</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._opacityAnimationValue = <span class="keyword">new</span> Animated.Value(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">this</span>._moveAnimationValue = <span class="keyword">new</span> Animated.ValueXY();</span><br><span class="line">Animated.stagger(<span class="number">100</span>, [</span><br><span class="line">    Animated.timing(<span class="keyword">this</span>._moveAnimationValue, &#123;</span><br><span class="line">        toValue: <span class="number">100</span>,</span><br><span class="line">        duration: <span class="number">500</span></span><br><span class="line">    &#125;),</span><br><span class="line">    Animated.timing(<span class="keyword">this</span>._opacityAnimationValue, &#123;</span><br><span class="line">        toValue: <span class="number">0</span>,</span><br><span class="line">        duration: <span class="number">200</span></span><br><span class="line">    &#125;)</span><br><span class="line">]).start()</span><br><span class="line">&lt;Animated.View style=&#123;&#123;<span class="attr">opacity</span>: <span class="keyword">this</span>._opacityAnimationValue, <span class="attr">transform</span>: <span class="keyword">this</span>._moveAnimationValue.getTranslateTransform()&#125;&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>delay(延迟执行)</li>
+<li>默认情况下，如果任何一个动画被停止或中断了，组内所有其它的动画也会被停止。Parallel有一个stopTogether属性，如果设置为false，可以禁用自动停止</li>
+</ul>
+<h3 id="Animated-event输入事件"><a href="#Animated-event输入事件" class="headerlink" title="Animated.event输入事件"></a>Animated.event输入事件</h3><ul>
+<li>允许手势或其他事件直接绑定到动态值上</li>
+<li>结构化的映射语法，使得复杂事件对象中的值被正确的解开</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">onScroll=&#123;Animated.event(</span><br><span class="line">  [&#123;<span class="attr">nativeEvent</span>: &#123;<span class="attr">contentOffset</span>: &#123;<span class="attr">x</span>: scrollX&#125;&#125;&#125;]   <span class="comment">// scrollX = e.nativeEvent.contentOffset.x</span></span><br><span class="line">)&#125;</span><br><span class="line">onPanResponderMove=&#123;Animated.event([</span><br><span class="line">  <span class="literal">null</span>,                                          <span class="comment">// 忽略原生事件</span></span><br><span class="line">  &#123;<span class="attr">dx</span>: pan.x, <span class="attr">dy</span>: pan.y&#125;                         <span class="comment">// 从gestureState中解析出dx和dy的值</span></span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+<h3 id="创建动画组件"><a href="#创建动画组件" class="headerlink" title="创建动画组件"></a>创建动画组件</h3><ul>
+<li>原生支持的组件类型： View Text Image</li>
+<li>将其他组件转换为Animated组件：createAnimatedComponent</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> AnimatedScrollView = Animated.createAnimatedComponent(ScrollView)</span><br></pre></td></tr></table></figure>
+<h3 id="动画结合PanResponder"><a href="#动画结合PanResponder" class="headerlink" title="动画结合PanResponder"></a>动画结合PanResponder</h3><p>我们继续来举个栗子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  View,</span><br><span class="line">  PanResponder,</span><br><span class="line">  Animated,</span><br><span class="line">  Dimensions</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;</span><br><span class="line">  height: deviceHeight,</span><br><span class="line">  width: deviceWidth</span><br><span class="line">&#125; = Dimensions.get(<span class="string">'window'</span>);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">touch</span> <span class="keyword">extends</span> <span class="title">Component</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  componentWillMount() &#123;</span><br><span class="line">    <span class="keyword">this</span>._animatedValue = <span class="keyword">new</span> Animated.ValueXY()</span><br><span class="line">    <span class="keyword">this</span>._value = &#123;<span class="attr">x</span>: <span class="number">0</span>, <span class="attr">y</span>: <span class="number">0</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>._animatedValue.addListener(<span class="function">(<span class="params">value</span>) =&gt;</span> <span class="keyword">this</span>._value = value);</span><br><span class="line">    <span class="keyword">this</span>._panResponder = PanResponder.create(&#123;</span><br><span class="line">      onStartShouldSetPanResponder: <span class="keyword">this</span>._handleStartShouldSetPanResponder.bind(<span class="keyword">this</span>),</span><br><span class="line">      onMoveShouldSetPanResponder: <span class="keyword">this</span>._handleMoveShouldSetPanResponder.bind(<span class="keyword">this</span>),</span><br><span class="line">      onPanResponderGrant: <span class="keyword">this</span>._handlePanResponderGrant.bind(<span class="keyword">this</span>),</span><br><span class="line">      onPanResponderMove: Animated.event([</span><br><span class="line">        <span class="literal">null</span>, &#123;<span class="attr">dx</span>: <span class="keyword">this</span>._animatedValue.x, <span class="attr">dy</span>: <span class="keyword">this</span>._animatedValue.y&#125;</span><br><span class="line">      ]),</span><br><span class="line">      onPanResponderRelease: <span class="keyword">this</span>._handlePanResponderEnd.bind(<span class="keyword">this</span>),</span><br><span class="line">      onPanResponderTerminate: <span class="keyword">this</span>._handlePanResponderEnd.bind(<span class="keyword">this</span>),</span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _handleStartShouldSetPanResponder(e, gestureState)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _handleMoveShouldSetPanResponder(e, gestureState)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _handlePanResponderGrant(e, gestureState)&#123;</span><br><span class="line">    <span class="keyword">this</span>._animatedValue.setOffset(&#123;<span class="attr">x</span>: <span class="keyword">this</span>._value.x, <span class="attr">y</span>: <span class="keyword">this</span>._value.y&#125;);</span><br><span class="line">    <span class="keyword">this</span>._animatedValue.setValue(&#123;<span class="attr">x</span>: <span class="number">0</span>, <span class="attr">y</span>: <span class="number">0</span>&#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _handlePanResponderEnd(e, gestureState)&#123;</span><br><span class="line">    Animated.spring(<span class="keyword">this</span>._animatedValue, &#123;</span><br><span class="line">      toValue: <span class="number">0</span>,</span><br><span class="line">      tension: <span class="number">80</span></span><br><span class="line">    &#125;).start();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">var</span> interpolatedColorAnimation = <span class="keyword">this</span>._animatedValue.y.interpolate(&#123;</span><br><span class="line">      inputRange: [- deviceHeight, deviceHeight],</span><br><span class="line">      outputRange: [<span class="string">'rgba(225,0,0,1)'</span>, <span class="string">'rgba(225,0,225,1)'</span>],</span><br><span class="line">      extrapolate: <span class="string">'clamp'</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> interpolatedRotateAnimation = <span class="keyword">this</span>._animatedValue.x.interpolate(&#123;</span><br><span class="line">      inputRange: [<span class="number">0</span>, deviceWidth/<span class="number">2</span>, deviceWidth],</span><br><span class="line">      outputRange: [<span class="string">'-360deg'</span>, <span class="string">'0deg'</span>, <span class="string">'360deg'</span>]</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">        &lt;Animated.View </span><br><span class="line">          style=&#123;[</span><br><span class="line">              styles.box, </span><br><span class="line">              &#123;</span><br><span class="line">                transform: [</span><br><span class="line">                  &#123;<span class="attr">translateX</span>: <span class="keyword">this</span>._animatedValue.x&#125;,</span><br><span class="line">                  &#123;<span class="attr">translateY</span>: <span class="keyword">this</span>._animatedValue.y&#125;,</span><br><span class="line">                  &#123;<span class="attr">rotate</span>: interpolatedRotateAnimation&#125;</span><br><span class="line">                ],</span><br><span class="line">                backgroundColor: interpolatedColorAnimation</span><br><span class="line">              &#125;</span><br><span class="line">            ]&#125; </span><br><span class="line">            &#123;...this._panResponder.panHandlers&#125; </span><br><span class="line">          /&gt;</span><br><span class="line">      &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">var styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp">  container: &#123;</span></span><br><span class="line"><span class="regexp">    flex: 1,</span></span><br><span class="line"><span class="regexp">    alignItems: 'center',</span></span><br><span class="line"><span class="regexp">    justifyContent: 'center'</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  box: &#123;</span></span><br><span class="line"><span class="regexp">    width: 100,</span></span><br><span class="line"><span class="regexp">    height: 100</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">AppRegistry.registerComponent('touch', () =&gt; touch);</span></span><br></pre></td></tr></table></figure>
+<p>上面例子实现的就是随着我们手指的移动，方块的位置和颜色及旋转角度都会发上变化。当然结合PanResponder和Animated还可以创造出很多效果，这个就留个大家自己去玩了吧。</p>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/animation3.gif" alt=""></p>
+<p><em>注意：如果用真机调试，在执行动画时可能会发现最后的复位相当的卡，那是因为你开启了远程调试，关掉就是正常速度了。虚拟机上没这个问题。</em></p>
+<h2 id="LayoutAnimation"><a href="#LayoutAnimation" class="headerlink" title="LayoutAnimation"></a>LayoutAnimation</h2><h3 id="用途-1"><a href="#用途-1" class="headerlink" title="用途"></a>用途</h3><p>在全局范围内创建和更新动画，这些动画会在下一次渲染或布局周期运行</p>
+<h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>常用来更新flexbox的布局</li>
+<li>对动画本身粒度控制没有Animated等细</li>
+<li>无需测量或者计算特定属性就能产生动画</li>
+<li>如果要在Android上使用LayoutAnimation，那么目前还需要在UIManager中启用</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (Platform.OS === <span class="string">'android'</span>) &#123;</span><br><span class="line">  UIManager.setLayoutAnimationEnabledExperimental(<span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="具体使用"><a href="#具体使用" class="headerlink" title="具体使用"></a>具体使用</h3><ul>
+<li>调用<code>LayoutAnimation.configureNext</code>, 然后调用setState。<br>我们来继续举个栗子～～</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  View,</span><br><span class="line">  TouchableOpacity,</span><br><span class="line">  Platform,</span><br><span class="line">  LayoutAnimation,</span><br><span class="line">  UIManager</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"><span class="keyword">if</span> (Platform.OS === <span class="string">'android'</span>) &#123;</span><br><span class="line">  UIManager.setLayoutAnimationEnabledExperimental(<span class="literal">true</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> CustomLayoutAnimation = &#123;</span><br><span class="line">  duration: <span class="number">200</span>,</span><br><span class="line">  create: &#123;</span><br><span class="line">    type: LayoutAnimation.Types.linear,</span><br><span class="line">    property: LayoutAnimation.Properties.opacity,</span><br><span class="line">  &#125;,</span><br><span class="line">  update: &#123;</span><br><span class="line">    type: LayoutAnimation.Types.easeInEaseOut,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">touch</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      index: <span class="number">0</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  onPress(index) &#123;</span><br><span class="line">    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);</span><br><span class="line">    <span class="comment">//LayoutAnimation.configureNext(CustomLayoutAnimation);</span></span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;<span class="attr">index</span>: index&#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  renderButton(index) &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;TouchableOpacity key=&#123;<span class="string">'button'</span> + index&#125; style=&#123;styles.button&#125; onPress=&#123;() =&gt; <span class="keyword">this</span>.onPress(index)&#125;&gt;</span><br><span class="line">        &lt;Text&gt;&#123;index&#125;&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>TouchableOpacity&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">var</span> leftStyle = <span class="keyword">this</span>.state.index === <span class="number">0</span> ? &#123;<span class="attr">flex</span>: <span class="number">1</span>&#125; : &#123;<span class="attr">width</span>: <span class="number">20</span>&#125;;</span><br><span class="line">    <span class="keyword">var</span> middleStyle = <span class="keyword">this</span>.state.index === <span class="number">2</span> ? &#123;<span class="attr">width</span>: <span class="number">20</span>&#125; : &#123;<span class="attr">flex</span>: <span class="number">1</span>&#125;;</span><br><span class="line">    <span class="keyword">var</span> rightStyle = &#123;<span class="attr">flex</span>: <span class="number">1</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">        &lt;View style=&#123;styles.topButtons&#125;&gt;</span><br><span class="line">          &#123;<span class="keyword">this</span>.renderButton(<span class="number">0</span>)&#125;</span><br><span class="line">          &#123;<span class="keyword">this</span>.renderButton(<span class="number">1</span>)&#125;</span><br><span class="line">          &#123;<span class="keyword">this</span>.renderButton(<span class="number">2</span>)&#125;</span><br><span class="line">        &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        &lt;View style=&#123;styles.content&#125;&gt;</span></span><br><span class="line"><span class="regexp">          &lt;View style=&#123;&#123;flexDirection: 'row', height: 50&#125;&#125;&gt;</span></span><br><span class="line"><span class="regexp">            &lt;View style=&#123;[leftStyle, &#123;backgroundColor: '#f1c40f'&#125;]&#125;/</span>&gt;</span><br><span class="line">            &lt;View style=&#123;[middleStyle, &#123;<span class="attr">backgroundColor</span>: <span class="string">'#e67e22'</span>&#125;]&#125;/&gt;</span><br><span class="line">            &lt;View style=&#123;[rightStyle, &#123;<span class="attr">backgroundColor</span>: <span class="string">'#e74c3c'</span>&#125;]&#125;/&gt;</span><br><span class="line">          &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>View&gt;</span><br><span class="line">      &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp">  container: &#123;</span></span><br><span class="line"><span class="regexp">    flex: 1,</span></span><br><span class="line"><span class="regexp">    justifyContent: 'center',</span></span><br><span class="line"><span class="regexp">    alignItems: 'center',</span></span><br><span class="line"><span class="regexp">    backgroundColor: '#34495e',</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  topButtons: &#123;</span></span><br><span class="line"><span class="regexp">    marginTop: 22,</span></span><br><span class="line"><span class="regexp">    flexDirection: 'row',</span></span><br><span class="line"><span class="regexp">    alignItems: 'center',</span></span><br><span class="line"><span class="regexp">    justifyContent: 'center',</span></span><br><span class="line"><span class="regexp">    alignSelf: 'stretch'</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  button: &#123;</span></span><br><span class="line"><span class="regexp">    flex: 1,</span></span><br><span class="line"><span class="regexp">    height: 30,</span></span><br><span class="line"><span class="regexp">    alignSelf: 'stretch',</span></span><br><span class="line"><span class="regexp">    backgroundColor: 'white',</span></span><br><span class="line"><span class="regexp">    alignItems: 'center',</span></span><br><span class="line"><span class="regexp">    justifyContent: 'center',</span></span><br><span class="line"><span class="regexp">    margin: 8</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  content: &#123;</span></span><br><span class="line"><span class="regexp">    flex: 1,</span></span><br><span class="line"><span class="regexp">    alignSelf: 'stretch',</span></span><br><span class="line"><span class="regexp">    marginTop: 100</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">AppRegistry.registerComponent('touch', () =&gt; touch);</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/animation.gif" alt=""><br><img src="https://raw.githubusercontent.com/lulutia/images/master/reactnative-touch/animation2.gif" alt=""></p>
+<ul>
+<li><code>LayoutAnimation.configureNext</code>可以接收一个config参数，在iOS平台下还可以接收一个onAnimationDidEnd的回调来提示动画已经完成。同样，在iOS平台下还会有一个onError的回调来提示错误。</li>
+<li>上述的config用来配置动画的属性，具体参数如下：<ul>
+<li>duration: 动画时间</li>
+<li>create: 新views下的动画配置</li>
+<li>update: views更细状况下的动画配置</li>
+</ul>
+</li>
+<li>程序内部会对config的type进行监测，现阶段支持以下几个：[spring, linear, easeInEaseOut, easeIn, easeOut, keyboard]</li>
+<li>程序内部也会对property进行监测，现阶段支持opacity与scaleXY两个。</li>
+</ul>
+<h2 id="具体分析-基于Christopher-Chedeau的演讲"><a href="#具体分析-基于Christopher-Chedeau的演讲" class="headerlink" title="具体分析(基于Christopher Chedeau的演讲)"></a>具体分析(基于Christopher Chedeau的演讲)</h2><p><strong>这部分主要基于react native animated的作者Christopher Chedeau的演讲，后面也附有链接地址，大家想练练听力的话可以去瞅瞅[doge之微笑]</strong></p>
+<ul>
+<li><p>让我们回归动画的本质，试想下一个最基本的最简单的最暴力的动画的形成</p>
+<ul>
+<li>React native有一个<code>requestAnimationFrame(fn)</code>方法用来执行在一段时间内控制视图动画的代码，它会在每刷新一帧后调用一次，和<code>setTimeout(fn, 0)</code>有点类似</li>
+<li><p>所以，如果我们在每帧刷新后触发一个onChange函数然后把动画变化的值修改并传递过去就行了，就像下面这样</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">getInitialState() &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="attr">left</span>: <span class="number">0</span>&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"> 	render() &#123;</span><br><span class="line">   	<span class="keyword">return</span> (</span><br><span class="line">     	&lt;div style=&#123;&#123;<span class="attr">left</span>: <span class="keyword">this</span>.state.left&#125;&#125;&gt;</span><br><span class="line">       	&lt;Child /&gt;</span><br><span class="line">     	&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">     	);</span></span><br><span class="line"><span class="regexp"> 	&#125;</span></span><br><span class="line"><span class="regexp"> 	onChange(value) &#123;</span></span><br><span class="line"><span class="regexp">   	this.setState(&#123;left: value&#125;);</span></span><br><span class="line"><span class="regexp"> 	&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>但是！上面这种做法会有一个问题，对div的setState会同时导致其子元素的重新渲染。啥概念，一个动画以毫秒级的速度调用setState，从而调用render方法，然后去遍历其子元素进行渲染。这个计算量和UI渲染量大家可以自己体会下。那么怎么办呢？</p>
+</li>
+</ul>
+</li>
+<li>ShouldComponentUpdate<ul>
+<li>React-Native的官方文档上是推荐这个方法，当我们渲染某个节点时，其并不受影响的子元素可以在这个方法里面返回false，这意味着它们不会受其影响，不会进行重新渲染，计算量和UI渲染量瞬间下降。</li>
+<li>但是！上面这种做法会有个问题，往往我们的app不是单独的，它是由很多组件构成的，我们应该保持每个组件的相对独立性，而且，还有可能你在这里引用了第三方的组件。这意味着我们没法随心所欲的运用这个方法，除非你愿意去改第三方组件的源码，简单的说我们应该维持组件之间的隔离性，只通过接口来进行通信，父级组件的动画的实现不应该去修改其子组件，毕竟不说性能光这个工作量就够呛。[继续doge之微笑]。那么怎么办呢？</li>
+</ul>
+</li>
+<li><p>StaticContainer 静态容器</p>
+<ul>
+<li><p>上个问题的原因是ShouldComponentUpdate在子组件里面，如果我们把它上移到父级呢？这样子元素对这部分就不用负责任了。那关于这个想法的实现可以运用React-Native提供的StaticContainer这个组件。具体如下，我们用StaticContainer把不会变动的子元素包裹起来，然后通过一个参数来控制它的重新渲染。这种方法的确是一个做法，但并不是React实际使用来达到其效率的一个办法。那还有啥其他办法呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">   <span class="keyword">return</span> (</span><br><span class="line">     &lt;div style=&#123;&#123;<span class="attr">left</span>: <span class="keyword">this</span>.state.left&#125;&#125;&gt;</span><br><span class="line">       &lt;StaticContainer</span><br><span class="line">         shouldUpdate=&#123;!<span class="keyword">this</span>.state.isAnimation&#125;&gt;</span><br><span class="line">         &lt;ExpensiveChild /&gt;</span><br><span class="line">       &lt;<span class="regexp">/StaticContainer&gt;</span></span><br><span class="line"><span class="regexp">     &lt;/</span>div&gt;</span><br><span class="line">     )</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">StaticContainer</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">   render() &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">this</span>.props.children;</span><br><span class="line">   &#125;</span><br><span class="line">   shouldComponentUpdate(nextProps) &#123;</span><br><span class="line">     <span class="keyword">return</span> nextProps.shouldUpdate;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Element Caching 缓存元素</p>
+<ul>
+<li><p>我们可以缓存子元素的渲染结果到局地变量，缓存之后，每次setState时，React通过DOM Diff就不再渲染子元素了(因为React内部优化机制，只要两个元素完全一样就不会进行重新渲染)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">render()&#123;</span><br><span class="line">   <span class="keyword">this</span>._child = <span class="keyword">this</span>._child || <span class="xml"><span class="tag">&lt;<span class="name">ExpensiveChild</span> /&gt;</span>;</span></span><br><span class="line"><span class="xml">   return (</span></span><br><span class="line">       &lt;div style=&#123;&#123;left:this.state.left&#125;&#125;&gt;</span><br><span class="line">           &#123;this._child&#125;</span><br><span class="line"><span class="xml">       <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">   );</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上面几种可用的方法都会导致一个问题条件竞争。当动画在进行的时候，子元素恰好获得了新的state，而这时候动画无视了这个更新，最后就会导致状态不一致。那么怎么办呢？让我们再回到问题的本质上去考虑这个问题。</p>
+</li>
+</ul>
+</li>
+<li><p>Raw DOM Mutation 原生DOM操作</p>
+<ul>
+<li><p>实际上我们需要做的事情只是找到某个节点改变其left值，我们并不需要重新渲染啊blabla一大堆东西。那我们就不走React这套，直接改变它dom不就好了嘛。</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line"><span class="keyword">return</span> (</span><br><span class="line">  &lt;div</span><br><span class="line">    style=&#123;&#123;<span class="attr">left</span>: <span class="keyword">this</span>.state.left&#125;&#125;&gt;</span><br><span class="line">    &lt;ExpensiveChild /&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">onUpdate(value) &#123;</span></span><br><span class="line"><span class="regexp">React.findDOMNode(this).style.left = value + 'px';</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>但是！这样我们不就违背了React的初衷了嘛？尽量不要去自己操作dom，React如是说。而且，在这种情况下条件竞争问题依然存在。同时如果这个组件unmount之后，动画就报错了。<br><code>`Uncaught Exception: Cannot call ‘style’ of null</code>。所以现在怎么办呢？</p>
+</li>
+</ul>
+</li>
+<li><p>数据绑定</p>
+<ul>
+<li>React并不提倡数据绑定，因为在app启动的时候每个model都需要内存和初始化(绑定啊监听啊blabla的)，当然它的更新是很快的。可是作为一个app，如果你启动就耗时很多了，这个是不理想的状态，而且其实很多元素啊啥的是不需要展示的，但绑定了会耗费大量的内存。</li>
+<li>但是！animation可以这样搞，因为它的属性不多，而且它需要每帧刷新的时候有最好的性能，而且它提供了这个时间来做绑定啊这些初始化行为，所以可以用。</li>
+<li><p>因此官方提供了我们上面说的几种组件，在内部，它们都是执行了数据绑定等一系列操作的。同时提高了新的数据类型来增加可扩展性。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">	 Animated.div = <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">    componentWillUnmount() &#123;</span><br><span class="line">        nextProps.style.left.removeAllListeners();</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// componentWillMount需要完成与componentWillReceiveProps同样的操作</span></span><br><span class="line">    <span class="comment">// 遍历传入的props，查找是否有Animated.Value的实例，并绑定相应的DOM操作</span></span><br><span class="line">    componentWillReceiveProps(nextProps) &#123;</span><br><span class="line">        nextProps.style.left.removeAllListeners();<span class="comment">//如果没有这句可能会内存溢出或者条件竞争</span></span><br><span class="line">        nextProps.style.left.onChange(<span class="function"><span class="params">value</span> =&gt;</span> &#123;</span><br><span class="line">            React.findDOMNode(<span class="keyword">this</span>).style.left = value + <span class="string">'px'</span>;</span><br><span class="line">        &#125;);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 将动画值解析为普通数值传给原生div，因为原生的div不懂这种数据格式</span></span><br><span class="line">        <span class="keyword">this</span>._props = React.addons.update(</span><br><span class="line">            nextProps,</span><br><span class="line">            &#123;<span class="attr">style</span>:&#123;<span class="attr">left</span>:&#123;<span class="attr">$set</span>: nextProps.style.left.getValue()&#125;&#125;&#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;,</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">...</span>&#123;<span class="attr">this._props</span>&#125; /&gt;</span>;</span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://github.com/jabez128/jabez128.github.io/issues/1" target="_blank" rel="noopener">“指尖上的魔法” – 谈谈React-Native中的手势</a></li>
+<li><a href="http://leowang721.github.io/2015/08/12/learning/react-native/interactive/#comments" target="_blank" rel="noopener">React Native 浅入门 —— 交互篇</a></li>
+<li><a href="http://reactnative.cn/docs/0.31/gesture-responder-system.html#content" target="_blank" rel="noopener">React Native官方文档 手势响应系统</a></li>
+<li><a href="http://reactnative.cn/docs/0.31/panresponder.html" target="_blank" rel="noopener">React Native官方文档 PanResponder</a></li>
+<li><a href="http://www.race604.com/react-native-touch-event/" target="_blank" rel="noopener">React Native 触摸事件处理详解</a></li>
+<li><a href="https://github.com/facebook/react/commit/6ec3b651690befb4226230855fa2e102654ad35f#commitcomment-16569138" target="_blank" rel="noopener">facebook/react源码注解</a></li>
+<li><a href="http://blog.lum.pe/gesture-detection-in-react-native/" target="_blank" rel="noopener">Gesture detection in React Native</a></li>
+<li><a href="https://books.google.com.hk/books?id=274fCwAAQBAJ&amp;pg=PA55&amp;lpg=PA55&amp;dq=PanResponder+multiple+touches&amp;source=bl&amp;ots=tEwhbCh3l1&amp;sig=iregshh4GH0H89jzURAYSyB0pPM&amp;hl=zh-CN&amp;sa=X&amp;ved=0ahUKEwikgJ7T8MTOAhVCKJQKHebqBOoQ6AEIUDAG#v=onepage&amp;q=PanResponder%20multiple%20touches&amp;f=false" target="_blank" rel="noopener">Learning React Native</a></li>
+<li><a href="http://www.lcode.org/react-native-api%E6%A8%A1%E5%9D%97%E4%B9%8Blayoutanimation%E5%B8%83%E5%B1%80%E5%8A%A8%E7%94%BB%E8%AF%A6%E8%A7%A3-androidios%E9%80%9A%E7%94%A862/" target="_blank" rel="noopener">React Native API模块之LayoutAnimation布局动画详解-Android/iOS通用</a></li>
+<li><a href="https://medium.com/@Jpoliachik/react-native-s-layoutanimation-is-awesome-4a4d317afd3e#.xyb7msatl" target="_blank" rel="noopener">React Native’s LayoutAnimation is Awesome</a></li>
+<li><a href="http://browniefed.com/react-native-animation-book/" target="_blank" rel="noopener">React Native Animation Book</a></li>
+<li><a href="https://github.com/facebook/react-native/blob/d4e7c8a0550891208284bd1d900bd9721d899f8f/Libraries/LayoutAnimation/LayoutAnimation.js" target="_blank" rel="noopener">react-native LayoutAnimation.js源码</a></li>
+<li><a href="https://github.com/facebook/react-native/blob/master/Libraries/Animated/src/Easing.js" target="_blank" rel="noopener">react-native Easing.js源码</a></li>
+<li><a href="http://reactnative.cn/docs/0.31/animations.html#content" target="_blank" rel="noopener">React Native官方文档 Animated</a></li>
+<li><a href="https://www.youtube.com/watch?v=xtqUJVqpKNo" target="_blank" rel="noopener">Christopher Chedeau - Animated</a></li>
+<li><a href="http://www.alloyteam.com/2016/01/reactnative-animated/" target="_blank" rel="noopener">ReactNative Animated动画详解</a></li>
+<li><a href="http://tw93.github.io/2016-04-05/the-thinking-about-react-native-animated.html" target="_blank" rel="noopener">React Native动画研究和对比</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/08/zhouxiong/Service-in-AngularJS/" rel="prev">AngularJS的服务</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/12/y8n/angular-directive-attributes/" rel="next">Angular指令中的属性</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#React-Native触摸"><span class="nav-number">1.</span> <span class="nav-text">React-Native触摸</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Touch-手势"><span class="nav-number">1.1.</span> <span class="nav-text">Touch 手势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TouchableHighlight"><span class="nav-number">1.1.1.</span> <span class="nav-text">TouchableHighlight</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TouchableNativeFeedback"><span class="nav-number">1.1.2.</span> <span class="nav-text">TouchableNativeFeedback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TouchableOpacity"><span class="nav-number">1.1.3.</span> <span class="nav-text">TouchableOpacity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TouchableWithoutFeedback"><span class="nav-number">1.1.4.</span> <span class="nav-text">TouchableWithoutFeedback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分析"><span class="nav-number">1.1.5.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gesture-responder-system"><span class="nav-number">1.2.</span> <span class="nav-text">gesture responder system</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#responder"><span class="nav-number">1.2.1.</span> <span class="nav-text">responder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#responder如何响应手势操作"><span class="nav-number">1.2.2.</span> <span class="nav-text">responder如何响应手势操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理冲突"><span class="nav-number">1.2.3.</span> <span class="nav-text">处理冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#情况一"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">情况一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#情况二"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">情况二</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他注意点"><span class="nav-number">1.2.4.</span> <span class="nav-text">其他注意点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PanResponder"><span class="nav-number">1.3.</span> <span class="nav-text">PanResponder</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其他注意点-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">其他注意点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React－Native动画"><span class="nav-number">2.</span> <span class="nav-text">React－Native动画</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Animated"><span class="nav-number">2.1.</span> <span class="nav-text">Animated</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用途"><span class="nav-number">2.1.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">2.1.2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心API"><span class="nav-number">2.1.3.</span> <span class="nav-text">核心API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动画过程"><span class="nav-number">2.1.4.</span> <span class="nav-text">动画过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组合动画"><span class="nav-number">2.1.5.</span> <span class="nav-text">组合动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Animated-event输入事件"><span class="nav-number">2.1.6.</span> <span class="nav-text">Animated.event输入事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建动画组件"><span class="nav-number">2.1.7.</span> <span class="nav-text">创建动画组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动画结合PanResponder"><span class="nav-number">2.1.8.</span> <span class="nav-text">动画结合PanResponder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LayoutAnimation"><span class="nav-number">2.2.</span> <span class="nav-text">LayoutAnimation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用途-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体使用"><span class="nav-number">2.2.3.</span> <span class="nav-text">具体使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体分析-基于Christopher-Chedeau的演讲"><span class="nav-number">2.3.</span> <span class="nav-text">具体分析(基于Christopher Chedeau的演讲)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

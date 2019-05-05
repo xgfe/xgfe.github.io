@@ -1,0 +1,888 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="AngularJS,依赖注入,Service,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="在AngularJS中有许多内置的标准化服务组件，同时我们也可以自定义服务组件。在AngularJS中所有Service服务组件都是通过依赖注入进行管理的。本篇文章将通过以下几点进行讲解。1.依赖注入2.AngularJS中的内置服务3.自定义AngularJS服务">
+<meta name="keywords" content="AngularJS,依赖注入,Service">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AngularJS的服务">
+<meta property="og:url" content="http://xgfe.github.io/2016/09/08/zhouxiong/Service-in-AngularJS/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="在AngularJS中有许多内置的标准化服务组件，同时我们也可以自定义服务组件。在AngularJS中所有Service服务组件都是通过依赖注入进行管理的。本篇文章将通过以下几点进行讲解。1.依赖注入2.AngularJS中的内置服务3.自定义AngularJS服务">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/zhouxiong/Service-in-AngularJS/location.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.410Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AngularJS的服务">
+<meta name="twitter:description" content="在AngularJS中有许多内置的标准化服务组件，同时我们也可以自定义服务组件。在AngularJS中所有Service服务组件都是通过依赖注入进行管理的。本篇文章将通过以下几点进行讲解。1.依赖注入2.AngularJS中的内置服务3.自定义AngularJS服务">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/zhouxiong/Service-in-AngularJS/location.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> AngularJS的服务 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              AngularJS的服务
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-09-08T16:00:00+08:00" content="2016-09-08">
+            2016-09-08
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhouxiong/" itemprop="url" rel="index">
+                  <span itemprop="name">zhouxiong</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/AngularJS/" rel="tag"><i class="icon-next-tags"></i>AngularJS</a>
+            
+              <a href="/tags/依赖注入/" rel="tag"><i class="icon-next-tags"></i>依赖注入</a>
+            
+              <a href="/tags/Service/" rel="tag"><i class="icon-next-tags"></i>Service</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在AngularJS中有许多内置的标准化服务组件，同时我们也可以自定义服务组件。在AngularJS中所有Service服务组件都是通过依赖注入进行管理的。本篇文章将通过以下几点进行讲解。<br>1.依赖注入<br>2.AngularJS中的内置服务<br>3.自定义AngularJS服务</p>
+<a id="more"></a>
+<h2 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h2><p>依赖注入（Dependency Injection）是一种经典的设计模式，主要是用来处理组件如何获取依赖的问题。依赖注入可以简单的理解为：在一个容器中我们定义了很多个模块和组件化服务，当模块需要某些服务时，只需要跟容器说我需要这些服务，并且只需要提供服务的名称，容器就会自动提供这些服务的实例。调用服务的模块不需要考虑这些服务是怎么来的，这些服务会由容器通过依赖注入提供给对应的模块。</p>
+<h3 id="注入声明方式"><a href="#注入声明方式" class="headerlink" title="注入声明方式"></a>注入声明方式</h3><p>AngularJs一共提供了三种注入方式</p>
+<ul>
+<li><p>推断式的注入声明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var app = angular.module(&apos;myApp&apos;, []);</span><br><span class="line">app.controller(&apos;myCtrl&apos;, function ($scope, $window) &#123;</span><br><span class="line">	   // do something</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>  如果没有明确的声明，AngularJS会假定参数名称就是函数依赖，它会使用<code>$injector</code>将这些参数注入进对象实例。</p>
+<p>  <strong>注意:</strong>我们并不推荐使用这种方式，因为代码一旦被压缩，参数名称就会被替换为简单的字符，AngularJS将会找不到这些函数依赖，从而导致注入失败。</p>
+</li>
+<li><p>显示注入声明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var app = angular.module(&apos;myApp&apos;, []);</span><br><span class="line"></span><br><span class="line">app.controller(&apos;myCtrl&apos;, myCtrl);</span><br><span class="line"></span><br><span class="line">myCtrl.$inject = [&apos;$scope&apos;, &apos;$window&apos;];</span><br><span class="line"></span><br><span class="line">function myCtrl(a, b) &#123;</span><br><span class="line">    // do something</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式能够明确定义函数被调用时所需要的依赖关系。我们只需要为函数对象新增一个<code>$inject</code>属性，值为一个字符串数组，数组的每个元素代表依赖名称，注意数组元素必须和注入参数的顺序一个一个对应，在字符串的拼写时必须与定义的时候一致。使用这种方式参数相当于形参，名称并没有多大关系，因此代码压缩也不会影响使用。</p>
+</li>
+<li><p>行内注入声明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var app = angular.module(&apos;myApp&apos;, []);</span><br><span class="line"></span><br><span class="line"> app.controller(&apos;myCtrl&apos;, [&apos;$scope&apos;, &apos;$window&apos;, function ($scope, $window) &#123;</span><br><span class="line">      // do something</span><br><span class="line"> &#125;]);</span><br></pre></td></tr></table></figure>
+<p>这种方式是显示注入声明方式的一种更为简洁的表现方式。它允许我们在定义一个AngularJS对象时直接传入一个参数数组而不是一个函数，参数的最后一项是依赖注入的目标函数本身，其他项是字符串，依次对应该函数注入的依赖名字，同样函数的参数名也与前面的字符串一一对应，这种情况下也不怕代码压缩。</p>
+</li>
+<li><p>注意的地方</p>
+<p>当依赖注入的服务定义在了另一个模块中，首先需要将该模块注入到被依赖的模块中，然后才能调用该模块的服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">angular.module(&apos;myModule&apos;, [])</span><br><span class="line">         .factory(&apos;myFactory&apos;, function () &#123;</span><br><span class="line">             return &#123;&#125;;</span><br><span class="line">         &#125;);</span><br><span class="line"></span><br><span class="line"> var app = angular.module(&apos;myApp&apos;, [&apos;myModule&apos;]);  //首先需要注入myModule模块，才能使用myFactory服务</span><br><span class="line"></span><br><span class="line"> app.controller(&apos;myCtrl&apos;, [&apos;$scope&apos;, &apos;myFactory&apos;, function ($scope, myFactory) &#123;</span><br><span class="line">     console.log(myFactory);</span><br><span class="line"> &#125;]);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Strick-Mode"><a href="#Strick-Mode" class="headerlink" title="Strick Mode"></a>Strick Mode</h3><p>通过在ng-app所在的DOM元素中添加ng-strict-di切换到严格的依赖注入模式下。在Strict模式下使用隐式的注入声明会报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot; ng-app=&quot;myApp&quot; ng-strict-di&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;script src=&quot;../../../js/lib/angular.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    /*--------------方式1:推断式注入声明start--------------------------------------------*/</span><br><span class="line">    var app = angular.module(&apos;myApp&apos;, []);</span><br><span class="line">    app.factory(&apos;willBreak&apos;, function ($rootScope) &#123;</span><br><span class="line">        //在这里会报错，$rootScope没有显示声明注入</span><br><span class="line">        return &#123;&#125;;</span><br><span class="line">    &#125;);</span><br><span class="line">    app.run([&apos;willBreak&apos;, function (willBreak) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;]);</span><br><span class="line">    /*--------------方式1:推断式注入声明end--------------------------------------------*/</span><br><span class="line"></span><br><span class="line">    /*--------------方式2:显式注入声明start--------------------------------------------*/</span><br><span class="line">    var app = angular.module(&apos;myApp&apos;, []);</span><br><span class="line"></span><br><span class="line">    app.factory(&apos;willBreak&apos;, wilBreakFn);</span><br><span class="line">    wilBreakFn.$inject = [&apos;$rootScope&apos;];</span><br><span class="line">    function wilBreakFn($rootScope) &#123;</span><br><span class="line">        return &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    app.run([&apos;willBreak&apos;, function (willBreak) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;]);</span><br><span class="line">    /*--------------方式2:显式注入声明end--------------------------------------------*/</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="依赖注入的优点"><a href="#依赖注入的优点" class="headerlink" title="依赖注入的优点"></a>依赖注入的优点</h3><ul>
+<li>各模块之间的解耦，每个部分专注于自己的功能，对象的注入通过容器来完成</li>
+<li>避免全局对象的污染</li>
+</ul>
+<h2 id="AngularJS内置服务"><a href="#AngularJS内置服务" class="headerlink" title="AngularJS内置服务"></a>AngularJS内置服务</h2><p>服务是一个对外提供某个特定功能，如消息服务、文件压缩等的独立模块。在AngularJS中，服务是一个单例对象或者函数。具有以下的两个特点：</p>
+<ul>
+<li>服务是一个单例，即无论这个服务被注入到任何地方，对象始终只有一个实例</li>
+<li>定义服务的方式也是通过function，但是与我们自己定义一个function然后在其他地方调用不同，因为服务是被定义在一个模块中，所以其使用的范围是可以被管理的，这一点体现了AngularJS非常强的避免全局变量污染意识。</li>
+</ul>
+<h3 id="代表性的内置服务"><a href="#代表性的内置服务" class="headerlink" title="代表性的内置服务"></a>代表性的内置服务</h3><ul>
+<li><p>$rootScope</p>
+<p>每个应用都仅有一个rootScope。其他的例如controller中的scope都是rootScope的后代scope。scope通过监听数据层的变化，实现了数据层和模型层的分离。注册在<code>$rootScope</code>上的值可以被子<code>$scope</code>覆盖。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;div ng-controller=&quot;myCtrl&quot;&gt;</span><br><span class="line">       &#123;&#123;name&#125;&#125;</span><br><span class="line">   &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">   &lt;script&gt;</span><br><span class="line">       var app = angular.module(&apos;myApp&apos;, []);</span><br><span class="line"></span><br><span class="line">       app.run(function ($rootScope) &#123;</span><br><span class="line">           $rootScope.name = &apos;kingx&apos;;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       app.controller(&apos;myCtrl&apos;, function ($scope) &#123;</span><br><span class="line">           //当子scope定义了name属性时，则显示当前name的值；</span><br><span class="line">           //当未定义时，则显示的是$rootScope的值</span><br><span class="line">           $scope.name = &apos;kingxxxxx&apos;;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">   &lt;/script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>$http</p>
+<p><code>$http</code>服务是AngularJS和远程服务器通过ajax请求进行通信的核心服务。<code>$http</code>的API是基于<code>$q</code>服务的，它返回的是一个promise。根据返回的状态码判断执行成功的回调还是失败的回调，当状态码为200到299时执行成功回调，不在这个范围内的都执行失败回调。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$http(&#123;</span><br><span class="line">       method: &apos;GET&apos;,</span><br><span class="line">       url: &apos;/someUrl&apos;</span><br><span class="line">   &#125;).then(function successCallback(response) &#123;</span><br><span class="line">       //异步请求成功</span><br><span class="line">   &#125;, function errorCallback(response) &#123;</span><br><span class="line">       //异步请求失败</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>$q</p>
+<p><code>$q</code>服务是AngularJS自己封装的一种对Promise的实现，使用<code>$q</code>一般有两种方式。</p>
+<ul>
+<li><p>$q构造方法</p>
+<p>   <code>$q</code>的构造方法接收一个函数，该函数接收resolve和reject两个参数，分别代表成功和失败后的回调函数</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function asyncHandle() &#123;</span><br><span class="line">           return $q(function (resolve, reject) &#123;</span><br><span class="line">               if($scope.flag) &#123;</span><br><span class="line">                   resolve(&apos;invoke success&apos;);</span><br><span class="line">                   $scope.flag = false;</span><br><span class="line">               &#125; else &#123;</span><br><span class="line">                   reject(&apos;invoke fail&apos;);</span><br><span class="line">                   $scope.flag = true;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       var promise = asyncHandle();</span><br><span class="line"></span><br><span class="line">       promise.then(function (result) &#123;</span><br><span class="line">           console.log(&apos;congratulation,&apos; + result);</span><br><span class="line">       &#125;, function (result) &#123;</span><br><span class="line">           console.log(&apos;i am sorry, &apos; + result);</span><br><span class="line">       &#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>$q的defer()方法</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var defered = $q.defer();</span><br><span class="line">      var promise = defered.promise;</span><br><span class="line"></span><br><span class="line">      promise.then(function (result) &#123;</span><br><span class="line">          console.log(&apos;congratulation,&apos; + result);</span><br><span class="line">      &#125;, function (result) &#123;</span><br><span class="line">          console.log(&apos;i am sorry, &apos; + result);</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      if($scope.flag)&#123;</span><br><span class="line">          defered.resolve(&apos;invoke success&apos;);</span><br><span class="line">          $scope.flag = false;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">          defered.reject(&apos;invoke fail&apos;);</span><br><span class="line">          $scope.flag = true;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>$location</p>
+<p><code>$location</code>是用于解析地址栏URL的服务，可以监听和改变地址栏的URL。当改变地址栏或者点击前进和后退时可以与浏览器同步URL</p>
+<p><img src="/uploads/zhouxiong/Service-in-AngularJS/location.png" alt="location的各方法"></p>
+<ul>
+<li>absUrl( )：只读；返回带有所有的片段的url</li>
+<li>host( )：只读；返回url中的主机路径</li>
+<li>port( )：只读；返回当前路径的端口号</li>
+<li>protocol( )：只读；返回当前url的协议</li>
+<li>hash( )：读、写；当带有参数时，返回哈希碎片；当在带有参数的情况下，改变哈希碎片时，返回$location</li>
+<li>path( )：读、写；当没有任何参数时，返回当前url的路径；当带有参数时，改变路径，并返回$location</li>
+<li>search( )：读、写；当不带参数调用的时候，以对象形式返回当前url的搜索部分</li>
+<li>replace( )：如果被调用，就会用改变后的URL直接替换浏览器中的历史记录，而不是在历史记录中新建一条信息，这样可以阻止『后退』</li>
+</ul>
+</li>
+</ul>
+<h2 id="AngularJS自定义服务"><a href="#AngularJS自定义服务" class="headerlink" title="AngularJS自定义服务"></a>AngularJS自定义服务</h2><p>在AngularJS中，系统内置的服务都是以<code>$</code>开头，所以我们的自定义服务尽量避免以<code>$</code>开头。自定义服务的方式有如下几种：</p>
+<ul>
+<li>使用Module的provider方法</li>
+<li>使用Module的factory方法</li>
+<li>使用Module的service方法</li>
+</ul>
+<h3 id="使用Module的provider方法"><a href="#使用Module的provider方法" class="headerlink" title="使用Module的provider方法"></a>使用Module的provider方法</h3><ul>
+<li><p>语法糖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">app.provider(&apos;myProvider&apos;, function () &#123;</span><br><span class="line">    this.$get = function () &#123;</span><br><span class="line">        	//do somthing</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过provider方法创建的服务一定要包含<code>$get</code>方法，provider注入的结果就是<code>$get</code>方法返回的结果，如果不包含<code>$get</code>方法，则程序会报错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Provider &apos;myProvider&apos; must define $get factory method.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果在provider中有返回值，只能返回this或者基本数据类型或者具有$get方法的对象类型</p>
+</li>
+<li><p>在三种创建服务的方法中，只有使用provider方法创建的服务才可以传进config函数，以用于在对象启用之前，对模块进行配置。但是在config中进行配置的只能是在<code>$get</code>函数之外定义的变量，在下面定义的provider中只有<code>artist</code>与<code>thingFromConfig</code>两个变量可以被访问到，而<code>getArtist</code>与<code>getThingFromConfig</code>两个方法是不能被在config函数中访问到的。</p>
+</li>
+<li><p>而且在注入config函数中时，参数名必须由<code>服务名+Provider</code>组成，例如下面的例子注入到config函数中的就是<code>myProviderProvider</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">app.controller(&apos;myCtrl&apos;, [&apos;$scope&apos;, &apos;myProvider&apos;, function ($scope, myProvider) &#123;</span><br><span class="line">     console.log(myProvider.getThingFromConfig());  //kingx name</span><br><span class="line"> &#125;]);</span><br><span class="line"></span><br><span class="line"> app.provider(&apos;myProvider&apos;, function () &#123;</span><br><span class="line">     this.artist = &apos;&apos;;</span><br><span class="line">     this.thingFromConfig = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">     this.$get = function () &#123;</span><br><span class="line">         var that = this;</span><br><span class="line">         return &#123;</span><br><span class="line">             getArtist: function () &#123;</span><br><span class="line">                 return that.artist;</span><br><span class="line">             &#125;,</span><br><span class="line">             getThingFromConfig: function () &#123;</span><br><span class="line">                 return that.thingFromConfig;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;;</span><br><span class="line"> &#125;);</span><br><span class="line"></span><br><span class="line"> app.config(function (myProviderProvider) &#123;</span><br><span class="line">     myProviderProvider.thingFromConfig = &apos;kingx name&apos;;</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="使用Module的factory方法"><a href="#使用Module的factory方法" class="headerlink" title="使用Module的factory方法"></a>使用Module的factory方法</h3><ul>
+<li><p>语法糖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">app.factory(&apos;myFactory&apos;, function ($http) &#123;</span><br><span class="line">       //不一定是要对象类型，实际为任意类型</span><br><span class="line">       var factory = &#123;&#125;;</span><br><span class="line">       return factory;</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过factory方法创建的服务必须有返回值，即必须有return函数，它可以返回任意类型的值，包括基本数据类型或者对象类型。如果没有return函数，则会报错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Provider &apos;myFactory&apos; must return a value from $get factory method.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>factory注入的结果就是return返回的结果，可以在被注入的对象中使用注入的结果定义的各种方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">app.controller(&apos;myCtrl&apos;, [&apos;$scope&apos;, &apos;myFactory&apos;, function ($scope, myFactory) &#123;</span><br><span class="line">     console.log(myFactory.getName());  //foo</span><br><span class="line">     //请求当前文件夹下的test.html</span><br><span class="line">     myFactory.getData(&apos;./test.html&apos;).then(function (response) &#123;</span><br><span class="line">         console.log(response);  //返回test.html的字符串形式</span><br><span class="line">     &#125;);</span><br><span class="line"> &#125;]);</span><br><span class="line"></span><br><span class="line"> /**------------ 使用factory方法 -----------------*/</span><br><span class="line"> app.factory(&apos;myFactory&apos;, function ($http) &#123;</span><br><span class="line">     var factory = &#123;&#125;;</span><br><span class="line">     var _name = &apos;foo&apos;;</span><br><span class="line">     //模仿ajax请求</span><br><span class="line">     factory.getData = function (url) &#123;</span><br><span class="line">         return $http(&#123;</span><br><span class="line">             method: &apos;get&apos;,</span><br><span class="line">             url: url</span><br><span class="line">         &#125;);</span><br><span class="line">     &#125;;</span><br><span class="line"></span><br><span class="line">     factory.getName = function () &#123;</span><br><span class="line">         return _name;</span><br><span class="line">     &#125;;</span><br><span class="line"></span><br><span class="line">     return factory;</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="使用Module的service方法"><a href="#使用Module的service方法" class="headerlink" title="使用Module的service方法"></a>使用Module的service方法</h3><ul>
+<li><p>语法糖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.service(&apos;myService&apos;, function () &#123;</span><br><span class="line">       //对this进行操作</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过service方法创建的服务，可以不用返回任何值，因为service方法本身返回一个构造器，系统会用new关键字来创建一个对象，所以我们可以在service内部使用this关键字，对service进行扩展。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">app.controller(&apos;myCtrl&apos;, [&apos;$scope&apos;, &apos;myService&apos;, function ($scope, myService) &#123;</span><br><span class="line">        console.log(myService);</span><br><span class="line">        myService.setName(&apos;foo&apos;);</span><br><span class="line">        console.log(myService.getName());</span><br><span class="line">    &#125;]);</span><br><span class="line"></span><br><span class="line">    /**------------ 使用service方法 -----------------*/</span><br><span class="line">    app.service(&apos;myService&apos;, function () &#123;</span><br><span class="line">        this._name = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">        this.getName = function () &#123;</span><br><span class="line">            return this._name;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        this.setName = function (name) &#123;</span><br><span class="line">            this._name = name;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果使用具有返回值的写法，返回的值必须是一个对象，如果只返回基本类型，则实际返回的还是相当于this</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">app.service(&apos;myService&apos;, function () &#123;</span><br><span class="line">     var obj = &#123;&#125;;</span><br><span class="line">     this._name = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">     obj.getName = function () &#123;</span><br><span class="line">         return this._name;</span><br><span class="line">     &#125;;</span><br><span class="line"></span><br><span class="line">     obj.setName = function (name) &#123;</span><br><span class="line">         this._name = name;</span><br><span class="line">     &#125;;</span><br><span class="line">     return obj;</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="三种方法的比较"><a href="#三种方法的比较" class="headerlink" title="三种方法的比较"></a>三种方法的比较</h3><ul>
+<li>需要在config中进行全局配置的话，只能选择provider方法</li>
+<li>factory和service是使用比较频繁的创建服务的方法。他们之间的唯一区别是：service方法用于注入的结果通常是new出来的对象，factory方法注入的结果通常是一系列的functions</li>
+<li>provider是创建服务最为复杂的方法，除非你需要创建一个可以复用的代码段并且需要进行全局配置，才需要使用provider创建</li>
+<li><p>所有具有特定性目的的对象都是通过factory方法去创建</p>
+</li>
+<li><p>AngularJS官方文档也对这几种方法做了对比，结果如下表格所示</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Factory</th>
+<th>Service</th>
+<th>Provider</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是否可以依赖注入</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>是否依赖注入友好</td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>是否可在config中进行配置</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>是否可以创建函数</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>是否可以创建基本数据类型</td>
+<td>是</td>
+<td>否</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>依赖注入的时机</p>
+<p>当在使用以上三种方法创建服务时，它们可能也需要依赖于别的服务，此时它们的依赖注入时机是有差别的。</p>
+<ul>
+<li><p>provider</p>
+<p> provider是在<code>$get</code>方法中进行依赖注入的，当在定义provider时依赖注入则会报错</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  angular.module(&apos;providerModule&apos;, [])</span><br><span class="line">       .provider(&apos;myProvider&apos;, function () &#123;</span><br><span class="line">        this.$get = [&apos;$http&apos;, function ($http) &#123;</span><br><span class="line">            return &#123;&#125;;</span><br><span class="line">        &#125;];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>factory与service</p>
+<p> factory和service的依赖注入发生在定义时</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">   	angular.module(&apos;serviceModule&apos;, [])</span><br><span class="line">     .service(&apos;myService&apos;, [&apos;$http&apos;, function ($http) &#123;</span><br><span class="line"></span><br><span class="line">&#125;]);</span><br></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> angular.module(&apos;factoryModule&apos;, [])</span><br><span class="line">      .factory(&apos;myFactory&apos;, [&apos;$http&apos;, function ($http) &#123;</span><br><span class="line">         return &#123;&#125;;</span><br><span class="line">&#125;]);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://docs.angularjs.org/guide/providers" target="_blank" rel="noopener">AngularJS官方文档之Provider</a></li>
+<li><a href="http://blog.csdn.net/zcl_love_wx/article/details/51404390" target="_blank" rel="noopener">自定义服务详解(factory、service、provider)</a></li>
+<li><a href="http://blog.csdn.net/bboyjoe/article/details/50456869" target="_blank" rel="noopener">自定义服务的三种方法以及provider供应商</a></li>
+<li><a href="http://www.oschina.net/translate/angularjs-factory-vs-service-vs-provider" target="_blank" rel="noopener">AngularJS 之 Factory vs Service vs Provider</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/25/weger/Start-your-own-JavaScript-library-baseon-underscorejs/" rel="prev">跟underscore.js学如何打造前端类库</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/21/lulutia/react-native-touch-animation/" rel="next">React-Native 触摸与动画</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖注入"><span class="nav-number">1.</span> <span class="nav-text">依赖注入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注入声明方式"><span class="nav-number">1.1.</span> <span class="nav-text">注入声明方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Strick-Mode"><span class="nav-number">1.2.</span> <span class="nav-text">Strick Mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖注入的优点"><span class="nav-number">1.3.</span> <span class="nav-text">依赖注入的优点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AngularJS内置服务"><span class="nav-number">2.</span> <span class="nav-text">AngularJS内置服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代表性的内置服务"><span class="nav-number">2.1.</span> <span class="nav-text">代表性的内置服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AngularJS自定义服务"><span class="nav-number">3.</span> <span class="nav-text">AngularJS自定义服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Module的provider方法"><span class="nav-number">3.1.</span> <span class="nav-text">使用Module的provider方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Module的factory方法"><span class="nav-number">3.2.</span> <span class="nav-text">使用Module的factory方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Module的service方法"><span class="nav-number">3.3.</span> <span class="nav-text">使用Module的service方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三种方法的比较"><span class="nav-number">3.4.</span> <span class="nav-text">三种方法的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">3.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

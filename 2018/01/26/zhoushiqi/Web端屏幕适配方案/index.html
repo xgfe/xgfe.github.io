@@ -1,0 +1,995 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="移动端,CSS,屏幕适配,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="通过对现有 Web 端屏幕适配方案的总结，引起对更好的 Web 端屏幕适配方案的调研。在调研中发现了现实中出现的 Web 端移动端适配相关问题，并推荐相应解决方案，和屏幕适配方案。">
+<meta name="keywords" content="移动端,CSS,屏幕适配">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web 端屏幕适配方案">
+<meta property="og:url" content="http://xgfe.github.io/2018/01/26/zhoushiqi/Web端屏幕适配方案/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="通过对现有 Web 端屏幕适配方案的总结，引起对更好的 Web 端屏幕适配方案的调研。在调研中发现了现实中出现的 Web 端移动端适配相关问题，并推荐相应解决方案，和屏幕适配方案。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnv6ygswjj21ic0v0428.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqj1u1yzs5j20oa0e6taz.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnvqmc091j21hi0f2q4y.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnvyg6do9j21he0f4ac2.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqi26dyf14j20sa052tcg.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqi26prtssj20su0560xa.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqi3ik1ullj20n20eujud.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwgdol47j21he0eydhu.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwlgxe6ij21hi0fc40r.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwpb7mi1j21i40f4q4y.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnvyg6do9j21he0f4ac2.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwwok2wnj21hq0f00ur.jpg">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.409Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Web 端屏幕适配方案">
+<meta name="twitter:description" content="通过对现有 Web 端屏幕适配方案的总结，引起对更好的 Web 端屏幕适配方案的调研。在调研中发现了现实中出现的 Web 端移动端适配相关问题，并推荐相应解决方案，和屏幕适配方案。">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/d0ba619egy1fqnv6ygswjj21ic0v0428.jpg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Web 端屏幕适配方案 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Web 端屏幕适配方案
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-01-26T00:00:00+08:00" content="2018-01-26">
+            2018-01-26
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhoushiqi/" itemprop="url" rel="index">
+                  <span itemprop="name">zhoushiqi</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/移动端/" rel="tag"><i class="icon-next-tags"></i>移动端</a>
+            
+              <a href="/tags/CSS/" rel="tag"><i class="icon-next-tags"></i>CSS</a>
+            
+              <a href="/tags/屏幕适配/" rel="tag"><i class="icon-next-tags"></i>屏幕适配</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>通过对现有 Web 端屏幕适配方案的总结，引起对更好的 Web 端屏幕适配方案的调研。在调研中发现了现实中出现的 Web 端移动端适配相关问题，并推荐相应解决方案，和屏幕适配方案。</p>
+<a id="more"></a>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><h3 id="像素相关"><a href="#像素相关" class="headerlink" title="像素相关"></a>像素相关</h3><ol>
+<li><strong>像素</strong> ：像素是屏幕显示最小的单位。</li>
+<li><strong>设备像素</strong> ：设备像素又称物理像素（physical pixel），设备能控制显示的最小单位，我们可以把这些像素看作成显示器上一个个的点。 iPhone5 的物理像素是 640 X 1136 。</li>
+<li><strong>逻辑像素</strong>（logical pixel）：独立于设备的用于逻辑上衡量像素的单位。CSS 像素就是逻辑像素，CSS 像素是 Web 编程的概念。</li>
+<li><strong>设备独立像素</strong>（density-independent pixel）：简称 dip ，单位 dp ，独立于设备的用于逻辑上衡量像素的单位 。且逻辑像素 ≈ 设备独立像素。</li>
+<li><strong>设置像素比</strong>（device pixel ratiodpr）：dpr = 物理像素 / 设备独立像素。可通过 window.devicePixelRatio 获取。所谓的一倍屏、二倍屏(Retina)、三倍屏，指的是设备以多少物理像素来显示一个 CSS 像素即：几 dpr。<br>普通 Android 是一倍屏，在 Retina 屏的 iPhone 上，devicePixelRatio 的值为 2，也就是说 1 个 CSS 像素相当于 2 个物理像素。通常所说的二倍屏（Retina）的 dpr 是 2， 三倍屏（IPhoneX 等）是 3 。</li>
+</ol>
+<h3 id="viewport-相关"><a href="#viewport-相关" class="headerlink" title="viewport 相关"></a>viewport 相关</h3><p><code>&lt;meta name=&quot;viewport&quot;   content=&quot;width=device-width, initial-scale=1,
+ maximum-scale=1, user-scalable=no&quot;&gt;</code></p>
+<ol>
+<li><strong>visual viewport 可见视口</strong> ：屏幕宽度window.innerWidth/Height</li>
+<li><strong>layout viewport 布局视口</strong> ：DOM宽document.documentElement.clientWidth/Height</li>
+<li><strong>ideal viewport 理想视口</strong> ：使布局视口就是可见视口</li>
+<li><strong>width=device-width</strong> ：表示宽度是设备屏幕的宽度</li>
+<li><strong>initial-scale</strong> ：表示初始的缩放比例</li>
+<li><strong>minimum-scale</strong> ：表示最小的缩放比例</li>
+<li><strong>maximum-scale</strong> ：表示最大的缩放比例</li>
+<li><strong>user-scalable</strong> ：表示用户是否可以调整缩放比例</li>
+</ol>
+<h2 id="总结现有方案优劣"><a href="#总结现有方案优劣" class="headerlink" title="总结现有方案优劣"></a>总结现有方案优劣</h2><p><strong>现有屏幕适配方案 ：</strong> </p>
+<ul>
+<li>设置 viewport 的 scale 值为 1</li>
+</ul>
+<p><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0&quot;&gt;</code></p>
+<ul>
+<li>根据屏幕的分辨率动态设置 html 的文字大小，达到等比缩放的功能</li>
+</ul>
+<p><code>375 屏幕为 20px，以此为基础计算出每一种宽度的字体大小</code></p>
+<ul>
+<li><p>Rem.less 中设置其他基础尺寸 @bps ：320px， 360px， 375px， 400px， 414px， 480px， 768px， 1024px<br>并计算相应的比例缩放：</p>
+<pre><code>.loop(@i: 1) when (@i &lt;= length(@bps)) {  //注意less数组是从1开始的
+  @bp: extract(@bps, @i);
+  @font: round(@bp/@baseWidth*@baseFont, 1);
+  @media only screen and (min-width: @bp){
+    html {
+      font-size: @font !important;
+    }
+  }
+  .loop((@i + 1));
+};
+</code></pre></li>
+<li><p>然后在 variables.less 中设置比例和行高： </p>
+</li>
+</ul>
+<p><code>@2ptr : 1/2/20rem @ptr : 1/20rem</code></p>
+<ul>
+<li>最后所有 CSS 使用 @2ptr 和 @ptr 利用 rem 缩放 dom 、字体</li>
+</ul>
+<h2 id="其他主流适配方案优劣"><a href="#其他主流适配方案优劣" class="headerlink" title="其他主流适配方案优劣"></a>其他主流适配方案优劣</h2><h3 id="方案："><a href="#方案：" class="headerlink" title="方案："></a>方案：</h3><h4 id="1-媒体查询-Media-Queries"><a href="#1-媒体查询-Media-Queries" class="headerlink" title="1. 媒体查询 Media Queries"></a>1. 媒体查询 Media Queries</h4><p><code>@media screen and (max-width: 300px){}</code></p>
+<ul>
+<li>优点：<ul>
+<li>Media Queries 可以做到设备像素比的判断，方法简单，成本低，特别是对移动和 PC 维护同一套代码的时候。目前像 Bootstrap 等框架使用这种方式布局</li>
+<li>图片便于修改，只需修改 CSS 文件</li>
+<li>调整屏幕宽度的时候不用刷新页面即可响应式展示</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>代码量比较大，维护不方便</li>
+<li>为了兼顾大屏幕或高清设备，会造成其他设备资源浪费，特别是加载图片资源</li>
+<li>为了兼顾移动端和PC端各自响应式的展示效果，难免会损失各自特有的交互方式</li>
+</ul>
+</li>
+</ul>
+<h5 id="浏览器兼容"><a href="#浏览器兼容" class="headerlink" title="浏览器兼容"></a>浏览器兼容</h5><ul>
+<li>不支持 IE 8.0 及以下、Safari 3.2 及以下、FireFox 3.0 及以下</li>
+<li><img width="600px" height="300px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnv6ygswjj21ic0v0428.jpg"></li>
+</ul>
+<h4 id="2-Flex-弹性布局"><a href="#2-Flex-弹性布局" class="headerlink" title="2. Flex 弹性布局"></a>2. Flex 弹性布局</h4><ul>
+<li>固定 viewport 的高度等于设备高度，宽度自适应，元素都采用 px 做单位</li>
+</ul>
+<p><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;</code></p>
+<ul>
+<li>随着屏幕宽度变化，页面也会跟着变化，效果就和PC页面的流体布局差不多，在哪个宽度需要调整的时候使用响应式布局调调就行（比如网易新闻）</li>
+</ul>
+<p><img width="600px" height="300px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqj1u1yzs5j20oa0e6taz.jpg"></p>
+<ul>
+<li>优点：布局更加精简，直接用 CSS 的方式，你不用再引入 Bootstrap ，使用栅格系统</li>
+<li>缺点：IE10 及 IE10 以上才支持，所以目前主要应用在移动端上</li>
+</ul>
+<h5 id="浏览器支持"><a href="#浏览器支持" class="headerlink" title="浏览器支持"></a>浏览器支持</h5><ul>
+<li>不支持 IE 9.0 及以下、Opera 11.5 及以下、Opera Mobile 12及以下</li>
+<li><img width="800px" height="200px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnvqmc091j21hi0f2q4y.jpg"></li>
+</ul>
+<h4 id="3-rem-viewport"><a href="#3-rem-viewport" class="headerlink" title="3. rem + viewport"></a>3. rem + viewport</h4><ul>
+<li>根据屏幕宽度设定 rem 值，需要适配的元素都使用 rem 为单位，不需要适配的元素还是使用 px 为单位</li>
+<li><p>根据 rem 将页面放大 dpr 倍， 然后 viewport 设置为 1 / dpr</p>
+<p>   <em>如 iPhone6 plus 的 dpr 为 3， 则页面整体放大 3 倍， 1px (css单位)在plus下默认为 3px (物理像素)</em></p>
+</li>
+<li><p>然后 viewport 设置为 1/3， 这样页面整体缩回原始大小，从而实现高清。这样整个网页在设备内显示时的页面宽度就会等于设备逻辑像素大小，也就是 device-width 。这个 device-width 的计算公式为：<br>设备的物理分辨率 / (devicePixelRatio * scale)，在 scale 为 1 的情况下，device-width = 设备的物理分辨率 / devicePixelRatio </p>
+</li>
+</ul>
+<h5 id="rem弊端"><a href="#rem弊端" class="headerlink" title="rem弊端"></a>rem弊端</h5><p>&nbsp;&nbsp;&nbsp;&nbsp;iOS 与 Android 平台的适配方式背后隐藏的设计哲学是这样的：阅读文字时，可读性较好的文字字号行距等绝对尺寸数值组合与文字所在媒介的绝对尺寸关系不大。（可以这样简单理解：A4 大小的报纸和 A3 大小甚至更大的报纸，舒适的阅读字号绝对尺寸是一样的，因为他们都需要拿在手里阅读，在手机也是上同理）。在看图片视频时，图片、视频的比例应该是固定的，不应该出现拉伸变形的情况。而 rem 用在字号时，使字号在不同屏幕上的绝对尺寸不一致，违背了设计哲学。</p>
+<h5 id="浏览器兼容-1"><a href="#浏览器兼容-1" class="headerlink" title="浏览器兼容"></a>浏览器兼容</h5><ul>
+<li>不支持 IE 8.0 以下 、Safari 4.0 以下、FireFox 3.5以下</li>
+<li><img width="800px" height="200px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnvyg6do9j21he0f4ac2.jpg"></li>
+</ul>
+<h4 id="4-VW适配"><a href="#4-VW适配" class="headerlink" title="4. VW适配"></a>4. VW适配</h4><p><a href="https://juejin.im/entry/5aa09c3351882555602077ca" target="_blank" rel="noopener">如何在Vue项目中使用vw实现移动端适配</a></p>
+<pre><code>1vw ＝ 1/100th viewport width
+1vh ＝ 1/100th viewport height
+vmin ：选取 vw 和 vh 中最小的那个
+vmax ：选取 vw 和 vh 中最大的那个 
+</code></pre><p><strong>vw 可以轻松搞定弹性布局，流体布局。vw 逻辑非常清晰</strong>其实 vw 的方案的写法和 flexible 方案的写法一致<br>～～因为 flexible 其实就是用 hack 的手段模拟了 vw 的实现而已。<br>具体写法：针对 750px 的设计稿，将相应的 px 值除以 75 就是 vw 的值。</p>
+<p>使用 vw 来实现页面的适配，并且通过 PostCSS 的插件 <a href="https://github.com/evrone/postcss-px-to-viewport" target="_blank" rel="noopener">postcss-px-to-viewport</a> 把 px 转换成 vw 。这样的好处是，我们在撸码的时候，不需要进行任何的计算，你只需要根据设计图写 px 单位。<a href="https://github.com/evrone/postcss-px-to-viewport" target="_blank" rel="noopener">postcss-px-to-viewport</a> 插件主要用来把 px 单位转换为 vw 、vh 、vmin 或者 vmax 这样的视窗单位，也是 vw 适配方案的核心插件之一。</p>
+<p>为了更好的实现长宽比，特别是针对于 img、video 和 iframe 元素，通过 PostCSS 插件<a href="https://github.com/yisibl/postcss-aspect-ratio-mini" target="_blank" rel="noopener">postcss-aspect-ratio-mini</a> 来实现，在实际使用中，只需要把对应的宽和高写进去即可。</p>
+<ul>
+<li>优点：rem ，使用 vw 和 wh 是非常直观的，让其他人看到就能知道，该界面是以怎么样的结构进行布局，利于维护</li>
+<li>缺点：vw 在一些三星的机子会有兼容问题，导致失效，以及不同浏览器兼容问题</li>
+</ul>
+<h5 id="兼容性对比"><a href="#兼容性对比" class="headerlink" title="兼容性对比"></a>兼容性对比</h5><p> Rem：<br><img src="https://ws1.sinaimg.cn/large/d0ba619egy1fqi26dyf14j20sa052tcg.jpg" alt=""><br> VW：<br><img src="https://ws1.sinaimg.cn/large/d0ba619egy1fqi26prtssj20su0560xa.jpg" alt=""></p>
+<h2 id="手淘适配方案-Flexible-js"><a href="#手淘适配方案-Flexible-js" class="headerlink" title="手淘适配方案 Flexible.js"></a>手淘适配方案 Flexible.js</h2><p><img width="600px" height="300px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqi3ik1ullj20n20eujud.jpg"></p>
+<p><a href="https://github.com/amfe/lib-flexible" target="_blank" rel="noopener">Github(lib-flexible)</a></p>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p>第一种方法是将文件下载到你的项目中，然后通过相对路径添加：</p>
+<pre><code>&lt;script src=&quot;build/flexible_css.debug.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;build/flexible.debug.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>或者直接加载阿里CDN的文件：</p>
+<pre><code>&lt;script src=&quot;http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js&quot;&gt;&lt;/script&gt;
+</code></pre><h3 id="手机淘宝用-JS-来动态写-meta-标签"><a href="#手机淘宝用-JS-来动态写-meta-标签" class="headerlink" title="手机淘宝用 JS 来动态写 meta 标签"></a>手机淘宝用 JS 来动态写 meta 标签</h3><p>手机淘宝的 flexible 方案是综合运用 rem 和 px 两种单位 +js 设置 scale 和 html 字体。</p>
+<pre><code>var metaEl = doc.createElement(&apos;meta&apos;);
+var scale = isRetina ? 0.5:1;
+metaEl.setAttribute(&apos;name&apos;, &apos;viewport&apos;);
+metaEl.setAttribute(&apos;content&apos;, &apos;initial-scale=&apos; + scale + &apos;, maximum-scale=&apos; + scale + &apos;, minimum-scale=&apos; + scale + &apos;, user-scalable=no&apos;);
+if (docEl.firstElementChild) {
+    document.documentElement.firstElementChild.appendChild(metaEl);
+} else {
+    var wrap = doc.createElement(&apos;div&apos;);
+    wrap.appendChild(metaEl);
+    documen.write(wrap.innerHTML);
+}
+</code></pre><h3 id="实质"><a href="#实质" class="headerlink" title="实质"></a>实质</h3><ul>
+<li>动态改写<meta>标签</li>
+<li>给<html>元素添加 data-dpr 属性，并且动态改写 data-dpr 的值</html></li>
+<li>给<html>元素添加 font-size 属性，并且动态改写 font-size 的值</html></li>
+</ul>
+<h3 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h3><ul>
+<li>不能与响应式布局兼容</li>
+<li>对 Android 没有做处理，导致 1px 和 backgroudImage 还要额外做处理的问题</li>
+</ul>
+<p>ps.通过一段 JS 代码根据设备的屏幕宽度、dpr 设置根元素的 data-dpr 和 font-size ，这段JS代码要在所有资源加载之前执行，建议做内联处理。</p>
+<h2 id="常见问题解决方案"><a href="#常见问题解决方案" class="headerlink" title="常见问题解决方案"></a>常见问题解决方案</h2><h3 id="一、解决-1px-方案"><a href="#一、解决-1px-方案" class="headerlink" title="一、解决 1px 方案"></a>一、解决 1px 方案</h3><p><strong>原因：</strong>css 中的 1px 并不等于移动设备的 1px ，这些由于不同的手机有不同的像素密度。在 window 对象中有一个 devicePixelRatio 属性，他可以反应 css 中的像素与设备的像素比。viewport 的设置和屏幕物理分辨率是按比例而不是相同的。 移动端 window 对象有个 devicePixelRatio 属性， 它表示设备物理像素和 css 像素的比例， 在 retina 屏的 iphone手机上 ，这个值为 2 或 3 ， css 里写的 1px 长度映射到物理像素上就有 2px 或 3px 那么长。</p>
+<p><strong>解决方案：</strong></p>
+<h4 id="1-background-渐变（现有方法）"><a href="#1-background-渐变（现有方法）" class="headerlink" title="1.background 渐变（现有方法）"></a>1.background 渐变（现有方法）</h4><p>背景渐变， 渐变在透明色和边框色中间分割，frozenUI 用的就是这种方法， 借用它的上边框写法：<br>不能实现圆角 1px 效果，css 需要做兼容处理，与 background-image 方案类似，只是将图片替换为 css3 渐变。设置 1px 的渐变背景，50% 有颜色，50% 透明。</p>
+<pre><code>.border-1px-bottom {
+  background-image: linear-gradient(180deg, @border-default-color, @border-default-color 50%, transparent 0);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+</code></pre><ul>
+<li>优点：<ul>
+<li>可以实现单条、多条边框</li>
+<li>边框的颜色随意设置</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>代码量不少</li>
+<li>圆角没法实现</li>
+<li>多背景图片有兼容性问题</li>
+</ul>
+</li>
+</ul>
+<h5 id="浏览器兼容-2"><a href="#浏览器兼容-2" class="headerlink" title="浏览器兼容"></a>浏览器兼容</h5><ul>
+<li>不支持 IE 8.0 及以下、FireFox 3.5 及以下</li>
+<li><img width="800px" height="200px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwgdol47j21he0eydhu.jpg"></li>
+</ul>
+<h4 id="2-使用-border-image-实现"><a href="#2-使用-border-image-实现" class="headerlink" title="2.使用 border-image 实现"></a>2.使用 border-image 实现</h4><pre><code>.border-image-1px {
+  border-bottom: 1px solid #666;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .border-image-1px {
+    border-bottom: none;
+    border-width: 0 0 1px 0;
+    -webkit-border-image: url(../img/linenew.png) 0 0 2 0 stretch;
+    border-image: url(../img/linenew.png) 0 0 2 0 stretch;
+  }
+}
+</code></pre><ul>
+<li>优点：<ul>
+<li>可以设置单条，多条边框</li>
+<li>没有性能瓶颈的问题</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>边框颜色不便修改，修改颜色麻烦， 需要替换图片</li>
+<li>圆角需要特殊处理，并且边缘会模糊</li>
+</ul>
+</li>
+</ul>
+<h5 id="浏览器兼容-3"><a href="#浏览器兼容-3" class="headerlink" title="浏览器兼容"></a>浏览器兼容</h5><ul>
+<li>不支持 IE 10.0 及以下 （其他浏览器版本部分支持）</li>
+<li><img width="800px" height="200px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwlgxe6ij21hi0fc40r.jpg"></li>
+</ul>
+<h4 id="3、使用-box-shadow-模拟边框"><a href="#3、使用-box-shadow-模拟边框" class="headerlink" title="3、使用 box-shadow 模拟边框"></a>3、使用 box-shadow 模拟边框</h4><p>利用 css 对阴影处理的方式实现 0.5px 的效果</p>
+<pre><code>.box-shadow-1px {
+  box-shadow: inset 0px -1px 1px -1px #c8c7cc;
+}
+</code></pre><ul>
+<li>缺点：颜色不便控制，太淡，有虚边</li>
+</ul>
+<h5 id="浏览器兼容-4"><a href="#浏览器兼容-4" class="headerlink" title="浏览器兼容"></a>浏览器兼容</h5><ul>
+<li>不支持 IE 8.0 及以下</li>
+<li><img width="800px" height="200px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwpb7mi1j21i40f4q4y.jpg"></li>
+</ul>
+<h4 id="4、viewport-rem-实现（flexible-js）"><a href="#4、viewport-rem-实现（flexible-js）" class="headerlink" title="4、viewport + rem 实现（flexible.js）"></a>4、viewport + rem 实现（flexible.js）</h4><p>同时通过设置对应 viewport 的 rem 基准值，这种方式就可以像以前一样轻松愉快的写 1px 了。</p>
+<ul>
+<li>优点：<ul>
+<li>所有场景都能满足</li>
+<li>一套代码，可以兼容基本所有布局</li>
+</ul>
+</li>
+<li>缺点：老项目修改代价过大，只适用于新项目</li>
+</ul>
+<h5 id="浏览器兼容-5"><a href="#浏览器兼容-5" class="headerlink" title="浏览器兼容"></a>浏览器兼容</h5><ul>
+<li>不支持 IE 8.0 以下 、Safari 4.0 以下、FireFox 3.5以下</li>
+<li><img width="800px" height="200px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnvyg6do9j21he0f4ac2.jpg"></li>
+</ul>
+<h4 id="5、伪类-before，-after-transform-实现"><a href="#5、伪类-before，-after-transform-实现" class="headerlink" title="5、伪类 ( :before， :after ) + transform 实现"></a>5、伪类 ( :before， :after ) + transform 实现</h4><p>原理是把原先元素的 border 去掉，然后利用 :before 或者 :after 重做 border ，并 transform 的 scale 缩小一半，原先的元素相对定位，新做的 border 绝对定位。</p>
+<pre><code>.box-shadow-1px{
+    position: relative;
+    border:none;
+}
+.box-shadow-1px:after{
+    content: &apos;&apos;;
+    position: absolute;
+    left: 0;
+    background: #000;
+    width: 100%;
+    height: 1px;
+    transform: scaleY(0.5);
+    transform-origin: 50% 100%;
+}
+</code></pre><ul>
+<li>优点：<ul>
+<li>所有场景都能满足</li>
+<li>支持圆角(伪类和本体类都需要加 border-radius )</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>占用了伪类，容易和原样式冲突</li>
+<li>对于已经使用伪类的元素(例如 clearfix )，可能需要多层嵌套</li>
+<li>对单个元素的边框进行缩放的方案无法实现圆角</li>
+</ul>
+</li>
+</ul>
+<h5 id="浏览器兼容-6"><a href="#浏览器兼容-6" class="headerlink" title="浏览器兼容"></a>浏览器兼容</h5><ul>
+<li>不支持 IE 8.0 以下</li>
+<li><img width="800px" height="200px" src="https://ws1.sinaimg.cn/large/d0ba619egy1fqnwwok2wnj21hq0f00ur.jpg"></li>
+</ul>
+<h4 id="6-使用-0-5px-适配-iOS8-以上的-iPhone-机型"><a href="#6-使用-0-5px-适配-iOS8-以上的-iPhone-机型" class="headerlink" title="6. 使用 0.5px 适配 iOS8 以上的 iPhone 机型"></a>6. 使用 0.5px 适配 iOS8 以上的 iPhone 机型</h4><pre><code>@media (-webkit-min-device-pixel-ratio:2){
+ .box5 {border-width:.5px}
+}
+</code></pre><ul>
+<li>缺点：<ul>
+<li>只适用于 iOS8+ 以上的 iOS 系统，安卓机不支持 0.5px</li>
+<li>Chrome 会把小于 0.5px 的当成 0，而 Firefox 会把不小于 0.55px 当成 1px，Safari 是把不小于 0.75px 当成 1px</li>
+</ul>
+</li>
+</ul>
+<h3 id="二、Rem-小数问题"><a href="#二、Rem-小数问题" class="headerlink" title="二、Rem 小数问题"></a>二、Rem 小数问题</h3><p><strong>起因：</strong>在开发手机端页面的时候，使用了 rem 单位，实现上比 %、em 等其他的做法更简单了，它可以实现高度和宽度等比例变化。好东西是好，但是不好的一点是 rem 的小数点。但是浏览器在处理小数像素的时候并不是直接舍入处理的，元素依旧占据着应有的空间，只是在计算元素尺寸的时候做了舍入处理。</p>
+<p><code>例：会出现 font-size：2.1444444444px 的现象</code></p>
+<p><strong>目前遇到其他最多的问题就是 background-image 的问题，经常会因为小数像素导致背景图被裁掉一部分。</strong></p>
+<p><strong>解决方案：</strong></p>
+<ul>
+<li>使用 iconfont</li>
+<li>如需使用 background-image，尽量为背景图设置一定的空白间隙</li>
+</ul>
+<h3 id="三、高清图问题"><a href="#三、高清图问题" class="headerlink" title="三、高清图问题"></a>三、高清图问题</h3><p><strong>起因：</strong>理论上，1 个位图像素对应于 1 个物理像素（红色点），图片才能得到完美清晰的展示。在普通屏幕下是没有问题的，但是在retina屏幕下就会出现位图像素点不够，从而导致图片模糊的情况。对于 dpr = 2 的Retina 屏幕而言，1 个位图像素对应于 4 个物理像素，由于单个位图像素不可以再进一步分割，所以只能就近取色，从而导致图片模糊(注意上述的几个颜色值)。所以，对于图片高清问题，比较好的方案就是两倍图片(@2x)。</p>
+<p><code>如：200×300(css pixel)img标签，就需要提供400×600的图片。</code></p>
+<p>如此一来，位图像素点个数就是原来的 4 倍，在 Retina 屏幕下，位图像素点个数就可以跟物理像素点个数形成 1 : 1 的比例，图片自然就清晰了（这也解释了为啥视觉稿的画布大小要 × 2 ？）。</p>
+<p><strong>衍生问题：</strong>如果普通屏幕下，也用了两倍 图片，会怎样呢 ？</p>
+<p>在普通屏幕下，200 × 300（CSS pixel）img 标签，所对应的物理像素个数就是 200 × 300 个，而两倍图片的位图像素个数是 200 × 300 × 4 个，所以就出现一个物理像素点对应 4 个位图像素点，但它的取色也只能通过一定的算法取某一个位图像素点上的色值，这个过程叫做 downsampling（大图放入比图片尺寸小的容器中时，出现像素分割成就近色），肉眼看上去虽然图片不会模糊，但是会觉得图片缺少一些锐利度，或者是有点色差。所以最好的解决办法是：不同的 dpr 下，加载不同的尺寸的图片。不管是通过 CSS 媒体查询，还是通过 JS 条件判断都是可以的。</p>
+<p><strong>得出结论</strong>：<br>一般来说 dpr = 2 为多，dpr = 1 为普通屏幕，dpr = 3 占少数。所以我们至少做 2 套图片，一套是兼容dpr = 1 的小图；一套是兼容 dpr = 2 的大图；dpr = 3 的可以兼容到 dpr = 2 的图片中，虽然有点失色，但还是可以接受的。</p>
+<h2 id="小结（我推荐）"><a href="#小结（我推荐）" class="headerlink" title="小结（我推荐）"></a>小结（我推荐）</h2><h3 id="屏幕适配方案"><a href="#屏幕适配方案" class="headerlink" title="屏幕适配方案"></a>屏幕适配方案</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;使用 <a href="https://github.com/amfe/lib-flexible" target="_blank" rel="noopener"><strong>flexible.js</strong></a> 方案，较为稳定，提供了用一套 CSS 去适应多种屏幕的方法，不用考虑适应屏幕的高宽比、物理尺寸等，切图成本比较低。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;flexible 方案是综合运用 rem 和 px（避免字体放大模糊）两种单位 + js 设置 scale 和 html 字体达到效果。它动态改写 meta 标签，动态改写 dpr 的值，动态改写 font-size 的值。我们现有也是 rem 方法，可以减少代码修改。</p>
+<p><strong>Install</strong></p>
+<pre><code>npm i -S amfe-flexible
+</code></pre><p><strong>Import</strong></p>
+<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no&quot;&gt;
+&lt;script src=&quot;./node_modules/amfe-flexible/index.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>ps. 虽然 VW 方案似乎也不错，但是考虑兼容性问题，flexible 更宜。</p>
+<h3 id="1px-border-单独解决方案"><a href="#1px-border-单独解决方案" class="headerlink" title="1px border 单独解决方案"></a>1px border 单独解决方案</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;1px border 问题使用 <strong>伪类 + transform</strong> 的方式实现。<br>能解决现有虚假 1px 问题，和无法实现圆角问题，而且兼容性良好，唯一不足：可能需要每个使用 1px border 的地方做相应的 css 调整，配合使用。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/26/zhoushiqi/Less-VS-Sass/" rel="prev">Less Vs Sass</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/liuhaifeng/Regular-Expression/" rel="next">正则表达式总结</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础知识"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#像素相关"><span class="nav-number">1.1.</span> <span class="nav-text">像素相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#viewport-相关"><span class="nav-number">1.2.</span> <span class="nav-text">viewport 相关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结现有方案优劣"><span class="nav-number">2.</span> <span class="nav-text">总结现有方案优劣</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他主流适配方案优劣"><span class="nav-number">3.</span> <span class="nav-text">其他主流适配方案优劣</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案："><span class="nav-number">3.1.</span> <span class="nav-text">方案：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-媒体查询-Media-Queries"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. 媒体查询 Media Queries</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器兼容"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">浏览器兼容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Flex-弹性布局"><span class="nav-number">3.1.2.</span> <span class="nav-text">2. Flex 弹性布局</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器支持"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">浏览器支持</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-rem-viewport"><span class="nav-number">3.1.3.</span> <span class="nav-text">3. rem + viewport</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#rem弊端"><span class="nav-number">3.1.3.1.</span> <span class="nav-text">rem弊端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器兼容-1"><span class="nav-number">3.1.3.2.</span> <span class="nav-text">浏览器兼容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-VW适配"><span class="nav-number">3.1.4.</span> <span class="nav-text">4. VW适配</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#兼容性对比"><span class="nav-number">3.1.4.1.</span> <span class="nav-text">兼容性对比</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手淘适配方案-Flexible-js"><span class="nav-number">4.</span> <span class="nav-text">手淘适配方案 Flexible.js</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">4.1.</span> <span class="nav-text">使用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手机淘宝用-JS-来动态写-meta-标签"><span class="nav-number">4.2.</span> <span class="nav-text">手机淘宝用 JS 来动态写 meta 标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实质"><span class="nav-number">4.3.</span> <span class="nav-text">实质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局限性"><span class="nav-number">4.4.</span> <span class="nav-text">局限性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题解决方案"><span class="nav-number">5.</span> <span class="nav-text">常见问题解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、解决-1px-方案"><span class="nav-number">5.1.</span> <span class="nav-text">一、解决 1px 方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-background-渐变（现有方法）"><span class="nav-number">5.1.1.</span> <span class="nav-text">1.background 渐变（现有方法）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器兼容-2"><span class="nav-number">5.1.1.1.</span> <span class="nav-text">浏览器兼容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用-border-image-实现"><span class="nav-number">5.1.2.</span> <span class="nav-text">2.使用 border-image 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器兼容-3"><span class="nav-number">5.1.2.1.</span> <span class="nav-text">浏览器兼容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、使用-box-shadow-模拟边框"><span class="nav-number">5.1.3.</span> <span class="nav-text">3、使用 box-shadow 模拟边框</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器兼容-4"><span class="nav-number">5.1.3.1.</span> <span class="nav-text">浏览器兼容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、viewport-rem-实现（flexible-js）"><span class="nav-number">5.1.4.</span> <span class="nav-text">4、viewport + rem 实现（flexible.js）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器兼容-5"><span class="nav-number">5.1.4.1.</span> <span class="nav-text">浏览器兼容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、伪类-before，-after-transform-实现"><span class="nav-number">5.1.5.</span> <span class="nav-text">5、伪类 ( :before， :after ) + transform 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浏览器兼容-6"><span class="nav-number">5.1.5.1.</span> <span class="nav-text">浏览器兼容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-使用-0-5px-适配-iOS8-以上的-iPhone-机型"><span class="nav-number">5.1.6.</span> <span class="nav-text">6. 使用 0.5px 适配 iOS8 以上的 iPhone 机型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、Rem-小数问题"><span class="nav-number">5.2.</span> <span class="nav-text">二、Rem 小数问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、高清图问题"><span class="nav-number">5.3.</span> <span class="nav-text">三、高清图问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结（我推荐）"><span class="nav-number">6.</span> <span class="nav-text">小结（我推荐）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#屏幕适配方案"><span class="nav-number">6.1.</span> <span class="nav-text">屏幕适配方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1px-border-单独解决方案"><span class="nav-number">6.2.</span> <span class="nav-text">1px border 单独解决方案</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,746 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="dayjs,momentjs,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="dayjs 是一个轻量的 JavaScript 时间日期处理库，其用法（api）和 Moment.js 完全一样。">
+<meta name="keywords" content="dayjs,momentjs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day.js 源码学习">
+<meta property="og:url" content="http://xgfe.github.io/2018/07/11/guanxiaofeng/Dayjs/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="dayjs 是一个轻量的 JavaScript 时间日期处理库，其用法（api）和 Moment.js 完全一样。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.378Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Day.js 源码学习">
+<meta name="twitter:description" content="dayjs 是一个轻量的 JavaScript 时间日期处理库，其用法（api）和 Moment.js 完全一样。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Day.js 源码学习 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Day.js 源码学习
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-07-11T12:00:00+08:00" content="2018-07-11">
+            2018-07-11
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/guanxiaofeng/" itemprop="url" rel="index">
+                  <span itemprop="name">guanxiaofeng</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/dayjs/" rel="tag"><i class="icon-next-tags"></i>dayjs</a>
+            
+              <a href="/tags/momentjs/" rel="tag"><i class="icon-next-tags"></i>momentjs</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>dayjs 是一个轻量的 JavaScript 时间日期处理库，其用法（api）和 Moment.js 完全一样。<br><a id="more"></a></p>
+<p>📚<a href="https://github.com/iamkun/dayjs/blob/master/docs/zh-cn/API-reference.md" target="_blank" rel="noopener">官方 API 文档（中文）</a></p>
+<h2 id="一-特性"><a href="#一-特性" class="headerlink" title="一 特性"></a>一 特性</h2><ul>
+<li>和 Moment.js 相同的 API 和用法</li>
+<li>不可变数据（Immutable）</li>
+<li>支持链式操作（Chainable）</li>
+<li>l18n 国际化</li>
+<li>仅 2kb 大小</li>
+<li>全浏览器兼容</li>
+</ul>
+<p>基本用法如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().startOf(<span class="string">'month'</span>).add(<span class="number">1</span>, <span class="string">'day'</span>).set(<span class="string">'year'</span>, <span class="number">2018</span>).format(<span class="string">'YYYY-MM-DD HH:mm:ss'</span>);</span><br></pre></td></tr></table></figure></p>
+<h2 id="二-解析"><a href="#二-解析" class="headerlink" title="二 解析"></a>二 解析</h2><h3 id="构造器-dayjs-existing-string-number-Date-Dayjs"><a href="#构造器-dayjs-existing-string-number-Date-Dayjs" class="headerlink" title="构造器 dayjs(existing?: string | number | Date | Dayjs)"></a>构造器 dayjs(existing?: string | number | Date | Dayjs)</h3><p>从源码可以看出，调用 dayjs 时会返回一个 Dayjs 对象，Dayjs 构造器调用了 parseDate 方法，返回了一个全新的包含 Javascript Date 对象的 Dayjs 的对象；其他的值都是根据 Javascript Date 对象得来的。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 部分源码</span></span><br><span class="line"><span class="keyword">const</span> dayjs = <span class="function">(<span class="params">date, c</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (isDayjs(date)) &#123;</span><br><span class="line">    <span class="keyword">return</span> date.clone()</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> cfg = c || &#123;&#125;</span><br><span class="line">  cfg.date = date</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Dayjs(cfg) <span class="comment">// eslint-disable-line no-use-before-define</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> parseDate = <span class="function">(<span class="params">date</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> reg</span><br><span class="line">  <span class="keyword">if</span> (date === <span class="literal">null</span>) <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="literal">NaN</span>) <span class="comment">// Treat null as an invalid date</span></span><br><span class="line">  <span class="keyword">if</span> (Utils.isUndefined(date)) <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br><span class="line">  <span class="keyword">if</span> (date <span class="keyword">instanceof</span> <span class="built_in">Date</span>) <span class="keyword">return</span> date</span><br><span class="line">  <span class="comment">// eslint-disable-next-line no-cond-assign</span></span><br><span class="line">  <span class="keyword">if</span> ((<span class="keyword">typeof</span> date === <span class="string">'string'</span>)</span><br><span class="line">    &amp;&amp; (<span class="regexp">/.*[^Z]$/i</span>.test(date)) <span class="comment">// looking for a better way</span></span><br><span class="line">    &amp;&amp; (reg = date.match(C.REGEX_PARSE))) &#123;</span><br><span class="line">    <span class="comment">// 2018-08-08 or 20180808</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Date</span>(</span><br><span class="line">      reg[<span class="number">1</span>], reg[<span class="number">2</span>] - <span class="number">1</span>, reg[<span class="number">3</span>] || <span class="number">1</span>,</span><br><span class="line">      reg[<span class="number">5</span>] || <span class="number">0</span>, reg[<span class="number">6</span>] || <span class="number">0</span>, reg[<span class="number">7</span>] || <span class="number">0</span>, reg[<span class="number">8</span>] || <span class="number">0</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Date</span>(date) <span class="comment">// timestamp</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dayjs</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(cfg) &#123;</span><br><span class="line">    <span class="keyword">this</span>.parse(cfg) <span class="comment">// for plugin</span></span><br><span class="line">  &#125;</span><br><span class="line">  parse(cfg) &#123;</span><br><span class="line">    <span class="keyword">this</span>.$d = parseDate(cfg.date)</span><br><span class="line">    <span class="keyword">this</span>.init(cfg)</span><br><span class="line">  &#125;</span><br><span class="line">  init(cfg) &#123;</span><br><span class="line">    <span class="keyword">this</span>.$y = <span class="keyword">this</span>.$d.getFullYear()</span><br><span class="line">    <span class="keyword">this</span>.$M = <span class="keyword">this</span>.$d.getMonth()</span><br><span class="line">    <span class="keyword">this</span>.$D = <span class="keyword">this</span>.$d.getDate()</span><br><span class="line">    <span class="keyword">this</span>.$W = <span class="keyword">this</span>.$d.getDay()</span><br><span class="line">    <span class="keyword">this</span>.$H = <span class="keyword">this</span>.$d.getHours()</span><br><span class="line">    <span class="keyword">this</span>.$m = <span class="keyword">this</span>.$d.getMinutes()</span><br><span class="line">    <span class="keyword">this</span>.$s = <span class="keyword">this</span>.$d.getSeconds()</span><br><span class="line">    <span class="keyword">this</span>.$ms = <span class="keyword">this</span>.$d.getMilliseconds()</span><br><span class="line">    <span class="keyword">this</span>.$L = <span class="keyword">this</span>.$L || parseLocale(cfg.locale, <span class="literal">null</span>, <span class="literal">true</span>) || L</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在 init 实例方法中，使用实例属性 $d（为 JavaScript 原生 Date 对象）来获取 年、月、日、周、时、分、秒、毫秒，且保存在实例中。并且调用 parseLocale 函数来获取语言，赋值给 Dayjs 实例的 $L 属性。</p>
+<p>可传参数有5类：  </p>
+<h5 id="1-当前时间"><a href="#1-当前时间" class="headerlink" title="1.当前时间"></a>1.当前时间</h5><p>dayjs 本质上是个函数，因此可以直接运行该函数，得到包含当前时间和日期的 Dayjs 对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs();</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-标准的-ISO-8601-时间字符串"><a href="#2-标准的-ISO-8601-时间字符串" class="headerlink" title="2.标准的 ISO 8601 时间字符串"></a>2.标准的 ISO 8601 时间字符串</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs(<span class="string">"2018-07-14"</span>);</span><br></pre></td></tr></table></figure>
+<h5 id="3-解析-Unix-时间戳-毫秒"><a href="#3-解析-Unix-时间戳-毫秒" class="headerlink" title="3.解析 Unix 时间戳(毫秒)"></a>3.解析 Unix 时间戳(毫秒)</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs(<span class="number">1531469940578</span>);</span><br></pre></td></tr></table></figure>
+<h5 id="4-解析-Date-对象"><a href="#4-解析-Date-对象" class="headerlink" title="4.解析 Date 对象"></a>4.解析 Date 对象</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs(<span class="keyword">new</span> <span class="built_in">Date</span>(<span class="number">2018</span>,<span class="number">5</span>,<span class="number">3</span>));</span><br></pre></td></tr></table></figure>
+<h5 id="5-解析-dayjs-对象"><a href="#5-解析-dayjs-对象" class="headerlink" title="5.解析 dayjs 对象"></a>5.解析 dayjs 对象</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs(dayjs());</span><br></pre></td></tr></table></figure>
+<h3 id="克隆"><a href="#克隆" class="headerlink" title="克隆"></a>克隆</h3><p>dayjs 对象是不可变的如果要复制对象，需要调用 .clone()，或者是在解析一个 dayjs 对象。 向 dayjs() 里传入一个 Dayjs 对象也能实现同样的效果。<br><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dayjs().clone();</span><br><span class="line">dayjs(Dayjs);</span><br></pre></td></tr></table></figure></p>
+<p>部分源码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> wrapper = <span class="function">(<span class="params">date, instance</span>) =&gt;</span> dayjs(date, &#123; <span class="attr">locale</span>: instance.$L &#125;)</span><br><span class="line">clone() &#123;</span><br><span class="line">  <span class="keyword">return</span> wrapper(<span class="keyword">this</span>.toDate(), <span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>检测当前 Dayjs 对象是否是一个有效的时间。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().isValid();</span><br></pre></td></tr></table></figure></p>
+<p>部分源码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">isValid() &#123;</span><br><span class="line">  <span class="keyword">return</span> !(<span class="keyword">this</span>.$d.toString() === <span class="string">'Invalid Date'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="三-获取-设置"><a href="#三-获取-设置" class="headerlink" title="三 获取+设置"></a>三 获取+设置</h2><h5 id="获取各种时间"><a href="#获取各种时间" class="headerlink" title="获取各种时间"></a>获取各种时间</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dayjs().year();        <span class="comment">// 年</span></span><br><span class="line">dayjs().month();       <span class="comment">// 月</span></span><br><span class="line">dayjs().date();        <span class="comment">// 日</span></span><br><span class="line">dayjs().day();         <span class="comment">// 星期(星期天 0, 星期六 6)</span></span><br><span class="line">dayjs().hour();        <span class="comment">// 时</span></span><br><span class="line">dayjs().minute();      <span class="comment">// 分</span></span><br><span class="line">dayjs().second();      <span class="comment">// 秒</span></span><br><span class="line">dayjs().millisecond(); <span class="comment">// 毫秒</span></span><br></pre></td></tr></table></figure>
+<h5 id="设置各种时间"><a href="#设置各种时间" class="headerlink" title="设置各种时间"></a>设置各种时间</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dayjs().set(unit : <span class="built_in">String</span>, <span class="attr">value</span> : Int);</span><br><span class="line">dayjs().set(<span class="string">'date'</span>, <span class="number">1</span>);</span><br><span class="line">dayjs().set(<span class="string">'month'</span>, <span class="number">3</span>); <span class="comment">// 四月</span></span><br><span class="line">dayjs().set(<span class="string">'second'</span>, <span class="number">30</span>);</span><br></pre></td></tr></table></figure>
+<p>设置时间也是通过返回一个新的对象<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set(string, int) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.clone().$set(string, int)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="四-格式化显示"><a href="#四-格式化显示" class="headerlink" title="四 格式化显示"></a>四 格式化显示</h2><p>格式化显示和 momentjs 一样，通过 .format() 即可，返回的是 String 。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dayjs().format(<span class="built_in">String</span>);</span><br><span class="line">dayjs().format();             <span class="comment">// "2018-07-13T20:10:31+08:00"</span></span><br><span class="line">dayjs().format(<span class="string">'YYYY-MM-DD'</span>); <span class="comment">// "2018-07-13"</span></span><br><span class="line">dayjs().format(<span class="string">'YYYY/MM/DD'</span>); <span class="comment">// "2018/07/13"</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="五-操作"><a href="#五-操作" class="headerlink" title="五 操作"></a>五 操作</h2><h5 id="增加和减少"><a href="#增加和减少" class="headerlink" title="增加和减少"></a>增加和减少</h5><p>在此之前先看看源码实现的逻辑：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 部分源码</span></span><br><span class="line">add(number, units) &#123;</span><br><span class="line">  number = <span class="built_in">Number</span>(number) <span class="comment">// eslint-disable-line no-param-reassign</span></span><br><span class="line">  <span class="keyword">const</span> unit = Utils.prettyUnit(units)</span><br><span class="line">  <span class="keyword">const</span> instanceFactory = <span class="function">(<span class="params">u, n</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> date = <span class="keyword">this</span>.set(C.DATE, <span class="number">1</span>).set(u, n + number)</span><br><span class="line">    <span class="keyword">return</span> date.set(C.DATE, <span class="built_in">Math</span>.min(<span class="keyword">this</span>.$D, date.daysInMonth()))</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (unit === C.M) &#123;</span><br><span class="line">    <span class="keyword">return</span> instanceFactory(C.M, <span class="keyword">this</span>.$M)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (unit === C.Y) &#123;</span><br><span class="line">    <span class="keyword">return</span> instanceFactory(C.Y, <span class="keyword">this</span>.$y)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> step</span><br><span class="line">  <span class="keyword">switch</span> (unit) &#123;</span><br><span class="line">    <span class="keyword">case</span> C.MIN:</span><br><span class="line">      step = C.MILLISECONDS_A_MINUTE</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> C.H:</span><br><span class="line">      step = C.MILLISECONDS_A_HOUR</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> C.D:</span><br><span class="line">      step = C.MILLISECONDS_A_DAY</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> C.W:</span><br><span class="line">      step = C.MILLISECONDS_A_WEEK</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> C.S:</span><br><span class="line">      step = C.MILLISECONDS_A_SECOND</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">default</span>: <span class="comment">// ms</span></span><br><span class="line">      step = <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> nextTimeStamp = <span class="keyword">this</span>.valueOf() + (number * step)</span><br><span class="line">  <span class="keyword">return</span> wrapper(nextTimeStamp, <span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line">subtract(number, string) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.add(number * <span class="number">-1</span>, string)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 Dayjs 类中 add、subtract 等方法，都会通过 wrapper 返回一个新的 Dayjs 实例，是通过使用 Dayjs 类中的 clone() 方法实现的。所以，通过这个 clone() 方法，实现了 dayjs 的 immutable 特性。<br>当增加或减少的单位是年或月时，会先将日设置为1，然后再加减，最后再比较当前月的总天数和原来的天数（主要是解决像2月只有28天这类问题），取较小的值再返回；对于天／周／时／分／秒则是按照时间戳来计算，再通过 wrapper 返回一个新的 Date 对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dayjs().add(value : <span class="built_in">Number</span>, <span class="attr">unit</span> : <span class="built_in">String</span>);</span><br><span class="line">dayjs().add(<span class="number">5</span>, <span class="string">'day'</span>);</span><br><span class="line">dayjs().subtract(value : <span class="built_in">Number</span>, <span class="attr">unit</span> : <span class="built_in">String</span>);</span><br><span class="line">dayjs().subtract(<span class="number">2</span>, <span class="string">'year'</span>);</span><br></pre></td></tr></table></figure></p>
+<h5 id="开头和末尾"><a href="#开头和末尾" class="headerlink" title="开头和末尾"></a>开头和末尾</h5><p>返回当前时间的开头时间的 Dayjs 对象，如月份的第一天。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dayjs().startOf(unit : <span class="built_in">String</span>);</span><br><span class="line">dayjs().startOf(<span class="string">'year'</span>).format(<span class="string">'YYYY-MM-DD'</span>);  <span class="comment">// 2018-01-01</span></span><br></pre></td></tr></table></figure></p>
+<p>返回当前时间的末尾时间的 Dayjs 对象，如月份的最后一天。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dayjs().endOf(unit : <span class="built_in">String</span>);</span><br><span class="line">dayjs().endOf(<span class="string">'month'</span>).format(<span class="string">'YYYY-MM-DD'</span>); <span class="comment">// 2018-07-31</span></span><br></pre></td></tr></table></figure>
+<h2 id="六-时间差"><a href="#六-时间差" class="headerlink" title="六 时间差"></a>六 时间差</h2><p>时间差是两个 dayjs 对象的之差所得的毫秒数。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dayjs().diff(Dayjs, unit);</span><br><span class="line">dayjs().diff(dayjs(<span class="string">'2000-2-1'</span>), <span class="string">'years'</span>); <span class="comment">// 18</span></span><br></pre></td></tr></table></figure></p>
+<p>源码逻辑是先计算出两个时间相差的毫秒数和月数，再根据传入的单位去选择计算。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">diff(input, units, float) &#123;</span><br><span class="line">    <span class="keyword">const</span> unit = Utils.prettyUnit(units)</span><br><span class="line">    <span class="keyword">const</span> that = dayjs(input)</span><br><span class="line">    <span class="keyword">const</span> diff = <span class="keyword">this</span> - that</span><br><span class="line">    <span class="keyword">let</span> result = Utils.monthDiff(<span class="keyword">this</span>, that)</span><br><span class="line">    <span class="keyword">switch</span> (unit) &#123;</span><br><span class="line">      <span class="keyword">case</span> C.Y:</span><br><span class="line">        result /= <span class="number">12</span></span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> C.M:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> C.Q:</span><br><span class="line">        result /= <span class="number">3</span></span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> C.W:</span><br><span class="line">        result = diff / C.MILLISECONDS_A_WEEK</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> C.D:</span><br><span class="line">        result = diff / C.MILLISECONDS_A_DAY</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> C.H:</span><br><span class="line">        result = diff / C.MILLISECONDS_A_HOUR</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> C.MIN:</span><br><span class="line">        result = diff / C.MILLISECONDS_A_MINUTE</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> C.S:</span><br><span class="line">        result = diff / C.MILLISECONDS_A_SECOND</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">default</span>: <span class="comment">// milliseconds</span></span><br><span class="line">        result = diff</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> float ? result : Utils.absFloor(result)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="七-其他方法"><a href="#七-其他方法" class="headerlink" title="七 其他方法"></a>七 其他方法</h2><h5 id="获取-unix-毫秒时间戳："><a href="#获取-unix-毫秒时间戳：" class="headerlink" title="获取 unix 毫秒时间戳："></a>获取 unix 毫秒时间戳：</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().valueOf(); <span class="comment">// 1531633650522</span></span><br></pre></td></tr></table></figure>
+<h5 id="获取-unix-秒级时间戳："><a href="#获取-unix-秒级时间戳：" class="headerlink" title="获取 unix 秒级时间戳："></a>获取 unix 秒级时间戳：</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().unix(); <span class="comment">// 1531633677</span></span><br></pre></td></tr></table></figure>
+<h5 id="返回月份的天数："><a href="#返回月份的天数：" class="headerlink" title="返回月份的天数："></a>返回月份的天数：</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().daysInMonth(); <span class="comment">// 31</span></span><br></pre></td></tr></table></figure>
+<h5 id="获取-Date-对象："><a href="#获取-Date-对象：" class="headerlink" title="获取 Date 对象："></a>获取 Date 对象：</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().toDate(); <span class="comment">// Sun Jul 15 2018 13:48:41 GMT+0800 (CST)</span></span><br></pre></td></tr></table></figure>
+<h5 id="获取数组格式："><a href="#获取数组格式：" class="headerlink" title="获取数组格式："></a>获取数组格式：</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().toArray(); <span class="comment">//[2018, 6, 13, 20, 34, 13, 424];</span></span><br></pre></td></tr></table></figure>
+<h5 id="获取对象格式："><a href="#获取对象格式：" class="headerlink" title="获取对象格式："></a>获取对象格式：</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dayjs().toObject();<span class="comment">// &#123;years: 2018, months: 6, date: 13, hours: 20, minutes: 34...&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="八-dayjs-插件用法"><a href="#八-dayjs-插件用法" class="headerlink" title="八 dayjs 插件用法"></a>八 dayjs 插件用法</h2><p>dayjs 的插件，通过挂载到 dayjs 函数下的 extend 函数加载，然后使用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> plugin <span class="comment">// 导入插件</span></span><br><span class="line">dayjs.extend(plugin, options) <span class="comment">// 加载插件的同时，加入插件所需要的参数</span></span><br></pre></td></tr></table></figure></p>
+<p>使用官方的 IsLeapYear 插件(判断是否是闰年):<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> isLeapYear <span class="keyword">from</span> <span class="string">'dayjs/plugin/isLeapYear'</span></span><br><span class="line">dayjs.extend(isLeapYear)</span><br><span class="line">dayjs(<span class="string">'2000-01-01'</span>).isLeapYear() <span class="comment">// true</span></span><br><span class="line">dayjs(<span class="string">'2018-01-01'</span>).isLeapYear() <span class="comment">// false</span></span><br></pre></td></tr></table></figure></p>
+<p>dayjs.extend() 方法，接受两个参数，即插件（函数）和插件的选项。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扩展插件的方法</span></span><br><span class="line"><span class="comment">// plugin：插件函数</span></span><br><span class="line"><span class="comment">// option：插件的选项</span></span><br><span class="line">dayjs.extend = <span class="function">(<span class="params">plugin, option</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 插件函数接受三个参数</span></span><br><span class="line">  <span class="comment">// 1.插件选项 2.Dayjs 类 3.dayjs 函数</span></span><br><span class="line">  <span class="comment">// 插件的方法都是挂载在 Dayjs 类的原型对象上的（Dayjs.prototype）。</span></span><br><span class="line">  plugin(option, Dayjs, dayjs)</span><br><span class="line">  <span class="keyword">return</span> dayjs</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>IsLeapYear 的源码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> (o, c) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> proto = c.prototype</span><br><span class="line">  proto.isLeapYear = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((<span class="keyword">this</span>.$y % <span class="number">4</span> === <span class="number">0</span>) &amp;&amp; (<span class="keyword">this</span>.$y % <span class="number">100</span> !== <span class="number">0</span>)) || (<span class="keyword">this</span>.$y % <span class="number">400</span> === <span class="number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将 isLeapYear 函数挂载到 Dayjs 类的原型上，所以每个 Dayjs 实例都可以使用 isLeapYear 方法。</p>
+<hr>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p> 特别感谢 DaisyXL 和 Young 的支持和分析！</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/15/yangxiaotong/angularjs双向绑定/" rel="prev">angularjs的双向数据绑定</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/13/wangpeiyu/web-security-XSS/" rel="next">Web 前端安全科普之 XSS</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-特性"><span class="nav-number">1.</span> <span class="nav-text">一 特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-解析"><span class="nav-number">2.</span> <span class="nav-text">二 解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造器-dayjs-existing-string-number-Date-Dayjs"><span class="nav-number">2.1.</span> <span class="nav-text">构造器 dayjs(existing?: string | number | Date | Dayjs)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-当前时间"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">1.当前时间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-标准的-ISO-8601-时间字符串"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">2.标准的 ISO 8601 时间字符串</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-解析-Unix-时间戳-毫秒"><span class="nav-number">2.1.0.3.</span> <span class="nav-text">3.解析 Unix 时间戳(毫秒)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-解析-Date-对象"><span class="nav-number">2.1.0.4.</span> <span class="nav-text">4.解析 Date 对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-解析-dayjs-对象"><span class="nav-number">2.1.0.5.</span> <span class="nav-text">5.解析 dayjs 对象</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#克隆"><span class="nav-number">2.2.</span> <span class="nav-text">克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证"><span class="nav-number">2.3.</span> <span class="nav-text">验证</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#三-获取-设置"><span class="nav-number">3.</span> <span class="nav-text">三 获取+设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#获取各种时间"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">获取各种时间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#设置各种时间"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">设置各种时间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-格式化显示"><span class="nav-number">4.</span> <span class="nav-text">四 格式化显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-操作"><span class="nav-number">5.</span> <span class="nav-text">五 操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#增加和减少"><span class="nav-number">5.0.0.1.</span> <span class="nav-text">增加和减少</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#开头和末尾"><span class="nav-number">5.0.0.2.</span> <span class="nav-text">开头和末尾</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六-时间差"><span class="nav-number">6.</span> <span class="nav-text">六 时间差</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-其他方法"><span class="nav-number">7.</span> <span class="nav-text">七 其他方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#获取-unix-毫秒时间戳："><span class="nav-number">7.0.0.1.</span> <span class="nav-text">获取 unix 毫秒时间戳：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#获取-unix-秒级时间戳："><span class="nav-number">7.0.0.2.</span> <span class="nav-text">获取 unix 秒级时间戳：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#返回月份的天数："><span class="nav-number">7.0.0.3.</span> <span class="nav-text">返回月份的天数：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#获取-Date-对象："><span class="nav-number">7.0.0.4.</span> <span class="nav-text">获取 Date 对象：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#获取数组格式："><span class="nav-number">7.0.0.5.</span> <span class="nav-text">获取数组格式：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#获取对象格式："><span class="nav-number">7.0.0.6.</span> <span class="nav-text">获取对象格式：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-dayjs-插件用法"><span class="nav-number">8.</span> <span class="nav-text">八 dayjs 插件用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感谢"><span class="nav-number">9.</span> <span class="nav-text">感谢</span></a></li></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

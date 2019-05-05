@@ -1,0 +1,759 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="yarn,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="2016年10月11日，facebook 公开了新的 javascript 包管理工具 yarn, 用来替代目前被广泛使用的 npm (nodejs 自带的包管理工具)，本文将介绍yarn工具带来的优点和使用入门。">
+<meta name="keywords" content="yarn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js新的包管理工具yarn">
+<meta property="og:url" content="http://xgfe.github.io/2016/11/30/scliuyang/yarn/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="2016年10月11日，facebook 公开了新的 javascript 包管理工具 yarn, 用来替代目前被广泛使用的 npm (nodejs 自带的包管理工具)，本文将介绍yarn工具带来的优点和使用入门。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p1.bpimg.com/567571/d6e758cf0daca760.png">
+<meta property="og:image" content="http://p1.bpimg.com/567571/4e045ea553b1e6d1.png">
+<meta property="og:image" content="http://i1.piimg.com/567571/9821a5982fd73104.jpg">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.395Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="js新的包管理工具yarn">
+<meta name="twitter:description" content="2016年10月11日，facebook 公开了新的 javascript 包管理工具 yarn, 用来替代目前被广泛使用的 npm (nodejs 自带的包管理工具)，本文将介绍yarn工具带来的优点和使用入门。">
+<meta name="twitter:image" content="http://p1.bpimg.com/567571/d6e758cf0daca760.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> js新的包管理工具yarn | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              js新的包管理工具yarn
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-11-30T16:32:00+08:00" content="2016-11-30">
+            2016-11-30
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/scliuyang/" itemprop="url" rel="index">
+                  <span itemprop="name">scliuyang</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/yarn/" rel="tag"><i class="icon-next-tags"></i>yarn</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>2016年10月11日，facebook 公开了新的 javascript 包管理工具 yarn, 用来替代目前被广泛使用的 npm (nodejs 自带的包管理工具)，本文将介绍yarn工具带来的优点和使用入门。</p>
+<a id="more"></a>
+<p>本文会介绍yarn的以下几个方面：</p>
+<ol>
+<li>yarn对比npm解决了什么问题，带来哪些便利。</li>
+<li>获取yarn的正确姿势</li>
+<li>yarn的使用入门（介绍一些常用的命令</li>
+<li>个人使用心得</li>
+</ol>
+<h1 id="yarn对比npm的优点"><a href="#yarn对比npm的优点" class="headerlink" title="yarn对比npm的优点"></a>yarn对比npm的优点</h1><p>根据<a href="https://github.com/yarnpkg/yarn" target="_blank" rel="noopener">官方文档</a>yarn具有6大优点</p>
+<h2 id="离线模式"><a href="#离线模式" class="headerlink" title="离线模式"></a>离线模式</h2><p>yarn会有一个缓存目录，会缓存以前安装过的软件包，再次安装时就不必从网络下载了，大大加速安装速度。</p>
+<p>这一点很重要，npm 饱受诟病的一点就是，每次安装依赖，都需要从网络下载一大堆东西，而且是全部重新下载，工程多的时候比较烦人。</p>
+<p>我司部署node项目，是需要在发布机上install所有的依赖而且发布机的网络环境不是很好(不给搭梯子)，导致安装慢不说还经常失败(部分包需要联网编译)。更换yarn后只需将yarn的cache目录缓存起来，每次install嗷嗷的快，麻麻再也不用担心发布失败了。</p>
+<h2 id="依赖关系确定性"><a href="#依赖关系确定性" class="headerlink" title="依赖关系确定性"></a>依赖关系确定性</h2><p>在每一台机器上针对同一个工程安装依赖时，生成的依赖关系顺序和版本是一致的。</p>
+<p>之前 npm 在这里有一个处理得不好的地方 。举例来说，我写的工程依赖 A, B, C 三个库，我在编写 package.json 的时候，给 A, B, C 都指定了版本号。但是 A 库可能又依赖 D, E, F 库，D 库又依赖 G, H 库。这么多关联依赖关系中，很可能某个库在指定依赖时，没有指定版本号。</p>
+<p>于是，这就导致了一个问题。如果我在另一台机器上对同样的工程安装依赖，或者把这台机器工程下的 node_modules 目录删除来重新安装依赖。由于关联依赖中，没有指定版本号的库，发生了版本更新，就会导致再次安装的依赖，其中具体某些软件包的版本是不一致的。在这种情况下，你会发现原来能够正常运行的程序，忽然变得不能工作或一堆 BUG.</p>
+<p>npm对包引入顺序也十分的敏感，比如在一个空项目里执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br><span class="line">npm install globule@0.1.0 -S</span><br><span class="line">npm install babel-generator@6.19.0 -S</span><br><span class="line">npm install babel-helper-define-map@6.18.0 -S</span><br></pre></td></tr></table></figure>
+<p>我们这里安装了3个包都依赖于lodash，不过globule依赖lodash@1.0.3,另外两个依赖lodash@4.x。现在目录依赖结构如下<br><img src="http://p1.bpimg.com/567571/d6e758cf0daca760.png" style="width:500px"></p>
+<p>这时假设我们在项目里使用lodash，但是忘记重新安装lodash<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var lodash = require(&apos;lodash&apos;);</span><br><span class="line">console.log(lodash.VERSION); // v1.0.3</span><br></pre></td></tr></table></figure></p>
+<p>另一个同事获取项目代码，执行<code>npm install</code>,这时的目录依赖结构为<br><img src="http://p1.bpimg.com/567571/4e045ea553b1e6d1.png" style="width:500px"><br>可以看到第一层依赖的lodash变成了4.x版本，这样就造成了依赖版本不一致的问题。而yarn则会保证无论怎样引入的顺序，目录依赖结构都是一致的，确保不会发生这样的BUG。</p>
+<h2 id="网络性能优化"><a href="#网络性能优化" class="headerlink" title="网络性能优化"></a>网络性能优化</h2><p>下载软件时会优化请求顺序，避免<code>请求瀑布</code>发生</p>
+<h2 id="网络回弹"><a href="#网络回弹" class="headerlink" title="网络回弹"></a>网络回弹</h2><p>yarn在某个安装包请求失败时不会导致安装失败，它会自动去尝试重新安装。而npm则会毫不犹豫的失败，导致得再来一次，耗费时间</p>
+<h2 id="多注册来源"><a href="#多注册来源" class="headerlink" title="多注册来源"></a>多注册来源</h2><p>所有的依赖包，不管他被不同的库间接关联引用多少次，安装这个包时，只会从一个注册来源去装，要么是 npm 要么是 bower, 防止出现混乱不一致。</p>
+<h2 id="扁平模式"><a href="#扁平模式" class="headerlink" title="扁平模式"></a>扁平模式</h2><p>对于多个包依赖同一个子包的情况，yarn会尽量提取为同一个包，防止出现多处副本，浪费空间。比如1.2中，yarn会为babel-generator和babel-helper-define-map 创建同一个lodash子依赖，这样就节约一份的空间。</p>
+<h2 id="更多的emojis"><a href="#更多的emojis" class="headerlink" title="更多的emojis"></a>更多的emojis</h2><p>表情包大战o(╯□╰)o<br><img src="http://i1.piimg.com/567571/9821a5982fd73104.jpg" style="width:500px"></p>
+<h1 id="正确的安装姿势"><a href="#正确的安装姿势" class="headerlink" title="正确的安装姿势"></a>正确的安装姿势</h1><p>注意yarn依赖node运行环境，官网提供了不同环境下的N种安装方法，<a href="https://yarnpkg.com/en/docs/install#alternatives-tab" target="_blank" rel="noopener">点我查看</a>。其中最重要的也是最通用的当然是<code>npm install yarn -g</code>，也不知道官网搞那么多幺蛾子的安装方式干嘛又是brew又是yum，还折腾半天。</p>
+<h1 id="yarn常用命令介绍"><a href="#yarn常用命令介绍" class="headerlink" title="yarn常用命令介绍"></a>yarn常用命令介绍</h1><h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><p>命令<code>yarn init</code>，<a href="https://yarnpkg.com/en/docs/cli/init" target="_blank" rel="noopener">详细介绍</a></p>
+<p>跟npm一样，会出现一个交互式的窗口，问一些package相关的问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">question name (testdir): my-awesome-package</span><br><span class="line">question version (1.0.0): </span><br><span class="line">question description: The best package you will ever find.</span><br><span class="line">question entry point (index.js): </span><br><span class="line">question git repository: https://github.com/yarnpkg/example-yarn-package</span><br><span class="line">question author: Yarn Contributor</span><br><span class="line">question license (MIT): </span><br><span class="line">success Saved package.json</span><br><span class="line">✨  Done in 87.70s.</span><br></pre></td></tr></table></figure>
+<p>当然可以加参数 <code>--yes/-y</code> 来自动回答所有的问题(yes),便捷的生成一个package.json</p>
+<h2 id="管理依赖"><a href="#管理依赖" class="headerlink" title="管理依赖"></a>管理依赖</h2><p>注意，以下的命令都会自动更新你的package.json和yarn.lock文件</p>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>命令<code>yarn add [package]@[version/tag]</code>,<a href="https://yarnpkg.com/en/docs/cli/add" target="_blank" rel="noopener">详细介绍</a></p>
+<p>这会自动把包添加到package.json里的dependencies,也同时会更新yarn.lock</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  &#123;</span><br><span class="line">    &quot;name&quot;: &quot;my-package&quot;,</span><br><span class="line">    &quot;dependencies&quot;: &#123;</span><br><span class="line">+     &quot;package-1&quot;: &quot;^1.0.0&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>添加到不同的dependencies需要加如下参数</p>
+<ol>
+<li><code>yarn add --dev/-D</code> 添加到devDependencies</li>
+<li><code>yarn add --peer/-P</code> 添加到peerDependencies</li>
+<li><code>yarn add --optional/-O</code> 添加到optionalDependencies</li>
+</ol>
+<h3 id="更新依赖"><a href="#更新依赖" class="headerlink" title="更新依赖"></a>更新依赖</h3><p>命令<code>yarn upgrade [package]@[version/tag]</code>,<a href="https://yarnpkg.com/en/docs/cli/upgrade" target="_blank" rel="noopener">详细介绍</a><br>更新某个依赖的版本，并自动更新package.json和yarn.lock文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  &#123;</span><br><span class="line">    &quot;name&quot;: &quot;my-package&quot;,</span><br><span class="line">    &quot;dependencies&quot;: &#123;</span><br><span class="line">-     &quot;package-1&quot;: &quot;^1.0.0&quot;</span><br><span class="line">+     &quot;package-1&quot;: &quot;^2.0.0&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除依赖"><a href="#删除依赖" class="headerlink" title="删除依赖"></a>删除依赖</h3><p>命令<code>yarn remove [package]</code><br>删除某个依赖，并自动更新package.json和yarn.lock文件</p>
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><p>命令 <code>yarn install</code>,<a href="https://yarnpkg.com/en/docs/cli/install" target="_blank" rel="noopener">详细介绍</a></p>
+<p>会从package.json里提取所有的依赖并安装，然后生成yarn.lock锁定所有的依赖版本，别人执行<code>yarn install</code>时会根据yarn.lock安装依赖，保证不同的电脑安装的依赖目录结构完全一致。</p>
+<p>可选参数</p>
+<ol>
+<li><code>yarn install --flat</code> 有且仅有一个依赖的版本被允许，多依赖会出现一个交互式窗口，让使用者选择某一个版本安装</li>
+<li><code>yarn install --force</code> 强制重新下载所有的依赖包</li>
+<li><code>yarn install --production</code> 只下载dependencies下的依赖</li>
+</ol>
+<h2 id="全局命令"><a href="#全局命令" class="headerlink" title="全局命令"></a>全局命令</h2><p>在yarn命令前加一个global修饰，可以将命令变为全局的，支持的命令有 add,bin,ls,remove,upgrade<br>例如<code>npm install gulp -g</code>,可以用<code>yarn global add gulp</code>来替代</p>
+<h1 id="个人使用心得"><a href="#个人使用心得" class="headerlink" title="个人使用心得"></a>个人使用心得</h1><ol>
+<li>更换安装源，使用阿里提供的npm register加速， <code>yarn config set registry &#39;https://registry.npm.taobao.org&#39;</code>,当然如果npm已经配置过，yarn就无需再配置了。</li>
+<li>yarn还有许多小问题，不过官方也在努力修复中，建议时不时使用<code>yarn self-update</code>来更新版本</li>
+<li>以前包锁定是使用<code>npm shrinkwrap</code>命令，感觉繁琐且难维护，使用yarn后自动生成锁定文件，简单方便</li>
+</ol>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zhuanlan.zhihu.com/p/22967139" target="_blank" rel="noopener">新的 js 包管理工具 yarn 解决了什么问题？</a><br><a href="https://yarnpkg.com/en/docs/cli/" target="_blank" rel="noopener">yarn cli doc</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/21/scliuyang/docker1/" rel="prev">初识docker</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/28/felix/web-secure-skill/" rel="next">Web安全技术</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#yarn对比npm的优点"><span class="nav-number">1.</span> <span class="nav-text">yarn对比npm的优点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#离线模式"><span class="nav-number">1.1.</span> <span class="nav-text">离线模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖关系确定性"><span class="nav-number">1.2.</span> <span class="nav-text">依赖关系确定性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络性能优化"><span class="nav-number">1.3.</span> <span class="nav-text">网络性能优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络回弹"><span class="nav-number">1.4.</span> <span class="nav-text">网络回弹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多注册来源"><span class="nav-number">1.5.</span> <span class="nav-text">多注册来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扁平模式"><span class="nav-number">1.6.</span> <span class="nav-text">扁平模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更多的emojis"><span class="nav-number">1.7.</span> <span class="nav-text">更多的emojis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正确的安装姿势"><span class="nav-number">2.</span> <span class="nav-text">正确的安装姿势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yarn常用命令介绍"><span class="nav-number">3.</span> <span class="nav-text">yarn常用命令介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建项目"><span class="nav-number">3.1.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理依赖"><span class="nav-number">3.2.</span> <span class="nav-text">管理依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加依赖"><span class="nav-number">3.2.1.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新依赖"><span class="nav-number">3.2.2.</span> <span class="nav-text">更新依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除依赖"><span class="nav-number">3.2.3.</span> <span class="nav-text">删除依赖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖"><span class="nav-number">3.3.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局命令"><span class="nav-number">3.4.</span> <span class="nav-text">全局命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人使用心得"><span class="nav-number">4.</span> <span class="nav-text">个人使用心得</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

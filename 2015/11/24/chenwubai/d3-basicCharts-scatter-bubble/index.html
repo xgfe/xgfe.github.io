@@ -1,0 +1,879 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="数据可视化,svg,D3.js,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="&amp;emsp;&amp;emsp;在之前的《基于D3.js的柱状图的实现》和《基于D3.js的折线图的实现》中，已经介绍过柱状图和折线图了。今天来说说非常相似的两种图表——散点图和气泡图。">
+<meta name="keywords" content="数据可视化,svg,D3.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于D3.js的散点图和气泡图的实现">
+<meta property="og:url" content="http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在之前的《基于D3.js的柱状图的实现》和《基于D3.js的折线图的实现》中，已经介绍过柱状图和折线图了。今天来说说非常相似的两种图表——散点图和气泡图。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-scatter&bubble/axis-scatter.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-scatter&bubble/scatter.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-scatter&bubble/bubble.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.375Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于D3.js的散点图和气泡图的实现">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;在之前的《基于D3.js的柱状图的实现》和《基于D3.js的折线图的实现》中，已经介绍过柱状图和折线图了。今天来说说非常相似的两种图表——散点图和气泡图。">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-scatter&bubble/axis-scatter.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 基于D3.js的散点图和气泡图的实现 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              基于D3.js的散点图和气泡图的实现
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-11-24T00:00:00+08:00" content="2015-11-24">
+            2015-11-24
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/chenwubai/" itemprop="url" rel="index">
+                  <span itemprop="name">chenwubai</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/数据可视化/" rel="tag"><i class="icon-next-tags"></i>数据可视化</a>
+            
+              <a href="/tags/svg/" rel="tag"><i class="icon-next-tags"></i>svg</a>
+            
+              <a href="/tags/D3-js/" rel="tag"><i class="icon-next-tags"></i>D3.js</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>&emsp;&emsp;在之前的<a href="/2015/11/23/chenwubai/d3-basicCharts-bar/#more">《基于D3.js的柱状图的实现》</a>和<a href="/2015/11/23/chenwubai/d3-basicCharts-line/#more">《基于D3.js的折线图的实现》</a>中，已经介绍过柱状图和折线图了。今天来说说非常相似的两种图表——散点图和气泡图。<br><a id="more"></a><br>&emsp;&emsp;还是和之前一样，我们先把简单的画图框架搭起来，添加SVG画布：  </p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot;&gt;
+        &lt;title&gt;散点图和气泡图&lt;/title&gt;
+        &lt;style&gt;
+            .container {
+                margin: 30px auto;
+                width: 600px;
+                height: 300px;
+                border: 1px solid #000;
+            }
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            &lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;script src=&quot;d3/d3.js&quot;&gt;&lt;/script&gt;
+        &lt;script&gt;
+            window.onload = function() {
+                var width = 600, height = 300;
+                // SVG画布边缘与图表内容的距离
+                var padding = { top: 50, right: 50, bottom: 50, left: 50 };
+                // 创建一个分组用来组合要画的图表元素
+                var main = d3.select(&apos;.container svg&apos;).append(&apos;g&apos;)
+                    // 给这个分组加上main类
+                    .classed(&apos;main&apos;)
+                    // 设置该分组的transform属性
+                    .attr(&apos;transform&apos;, &quot;translate(&quot; + padding.top + &apos;,&apos; + padding.left + &apos;)&apos;);
+            };
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;  
+</code></pre><p>&emsp;&emsp;散点图和气泡图虽然在展现意义上是不同的，但从技术实现的角度来讲，它们还是很类似的，都是由坐标轴和一个个的圆所组成的。</p>
+<h2 id="散点图"><a href="#散点图" class="headerlink" title="散点图"></a>散点图</h2><h3 id="坐标轴的实现"><a href="#坐标轴的实现" class="headerlink" title="坐标轴的实现"></a>坐标轴的实现</h3><p>&emsp;&emsp;为了实现真实的效果，散点图和气泡图我们使用不同的模拟数据。与折线图同理，散点图的各点的坐标的关系在坐标轴上的关系是连续的，所以它的x轴和y轴都使用线性比例尺（线性比例尺和序数比例尺的区别参见<a href="/2015/11/23/chenwubai/d3-basicCharts-bar/#more">《基于D3.js的柱状图的实现》</a>）。</p>
+<pre><code>// 模拟数据
+var dataset = [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6],
+            [170.0, 59.0], [159.1, 47.6], [166.0, 69.8], [176.2, 66.8], [160.2, 75.2],
+            [172.5, 55.2], [170.9, 54.2], [172.9, 62.5], [153.4, 42.0], [160.0, 50.0],
+            [147.2, 49.8], [168.2, 49.2], [175.0, 73.2], [157.0, 47.8], [167.6, 68.8],
+            [159.5, 50.6], [175.0, 82.5], [166.8, 57.2], [176.5, 87.8], [170.2, 72.8],
+            [174.0, 54.5], [173.0, 59.8], [179.9, 67.3], [170.5, 67.8], [160.0, 47.0],
+            [154.4, 46.2], [162.0, 55.0], [176.5, 83.0], [160.0, 54.4], [152.0, 45.8],
+            [162.1, 53.6], [170.0, 73.2], [160.2, 52.1], [161.3, 67.9], [166.4, 56.6],
+            [168.9, 62.3], [163.8, 58.5], [167.6, 54.5], [160.0, 50.2], [161.3, 60.3],
+            [167.6, 58.3], [165.1, 56.2], [160.0, 50.2], [170.0, 72.9], [157.5, 59.8],
+            [167.6, 61.0], [160.7, 69.1], [163.2, 55.9], [152.4, 46.5], [157.5, 54.3],
+            [168.3, 54.8], [180.3, 60.7], [165.5, 60.0], [165.0, 62.0], [164.5, 60.3],
+            [156.0, 52.7], [160.0, 74.3], [163.0, 62.0], [165.7, 73.1], [161.0, 80.0],
+            [162.0, 54.7], [166.0, 53.2], [174.0, 75.7], [172.7, 61.1], [167.6, 55.7],
+            [151.1, 48.7], [164.5, 52.3], [163.5, 50.0], [152.0, 59.3], [169.0, 62.5],
+            [164.0, 55.7], [161.2, 54.8], [155.0, 45.9], [170.0, 70.6], [176.2, 67.2],
+            [170.0, 69.4], [162.5, 58.2], [170.3, 64.8], [164.1, 71.6], [169.5, 52.8],
+            [163.2, 59.8], [154.5, 49.0], [159.8, 50.0], [173.2, 69.2], [170.0, 55.9],
+            [161.4, 63.4], [169.0, 58.2], [166.2, 58.6], [159.4, 45.7], [162.5, 52.2],
+            [159.0, 48.6], [162.8, 57.8], [159.0, 55.6], [179.8, 66.8], [162.9, 59.4],
+            [161.0, 53.6], [151.1, 73.2], [168.2, 53.4], [168.9, 69.0], [173.2, 58.4],
+            [171.8, 56.2], [178.0, 70.6], [164.3, 59.8], [163.0, 72.0], [168.5, 65.2],
+            [166.8, 56.6], [172.7, 105.2], [163.5, 51.8], [169.4, 63.4], [167.8, 59.0],
+            [159.5, 47.6], [167.6, 63.0], [161.2, 55.2], [160.0, 45.0], [163.2, 54.0],
+            [162.2, 50.2], [161.3, 60.2], [149.5, 44.8], [157.5, 58.8], [163.2, 56.4],
+            [172.7, 62.0], [155.0, 49.2], [156.5, 67.2], [164.0, 53.8], [160.9, 54.4],
+            [162.8, 58.0], [167.0, 59.8], [160.0, 54.8], [160.0, 43.2], [168.9, 60.5],
+            [158.2, 46.4], [156.0, 64.4], [160.0, 48.8], [167.1, 62.2], [158.0, 55.5],
+            [167.6, 57.8], [156.0, 54.6], [162.1, 59.2], [173.4, 52.7], [159.8, 53.2],
+            [170.5, 64.5], [159.2, 51.8], [157.5, 56.0], [161.3, 63.6], [162.6, 63.2],
+            [160.0, 59.5], [168.9, 56.8], [165.1, 64.1], [162.6, 50.0], [165.1, 72.3],
+            [166.4, 55.0], [160.0, 55.9], [152.4, 60.4], [170.2, 69.1], [162.6, 84.5],
+            [170.2, 55.9], [158.8, 55.5], [172.7, 69.5], [167.6, 76.4], [162.6, 61.4],
+            [167.6, 65.9], [156.2, 58.6], [175.2, 66.8], [172.1, 56.6], [162.6, 58.6],
+            [160.0, 55.9], [165.1, 59.1], [182.9, 81.8], [166.4, 70.7], [165.1, 56.8],
+            [177.8, 60.0], [165.1, 58.2], [175.3, 72.7], [154.9, 54.1], [158.8, 49.1],
+            [172.7, 75.9], [168.9, 55.0], [161.3, 57.3], [167.6, 55.0], [165.1, 65.5],
+            [175.3, 65.5], [157.5, 48.6], [163.8, 58.6], [167.6, 63.6], [165.1, 55.2],
+            [165.1, 62.7], [168.9, 56.6], [162.6, 53.9], [164.5, 63.2], [176.5, 73.6],
+            [168.9, 62.0], [175.3, 63.6], [159.4, 53.2], [160.0, 53.4], [170.2, 55.0],
+            [162.6, 70.5], [167.6, 54.5], [162.6, 54.5], [160.7, 55.9], [160.0, 59.0],
+            [157.5, 63.6], [162.6, 54.5], [152.4, 47.3], [170.2, 67.7], [165.1, 80.9],
+            [172.7, 70.5], [165.1, 60.9], [170.2, 63.6], [170.2, 54.5], [170.2, 59.1],
+            [161.3, 70.5], [167.6, 52.7], [167.6, 62.7], [165.1, 86.3], [162.6, 66.4],
+            [152.4, 67.3], [168.9, 63.0], [170.2, 73.6], [175.2, 62.3], [175.2, 57.7],
+            [160.0, 55.4], [165.1, 104.1], [174.0, 55.5], [170.2, 77.3], [160.0, 80.5],
+            [167.6, 64.5], [167.6, 72.3], [167.6, 61.4], [154.9, 58.2], [162.6, 81.8],
+            [175.3, 63.6], [171.4, 53.4], [157.5, 54.5], [165.1, 53.6], [160.0, 60.0],
+            [174.0, 73.6], [162.6, 61.4], [174.0, 55.5], [162.6, 63.6], [161.3, 60.9],
+            [156.2, 60.0], [149.9, 46.8], [169.5, 57.3], [160.0, 64.1], [175.3, 63.6],
+            [169.5, 67.3], [160.0, 75.5], [172.7, 68.2], [162.6, 61.4], [157.5, 76.8],
+            [176.5, 71.8], [164.4, 55.5], [160.7, 48.6], [174.0, 66.4], [163.8, 67.3]
+        ];
+// 创建x轴的比例尺
+var xScale = d3.scale.linear()
+        .domain([140,  190])
+        .range([0, width - padding.left - padding.right]);
+// 创建y轴的比例尺
+var yScale = d3.scale.linear()
+        .domain([40, 120])
+        .range([height - padding.top - padding.bottom, 0]);
+// 创建x轴
+var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient(&apos;bottom&apos;);
+// 创建y轴
+var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient(&apos;left&apos;);
+// 把x轴应用到对应的SVG元素上
+main.append(&apos;g&apos;)
+        .attr(&apos;class&apos;, &apos;axis&apos;)
+        .attr(&apos;transform&apos;, &apos;translate(0,&apos; + (height - padding.top - padding.bottom) + &apos;)&apos;)
+        .call(xAxis);
+// 把y轴应用到对应的SVG元素上
+main.append(&apos;g&apos;)
+        .attr(&apos;class&apos;, &apos;axis&apos;)
+        .call(yAxis);
+</code></pre><p>&emsp;&emsp;同折线图的坐标轴的实现是相同的，先用<a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear" target="_blank" rel="noopener">d3.scale.linear()</a>创建比例尺，再用<a href="https://github.com/mbostock/d3/wiki/SVG-Axes#axis" target="_blank" rel="noopener">d3.svg.axis()</a>创建坐标轴并且设置对应的比例尺，最后添加SVG元素并“绑定”坐标轴到其上，就可以看到完成以后的坐标轴。注意这里需要对移动SVG元素，使它们在视觉上组装成一个坐标系（但实际上它们在位置上是零散的，并没有很强的关系）。<br><img src="/uploads/chenwubai/d3-basicCharts-scatter&bubble/axis-scatter.png" width="320" height="160"></p>
+<h3 id="散点的实现"><a href="#散点的实现" class="headerlink" title="散点的实现"></a>散点的实现</h3><p>&emsp;&emsp;在图表中一般点都是通过画圆来实现的，当圆的半径足够小的时候，它就是点。</p>
+<pre><code>// 添加散点
+main.selectAll(&apos;.point&apos;)
+        .data(dataset)
+        .enter()
+        .append(&apos;circle&apos;)
+        .attr(&apos;class&apos;, &apos;point&apos;)
+        .attr(&apos;cx&apos;, function(d) {
+            return xScale(d[0]);
+        })
+        .attr(&apos;cy&apos;, function(d) {
+            return yScale(d[1]);
+        })
+        .attr(&apos;r&apos;, 5);
+</code></pre><p>&emsp;&emsp;与折线图添加点的方式是一样的。在main元素中选择到所有的圆先“占位”（因为此时选择到的是一个空的集合，只是这个集合代表main中所有的圆），然后绑定dataset到此集合上，通过<a href="https://github.com/mbostock/d3/wiki/Selections#enter" target="_blank" rel="noopener">enter()</a>和append()搭配使用添加新的circle元素直到集合元素个数与dataset子元素个数相同为止。用比例尺计算出各圆的坐标并对其相关属性进行赋值，就完成了点的添加。因为散点图的点有点多，为了图表更加美观，给圆设置一下样式。  </p>
+<pre><code>.point {
+    fill: #2ec7c9;
+    fill-opacity: 0.5;
+}
+</code></pre><p>&emsp;&emsp;最后，散点图长这样。<br><img src="/uploads/chenwubai/d3-basicCharts-scatter&bubble/scatter.png" width="320" height="160"></p>
+<h2 id="气泡图"><a href="#气泡图" class="headerlink" title="气泡图"></a>气泡图</h2><h3 id="坐标轴的实现-1"><a href="#坐标轴的实现-1" class="headerlink" title="坐标轴的实现"></a>坐标轴的实现</h3><p>&emsp;&emsp;因为只有模拟的数据结构不同，实现原理都是类似的，这里就不再赘述，直接上代码。  </p>
+<pre><code>// 模拟数据
+var dataset = [
+    { x: 69, y: 45, weight: 5 },{ x: 30, y: 37, weight: 10 },
+    { x: 43, y: 10, weight: 23 },{ x: 54, y: 48, weight: 41 },
+    { x: 18, y: 18, weight: 41 },{ x: 88, y: 21, weight: 32 },
+    { x: 45, y: 48, weight: 12 },{ x: 14, y: 32, weight: 9 },
+    { x: 78, y: 18, weight: 16 },{ x: 13, y: 45, weight: 32 }
+];
+// 添加x轴和y轴
+var xScale = d3.scale.linear()
+        .domain([0, 100])
+        .range([0, width - padding.left - padding.right]);
+var yScale = d3.scale.linear()
+        .domain([0, 50])
+        .range([height - padding.top - padding.bottom, 0]);
+var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient(&apos;bottom&apos;);
+var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient(&apos;left&apos;);  
+</code></pre><h3 id="气泡的实现"><a href="#气泡的实现" class="headerlink" title="气泡的实现"></a>气泡的实现</h3><pre><code>// 添加气泡
+main.selectAll(&apos;.bubble&apos;)
+        .data(dataset)
+        .enter()
+        .append(&apos;circle&apos;)
+        .attr(&apos;class&apos;, &apos;bubble&apos;)
+        .attr(&apos;cx&apos;, function(d) {
+            return xScale(d.x);
+        })
+        .attr(&apos;cy&apos;, function(d) {
+            return yScale(d.y);
+        })
+        .attr(&apos;r&apos;, function(d) {
+            return d.weight;
+        });
+</code></pre><p>&emsp;&emsp;最后的气泡图是长这样的。<br><img src="/uploads/chenwubai/d3-basicCharts-scatter&bubble/bubble.png" width="320" height="160"><br>&emsp;&emsp;完整的代码和例子展示请移步<a href="/uploads/chenwubai/d3-basicCharts-scatter%26bubble/scatter.html">scatter.html</a>和<a href="/uploads/chenwubai/d3-basicCharts-scatter%26bubble/bubble.html">bubble.html</a>。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/24/chenwubai/d3-basicCharts-pie/" rel="prev">基于D3.js的饼图的实现</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/23/chenwubai/d3-basicCharts-line/" rel="next">基于D3.js的折线图的实现</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#散点图"><span class="nav-number">1.</span> <span class="nav-text">散点图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#坐标轴的实现"><span class="nav-number">1.1.</span> <span class="nav-text">坐标轴的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#散点的实现"><span class="nav-number">1.2.</span> <span class="nav-text">散点的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#气泡图"><span class="nav-number">2.</span> <span class="nav-text">气泡图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#坐标轴的实现-1"><span class="nav-number">2.1.</span> <span class="nav-text">坐标轴的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#气泡的实现"><span class="nav-number">2.2.</span> <span class="nav-text">气泡的实现</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

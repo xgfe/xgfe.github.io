@@ -1,0 +1,811 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="数据可视化,svg,D3.js,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="&amp;emsp;&amp;emsp;在《基于D3.js的柱状图的实现》中已经介绍过如何用D3.js来实现一个简单的柱状图了。现在就让这道新世界的大门再打开一些，我们来用D3.js来实现折线图。">
+<meta name="keywords" content="数据可视化,svg,D3.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于D3.js的折线图的实现">
+<meta property="og:url" content="http://xgfe.github.io/2015/11/23/chenwubai/d3-basicCharts-line/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在《基于D3.js的柱状图的实现》中已经介绍过如何用D3.js来实现一个简单的柱状图了。现在就让这道新世界的大门再打开一些，我们来用D3.js来实现折线图。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-line/axis-line.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-line/lineShape.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-line/line.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.374Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于D3.js的折线图的实现">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;在《基于D3.js的柱状图的实现》中已经介绍过如何用D3.js来实现一个简单的柱状图了。现在就让这道新世界的大门再打开一些，我们来用D3.js来实现折线图。">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-line/axis-line.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 基于D3.js的折线图的实现 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              基于D3.js的折线图的实现
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-11-23T15:00:00+08:00" content="2015-11-23">
+            2015-11-23
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/chenwubai/" itemprop="url" rel="index">
+                  <span itemprop="name">chenwubai</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/数据可视化/" rel="tag"><i class="icon-next-tags"></i>数据可视化</a>
+            
+              <a href="/tags/svg/" rel="tag"><i class="icon-next-tags"></i>svg</a>
+            
+              <a href="/tags/D3-js/" rel="tag"><i class="icon-next-tags"></i>D3.js</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>&emsp;&emsp;在<a href="/2015/11/23/chenwubai/d3-basicCharts-bar/#more">《基于D3.js的柱状图的实现》</a>中已经介绍过如何用D3.js来实现一个简单的柱状图了。现在就让这道新世界的大门再打开一些，我们来用D3.js来实现折线图。<br><a id="more"></a><br>&emsp;&emsp;折线图由坐标轴、线条和点组成。和实现柱状图一样，我们还是先把大概的画图框架搭起来，代码如下（别忘了添加D3.js）：  </p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot;&gt;
+        &lt;title&gt;折线图&lt;/title&gt;
+        &lt;style&gt;
+            .container {
+                margin: 30px auto;
+                width: 600px;
+                height: 300px;
+                border: 1px solid #000;
+            }
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            &lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;script src=&quot;http://d3js.org/d3.v3.min.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+        &lt;script&gt;
+            window.onload = function() {
+                var width = 600, height = 300;
+                // SVG画布边缘与图表内容的距离
+                var padding = { top: 50, right: 50, bottom: 50, left: 50 };
+                // 创建一个分组用来组合要画的图表元素
+                var main = d3.select(&apos;.container svg&apos;).append(&apos;g&apos;)
+                    // 给这个分组加上main类
+                    .classed(&apos;main&apos;)
+                    // 设置该分组的transform属性
+                    .attr(&apos;transform&apos;, &quot;translate(&quot; + padding.top + &apos;,&apos; + padding.left + &apos;)&apos;);
+            };
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h2 id="坐标轴的实现"><a href="#坐标轴的实现" class="headerlink" title="坐标轴的实现"></a>坐标轴的实现</h2><p>&emsp;&emsp;要创建坐标轴，需要先创建比例尺。在《基于D3.js的柱状图的实现》中提到过序数比例尺和线性比例尺，因为折线的点与点之间是存在连续的关系的，所以折线图的x轴和y轴我们都采用线性比例尺。   </p>
+<pre><code>// 模拟数据
+var dataset = [
+    {x: 0, y: 11}, {x: 1, y: 35},
+    {x: 2, y: 23}, {x: 3, y: 78},
+    {x: 4, y: 55}, {x: 5, y: 18},
+    {x: 6, y: 98}, {x: 7, y: 100},
+    {x: 8, y: 22}, {x: 9, y: 65}
+];
+// 创建x轴的比例尺(线性比例尺)
+var xScale = d3.scale.linear()
+        .domain(d3.extent(dataset, function(d) {
+            return d.x;
+        }))
+        .range([0, width - padding.left - padding.right]);
+// 创建y轴的比例尺(线性比例尺)
+var yScale = d3.scale.linear()
+        .domain([0, d3.max(dataset,function(d) {
+            return d.y;
+        })])
+        .range([height - padding.top - padding.bottom, 0]);
+// 创建x轴
+var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient(&apos;bottom&apos;);
+// 创建y轴
+var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient(&apos;left&apos;);
+// 添加SVG元素并与x轴进行“绑定”
+main.append(&apos;g&apos;)
+        .attr(&apos;class&apos;, &apos;axis&apos;)
+        .attr(&apos;transform&apos;, &apos;translate(0,&apos; + (height - padding.top - padding.bottom) + &apos;)&apos;)
+        .call(xAxis);
+// 添加SVG元素并与y轴进行“绑定”
+main.append(&apos;g&apos;)
+        .attr(&apos;class&apos;, &apos;axis&apos;)
+        .call(yAxis);  
+</code></pre><p>&emsp;&emsp;这次我们模拟了一些点的数据来进行折线的绘制。<a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear" target="_blank" rel="noopener">d3.scale.linear()</a>创建了线性比例尺，<a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear_domain" target="_blank" rel="noopener">linear.domain()</a>定义定义域，<a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear_range" target="_blank" rel="noopener">linear.range()</a>定义值域。这里需要注意一下，因为SVG画布的y轴与传统认知上的y轴的方向是反着来的，所以在定义y轴的定义域和值域对应关系时，也需要反着来。<a href="https://github.com/mbostock/d3/wiki/Arrays#d3_extent" target="_blank" rel="noopener">d3.extent</a>可以得到参数数组中的最大值和最小值，并以数组的形式返回。然后用<a href="https://github.com/mbostock/d3/wiki/SVG-Axes#axis" target="_blank" rel="noopener">d3.svg.axis()</a>创建了两个坐标轴，把比例尺应用到它们上面，并且用<a href="https://github.com/mbostock/d3/wiki/SVG-Axes#orient" target="_blank" rel="noopener">axis.orient()</a>设置了坐标轴的刻度尺的方向。最后，添加SVG元素，用<a href="https://github.com/mbostock/d3/wiki/Selections#call" target="_blank" rel="noopener">call()</a>把定义好的坐标轴与SVG元素联系起来。通过设置它们的transform属性来移动元素，使它们看起来像是一个坐标系。<br><img src="/uploads/chenwubai/d3-basicCharts-line/axis-line.png" width="320" height="160"> </p>
+<h2 id="折线的实现"><a href="#折线的实现" class="headerlink" title="折线的实现"></a>折线的实现</h2><p>&emsp;&emsp;在D3.js中，需要先创建一个线的函数，然后由该函数得出的值赋给代表折线的path元素的d属性，才能绘制出折线。需要明确，line是一个函数，不是一个对象。具体的代码如下：</p>
+<pre><code>// 添加折线
+var line = d3.svg.line()
+        .x(function(d) {
+            return xScale(d.x)
+        })
+        .y(function(d) {
+            return yScale(d.y);
+        })
+        // 选择线条的类型
+        .interpolate(&apos;linear&apos;);
+// 添加path元素，并通过line()计算出值来赋值
+main.append(&apos;path&apos;)
+        .attr(&apos;class&apos;, &apos;line&apos;)
+        .attr(&apos;d&apos;, line(dataset));
+</code></pre><p>&emsp;&emsp;这样做了以后，我们得到了如下图所示的一条线。<br><img src="/uploads/chenwubai/d3-basicCharts-line/lineShape.png" width="320" height="160">  </p>
+<h2 id="点的实现"><a href="#点的实现" class="headerlink" title="点的实现"></a>点的实现</h2><p>&emsp;&emsp;点其实就是一个个的圆，所以在这里我们用SVG里的circle元素来画点。  </p>
+<pre><code>// 添加点
+main.selectAll(&apos;circle&apos;)
+        .data(dataset)
+        .enter()
+        .append(&apos;circle&apos;)
+        .attr(&apos;cx&apos;, function(d) {
+            return xScale(d.x);
+        })
+        .attr(&apos;cy&apos;, function(d) {
+            return yScale(d.y);
+        })
+        .attr(&apos;r&apos;, 5)
+        .attr(&apos;fill&apos;, function(d, i) {
+            return getColor(i);
+        });
+</code></pre><p>&emsp;&emsp;在main元素中选择到所有的圆先“占位”（因为此时选择到的是一个空的集合，只是这个集合代表main中所有的圆），然后绑定dataset到此集合上，通过<a href="https://github.com/mbostock/d3/wiki/Selections#enter" target="_blank" rel="noopener">enter()</a>和append()搭配使用添加新的circle元素直到集合元素个数与dataset子元素个数相同为止。用比例尺计算出各圆的坐标并对其相关属性进行赋值，就完成了点的添加。<br><img src="/uploads/chenwubai/d3-basicCharts-line/line.png" width="320" height="160"><br>&emsp;&emsp;完整的代码和例子展示请移步<a href="/uploads/chenwubai/d3-basicCharts-line/line.html">line.html</a>。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/" rel="prev">基于D3.js的散点图和气泡图的实现</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/23/chenwubai/d3-basicCharts-bar/" rel="next">基于D3.js的柱状图的实现</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#坐标轴的实现"><span class="nav-number">1.</span> <span class="nav-text">坐标轴的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#折线的实现"><span class="nav-number">2.</span> <span class="nav-text">折线的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点的实现"><span class="nav-number">3.</span> <span class="nav-text">点的实现</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

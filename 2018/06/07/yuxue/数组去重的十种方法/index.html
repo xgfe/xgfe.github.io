@@ -1,0 +1,748 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="数组,去重,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="数组去重可以说是老生常谈的话题了，工作中经常用到，面试中经常问到。那接下来就对数组去重这个老梗，做一个简单的总结与记录。">
+<meta name="keywords" content="数组,去重">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组去重的十种方法">
+<meta property="og:url" content="http://xgfe.github.io/2018/06/07/yuxue/数组去重的十种方法/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="数组去重可以说是老生常谈的话题了，工作中经常用到，面试中经常问到。那接下来就对数组去重这个老梗，做一个简单的总结与记录。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/84a60f898fc7283c3ce2dc70d770b137116872.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.403Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数组去重的十种方法">
+<meta name="twitter:description" content="数组去重可以说是老生常谈的话题了，工作中经常用到，面试中经常问到。那接下来就对数组去重这个老梗，做一个简单的总结与记录。">
+<meta name="twitter:image" content="http://vfile.meituan.net/xgfe/84a60f898fc7283c3ce2dc70d770b137116872.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 数组去重的十种方法 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              数组去重的十种方法
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-06-07T11:12:00+08:00" content="2018-06-07">
+            2018-06-07
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/yuxue/" itemprop="url" rel="index">
+                  <span itemprop="name">yuxue</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/数组/" rel="tag"><i class="icon-next-tags"></i>数组</a>
+            
+              <a href="/tags/去重/" rel="tag"><i class="icon-next-tags"></i>去重</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>数组去重可以说是老生常谈的话题了，工作中经常用到，面试中经常问到。那接下来就对数组去重这个老梗，做一个简单的总结与记录。</p>
+<a id="more"></a>
+<h2 id="一、-双重遍历"><a href="#一、-双重遍历" class="headerlink" title="一、 双重遍历"></a>一、 双重遍历</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="keyword">this</span>.length;i++) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> j=i+<span class="number">1</span>;j&lt;<span class="keyword">this</span>.length;j++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>[i] === <span class="keyword">this</span>[j]) &#123;</span><br><span class="line">                <span class="keyword">this</span>.splice(j,<span class="number">1</span>);</span><br><span class="line">                j--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line">arr.unique();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr1 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];		</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique1 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">let</span> newArr = [];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="keyword">this</span>.length;i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">let</span> j=i+<span class="number">1</span>;j&lt;<span class="keyword">this</span>.length;j++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">this</span>[i] === <span class="keyword">this</span>[j]) &#123;</span><br><span class="line">				i++;</span><br><span class="line">				j = i;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr;</span><br><span class="line">&#125;</span><br><span class="line">arr1.unique1();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<p>双重遍历的方式是最容易想到且最容易实现的方式，兼容性比较好，但是时间复杂度比较高；还有一点是不能对 NaN 进行去重。</p>
+<h2 id="二、-indexOf"><a href="#二、-indexOf" class="headerlink" title="二、 indexOf"></a>二、 indexOf</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr2 =  [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique2 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> newArr = [];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i&lt;<span class="keyword">this</span>.length; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(newArr.indexOf(<span class="keyword">this</span>[i]) === <span class="number">-1</span>) &#123;</span><br><span class="line">			newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr2.unique2();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="三、-数组下标判断"><a href="#三、-数组下标判断" class="headerlink" title="三、 数组下标判断"></a>三、 数组下标判断</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr3 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique3 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> newArr = [];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i&lt;<span class="keyword">this</span>.length;i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.indexOf(<span class="keyword">this</span>[i]) === i) &#123;</span><br><span class="line">			newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr</span><br><span class="line">&#125;</span><br><span class="line">arr3.unique3();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>]</span><br></pre></td></tr></table></figure>
+<p>因为 indexOf 使用的内部严格相等比较算法，所以在检索NaN时会返回-1 ，进而会导致方法3直接过滤掉了 NaN。</p>
+<h2 id="四、排序再去重"><a href="#四、排序再去重" class="headerlink" title="四、排序再去重"></a>四、排序再去重</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr4 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique4 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> newArr = [];<span class="keyword">this</span>.sort();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;<span class="keyword">this</span>.length; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>[i] !== newArr[newArr.length<span class="number">-1</span>]) &#123;</span><br><span class="line">			newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr4.unique4();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">5678</span>, <span class="string">"5678"</span>, <span class="number">6</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>, <span class="string">"Start"</span>, <span class="literal">null</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">undefined</span>]</span><br></pre></td></tr></table></figure>
+<p>优点是利用 js 内置的排序方法，速度快，比较的是排序后的相邻元素。最大的不同是更改了原数组的排序。</p>
+<h2 id="五、利用对象的属性"><a href="#五、利用对象的属性" class="headerlink" title="五、利用对象的属性"></a>五、利用对象的属性</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//版本1</span></span><br><span class="line"><span class="keyword">let</span> arr5 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique5 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> obj = &#123;&#125;;</span><br><span class="line">	<span class="keyword">let</span> newArr = [];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="keyword">this</span>.length;i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(!obj[<span class="keyword">this</span>[i]])&#123;</span><br><span class="line">			newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">			obj[<span class="keyword">this</span>[i]] = <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr5.unique5();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="优化-1"><a href="#优化-1" class="headerlink" title="优化"></a>优化</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//版本2</span></span><br><span class="line"><span class="keyword">let</span> arr6 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>, <span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique6 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> newArr = [];</span><br><span class="line">	<span class="keyword">let</span> obj = &#123;&#125;;</span><br><span class="line">	<span class="keyword">let</span> tmpKey;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i&lt;<span class="keyword">this</span>.length;i++) &#123;</span><br><span class="line">		tmpKey = <span class="keyword">typeof</span> <span class="keyword">this</span>[i] + <span class="built_in">JSON</span>.stringify(<span class="keyword">this</span>[i]);</span><br><span class="line">		<span class="keyword">if</span>(!obj[tmpKey]) &#123;</span><br><span class="line">			obj[tmpKey] = <span class="number">1</span>;</span><br><span class="line">			newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr;</span><br><span class="line">&#125;</span><br><span class="line">arr6.unique6();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<p>由于对象的键名只能是 String，所以版本1的局限性在于</p>
+<ol>
+<li><p>无法区分隐式类型转换成字符串后一样的值，比如 1 和 “1”</p>
+</li>
+<li><p>无法处理复杂类型，比如对象（因为对象作为key会变成[ object Object ]）</p>
+</li>
+<li><p>特殊数据，比如 <code>__proto__</code> 会挂掉，因为obj对象的 <code>__proto__</code> 属性无法被重写</p>
+</li>
+</ol>
+<p>版本2的优化则解决了这三个问题。缺点就是实现的方式比较麻烦。</p>
+<h2 id="六、-reduce"><a href="#六、-reduce" class="headerlink" title="六、 reduce"></a>六、 reduce</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr7 =  [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>, <span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique7 = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> newArr = <span class="keyword">this</span>.sort().reduce(<span class="function">(<span class="params">initialValue, current</span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span>(initialValue.length === <span class="number">0</span> || initialValue[initialValue.length - <span class="number">1</span>] !== current)&#123;</span><br><span class="line">			initialValue.push(current);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> initialValue;</span><br><span class="line">	&#125;, []);</span><br><span class="line">	<span class="keyword">return</span> newArr;</span><br><span class="line">&#125;</span><br><span class="line">arr7.unique7();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">5678</span>, <span class="string">"5678"</span>, <span class="number">6</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>, <span class="string">"Start"</span>, <span class="literal">null</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">undefined</span>]</span><br></pre></td></tr></table></figure>
+<p>原理实际同方法四，都是进行排序后比较相邻的两个值。</p>
+<h2 id="七、-filter"><a href="#七、-filter" class="headerlink" title="七、 filter"></a>七、 filter</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr8 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique8 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">this</span>.filter(<span class="function"><span class="keyword">function</span>(<span class="params">ele,index,res</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> res.indexOf(ele) === index;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr8.unique8();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="八、-es6-includes"><a href="#八、-es6-includes" class="headerlink" title="八、 es6 includes"></a>八、 es6 includes</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr9 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>, <span class="string">'start'</span>,  <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];		</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique9 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> newArr = [];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i&lt;<span class="keyword">this</span>.length;i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(!newArr.includes(<span class="keyword">this</span>[i])) &#123;</span><br><span class="line">			newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr;</span><br><span class="line">&#125;	</span><br><span class="line">arr9.unique9();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<p>与 indexOf 类似，但不同的是 indexOf 使用的严格比较，includes 使用的是叫做 SameValueZero 的比较，规范中给出 If x is NaN and y is NaN, return true. 也就是 includes 可以对NaN去重。</p>
+<h2 id="九、-es6-Map"><a href="#九、-es6-Map" class="headerlink" title="九、 es6 Map"></a>九、 es6 Map</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr10 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>,<span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique10 = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> newArr = [];</span><br><span class="line">	<span class="keyword">let</span> tmp = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;<span class="keyword">this</span>.length; i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!tmp.get(<span class="keyword">this</span>[i]))&#123;</span><br><span class="line">			tmp.set(<span class="keyword">this</span>[i], <span class="number">1</span>);</span><br><span class="line">			newArr.push(<span class="keyword">this</span>[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newArr;</span><br><span class="line">&#125;</span><br><span class="line">arr10.unique10();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="十、-es6-Set"><a href="#十、-es6-Set" class="headerlink" title="十、 es6 Set"></a>十、 es6 Set</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr11 = [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">5678</span>, <span class="string">'5678'</span>, <span class="string">'Start'</span>, <span class="string">'start'</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>];		</span><br><span class="line"><span class="built_in">console</span>.log([...new <span class="built_in">Set</span>(arr11)]);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result: [<span class="number">6</span>, <span class="number">5678</span>, <span class="string">"5678"</span>, <span class="string">"Start"</span>, <span class="string">"start"</span>, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
+<p>利用 set 对象存储任何类型的唯一值的特性来达到去重的目的。</p>
+<p>再来来看看这几种方式直观的性能对比。<br>通过以下的模拟数据的形式来执行我们上面介绍的每一种方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//重复100次生成1~10000的数组</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createArr</span> (<span class="params">size</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> create = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++ ) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> j=<span class="number">0</span>; j&lt;<span class="number">10000</span>; j++) &#123;</span><br><span class="line">            create.push(j)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> create</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算去重函数的时间</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkTime</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> date1 = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line">    fn();</span><br><span class="line">	<span class="keyword">var</span> date2 = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line">	<span class="keyword">var</span> result = date2 - date1;</span><br><span class="line">    <span class="keyword">return</span>  result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> lgArr = createArr();</span><br><span class="line"><span class="keyword">const</span> res = checkTime(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="keyword">return</span> lgArr.unique()&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"&#123;method：loop，time:"</span> + res + <span class="string">"&#125;"</span>);</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<p><img src="http://vfile.meituan.net/xgfe/84a60f898fc7283c3ce2dc70d770b137116872.png" alt=""></p>
+<p>在考虑兼容性,并且可以接受以上所说的 Object.key 的限制时，用对象属性方式是最快的。如果考虑这些限制，就要用到对象属性的优化方案，增加对 key 的类型的判断，但这样做显然会麻烦很多，如果处理不好还可能导致结果出错。那么在数据量比较小的情况下，选用 indexof 不失为一种更加稳妥的办法。</p>
+<p>在现代浏览器中当然首选的是 es6 的 set 和 map ,方便易用。在不关注排序的情况下，reduce 和 sort 也是比较可取的方式。<br>以上仅仅是从时间维度上的个人分析。实际工作中还要根据情况进行综合考虑来选择最合适的方式。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/10/anjing/Communication-between-front-end/" rel="prev">前后端通信的几种方式</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/30/zhaojun/hybrid/" rel="next">移动前端开发中的伪装术</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-双重遍历"><span class="nav-number">1.</span> <span class="nav-text">一、 双重遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">1.1.</span> <span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-indexOf"><span class="nav-number">2.</span> <span class="nav-text">二、 indexOf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-数组下标判断"><span class="nav-number">3.</span> <span class="nav-text">三、 数组下标判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、排序再去重"><span class="nav-number">4.</span> <span class="nav-text">四、排序再去重</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、利用对象的属性"><span class="nav-number">5.</span> <span class="nav-text">五、利用对象的属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优化-1"><span class="nav-number">5.1.</span> <span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、-reduce"><span class="nav-number">6.</span> <span class="nav-text">六、 reduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、-filter"><span class="nav-number">7.</span> <span class="nav-text">七、 filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八、-es6-includes"><span class="nav-number">8.</span> <span class="nav-text">八、 es6 includes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九、-es6-Map"><span class="nav-number">9.</span> <span class="nav-text">九、 es6 Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十、-es6-Set"><span class="nav-number">10.</span> <span class="nav-text">十、 es6 Set</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

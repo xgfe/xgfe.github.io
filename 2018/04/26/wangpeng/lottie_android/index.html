@@ -1,0 +1,766 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Android,animation,lottie,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要介绍动画开源库 Lottie 在 Android 中的使用。">
+<meta name="keywords" content="Android,animation,lottie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动画库 Lottie 的使用">
+<meta property="og:url" content="http://xgfe.github.io/2018/04/26/wangpeng/lottie_android/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要介绍动画开源库 Lottie 在 Android 中的使用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p0.meituan.com/tuanpic/lottie_android_headache.jpeg">
+<meta property="og:image" content="http://p0.meituan.com/tuanpic/lottie_android_flow.png">
+<meta property="og:image" content="http://p0.meituan.com/tuanpic/lottie_android_example_4.gif">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="动画库 Lottie 的使用">
+<meta name="twitter:description" content="本文主要介绍动画开源库 Lottie 在 Android 中的使用。">
+<meta name="twitter:image" content="http://p0.meituan.com/tuanpic/lottie_android_headache.jpeg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 动画库 Lottie 的使用 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              动画库 Lottie 的使用
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-04-26T16:26:00+08:00" content="2018-04-26">
+            2018-04-26
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/w-p/" itemprop="url" rel="index">
+                  <span itemprop="name">w.p</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Android/" rel="tag"><i class="icon-next-tags"></i>Android</a>
+            
+              <a href="/tags/animation/" rel="tag"><i class="icon-next-tags"></i>animation</a>
+            
+              <a href="/tags/lottie/" rel="tag"><i class="icon-next-tags"></i>lottie</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要介绍动画开源库 Lottie 在 Android 中的使用。</p>
+<a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在日常APP开发中，为了提升用户感官舒适度等原因，我们会在APP中加入适量动画。<br>而传统手写动画方式往往存在诸多问题:</p>
+<ul>
+<li><p><strong>动画复杂而实现困难</strong></p>
+</li>
+<li><p><strong>图片素材占用体积过大</strong></p>
+</li>
+<li><p><strong>不同Native平台都需各自实现，开发成本高</strong></p>
+</li>
+<li><p><strong>不同Native平台实现的最终效果不一致</strong></p>
+</li>
+<li><p><strong>后期视觉联调差异化大</strong></p>
+</li>
+</ul>
+<p><img src="http://p0.meituan.com/tuanpic/lottie_android_headache.jpeg" alt="">  </p>
+<p><em>难道就没有一种简便且高效的方案来减缓或解决上述问题吗？</em></p>
+<p>答: 有的，那就是本文要介绍的主角 <strong>Lottie</strong>。</p>
+<h2 id="一、Lottie-是什么？"><a href="#一、Lottie-是什么？" class="headerlink" title="一、Lottie 是什么？"></a>一、Lottie 是什么？</h2><blockquote>
+<p>Lottie是Airbnb开源的一个面向IOS、Android、React Native的动画库，可以解析用 Adobe After Effects 制作动画后通过 Bodymovin 插件导出的 Json 数据文件并在移动端原生渲染。</p>
+</blockquote>
+<p>通俗点说，它是一款动画开源库，通过解析特定的Json文件或Json文本，可直接在移动端上渲染出复杂的动画效果。</p>
+<p><img src="http://p0.meituan.com/tuanpic/lottie_android_flow.png" alt="参考图释"></p>
+<h2 id="二、Lottie-能干什么"><a href="#二、Lottie-能干什么" class="headerlink" title="二、Lottie 能干什么?"></a>二、Lottie 能干什么?</h2><p><strong>它可以简便高效的实现复杂动画，替代传统低效的手写动画方式。</strong> </p>
+<p>动画展示:</p>
+<p><img src="http://p0.meituan.com/tuanpic/lottie_android_example_4.gif" alt=""></p>
+<p>上方的动画是通过Lottie直接实现的。</p>
+<p>如果我们使用手写代码方式实现，可以说是很难！  </p>
+<p>而通过 Lottie 实现时，需要的仅是一个Json文件或一段Json文本，并通过简洁的代码集成即可。</p>
+<p>集成代码可能精简到如下模样:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.airbnb.lottie.LottieAnimationView</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/animation_view"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>  </span></span><br><span class="line"><span class="tag">    <span class="attr">app:lottie_rawRes</span>=<span class="string">"@raw/anim_lottie"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:lottie_loop</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:lottie_autoPlay</span>=<span class="string">"true"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="三、为什么使用-Lottie"><a href="#三、为什么使用-Lottie" class="headerlink" title="三、为什么使用 Lottie?"></a>三、为什么使用 Lottie?</h2><ul>
+<li><p><strong>简便，开发成本低</strong><br>相对于传统方式，动画不再是全部手写，所需做得只是嵌入XML并配置动画属性，集成快，开发时间少，开发成本低。    </p>
+</li>
+<li><p><strong>不同 Native 平台效果基本一致</strong><br>渲染交由Lottie引擎内部实现，无需开发者处理平台差异，多平台共用同一个动画配置文件，效果一致性高。    </p>
+</li>
+<li><p><strong>占用包体积小</strong><br>Lottie配置文件由Json文本串构成，相对于图片，占用体积更小。</p>
+</li>
+<li><p><strong>动画效果不失真</strong><br>传统图片拉伸或压缩导致失真，而Lottie为矢量图展示，不会出现失真情况。</p>
+</li>
+<li><p><strong>动画效果可以云端控制</strong><br>由于Lottie动画基于Json文件或文本解析，因此可以实现云端下发，实现动态加载，动态控制动画样式。</p>
+</li>
+</ul>
+<h2 id="四、如何使用-Lottie？"><a href="#四、如何使用-Lottie？" class="headerlink" title="四、如何使用 Lottie？"></a>四、如何使用 Lottie？</h2><p>Lottie 仅支持用 Gradle 构建配置，最低支持安卓版本 16。     </p>
+<h3 id="1-添加依赖到-build-gradle"><a href="#1-添加依赖到-build-gradle" class="headerlink" title="1. 添加依赖到 build.gradle"></a>1. 添加依赖到 build.gradle</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    implementation <span class="string">'com.airbnb.android:lottie:2.5.4'</span></span><br><span class="line">&#125;</span><br><span class="line">或</span><br><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    implementation <span class="string">"com.airbnb.android:lottie:$&#123;全局版本变量&#125;"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-添加-Adobe-After-Effects-导出的动画-Json-文件"><a href="#2-添加-Adobe-After-Effects-导出的动画-Json-文件" class="headerlink" title="2. 添加 Adobe After Effects 导出的动画 Json 文件"></a>2. 添加 Adobe After Effects 导出的动画 Json 文件</h3><p>通常由视觉工程师确认动效后通过AE导出, 我们只需将该Json文件保存至 /raw 或 /assets文件夹下。  </p>
+<h3 id="3-XML中嵌入基本布局"><a href="#3-XML中嵌入基本布局" class="headerlink" title="3. XML中嵌入基本布局"></a>3. XML中嵌入基本布局</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.airbnb.lottie.LottieAnimationView</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/animation_view"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-加载播放动画，两类方式可选"><a href="#4-加载播放动画，两类方式可选" class="headerlink" title="4. 加载播放动画，两类方式可选"></a>4. 加载播放动画，两类方式可选</h3><h4 id="①-XML中静态配置-举例"><a href="#①-XML中静态配置-举例" class="headerlink" title="① XML中静态配置, 举例:"></a>① XML中静态配置, 举例:</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.airbnb.lottie.LottieAnimationView</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/animation_view"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>  </span></span><br><span class="line"><span class="tag">       </span></span><br><span class="line"><span class="tag">    //加载方式如下<span class="attr">2</span>种任选其一</span></span><br><span class="line"><span class="tag">    <span class="attr">app:lottie_rawRes</span>=<span class="string">"@raw/hello_world"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:lottie_fileName</span>=<span class="string">"hello_world.json"</span></span></span><br><span class="line"><span class="tag">	</span></span><br><span class="line"><span class="tag">    //循环播放</span></span><br><span class="line"><span class="tag">    <span class="attr">app:lottie_loop</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">    //加载完毕后自动播放</span></span><br><span class="line"><span class="tag">    <span class="attr">app:lottie_autoPlay</span>=<span class="string">"true"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="②-代码动态配置-举例"><a href="#②-代码动态配置-举例" class="headerlink" title="② 代码动态配置, 举例:"></a>② 代码动态配置, 举例:</h4><p><em>如下代码会在后台异步加载动画文件，并在加载完成后开始渲染动画。</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LottieAnimationView animationView = ...;</span><br><span class="line">animationView.setAnimation(R.raw.hello_world);</span><br><span class="line">animationView.loop(<span class="keyword">true</span>);</span><br><span class="line">animationView.playAnimation();</span><br></pre></td></tr></table></figure>
+<h2 id="五、其他拓展使用"><a href="#五、其他拓展使用" class="headerlink" title="五、其他拓展使用"></a>五、其他拓展使用</h2><h3 id="1-直接解析Json文本串加载动画"><a href="#1-直接解析Json文本串加载动画" class="headerlink" title="1. 直接解析Json文本串加载动画"></a>1. 直接解析Json文本串加载动画</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">JsonReader jsonReader = <span class="keyword">new</span> JsonReader(<span class="keyword">new</span> StringReader(jsonStr));</span><br><span class="line">lottieView.setAnimation(jsonReader);</span><br><span class="line">lottieView.playAnimation();</span><br><span class="line">或</span><br><span class="line">Cancellable cancellable = LottieComposition.Factory.fromJsonString(jsonStr, composition -&gt; &#123;</span><br><span class="line">            lottieView.setComposition(composition);</span><br><span class="line">            lottieView.playAnimation();</span><br><span class="line">        &#125;);</span><br><span class="line"><span class="comment">//必要时取消进行中的异步操作</span></span><br><span class="line">cancellable.cancel();</span><br></pre></td></tr></table></figure>
+<h3 id="2-配合网络下载，实现下载Json配置并动态加载"><a href="#2-配合网络下载，实现下载Json配置并动态加载" class="headerlink" title="2. 配合网络下载，实现下载Json配置并动态加载"></a>2. 配合网络下载，实现下载Json配置并动态加载</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Call&lt;ResponseBody&gt; call = RetrofitComponent.fetchLottieConfig();<span class="comment">//伪代码</span></span><br><span class="line">call.enqueue(<span class="keyword">new</span> Callback&lt;ResponseBody&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;ResponseBody&gt; call, Response&lt;ResponseBody&gt; response)</span> </span>&#123;</span><br><span class="line">                <span class="comment">//String json = response.body().string();</span></span><br><span class="line">                <span class="comment">//交由Lottie处理...</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;ResponseBody&gt; call, Throwable t)</span> </span>&#123;</span><br><span class="line">                <span class="comment">//do something.</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="3-动画加载监听器"><a href="#3-动画加载监听器" class="headerlink" title="3. 动画加载监听器"></a>3. 动画加载监听器</h3><p>根据业务需要进行动画过程监听:    </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">animationView.addAnimatorUpdateListener((animation) -&gt; &#123;</span><br><span class="line">    	<span class="comment">// do something.</span></span><br><span class="line">&#125;);</span><br><span class="line">animationView.playAnimation();</span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (animationView.isAnimating()) &#123;</span><br><span class="line">	<span class="comment">// do something.</span></span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">animationView.setProgress(<span class="number">0.5f</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="4-LottieDrawable-的使用"><a href="#4-LottieDrawable-的使用" class="headerlink" title="4. LottieDrawable 的使用"></a>4. LottieDrawable 的使用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LottieDrawable drawable = <span class="keyword">new</span> LottieDrawable();</span><br><span class="line">LottieComposition.Factory.fromAssetFileName(getApplicationContext(), <span class="string">"lottie_pin_jump.json"</span>, composition -&gt; &#123;</span><br><span class="line">            drawable.setComposition(composition);</span><br><span class="line">            <span class="comment">//目前显示为静态图</span></span><br><span class="line">            ivLottie.setImageDrawable(drawable);</span><br><span class="line">            <span class="comment">//调用start()开始播放动画</span></span><br><span class="line">            drawable.start();</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="5-更多使用可参考文末官方链接"><a href="#5-更多使用可参考文末官方链接" class="headerlink" title="5. 更多使用可参考文末官方链接"></a>5. 更多使用可参考文末官方链接</h3><h2 id="六、需要考虑的问题"><a href="#六、需要考虑的问题" class="headerlink" title="六、需要考虑的问题"></a>六、需要考虑的问题</h2><ol>
+<li>由于是依赖于AE做的动画，估计以后不只是要求视觉设计师精通AE，连前端开发都需要了解AE  </li>
+<li>Lottie 对 Json 文件的支持待完善，目前存在部分AE导出成 Json 文件无法渲染或渲染不佳</li>
+<li>支持的功能存在限制，可参考 <a href="http://airbnb.io/lottie/supported-features.html" target="_blank" rel="noopener">功能支持列表</a>。</li>
+</ol>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>尽管Lottie还存在诸多小问题，但它所带来的效率提升绝对是传统开发方式无法比拟的。我们要做的是正确善用它。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://airbnb.io/lottie/android/android.html" target="_blank" rel="noopener">官网网址</a><br><a href="https://github.com/airbnb/lottie-android" target="_blank" rel="noopener">Github地址</a><br><a href="https://github.com/airbnb/lottie-android/tree/master/LottieSample/src/main/assets" target="_blank" rel="noopener">测试用Json文件</a><br><a href="https://github.com/bigxixi/lottie-android" target="_blank" rel="noopener">项目中文翻译版 (略有差异)</a>  </p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/01/wangpan/redux-realize/" rel="prev">redux,react-redux简单实现</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/26/jiangxiang/internationalize-your-react-project/" rel="next">实现React国际化</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Lottie-是什么？"><span class="nav-number">2.</span> <span class="nav-text">一、Lottie 是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Lottie-能干什么"><span class="nav-number">3.</span> <span class="nav-text">二、Lottie 能干什么?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、为什么使用-Lottie"><span class="nav-number">4.</span> <span class="nav-text">三、为什么使用 Lottie?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、如何使用-Lottie？"><span class="nav-number">5.</span> <span class="nav-text">四、如何使用 Lottie？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-添加依赖到-build-gradle"><span class="nav-number">5.1.</span> <span class="nav-text">1. 添加依赖到 build.gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-添加-Adobe-After-Effects-导出的动画-Json-文件"><span class="nav-number">5.2.</span> <span class="nav-text">2. 添加 Adobe After Effects 导出的动画 Json 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-XML中嵌入基本布局"><span class="nav-number">5.3.</span> <span class="nav-text">3. XML中嵌入基本布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-加载播放动画，两类方式可选"><span class="nav-number">5.4.</span> <span class="nav-text">4. 加载播放动画，两类方式可选</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#①-XML中静态配置-举例"><span class="nav-number">5.4.1.</span> <span class="nav-text">① XML中静态配置, 举例:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#②-代码动态配置-举例"><span class="nav-number">5.4.2.</span> <span class="nav-text">② 代码动态配置, 举例:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、其他拓展使用"><span class="nav-number">6.</span> <span class="nav-text">五、其他拓展使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-直接解析Json文本串加载动画"><span class="nav-number">6.1.</span> <span class="nav-text">1. 直接解析Json文本串加载动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-配合网络下载，实现下载Json配置并动态加载"><span class="nav-number">6.2.</span> <span class="nav-text">2. 配合网络下载，实现下载Json配置并动态加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-动画加载监听器"><span class="nav-number">6.3.</span> <span class="nav-text">3. 动画加载监听器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-LottieDrawable-的使用"><span class="nav-number">6.4.</span> <span class="nav-text">4. LottieDrawable 的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-更多使用可参考文末官方链接"><span class="nav-number">6.5.</span> <span class="nav-text">5. 更多使用可参考文末官方链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、需要考虑的问题"><span class="nav-number">7.</span> <span class="nav-text">六、需要考虑的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、总结"><span class="nav-number">8.</span> <span class="nav-text">七、总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="性能优化,web性能,前端优化实践,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="在构建web站点的过程中，任何一个细节都有可能影响网站的访问速度，如果不了解性能优化知识，很多不利网站访问速度的因素会形成累加，从而严重影响网站的性能，导致网站访问速度变慢，用户体验低下，最终导致用户流失。本文主要围绕以下几点讲解：  客户端请求 客户端渲染 服务端响应 网络">
+<meta name="keywords" content="性能优化,web性能,前端优化实践">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web前端性能优化">
+<meta property="og:url" content="http://xgfe.github.io/2018/04/15/zhangjianfeng/web前端性能优化/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="在构建web站点的过程中，任何一个细节都有可能影响网站的访问速度，如果不了解性能优化知识，很多不利网站访问速度的因素会形成累加，从而严重影响网站的性能，导致网站访问速度变慢，用户体验低下，最终导致用户流失。本文主要围绕以下几点讲解：  客户端请求 客户端渲染 服务端响应 网络">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.404Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web前端性能优化">
+<meta name="twitter:description" content="在构建web站点的过程中，任何一个细节都有可能影响网站的访问速度，如果不了解性能优化知识，很多不利网站访问速度的因素会形成累加，从而严重影响网站的性能，导致网站访问速度变慢，用户体验低下，最终导致用户流失。本文主要围绕以下几点讲解：  客户端请求 客户端渲染 服务端响应 网络">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> web前端性能优化 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              web前端性能优化
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-04-15T15:00:00+08:00" content="2018-04-15">
+            2018-04-15
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhangjianfeng/" itemprop="url" rel="index">
+                  <span itemprop="name">zhangjianfeng</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/性能优化/" rel="tag"><i class="icon-next-tags"></i>性能优化</a>
+            
+              <a href="/tags/web性能/" rel="tag"><i class="icon-next-tags"></i>web性能</a>
+            
+              <a href="/tags/前端优化实践/" rel="tag"><i class="icon-next-tags"></i>前端优化实践</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在构建web站点的过程中，任何一个细节都有可能影响网站的访问速度，如果不了解性能优化知识，很多不利网站访问速度的因素会形成累加，从而严重影响网站的性能，导致网站访问速度变慢，用户体验低下，最终导致用户流失。本文主要围绕以下几点讲解：</p>
+<ol>
+<li>客户端请求</li>
+<li>客户端渲染</li>
+<li>服务端响应</li>
+<li>网络<a id="more"></a>
+</li>
+</ol>
+<h2 id="客户端请求"><a href="#客户端请求" class="headerlink" title="客户端请求"></a>客户端请求</h2><p>每个请求都是有成本的，既包含时间成本也包含资源成本。一个完整的请求都需要经过 DNS寻址、与服务器建立连接、发送数据、等待服务器响应、接收数据这样一个 “漫长” 而复杂的过程。时间成本就是用户需要看到或者 “感受” 到这个资源是必须要等待这个过程结束的，资源上由于每个请求都需要携带数据，因此每个请求都需要占用带宽。另外，由于浏览器进行并发请求的请求数是有上限的，因此请求数多了以后，浏览器需要分批进行请求，因此会增加用户的等待时间，会给用户造成站点速度慢这样一个印象。</p>
+<h3 id="资源压缩与合并"><a href="#资源压缩与合并" class="headerlink" title="资源压缩与合并"></a>资源压缩与合并</h3><p>压缩可以减少资源的体积，从而增加加载速度。将资源文件合并，减少资源的请求数。但并不意味着，一个资源越大越好，资源太大，会影响资源加载速度。针对这一问题，利用webpack模块化打包工具分块打包、按需加载以及提取公共部分代码，利用缓存可以得到解决。具体可参考<a href="http://mp.weixin.qq.com/s/BVYgLeOEIJp5xY55Rcrszg" target="_blank" rel="noopener">webpack的使用</a>。</p>
+<h3 id="DNS预解析"><a href="#DNS预解析" class="headerlink" title="DNS预解析"></a>DNS预解析</h3><p>从用户输入一个网址到网页最终展现到用户面前，中间的大致发生以下几个流程：</p>
+<ol>
+<li>发送到DNS（域名服务器）获得域名对应的WEB服务器的IP地址。</li>
+<li>客户端浏览器与WEB服务器建立TCP（传输控制协议）连接。</li>
+<li>客户端浏览器向对应IP地址的WEB服务器发送相应的HTTP或HTTPS请求。</li>
+<li>WEB服务器响应请求，返回指定的URL数据或错误信息；如果设定重定向，则重定向到新的URL地址。</li>
+<li>客户端浏览器下载数据，解析HTML源文件，解析的过程中实现对页面的排版，解析完成后，在浏览器中显示基础的页面。</li>
+<li>分析页面中的超链接，显示在当前页面，重复以上过程直至没有超链接需要发送，完成页面的全部显示。<br>DNS解析时间可能导致大量用户感知延迟，DNS解析所需的时间差异非常大，延迟范围可以从1ms（本地缓存结果）到普遍的几秒钟时间。所以利用DNS预解析是有意义的。<br>具体实现方式：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;link rel=<span class="string">"dns-prefetch"</span> href=<span class="string">"hostname"</span> /&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="预加载"><a href="#预加载" class="headerlink" title="预加载"></a>预加载</h3><p>预加载是一种浏览器机制，使用浏览器空闲时间来预先下载/加载用户接下来很可能会浏览的页面/资源。页面提供给浏览器需要预加载的集合。浏览器载入当前页面完成后，将会在后台下载需要预加载的页面并添加到缓存中。当用户访问某个预加载的链接时，如果从缓存命中，页面就得以快速呈现。 实现方式：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 页面，可以使用绝对或者相对路径</span></span><br><span class="line">&lt;link rel=<span class="string">"prefetch"</span> href=<span class="string">"page2.html"</span> /&gt; </span><br><span class="line"><span class="comment">// 图片，也可以是其他类型的文件</span></span><br><span class="line">&lt;link rel=<span class="string">"prefetch"</span> href=<span class="string">"sprite.png"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>从上面的HTML代码可以看出，预加载使用 <link> 标签，并指定 rel=”prefetch” 属性，而href属性就是需要预加载的文件路径。</p>
+<h3 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h3><p>一个页面有很多图片，而首屏出现的图片大概就一两张，如果一次性把所有图片都加载出来，不仅影响页面渲染速度，还浪费带宽。这也就是们通常所说的首屏加载，其中要用的技术就是图片懒加载–到可视区域再加载。简单实现如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">lazyload</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 获取所有要进行懒加载的图片</span></span><br><span class="line">    <span class="keyword">var</span> eles = <span class="built_in">document</span>.querySelectorAll(<span class="string">'img[data-original][lazyload]'</span>);</span><br><span class="line">    <span class="keyword">var</span> viewHeight = <span class="built_in">window</span>.innerHeight;</span><br><span class="line">    eles.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">item, index</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> rect;</span><br><span class="line">        <span class="keyword">if</span> (item.dataset.original === <span class="string">''</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        rect = item.getBoundingClientRect();</span><br><span class="line">        <span class="comment">// 图片一进入可视区，动态加载</span></span><br><span class="line">        <span class="keyword">if</span> (rect.bottom &gt;= <span class="number">0</span> &amp;&amp; rect.top &lt; viewHeight) &#123;</span><br><span class="line">            item.src = item.dataset.original;</span><br><span class="line">            item.removeAttribute(<span class="string">'data-original'</span>);</span><br><span class="line">            item.removeAttribute(<span class="string">'lazyload'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="CSS-Sprites"><a href="#CSS-Sprites" class="headerlink" title="CSS Sprites"></a>CSS Sprites</h3><p>合并 CSS图片，也就是通过将多个图片或者icon放在一张图片中，利用css的background-position属性控制每个图片或icon的位置。</p>
+<h2 id="客户端渲染"><a href="#客户端渲染" class="headerlink" title="客户端渲染"></a>客户端渲染</h2><p>客户端优化 dom、css 和 js 的代码和加载顺序</p>
+<h3 id="什么是DOM"><a href="#什么是DOM" class="headerlink" title="什么是DOM"></a>什么是DOM</h3><blockquote>
+<p>Document Object Model 文档对象模型</p>
+</blockquote>
+<p>DOM是Model，是Object Model，对象模型，是为HTML（and XML）提供的API。HTML（Hyper Text Markup Language）是一种标记语言，HTML在DOM的模型标准中被视为对象，DOM只提供编程接口，却无法实际操作HTML里面的内容。但在浏览器端，我们可以用脚本语言（JavaScript）通过DOM去操作HTML内容。</p>
+<h3 id="为什么DOM很慢"><a href="#为什么DOM很慢" class="headerlink" title="为什么DOM很慢"></a>为什么DOM很慢</h3><p>首先，我们来了解一下网页的生成过程。浏览器在收到 HTML 文档之后会对文档进行解析开始构建 DOM （Document Object Model） 树，进而在文档中发现样式表，开始解析 CSS 来构建 CSSOM（CSS Object Model）树，这两者都构建完成后，开始构建渲染树。大致可分为以下几个过程：</p>
+<ol>
+<li>构建DOM树</li>
+<li>构建CSSOM树</li>
+<li>生成render树</li>
+<li>Layout 布局</li>
+<li>Paint 绘制</li>
+</ol>
+<p>在每次修改了 DOM 或者其样式之后都要进行 DOM树的构建，CSSOM 的重新计算，进而得到新的渲染树。浏览器会利用新的渲染树对页面进行重排和重绘，以及图层的合并。通常浏览器会批量进行重排和重绘，以提高性能。但当我们试图通过 JavaScript 获取某个节点的尺寸信息的时候，为了获得当前真实的信息，浏览器会立刻进行一次重排。</p>
+<p>通过js操作DOM，影响页面性能的主要原因有如下几点：</p>
+<ul>
+<li>访问和修改DOM元素</li>
+<li>修改DOM元素的样式，导致重绘和重排</li>
+<li>通过对DOM元素的事件处理，完成与用户的交互功能</li>
+</ul>
+<h3 id="重绘（也称为回流reflow）和重排"><a href="#重绘（也称为回流reflow）和重排" class="headerlink" title="重绘（也称为回流reflow）和重排"></a>重绘（也称为回流reflow）和重排</h3><p>重排和重绘是DOM编程中耗能的主要原因之一。</p>
+<blockquote>
+<p>重绘</p>
+</blockquote>
+<p>重绘意味着元素发生的改变只影响了节点的一些样式（背景色，边框颜色，文字颜色等），只需要应用新样式绘制这个元素就可以了。</p>
+<blockquote>
+<p>引起重绘的操作</p>
+</blockquote>
+<ul>
+<li>重排必定引起repaint重绘，重绘可以单独触发</li>
+<li>背景色、颜色、字体改变（注意：字体大小发生变化时，会触发回流）</li>
+</ul>
+<blockquote>
+<p>重排</p>
+</blockquote>
+<p>根据Render Tree布局（几何属性），意味着元素的内容、结构、位置或尺寸发生了变化，需要重新计算样式和渲染树。</p>
+<blockquote>
+<p>引起重排的操作</p>
+</blockquote>
+<ul>
+<li>内容改变<br>  文本改变或图片尺寸改变</li>
+<li>DOM元素的几何属性的变化<br>  例如改变DOM元素的宽高值时，原渲染树中的相关节点会失效，浏览器会根据变化后的DOM重新排建渲染树中的相关节点。如果父节点的几何属性变化时，还会使其子节点及后续兄弟节点重新计算位置等，造成一系列的重排。</li>
+<li>DOM树的结构变化<br>  添加DOM节点、修改DOM节点位置及删除某个节点都是对DOM树的更改，会造成页面的重排。浏览器布局是从上到下的过程，修改当前元素不会对其前边已经遍历过的元素造成影响，但是如果在所有的节点前添加一个新的元素，则后续的所有元素都要进行重排。</li>
+<li>浏览器窗口尺寸改变<br>  窗口尺寸的改变会影响整个网页内元素的尺寸的改变，即DOM元素的集合属性变化，因此会造成重排。</li>
+<li>获取某些属性<br>  除了渲染树的直接变化，当获取一些属性值时，浏览器为取得正确的值也会发生重排，这些属性包括：offsetTop、offsetLeft、 offsetWidth、offsetHeight、scrollTop、scrollLeft、scrollWidth、scrollHeight、 clientTop、clientLeft、clientWidth、clientHeight、getComputedStyle()。</li>
+</ul>
+<h3 id="对性能的影响"><a href="#对性能的影响" class="headerlink" title="对性能的影响"></a>对性能的影响</h3><p>重排和重绘会不断触发，这是不可避免的。但是，它们非常耗费资源，是导致网页性能低下的根本原因。<br>提高网页性能，就是要降低“重排”和“重绘”的频率和成本，尽量少触发重新渲染。<br>前面提到，DOM变动和样式变动，都会触发重新渲染。但是，浏览器已经很智能了，会尽量把所有的变动集中在一起，排成一个队列，然后一次性执行，尽量避免多次重新渲染。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">div.style.color = <span class="string">'blue'</span>;</span><br><span class="line">div.style.marginTop = <span class="string">'30px'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>上面代码中，div元素有两个样式变动，但是浏览器只会触发一次重排和重绘。</p>
+<p>如果写得不好，就会触发两次重排和重绘。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">div.style.color = <span class="string">'blue'</span>;</span><br><span class="line"><span class="keyword">var</span> margin = <span class="built_in">parseInt</span>(div.style.marginTop);</span><br><span class="line">div.style.marginTop = (margin + <span class="number">10</span>) + <span class="string">'px'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>上面代码对div元素设置颜色以后，第二行要求浏览器给出该元素的位置，所以浏览器不得不立即重排。</p>
+<p>一般来说，样式的写操作之后，如果有下面这些属性的读操作，都会引发浏览器立即重新渲染。</p>
+<pre><code>* offsetTop/offsetLeft/offsetWidth/offsetHeight
+* scrollTop/scrollLeft/scrollWidth/scrollHeight
+* clientTop/clientLeft/clientWidth/clientHeight
+* getComputedStyle()
+</code></pre><p>所以，从性能角度考虑，尽量不要把读操作和写操作，放在一个语句里面。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//bad</span></span><br><span class="line">div.style.left = div.offsetLeft + <span class="number">10</span> + <span class="string">"px"</span>;</span><br><span class="line">div.style.top = div.offsetTop + <span class="number">10</span> + <span class="string">"px"</span>;</span><br><span class="line"><span class="comment">//good</span></span><br><span class="line"><span class="keyword">var</span> left = div.offsetLeft;</span><br><span class="line"><span class="keyword">var</span> top  = div.offsetTop;</span><br><span class="line">div.style.left = left + <span class="number">10</span> + <span class="string">"px"</span>;</span><br><span class="line">div.style.top = top + <span class="number">10</span> + <span class="string">"px"</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="关于DOM操作的几个技巧"><a href="#关于DOM操作的几个技巧" class="headerlink" title="关于DOM操作的几个技巧"></a>关于DOM操作的几个技巧</h3><ul>
+<li>DOM 的多个读操作（或多个写操作），应该放在一起。不要两个读操作之间，加入一个写操作。</li>
+<li>如果某个样式是通过重排得到的，那么最好缓存结果。避免下一次用到的时候，浏览器又要重排。</li>
+<li><p>不要一条条地改变样式，而要通过改变class，或者csstext属性，一次性地改变样式。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// bad</span></span><br><span class="line"><span class="keyword">var</span> left = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">var</span> top = <span class="number">10</span>;</span><br><span class="line">el.style.left = left + <span class="string">"px"</span>;</span><br><span class="line">el.style.top  = top  + <span class="string">"px"</span>;</span><br><span class="line"><span class="comment">// good</span></span><br><span class="line">el.className += <span class="string">" theclassname"</span>;</span><br><span class="line"><span class="comment">// good</span></span><br><span class="line">el.style.cssText += <span class="string">"; left: "</span> + left + <span class="string">"px; top: "</span> + top + <span class="string">"px;"</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>先将元素设为display: none（需要1次重排和重绘），然后对这个节点进行100次操作，最后再恢复显示（需要1次重排和重绘）。这样一来，你就用两次重新渲染，取代了可能高达100次的重新渲染。</p>
+</li>
+<li>position属性为absolute或fixed的元素，重排的开销会比较小，因为不用考虑它对其他元素的影响。</li>
+<li>只在必要的时候，才将元素的display属性为可见，因为不可见的元素不影响重排和重绘。另外，visibility : hidden的元素只对重绘有影响，不影响重排。</li>
+<li><p>在涉及到吸顶相关及scroll滚动优化</p>
+<ol>
+<li>尽量控制DOM的显示或隐藏，而不是删除或添加</li>
+<li>一次性操作DOM</li>
+<li>多做缓存</li>
+<li><p>注意节流，避免频繁触发滚动事件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> throttle = <span class="function"><span class="keyword">function</span> (<span class="params">fn, threshhold = <span class="number">200</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> last;</span><br><span class="line">    <span class="keyword">var</span> timer;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> context = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">var</span> args = <span class="built_in">arguments</span>;</span><br><span class="line">        <span class="keyword">var</span> now = +<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">        <span class="keyword">if</span> (last &amp;&amp; now &lt; last + threshhold) &#123;</span><br><span class="line">            clearTimeout(timer);</span><br><span class="line">            timer = setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                last = now;</span><br><span class="line">                fn.apply(context, args);</span><br><span class="line">            &#125;, threshhold);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            last = now;</span><br><span class="line">            fn.apply(context, args);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="代码优化和加载顺序"><a href="#代码优化和加载顺序" class="headerlink" title="代码优化和加载顺序"></a>代码优化和加载顺序</h3><p>尽量较少不必要的代码，比如html和css的多层嵌套，代码结构尽量精简。了解js内存泄漏，避免导致内存泄漏的写法。HTML和CSS都会阻塞渲染。所以需要让CSS尽早加载（如：放在头部），以缩短首次渲染的时间。js脚本会阻塞浏览器解析，将脚本放在页面底部加载。</p>
+<h2 id="服务端响应"><a href="#服务端响应" class="headerlink" title="服务端响应"></a>服务端响应</h2><p>尽量减少响应的体积，比如用 gzip 压缩，优化图片字节数，加快文件读取速度，优化服务端的缓存策略。</p>
+<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><p>优化网络路由，比如增加 CDN 缓存；或增加并发处理能力，比如服务端设置多个域名，客户端使用多个域名同时请求资源，增加并发量。</p>
+<h3 id="浏览器并发请求限制"><a href="#浏览器并发请求限制" class="headerlink" title="浏览器并发请求限制"></a>浏览器并发请求限制</h3><p>基于端口数量和线程切换开销的考虑，浏览器不可能无限量的并发请求，因此衍生出来了并发限制。浏览器的并发请求数目限制是针对同一域名的。因此静态资源可以引用不同域名下的资源文件，间接增加浏览器请求资源的并发数。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上介绍了性能优化的几个方面，因个人能力有限，有总结不到或者错误的地方，还请各位大神不吝指教。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/26/jiangxiang/internationalize-your-react-project/" rel="prev">实现React国际化</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/07/chenyu/routable-ios_sourceAnalysis/" rel="next">routable-ios 源码解析</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端请求"><span class="nav-number">1.</span> <span class="nav-text">客户端请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#资源压缩与合并"><span class="nav-number">1.1.</span> <span class="nav-text">资源压缩与合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS预解析"><span class="nav-number">1.2.</span> <span class="nav-text">DNS预解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预加载"><span class="nav-number">1.3.</span> <span class="nav-text">预加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#懒加载"><span class="nav-number">1.4.</span> <span class="nav-text">懒加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSS-Sprites"><span class="nav-number">1.5.</span> <span class="nav-text">CSS Sprites</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端渲染"><span class="nav-number">2.</span> <span class="nav-text">客户端渲染</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是DOM"><span class="nav-number">2.1.</span> <span class="nav-text">什么是DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么DOM很慢"><span class="nav-number">2.2.</span> <span class="nav-text">为什么DOM很慢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重绘（也称为回流reflow）和重排"><span class="nav-number">2.3.</span> <span class="nav-text">重绘（也称为回流reflow）和重排</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对性能的影响"><span class="nav-number">2.4.</span> <span class="nav-text">对性能的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于DOM操作的几个技巧"><span class="nav-number">2.5.</span> <span class="nav-text">关于DOM操作的几个技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码优化和加载顺序"><span class="nav-number">2.6.</span> <span class="nav-text">代码优化和加载顺序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端响应"><span class="nav-number">3.</span> <span class="nav-text">服务端响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">4.</span> <span class="nav-text">网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览器并发请求限制"><span class="nav-number">4.1.</span> <span class="nav-text">浏览器并发请求限制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

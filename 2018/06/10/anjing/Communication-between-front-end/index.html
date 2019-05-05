@@ -1,0 +1,766 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="前后端通信,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要总结了前后端通信的几种方式。本文分为两个部分，第一部分是主要是介绍同源的前后端通信的方式，第二部分是介绍前后端跨域通信的方式。">
+<meta name="keywords" content="前后端通信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前后端通信的几种方式">
+<meta property="og:url" content="http://xgfe.github.io/2018/06/10/anjing/Communication-between-front-end/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要总结了前后端通信的几种方式。本文分为两个部分，第一部分是主要是介绍同源的前后端通信的方式，第二部分是介绍前后端跨域通信的方式。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/d87439988ef5ab43251311a668d027d6233940.png">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/63958e7743ea262c379f4466c52844a636486.png">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/cf3757d6cc10ac2d4c9c023af564900f126443.png">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/33d389422e08f9f730faa7757ef26bba81218.png">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/000d4cf1b6d92837affcddef925df2a176640.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.373Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前后端通信的几种方式">
+<meta name="twitter:description" content="本文主要总结了前后端通信的几种方式。本文分为两个部分，第一部分是主要是介绍同源的前后端通信的方式，第二部分是介绍前后端跨域通信的方式。">
+<meta name="twitter:image" content="http://vfile.meituan.net/xgfe/d87439988ef5ab43251311a668d027d6233940.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 前后端通信的几种方式 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              前后端通信的几种方式
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-06-10T00:00:00+08:00" content="2018-06-10">
+            2018-06-10
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/ANJING/" itemprop="url" rel="index">
+                  <span itemprop="name">ANJING</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/前后端通信/" rel="tag"><i class="icon-next-tags"></i>前后端通信</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要总结了前后端通信的几种方式。本文分为两个部分，第一部分是主要是介绍同源的前后端通信的方式，第二部分是介绍前后端跨域通信的方式。</p>
+<a id="more"></a>
+<h2 id="一、前后端通信（同源）简介"><a href="#一、前后端通信（同源）简介" class="headerlink" title="一、前后端通信（同源）简介"></a>一、前后端通信（同源）简介</h2><h3 id="1-什么是同源策略"><a href="#1-什么是同源策略" class="headerlink" title="1. 什么是同源策略"></a>1. 什么是同源策略</h3><p>同源策略显示从一个源加载的文档或脚本如何来自另一个源的资源进行交互。这是一个用于隔离潜在恶意文件的关键的安全机制。源包含三部分内容（协议，端口和域名，默认端口是 80 ）。<br>同源的限制：<br>（1）Cookie , LocalStorage 和 IndexDB 无法获取<br>（2）DOM无法获得和操作<br>（3）Ajax请求不能发送，只是用与同源通信</p>
+<h3 id="2-前后端通信的几种方式"><a href="#2-前后端通信的几种方式" class="headerlink" title="2.前后端通信的几种方式"></a>2.前后端通信的几种方式</h3><ul>
+<li>Ajax（同源下面的通信方式）</li>
+<li>WebSocket（不受同源策略限制）</li>
+<li>CORS（支持跨域也支持同源）</li>
+</ul>
+<h3 id="3-如何创建一个Ajax"><a href="#3-如何创建一个Ajax" class="headerlink" title="3.如何创建一个Ajax"></a>3.如何创建一个Ajax</h3><p>发送 Ajax 请求的五个步骤（XMLHttpRequest的工作原理）<br>（1）创建 XMLHttpRequest 对象。<br>（2）使用 open 方法设置请求的参数。open ( method , url, 是否异步)。<br>（3）发送请求。<br>（4）注册事件。 注册 onreadystatechange 事件，状态改变时就会调用。如果要在数据完整请求回来的时候才调用，我们需要手动写一些判断的逻辑。<br>（5）获取返回的数据，更新UI。<br>post 请求举例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 建立XMLHttpRequest对象       </span><br><span class="line">var xhr = new XMLHttpRequest();        </span><br><span class="line">xhr.open(&apos;post&apos;, &apos;02.post.php&apos;);           </span><br><span class="line">xhr.setRequestHeader(&quot;Content-type&quot;, &quot;application/x-www-form-urlencoded&quot;);  </span><br><span class="line">// 将数据通过send方法传递       </span><br><span class="line">xhr.send(&apos;name=fox&amp;age=18&apos;);            </span><br><span class="line">xhr.onreadystatechange = function () &#123;                 </span><br><span class="line">    if (xhr.readyState == 4 &amp;&amp; xhr.status == 200) &#123; </span><br><span class="line">        //判断返回状态  </span><br><span class="line">        alert(xhr.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-实际开发中用的原生Ajax请求"><a href="#4-实际开发中用的原生Ajax请求" class="headerlink" title="4.实际开发中用的原生Ajax请求"></a>4.实际开发中用的原生Ajax请求</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">var util = &#123;&#125;;      </span><br><span class="line">//获取 Ajax 请求之后的 json     </span><br><span class="line">util.json = function (options) &#123;</span><br><span class="line">    var opt = &#123;</span><br><span class="line">        url: &apos;&apos;,</span><br><span class="line">        type: &apos;get&apos;,</span><br><span class="line">        data: &#123;&#125;,</span><br><span class="line">        success: function () &#123;</span><br><span class="line">        &#125;,</span><br><span class="line">        error: function () &#123;</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">    Object.assign(opt, options);</span><br><span class="line">    //IE兼容性处理：浏览器特征检查。检查该浏览器是否存在XMLHttpRequest这个api，没有的话，就用IE的api             </span><br><span class="line">    var xhr = XMLHttpRequest ? new XMLHttpRequest() : new window.ActiveXObject(&apos;Microsoft.XMLHTTP&apos;);</span><br><span class="line">    var data = opt.data,</span><br><span class="line">    var type = opt.type.toUpperCase();</span><br><span class="line">    var dataArr = [];</span><br><span class="line">    if (opt.url) &#123;   </span><br><span class="line">        var url = opt.url;</span><br><span class="line">    &#125;</span><br><span class="line">    for (var key in data) &#123;</span><br><span class="line">        dataArr.push(key + &apos;=&apos; + data[key]);</span><br><span class="line">    &#125; </span><br><span class="line">    if (type === &apos;GET&apos;) &#123;</span><br><span class="line">        url = url + &apos;?&apos; + dataArr.join(&apos;&amp;&apos;);</span><br><span class="line">        xhr.open(type, url.replace(/\?$/g, &apos;&apos;), true);</span><br><span class="line">        xhr.send();</span><br><span class="line">    &#125;</span><br><span class="line">    if (type === &apos;POST&apos;) &#123;</span><br><span class="line">        xhr.open(type, url, true);</span><br><span class="line">        // 如果想要使用post提交数据,需要明确设置Request Header    </span><br><span class="line">        xhr.setRequestHeader(&quot;Content-type&quot;, &quot;application/x-www-form-urlencoded&quot;);</span><br><span class="line">        xhr.send(dataArr.join(&apos;&amp;&apos;));</span><br><span class="line">    &#125;</span><br><span class="line">    xhr.onreadystatechange = function () &#123;</span><br><span class="line">        if (xhr.status === 200 || xhr.status === 304) &#123;</span><br><span class="line">            //304表示：用缓存即可。206表示获取媒体资源的前面一部分                </span><br><span class="line">            var res;</span><br><span class="line">            if (opt.success &amp;&amp; opt.success instanceof Function) &#123;</span><br><span class="line">                res = xhr.responseText;</span><br><span class="line">                if (typeof res === &apos;string&apos;) &#123;</span><br><span class="line">                    //将字符串转成json</span><br><span class="line">                    res = JSON.parse(res);                           </span><br><span class="line">                    opt.success.call(xhr, res);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (opt.error &amp;&amp; opt.error instanceof Function) &#123;</span><br><span class="line">                opt.error.call(xhr, res);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5-WebSocket-介绍"><a href="#5-WebSocket-介绍" class="headerlink" title="5.WebSocket 介绍"></a>5.WebSocket 介绍</h3><p>HTTP 协议有一个缺陷：通信只能由客户端发起。所以出现了 WebSocket 。它的最大特点就是，服务器可以主动向客户端推送信息，客户端也可以主动向服务器发送信息，是真正的双向平等对话，属于服务器推送技术的一种。<br>其他特点包括：<br>（1）建立在 TCP 协议之上，服务器端的实现比较容易。<br>（2）与 HTTP 协议有着良好的兼容性。默认端口也是 80 和 443 ，并且握手阶段采用 HTTP 协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。<br>（3）数据格式比较轻量，性能开销小，通信高效。<br>（4）可以发送文本，也可以发送二进制数据。<br>（5）没有同源限制，客户端可以与任意服务器通信。<br>（6）协议标识符是ws（如果加密，则为wss），服务器网址就是 URL。</p>
+<p>通常WebSocket协议的链接如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ws://example.com:80/some/path</span><br></pre></td></tr></table></figure></p>
+<p>WebSocket 的实现需要后端搭建一个 WebSocket 服务器，但是如果想搭建一个 WebSocket 服务器就没有那么轻松了，因为 WebSocket 是一种新的通信协议，目前还是草案，没有成为标准，比如 PyWebSocket , WebSocket-Node , LibWebSockets 等等，这些库文件已经实现了WebSocket 数据包的封装和解析，我们可以调用这些接口，这在很大程度上减少了我们的工作量。<br>具体的实现方式：（在客户端）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 再js文件中 创建WebSocket对象</span><br><span class="line">var ws = new WebSocket(‘wss://echo.WebSocket.org’);</span><br><span class="line">ws.onopen = function (evt) &#123;</span><br><span class="line">    console.log(‘connnection……’);</span><br><span class="line">    ws.send(&apos;hello WebSocket&apos;);</span><br><span class="line">&#125;</span><br><span class="line">ws.onmessage = function (evt) &#123;</span><br><span class="line">    console.log(&apos;received message&apos; + evt.data);</span><br><span class="line">    ws.close();</span><br><span class="line">&#125;</span><br><span class="line">ws.onclose = dunction(evt)&#123;</span><br><span class="line">    console.log(&apos;connection closed.&apos;);</span><br><span class="line">&#125;   </span><br><span class="line">// ws的使用，以为按钮添加发送信息事件为例</span><br><span class="line">$(&quot;#send&quot;).click(function()&#123;</span><br><span class="line">    ws.send($(&quot;#msg&quot;).val());</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="6-CORS-介绍"><a href="#6-CORS-介绍" class="headerlink" title="6.CORS 介绍"></a>6.CORS 介绍</h3><p>CORS是一个 W3C 标准，跨域资源共享（CORS ）是一种网络浏览器的技术规范，它为Web服务器定义了一种方式，允许网页从不同的域访问其资源。而这种访问是被同源策略所禁止的。CORS 系统定义了一种浏览器和服务器交互的方式来确定是否允许跨域请求。 它是一个妥协，有更大的灵活性，但比起简单地允许所有这些的要求来说更加安全。简言之， CORS 就是为了让 AJAX 可以实现可控的跨域访问而生的。<br>下图为各浏览器对于 CORS 的支持情况，看起来相当乐观。主流浏览器都已基本提供对跨域资源共享的支持，所以，CORS 才会在国外使用的如此普遍。<br><img src="http://vfile.meituan.net/xgfe/d87439988ef5ab43251311a668d027d6233940.png" alt=""><br>使用 CORS 需要做服务端和前端的配置：</p>
+<h4 id="服务端的配置"><a href="#服务端的配置" class="headerlink" title="服务端的配置"></a>服务端的配置</h4><p>以下是 CORS 协议规定的 HTTP 头，用来进行浏览器发起跨域资源请求时进行协商：</p>
+<ol>
+<li>Origin。HTTP 请求头，任何涉及 CORS 的请求都必需携带。</li>
+<li>Access-Control-Request-Method。HTTP 请求头，在带预检( Preflighted )的跨域请求中用来表示真实请求的方法。</li>
+<li>Access-Control-Request-Headers。HTTP 请求头，在带预检( Preflighted )的跨域请求中用来表示真实请求的自定义 Header 列表。</li>
+<li>Access-Control-Allow-Origin。HTTP 响应头，指定服务器端允许进行跨域资源访问的来源域。可以用通配符 * 表示允许任何域的JavaScript 访问资源，但是在响应一个携带身份信息( Credential )的 HTTP 请求时，Access-Control-Allow-Origin 必需指定具体的域，不能用通配符。</li>
+<li>Access-Control-Allow-Methods。HTTP 响应头，指定服务器允许进行跨域资源访问的请求方法列表，一般用在响应预检请求上。</li>
+<li>Access-Control-Allow-Headers。HTTP 响应头，指定服务器允许进行跨域资源访问的请求头列表，一般用在响应预检请求上。</li>
+<li>Access-Control-Max-Age。HTTP 响应头，用在响应预检请求上，表示本次预检响应的有效时间。在此时间内，浏览器都可以根据此次协商结果决定是否有必要直接发送真实请求，而无需再次发送预检请求。</li>
+<li>Access-Control-Allow-Credentials。HTTP 响应头，凡是浏览器请求中携带了身份信息，而响应头中没有返回。</li>
+</ol>
+<p>实际应用中，服务端例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//允许跨域访问  </span><br><span class="line">HttpContext.Current.Response.AddHeader(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);  </span><br><span class="line">HttpContext.Current.Response.AddHeader(&quot;Access-Control-Allow-Methods&quot;, &quot;POST, GET, OPTIONS, DELETE,PUT&quot;);  </span><br><span class="line">HttpContext.Current.Response.AddHeader(&quot;Access-Control-Allow-Headers&quot;, &quot;Test&quot;);</span><br></pre></td></tr></table></figure>
+<h4 id="前端的配置"><a href="#前端的配置" class="headerlink" title="前端的配置"></a>前端的配置</h4><p>前端的配置主要从简单请求、非简单请求和携带身份凭证这三点进行讲解。<br>浏览器将CORS请求分成两类：简单请求（ simple request ）和非简单请求（ not-so-simple request ）。<br>1.简单请求：<br>使用下列方法：GET、 HEAD、 POST<br>HTTP的头信息主要是以下几种字段：</p>
+<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Content-Type 的值属于下列之一: <ul>
+<li>application/x-www-form-urlencoded</li>
+<li>multipart/form-data</li>
+<li>text/plain</li>
+</ul>
+</li>
+</ul>
+<p>简单请求如图所示：<br><img src="http://vfile.meituan.net/xgfe/63958e7743ea262c379f4466c52844a636486.png" alt=""><br>2.非简单请求：<br>不满足简单请求条件的请求则要先进行预检请求，即使用 OPTIONS 方法发起一个预检请求到服务器，已获知服务器是否允许该实际请求。<br>非简单请求如下所示：<br><img src="http://vfile.meituan.net/xgfe/cf3757d6cc10ac2d4c9c023af564900f126443.png" alt=""><br>浏览器与服务器之间请求只进行了一次。<br>下面是 PUT 请求第一次返回的结果：<br><img src="http://vfile.meituan.net/xgfe/33d389422e08f9f730faa7757ef26bba81218.png" alt=""><br><img src="http://vfile.meituan.net/xgfe/000d4cf1b6d92837affcddef925df2a176640.png" alt=""><br>通过PUT请求结果可以看出，当检测到 PUT 请求为非简单请求时，浏览器便会发送一个预检请求，目的是询问，自定义头部 X-Custom-Header 的 PUT 请求是否被允许，浏览器返回了所有可以请求的方法和自定义的头部（把所有可以的返回是为了避免多次预检请求），这时候预检请求成功了，便会发送真正的PUT请求。</p>
+<p>关于预检请求，需要注意一下两点：</p>
+<ul>
+<li>预检请求对 js 来说是透明的，js 获取不到预检请求的任何信息。</li>
+<li>预检请求并不是每次请求都发生，服务端设置的 Access-Control-Max-Age 头部指定了预检请求的有效期，在有效期内的非简单请求不需要再次发生预检请求。</li>
+</ul>
+<p>3.携带身份凭证<br>大部分的请求是需要用户携带着用户信息的，比如在一个登录的系统中，用户会携带着相应的 cookie 或 token ，但 CORS 跨域默认是不带身份凭证的。<br>如果需要附带身份凭证，在发送请求时，通过将 withCredentials 属性设置为 true ，可以指定某个请求可以发送凭据。<br>下面提供针对 XMLHttpRequest 附带身份凭证的兼容性写法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function createCORSRequest(method, url) &#123;</span><br><span class="line">    var xhr = new XMLHttpRequest();</span><br><span class="line">    xhr.onreadystatechange = function() &#123;</span><br><span class="line">        if(xhr.readyState == 4) &#123;</span><br><span class="line">            if((xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300) || xhr == 304) &#123;</span><br><span class="line">                console.log(xhr.response);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                console.log(&apos;Request was unsuccessful: &apos; + xhr.status);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    if(&apos;withCredentials&apos; in xhr) &#123;</span><br><span class="line">        xhr.open(method,url, true);</span><br><span class="line">    &#125; else if(typeof XDomainRequest != &apos;undefined&apos;) &#123;</span><br><span class="line">        xhr = new XDomainRequest();</span><br><span class="line">        xhr.open(method, url);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        xhr = null;</span><br><span class="line">    &#125;</span><br><span class="line">    return xhr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>附带身份凭证对服务端有两个要求：</p>
+<ol>
+<li>服务端的 Access-Control-Allow-Origin 头部不能设置为 *</li>
+<li>服务端的 Access-Control-Allow-Credentials 头部设置为 true</li>
+</ol>
+<h2 id="二、-前后端跨域通信"><a href="#二、-前后端跨域通信" class="headerlink" title="二、 前后端跨域通信"></a>二、 前后端跨域通信</h2><ul>
+<li>JSONP</li>
+<li>Hash</li>
+<li>WebSocket</li>
+<li>CORS</li>
+</ul>
+<h3 id="1-JSONP"><a href="#1-JSONP" class="headerlink" title="1.JSONP"></a>1.JSONP</h3><p>JSONP 的工作原理：<br>本质是利用了 script 标签具有可跨域的特性，由服务端返回预先定义好的 javascript 全局函数的调用，并且将服务端数据以该函数参数的形式传递过来。比如说，客户端这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;http://www.smyhvae.com/?data=name&amp;callback=myjsonp&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>实际开发中，前端的 JSONP 是这样实现的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"> var util = &#123;&#125;; </span><br><span class="line"> //定义方法：动态创建script标签</span><br><span class="line"> util.createScript = function (url, charset) &#123;</span><br><span class="line">     var script = document.createElement(&apos;script&apos;);</span><br><span class="line">     script.setAttribute(&apos;type&apos;, &apos;text/javascript&apos;);</span><br><span class="line">     charset &amp;&amp; script.setAttribute(&apos;charset&apos;, charset);</span><br><span class="line">     script.setAttribute(&apos;src&apos;, url);</span><br><span class="line">     script.async = true;</span><br><span class="line">     return script;</span><br><span class="line">&#125;;</span><br><span class="line"> util.jsonp = function (url, onsuccess, onerror, charset) &#123;  </span><br><span class="line">     //事先约定好的函数名</span><br><span class="line">     var callbackName = util.getName(&apos;tt_player&apos;);  </span><br><span class="line">     //根据回调名称注册一个全局的函数 </span><br><span class="line">     window[callbackName] = function () &#123;               </span><br><span class="line">         if (onsuccess &amp;&amp; util.isFunction(onsuccess)) &#123;</span><br><span class="line">             onsuccess(arguments[0]);</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;;</span><br><span class="line">     //动态创建一个script标签</span><br><span class="line">     var script = util.createScript(url + &apos;&amp;callback=&apos; + callbackName, charset);   </span><br><span class="line">     //监听加载成功的事件，获取数据</span><br><span class="line">     script.onreadystatechange = function () &#123;      </span><br><span class="line">         if (!script.readyState || /loaded|complete/.test(script.readyState)) &#123;              </span><br><span class="line">             if (script.parentNode) &#123;</span><br><span class="line">                 // 删除函数或变量</span><br><span class="line">                 script.parentNode.removeChild(script);  </span><br><span class="line">             &#125;      </span><br><span class="line">             //最后不要忘了删除           </span><br><span class="line">             window[callbackName] = null;  </span><br><span class="line">         &#125;</span><br><span class="line">     &#125;;</span><br><span class="line">     script.onerror = function () &#123;                              </span><br><span class="line">         if (onerror &amp;&amp; util.isFunction(onerror)) &#123;</span><br><span class="line">             onerror();</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;;</span><br><span class="line">     //往html中增加这个标签，目的是把请求发送出去</span><br><span class="line">     document.getElementsByTagName(&apos;head&apos;)[0].appendChild(script);  </span><br><span class="line"> &#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-Hash"><a href="#2-Hash" class="headerlink" title="2.Hash"></a>2.Hash</h3><p>url 的#后面的内容就叫 Hash 。Hash 的改变，页面不会刷新。这就是用 Hash 做跨域通信的基本原理。<br>补充：url 的?后面的内容叫 Search 。 Search 的改变，会导致页面刷新，因此不能做跨域通信。<br>使用举例：<br>场景：我的页面 A 通过 iframe 或 frame 嵌入了跨域的页面 B。<br>现在，我这个 A 页面想给B页面发消息，怎么操作呢？<br>（1）首先，在我的A页面中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//伪代码  </span><br><span class="line">var B = document.getElementsByTagName(&apos;iframe&apos;);  </span><br><span class="line">//我们可以把JS对象，通过JSON.stringify()方法转成json字符串，发给B   </span><br><span class="line">B.src = B.src + &apos;#&apos; + &apos;jsonString&apos;;</span><br></pre></td></tr></table></figure>
+<p>（2）然后，在 B 页面中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// B 中的伪代码     </span><br><span class="line">window.onhashchange = function () &#123; </span><br><span class="line">     //通过onhashchange方法监听，url中的hash是否发生变化         </span><br><span class="line">     var data = window.location.hash;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>总结：<br>本文主要对前后端通信的几种方式做了简单介绍，希望对大家对前后端通信方面的学习有所帮助，总结不到位的地方还请大家批评指正。<br>友情参考链接：<br><a href="https://blog.csdn.net/a54654132/article/details/77604597" target="_blank" rel="noopener">https://blog.csdn.net/a54654132/article/details/77604597</a><br><a href="https://www.cnblogs.com/yanglang/p/6720887.html" target="_blank" rel="noopener">https://www.cnblogs.com/yanglang/p/6720887.html</a><br><a href="https://www.cnblogs.com/smyhvae/p/8523576.html" target="_blank" rel="noopener">https://www.cnblogs.com/smyhvae/p/8523576.html</a><br><a href="https://www.cnblogs.com/liugang-vip/p/6337580.html" target="_blank" rel="noopener">https://www.cnblogs.com/liugang-vip/p/6337580.html</a><br><a href="https://blog.csdn.net/qq_27905183/article/details/71023542" target="_blank" rel="noopener">https://blog.csdn.net/qq_27905183/article/details/71023542</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/13/wangpeiyu/web-security-XSS/" rel="prev">Web 前端安全科普之 XSS</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/07/yuxue/数组去重的十种方法/" rel="next">数组去重的十种方法</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、前后端通信（同源）简介"><span class="nav-number">1.</span> <span class="nav-text">一、前后端通信（同源）简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-什么是同源策略"><span class="nav-number">1.1.</span> <span class="nav-text">1. 什么是同源策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-前后端通信的几种方式"><span class="nav-number">1.2.</span> <span class="nav-text">2.前后端通信的几种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-如何创建一个Ajax"><span class="nav-number">1.3.</span> <span class="nav-text">3.如何创建一个Ajax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-实际开发中用的原生Ajax请求"><span class="nav-number">1.4.</span> <span class="nav-text">4.实际开发中用的原生Ajax请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-WebSocket-介绍"><span class="nav-number">1.5.</span> <span class="nav-text">5.WebSocket 介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-CORS-介绍"><span class="nav-number">1.6.</span> <span class="nav-text">6.CORS 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端的配置"><span class="nav-number">1.6.1.</span> <span class="nav-text">服务端的配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前端的配置"><span class="nav-number">1.6.2.</span> <span class="nav-text">前端的配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-前后端跨域通信"><span class="nav-number">2.</span> <span class="nav-text">二、 前后端跨域通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-JSONP"><span class="nav-number">2.1.</span> <span class="nav-text">1.JSONP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Hash"><span class="nav-number">2.2.</span> <span class="nav-text">2.Hash</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,832 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="angular,karma,jasmine,测试,单元测试,端到端测试,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="当Angular项目的规模到达一定的程度，就需要进行测试工作了。本文着重介绍关于ng的测试部分，主要包括以下三个方面：  框架的选择（Karma+Jasmine） 测试的分类和选择（单元测试 + 端到端测试） 在ng中各个模块如何编写测试用例  下面各部分进行详细介绍。">
+<meta name="keywords" content="angular,karma,jasmine,测试,单元测试,端到端测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular的自动化测试">
+<meta property="og:url" content="http://xgfe.github.io/2015/12/17/HeOH/AngularJS的自动化测试/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="当Angular项目的规模到达一定的程度，就需要进行测试工作了。本文着重介绍关于ng的测试部分，主要包括以下三个方面：  框架的选择（Karma+Jasmine） 测试的分类和选择（单元测试 + 端到端测试） 在ng中各个模块如何编写测试用例  下面各部分进行详细介绍。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://images.cnitblog.com/blog/672888/201410/271613208781121.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.369Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Angular的自动化测试">
+<meta name="twitter:description" content="当Angular项目的规模到达一定的程度，就需要进行测试工作了。本文着重介绍关于ng的测试部分，主要包括以下三个方面：  框架的选择（Karma+Jasmine） 测试的分类和选择（单元测试 + 端到端测试） 在ng中各个模块如何编写测试用例  下面各部分进行详细介绍。">
+<meta name="twitter:image" content="http://images.cnitblog.com/blog/672888/201410/271613208781121.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Angular的自动化测试 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Angular的自动化测试
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-12-17T00:00:00+08:00" content="2015-12-17">
+            2015-12-17
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/HeOH/" itemprop="url" rel="index">
+                  <span itemprop="name">HeOH</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/angular/" rel="tag"><i class="icon-next-tags"></i>angular</a>
+            
+              <a href="/tags/karma/" rel="tag"><i class="icon-next-tags"></i>karma</a>
+            
+              <a href="/tags/jasmine/" rel="tag"><i class="icon-next-tags"></i>jasmine</a>
+            
+              <a href="/tags/测试/" rel="tag"><i class="icon-next-tags"></i>测试</a>
+            
+              <a href="/tags/单元测试/" rel="tag"><i class="icon-next-tags"></i>单元测试</a>
+            
+              <a href="/tags/端到端测试/" rel="tag"><i class="icon-next-tags"></i>端到端测试</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>当Angular项目的规模到达一定的程度，就需要进行测试工作了。本文着重介绍关于ng的测试部分，主要包括以下三个方面：</p>
+<ol>
+<li>框架的选择（Karma+Jasmine）</li>
+<li>测试的分类和选择（单元测试 + 端到端测试）</li>
+<li>在ng中各个模块如何编写测试用例</li>
+</ol>
+<p>下面各部分进行详细介绍。</p>
+<a id="more"></a>
+<h3 id="测试的分类"><a href="#测试的分类" class="headerlink" title="测试的分类"></a>测试的分类</h3><p>在测试中，一般分为<code>单元测试</code>和<code>端到端测试</code>，单元测试是保证开发者验证代码某部分有效性的技术，端到端（E2E）是当你想确保一堆组件能按事先预想的方式运行起来的时候使用。</p>
+<p>其中单元测试又分为两类： <code>TDD(测试驱动开发)</code>和<code>BDD(行为驱动开发)</code>。下面着重介绍两种开发模式。</p>
+<ul>
+<li><p>TDD（测试驱动开发 Test-driven development）是使用测试案例等来驱动你的软件开发。</p>
+<p>  如果我们想要更深入点了解TDD，我们可以将它分成五个不同的阶段：</p>
+<ol>
+<li><p>首先，开发人员编写一些测试方法。</p>
+</li>
+<li><p>其次，开发人员使用这些测试，但是很明显的，测试都没有通过，原因是还没有编写这些功能的代码来实际执行。</p>
+</li>
+<li><p>接下来，开发人员实现测试中的代码。</p>
+</li>
+<li><p>如果开发人员写代码很优秀，那么在下一阶段会看到他的测试通过。</p>
+</li>
+<li><p>然后开发人员可以重构自己的代码，添加注释，使其变得整洁，开发人员知道，如果新添加的代码破坏了什么，那么测试会提醒他失败。</p>
+<p>其中的流程图如下：<br><img src="http://images.cnitblog.com/blog/672888/201410/271613208781121.png" alt="TDD"></p>
+<p>TDD的好处：</p>
+</li>
+<li><p>能驱使系统最终的实现代码，都可以被测试代码所覆盖到，也即“每一行代码都可测”。</p>
+</li>
+<li><p>测试代码作为实现代码的正确导向，最终演变为正确系统的行为，能让整个开发过程更加高效。</p>
+</li>
+</ol>
+</li>
+<li><p>BDD是（行为驱动开发 Behavior-Driven Development）指的是不应该针对代码的实现细节写测试，而是要针对行为写测试。BDD测试的是行为，即软件应该怎样运行。</p>
+<ul>
+<li><p>和TDD比起来，BDD是需要我们先写行为规范（功能明细），在进行软件开发。功能明细和测试看起来非常相似，但是功能明细更加含蓄一些。BDD采用了更详细的方式使得它看起来就像是一句话。</p>
+</li>
+<li><p>BDD测试应该注重功能而不是实际的结果。你常常会听说BDD是帮助设计软件，而不是像TDD那样的测试软件。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>最后总结：TDD的迭代反复验证是敏捷开发的保障，但没有明确如何根据设计产生测试，并保障测试用例的质量，而BDD倡导大家都用简洁的自然语言描述系统行为的理念，恰好弥补了测试用例（即系统行为）的准确性。</p>
+<h3 id="测试框架选择"><a href="#测试框架选择" class="headerlink" title="测试框架选择"></a>测试框架选择</h3><p>利用karma和jasmine来进行ng模块的单元测试。</p>
+<ul>
+<li><p>Karma:是一个基于Node.js的JavaScript测试执行过程管理工具，这个测试工具的一个强大特性就是，它可以监控(Watch)文件的变化，然后自行执行，通过console.log显示测试结果。</p>
+</li>
+<li><p>jasmine是一个行为驱动开发（BDD）的测试框架,不依赖任何js框架以及dom,是一个非常干净以及友好API的测试库.</p>
+</li>
+</ul>
+<h4 id="Karma"><a href="#Karma" class="headerlink" title="Karma"></a>Karma</h4><p>karma是一个单元测试的运行控制框架,提供以不同环境来运行单元测试,比如chrome,firfox,phantomjs等,测试框架支持jasmine,mocha,qunit,是一个以nodejs为环境的npm模块.</p>
+<p>Karma从头开始构建，免去了设置测试的负担，集中精力在应用逻辑上。会产生一个浏览器实例，针对不同浏览器运行测试，同时可以对测试的运行进行一个实时反馈，提供一份debug报告。</p>
+<p>测试还会依赖一些Karma插件，如测试覆盖率Karma-coverage工具、Karman-fixture工具及Karma-coffee处理工具。此外，前端社区里提供里比较丰富的插件，常见的测试需求都能涵盖到。</p>
+<p>安装测试相关的npm模块建议使用—-save-dev参数,因为这是开发相关的,一般的运行karma的话只需要下面两个npm命令:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install karma --save-dev</span><br><span class="line">npm install karma-junit-reporter --save-dev</span><br></pre></td></tr></table></figure>
+<p>然后一个典型的运行框架通常都需要一个配置文件,在karma里可以是一个karma.conf.js,里面的代码是一个nodejs风格的,一个普通的例子如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(config)&#123;</span><br><span class="line">  config.set(&#123;</span><br><span class="line">    // 下面files里的基础目录</span><br><span class="line">    basePath : &apos;../&apos;,</span><br><span class="line">    // 测试环境需要加载的JS信息</span><br><span class="line">    files : [</span><br><span class="line">      &apos;app/bower_components/angular/angular.js&apos;,</span><br><span class="line">      &apos;app/bower_components/angular-route/angular-route.js&apos;,</span><br><span class="line">      &apos;app/bower_components/angular-mocks/angular-mocks.js&apos;,</span><br><span class="line">      &apos;app/js/**/*.js&apos;,</span><br><span class="line">      &apos;test/unit/**/*.js&apos;</span><br><span class="line">    ],</span><br><span class="line">    // 是否自动监听上面文件的改变自动运行测试</span><br><span class="line">    autoWatch : true,</span><br><span class="line">    // 应用的测试框架</span><br><span class="line">    frameworks: [&apos;jasmine&apos;],</span><br><span class="line">    // 用什么环境测试代码,这里是chrome`</span><br><span class="line">    browsers : [&apos;Chrome&apos;],</span><br><span class="line">    // 用到的插件,比如chrome浏览器与jasmine插件</span><br><span class="line">    plugins : [</span><br><span class="line">            &apos;karma-chrome-launcher&apos;,</span><br><span class="line">            &apos;karma-firefox-launcher&apos;,</span><br><span class="line">            &apos;karma-jasmine&apos;,</span><br><span class="line">            &apos;karma-junit-reporter&apos;</span><br><span class="line">            ],</span><br><span class="line">    // 测试内容的输出以及导出用的模块名</span><br><span class="line">    reporters: [&apos;progress&apos;, &apos;junit&apos;],</span><br><span class="line">    // 设置输出测试内容文件的信息</span><br><span class="line">    junitReporter : &#123;</span><br><span class="line">      outputFile: &apos;test_out/unit.xml&apos;,</span><br><span class="line">      suite: &apos;unit&apos;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>运行时输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">karma start test/karma.conf.js</span><br></pre></td></tr></table></figure>
+<h4 id="jasmine"><a href="#jasmine" class="headerlink" title="jasmine"></a>jasmine</h4><p>jasmine是一个行为驱动开发的测试框架,不依赖任何js框架以及dom,是一个非常干净以及友好API的测试库.</p>
+<p>以下以一个具体实例说明<code>test.js</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">describe(&quot;A spec (with setup and tear-down)&quot;, function() &#123;</span><br><span class="line">  var foo;</span><br><span class="line">  beforeEach(function() &#123;</span><br><span class="line">    foo = 0;</span><br><span class="line">    foo += 1;</span><br><span class="line">  &#125;);</span><br><span class="line">  afterEach(function() &#123;</span><br><span class="line">    foo = 0;</span><br><span class="line">  &#125;);</span><br><span class="line">  it(&quot;is just a function, so it can contain any code&quot;, function() &#123;</span><br><span class="line">    expect(foo).toEqual(1);</span><br><span class="line">  &#125;);</span><br><span class="line">  it(&quot;can have more than one expectation&quot;, function() &#123;</span><br><span class="line">    expect(foo).toEqual(1);</span><br><span class="line">    expect(true).toEqual(true);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>首先任何一个测试用例以describe函数来定义,它有两参数,第一个用来描述测试大体的中心内容,第二个参数是一个函数,里面写一些真实的测试代码</p>
+</li>
+<li><p>it是用来定义单个具体测试任务,也有两个参数,第一个用来描述测试内容,第二个参数是一个函数,里面存放一些测试方法</p>
+</li>
+<li><p>expect主要用来计算一个变量或者一个表达式的值,然后用来跟期望的值比较或者做一些其它的事件</p>
+</li>
+<li><p>beforeEach与afterEach主要是用来在执行测试任务之前和之后做一些事情,上面的例子就是在执行之前改变变量的值,然后在执行完成之后重置变量的值</p>
+</li>
+</ol>
+<h3 id="开始单元测试"><a href="#开始单元测试" class="headerlink" title="开始单元测试"></a>开始单元测试</h3><p>下面分别以<code>控制器</code>，<code>指令</code>，<code>过滤器</code>和<code>服务</code>四个部分来编写相关的单元测试。项目地址为<a href="https://github.com/jsprodotcom/source/blob/master/angular-seed.zip" target="_blank" rel="noopener"><code>angular-seed(点我)</code></a>项目，可以下载demo并运行其测试用例。</p>
+<p>demo中是一个简单的todo应用，会包含一个文本输入框，其中可以编写一些笔记，按下按钮可以将新的笔记加入笔记列表中，其中使用notesfactory封装LocalStorage来储存笔记信息。</p>
+<p>先介绍一下angular中测试相关的组件<code>angular-mocks</code>。</p>
+<h4 id="了解angular-mocks"><a href="#了解angular-mocks" class="headerlink" title="了解angular-mocks"></a>了解angular-mocks</h4><p>在Angular中，模块都是通过依赖注入来加载和实例化的，因此官方提供了<code>angular-mocks.js</code>测试工具来提供<code>模块的定义</code>、<code>加载</code>，<code>依赖注入</code>等功能。</p>
+<p>其中一些常用的方法(挂载在window命名空间下)：</p>
+<ul>
+<li>angular.mock.module: <code>module</code>用来加载已有的模块，以及配置<code>inject</code>方法注入的模块信息。具体使用如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">beforeEach(module(&apos;myApp.filters&apos;));</span><br><span class="line"></span><br><span class="line">beforeEach(module(function($provide) &#123;</span><br><span class="line">      $provide.value(&apos;version&apos;, &apos;TEST_VER&apos;);</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+<p>该方法一般在<code>beforeEach</code>中使用，在执行测试用例之前可以获得模块的配置。</p>
+<ul>
+<li>angular.mock.inject: <code>inject</code>用来注入配置好的<code>ng</code>模块，来供测试用例里进行调用。具体使用如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">it(&apos;should provide a version&apos;, inject(function(mode, version) &#123;</span><br><span class="line">      expect(version).toEqual(&apos;v1.0.1&apos;);</span><br><span class="line">      expect(mode).toEqual(&apos;app&apos;);</span><br><span class="line">    &#125;));</span><br></pre></td></tr></table></figure>
+<p>其实<code>inject</code>里面就是利用<code>angular.inject</code>方法创建的一个内置的依赖注入实例，然后里面的模块和普通的<code>ng</code>模块的依赖处理是一样的。</p>
+<h4 id="Controller部分"><a href="#Controller部分" class="headerlink" title="Controller部分"></a>Controller部分</h4><p>Angular模块是todoApp，控制器是TodoController，当按钮被点击时，TodoController的<code>createNote()</code>函数会被调用。下面是app.js的代码部分。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">var todoApp = angular.module(&apos;todoApp&apos;,[]);</span><br><span class="line"></span><br><span class="line">todoApp.controller(&apos;TodoController&apos;,function($scope,notesFactory)&#123;</span><br><span class="line">    $scope.notes = notesFactory.get();</span><br><span class="line">    $scope.createNote = function()&#123;</span><br><span class="line">    notesFactory.put($scope.note);</span><br><span class="line">    $scope.note=&apos;&apos;;</span><br><span class="line">    $scope.notes = notesFactory.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">todoApp.factory(&apos;notesFactory&apos;,function()&#123;</span><br><span class="line">    return &#123;</span><br><span class="line">    put: function(note)&#123;    </span><br><span class="line">        localStorage.setItem(&apos;todo&apos; + (Object.keys(localStorage).length + 1), note);</span><br><span class="line">    &#125;,</span><br><span class="line">    get: function()&#123;</span><br><span class="line">        var notes = [];</span><br><span class="line">        var keys = Object.keys(localStorage);</span><br><span class="line">        for(var i = 0; i &lt; keys.length; i++)&#123;</span><br><span class="line">            notes.push(localStorage.getItem(keys[i]));</span><br><span class="line">        &#125;</span><br><span class="line">        return notes;</span><br><span class="line">    &#125;       </span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在todoController中用了个叫做<code>notesFactory</code>的服务来存储和提取笔记。当<code>createNote()</code>被调用时，会使用这个服务将一条信息存入LocalStorage中，然后清空当前的note。因此，在编写测试模块是，应该保证控制器初始化，scope中有一定数量的笔记，在调用<code>createNote()</code>之后，笔记的数量应该加一。具体的单元测试如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">describe(&apos;TodoController Test&apos;, function() &#123;</span><br><span class="line">  beforeEach(module(&apos;todoApp&apos;)); // 将会在所有的it()之前运行</span><br><span class="line"></span><br><span class="line">  // 我们在这里不需要真正的factory。因此我们使用一个假的factory。</span><br><span class="line">  var mockService = &#123;</span><br><span class="line">    notes: [&apos;note1&apos;, &apos;note2&apos;], //仅仅初始化两个项目</span><br><span class="line">    get: function() &#123;</span><br><span class="line">      return this.notes;</span><br><span class="line">    &#125;,</span><br><span class="line">    put: function(content) &#123;</span><br><span class="line">      this.notes.push(content);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  // 现在是真正的东西，测试spec</span><br><span class="line">  it(&apos;should return notes array with two elements initially and then add one&apos;,</span><br><span class="line">    inject(function($rootScope, $controller) &#123; //注入依赖项目</span><br><span class="line">      var scope = $rootScope.$new();</span><br><span class="line"></span><br><span class="line">      // 在创建控制器的时候，我们也要注入依赖项目</span><br><span class="line">      var ctrl = $controller(&apos;TodoController&apos;, &#123;$scope: scope, notesFactory:mockService&#125;);</span><br><span class="line"></span><br><span class="line">      // 初始化的技术应该是2</span><br><span class="line">      expect(scope.notes.length).toBe(2);</span><br><span class="line"></span><br><span class="line">      // 输入一个新项目</span><br><span class="line">      scope.note = &apos;test3&apos;;</span><br><span class="line"></span><br><span class="line">      // now run the function that adds a new note (the result of hitting the button in HTML)</span><br><span class="line">      // 现在运行这个函数，它将会增加一个新的笔记项目</span><br><span class="line">      scope.createNote();</span><br><span class="line"></span><br><span class="line">      // 期待现在的笔记数目是3</span><br><span class="line">      expect(scope.notes.length).toBe(3);</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在beforeEach中，每一个测试用例被执行之前，都需要加载模块<code>module(&quot;todoApp&quot;)</code>。</p>
+<p>由于不需要外部以来，因此我们本地建立一个假的mockService来代替factory，用来模拟noteFactory，其中包含相同的函数，<code>get()</code>和<code>put()</code>。这个假的factory从数组中加载数据代替localStorage的操作。</p>
+<p>在it中，声明了依赖项目<code>$rootScope</code>和<code>$controller</code>，都可以由Angular自动注入，其中<code>$rootScope</code>用来获得根作用域，<code>$controller</code>用作创建新的控制器。</p>
+<ol>
+<li>$controller服务需要两个参数。第一个参数是将要创建的控制器的名称。第二个参数是一个代表控制器依赖项目的对象，</li>
+<li>$rootScope.$new()方法将会返回一个新的作用域，它用来注入控制器。同时我们传入mockService作为假factory。</li>
+</ol>
+<p>之后，初始化会根据notes数组的长度预测笔记的数量，同时在执行了<code>createNote()</code>函数之后，会改变数组的长度，因此可以写出两个测试用例。</p>
+<h4 id="Factory部分"><a href="#Factory部分" class="headerlink" title="Factory部分"></a>Factory部分</h4><p>factory部分的单元测试代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">describe(&apos;notesFactory tests&apos;, function() &#123;</span><br><span class="line">  var factory;</span><br><span class="line"></span><br><span class="line">  // 在所有it()函数之前运行</span><br><span class="line">  beforeEach(function() &#123;</span><br><span class="line">    // 载入模块</span><br><span class="line">    module(&apos;todoApp&apos;);</span><br><span class="line"></span><br><span class="line">    // 注入你的factory服务</span><br><span class="line">    inject(function(notesFactory) &#123;</span><br><span class="line">      factory = notesFactory;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    var store = &#123;</span><br><span class="line">      todo1: &apos;test1&apos;,</span><br><span class="line">      todo2: &apos;test2&apos;,</span><br><span class="line">      todo3: &apos;test3&apos;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    spyOn(localStorage, &apos;getItem&apos;).andCallFake(function(key) &#123;</span><br><span class="line">      return store[key];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    spyOn(localStorage, &apos;setItem&apos;).andCallFake(function(key, value) &#123;</span><br><span class="line">      return store[key] = value + &apos;&apos;;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    spyOn(localStorage, &apos;clear&apos;).andCallFake(function() &#123;</span><br><span class="line">      store = &#123;&#125;;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    spyOn(Object, &apos;keys&apos;).andCallFake(function(value) &#123;</span><br><span class="line">      var keys=[];</span><br><span class="line"></span><br><span class="line">      for(var key in store) &#123;</span><br><span class="line">        keys.push(key);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      return keys;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  // 检查是否有我们想要的函数</span><br><span class="line">  it(&apos;should have a get function&apos;, function() &#123;</span><br><span class="line">    expect(angular.isFunction(factory.get)).toBe(true);</span><br><span class="line">    expect(angular.isFunction(factory.put)).toBe(true);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  // 检查是否返回3条记录</span><br><span class="line">  it(&apos;should return three todo notes initially&apos;, function() &#123;</span><br><span class="line">    var result = factory.get();</span><br><span class="line"></span><br><span class="line">    expect(result.length).toBe(3);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  // 检查是否添加了一条新纪录</span><br><span class="line">  it(&apos;should return four todo notes after adding one more&apos;, function() &#123;</span><br><span class="line">    factory.put(&apos;Angular is awesome&apos;);</span><br><span class="line"></span><br><span class="line">    var result = factory.get();</span><br><span class="line">    expect(result.length).toBe(4);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在<code>TodoController</code>模块中，实际上的factory会调用localStorage来存储和提取笔记的项目，但由于我们单元测试中，不需要依赖外部服务去获取和存储数据，因此我们要对<code>localStorage.getItem()</code>和<code>localStorage.setItem()</code>进行spy操作，也就是利用假函数来代替这两个部分。</p>
+<p><code>spyOn(localStorage,&#39;setItem&#39;)andCallFake()</code>是用来用假函数进行监听的。第一个参数指定需要监听的对象，第二个参数指定需要监听的函数，然后<code>andCallfake</code>这个API可以编写自己的函数。因此，测试中完成了对<code>localStorage</code>和<code>Object</code>的改写，使函数可以返回我们自己数组中的值。</p>
+<p>在测试用例中，首先检测新封装的<code>factory</code>函数是否包含了<code>get()</code>和<code>put()</code>这两个方法，，然后进行<code>factory.put()</code>操作后断言笔记的数量。</p>
+<h4 id="Filter部分"><a href="#Filter部分" class="headerlink" title="Filter部分"></a>Filter部分</h4><p>我们添加一个过滤器。<code>truncate</code>的作用是如果传入字符串过长后截取前10位。源码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">todoApp.filter(&apos;truncate&apos;,function()&#123;</span><br><span class="line">    return function(input,length)&#123;</span><br><span class="line">        return (input.length &gt; length ? input.substring(0,length) : input);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>所以在单元测试中，可以根据传入字符串的情况断言生成子串的长度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">describe(&apos;filter test&apos;,function()&#123;</span><br><span class="line">    beforeEach(module(&apos;todoApp&apos;));</span><br><span class="line">    it(&apos;should truncate the input to 1o characters&apos;,inject(function(truncateFilter)&#123;</span><br><span class="line">        expect(truncateFilter(&apos;abcdefghijkl&apos;,10).length).toBe(10);</span><br><span class="line">    &#125;);</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>之前已经对断言进行讨论了，值得注意的一点是我们需要在调用过滤器的时候在名称后面加入Filter，然后正常调用即可。</p>
+<h4 id="Directive部分"><a href="#Directive部分" class="headerlink" title="Directive部分"></a>Directive部分</h4><p>源码中的指令部分：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">todoApp.directive(&apos;customColor&apos;, function() &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    restrict: &apos;A&apos;,</span><br><span class="line">    link: function(scope, elem, attrs) &#123;</span><br><span class="line">      elem.css(&#123;&apos;background-color&apos;: attrs.customColor&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>由于指令必须编译之后才能生成相关的模板，因此我们要引入<code>$compile</code>服务来完成实际的编译，然后再测试我们想要进行测试的元素。<br><code>angular.element()</code>会创建一个<code>jqLite</code>元素，然后我们将其编译到一个新生成的自作用域中，就可以被测试了。具体测试用例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">describe(&apos;directive tests&apos;,function()&#123;</span><br><span class="line">    beforeEach(module(&apos;todoApp&apos;));</span><br><span class="line">    it(&apos;should set background to rgb(128, 128, 128)&apos;,</span><br><span class="line">    inject(function($compile,$rootScope) &#123;</span><br><span class="line">      scope = $rootScope.$new();</span><br><span class="line"></span><br><span class="line">      // 获得一个元素</span><br><span class="line">      elem = angular.element(&quot;&lt;span custom-color=\&quot;rgb(128, 128, 128)\&quot;&gt;sample&lt;/span&gt;&quot;);</span><br><span class="line"></span><br><span class="line">      // 创建一个新的自作用域</span><br><span class="line">      scope = $rootScope.$new();</span><br><span class="line"></span><br><span class="line">      // 最后编译HTML</span><br><span class="line">      $compile(elem)(scope);</span><br><span class="line"></span><br><span class="line">      // 希望元素的背景色和我们所想的一样</span><br><span class="line">      expect(elem.css(&quot;background-color&quot;)).toEqual(&apos;rgb(128, 128, 128)&apos;);</span><br><span class="line">     &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure>
+<h3 id="开始端到端测试"><a href="#开始端到端测试" class="headerlink" title="开始端到端测试"></a>开始端到端测试</h3><p>在端到端测试中，我们需要从用户的角度出发，来进行黑盒测试，因此会涉及到一些DOM操作。将一对组件组合起来然后检查是否如预想的结果一样。<br>在这个demo中，我们模拟用户输入信息并按下按钮的过程，检测信息能否被添加到<code>localStorage</code>中。</p>
+<p>在E2E测试中，需要引入<code>angular-scenario</code>这个文件，并且建立一个html作为运行report的展示，在html中包含带有e2e测试代码的执行js文件，在编写完测试之后，运行该html文件查看结果。具体的e2e代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">describe(&apos;my app&apos;, function() &#123;</span><br><span class="line">  beforeEach(function() &#123;</span><br><span class="line">    browser().navigateTo(&apos;../../app/notes.html&apos;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  var oldCount = -1;</span><br><span class="line"></span><br><span class="line">  it(&quot;entering note and performing click&quot;, function() &#123;</span><br><span class="line">    element(&apos;ul&apos;).query(function($el, done) &#123;</span><br><span class="line">      oldCount = $el.children().length;</span><br><span class="line">      done();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    input(&apos;note&apos;).enter(&apos;test data&apos;);</span><br><span class="line"></span><br><span class="line">    element(&apos;button&apos;).query(function($el, done) &#123;</span><br><span class="line">      $el.click();</span><br><span class="line">      done();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  it(&apos;should add one more element now&apos;, function() &#123;</span><br><span class="line">    expect(repeater(&apos;ul li&apos;).count()).toBe(oldCount + 1);</span><br><span class="line">  &#125;);        </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>我们在端到端测试过程中，首先导航到我们的主html页面<code>app/notes.html</code>，可以通过<code>browser.navigateTo()</code>来完成，<code>element.query()</code>函数选择了ul元素并记录其中有多少个初始化的项目，存放在<code>oldCount</code>变量中。<br>然后通过<code>input(&#39;note&#39;).enter()</code>来键入一个新的笔记，然后模拟一下点击操作来检查是否增加了一个新的笔记（li元素）。然后通过断言可以将新旧的笔记数进行对比。</p>
+<h3 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h3><p><a href="http://www.bubuko.com/infodetail-432586.html" target="_blank" rel="noopener">tdd vs bdd</a></p>
+<p><a href="http://blog.csdn.net/bailyzheng/article/details/11694069" target="_blank" rel="noopener">从tdd到bdd</a></p>
+<p><a href="http://keenwon.com/1191.html" target="_blank" rel="noopener">jasmine框架介绍</a></p>
+<p><a href="http://www.html-js.com/article/column/12" target="_blank" rel="noopener">jasmine框架介绍二</a></p>
+<p><a href="http://segmentfault.com/a/1190000000317146" target="_blank" rel="noopener">关于前端开发谈谈单元测试</a></p>
+<p><a href="http://www.csdn.net/article/2015-07-15/2825220-qiniu-front-end-test-practice" target="_blank" rel="noopener">前端测试探索实践</a></p>
+<p><a href="http://www.w3ctech.com/topic/120" target="_blank" rel="noopener">说说NG里的单元测试</a></p>
+<p><a href="http://www.html-js.com/article/Study-of-Nodejs-testing-for-unit-testing-and-endtoend-testing-in-AngularJS" target="_blank" rel="noopener">在AngularJS中进行单元测试和端到端测试</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/21/felix/react-first-kiss/" rel="prev">React入门</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/06/penglu/checkbox-in-angularJs/" rel="next">checkbox in angularJs</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#测试的分类"><span class="nav-number">1.</span> <span class="nav-text">测试的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试框架选择"><span class="nav-number">2.</span> <span class="nav-text">测试框架选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Karma"><span class="nav-number">2.1.</span> <span class="nav-text">Karma</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jasmine"><span class="nav-number">2.2.</span> <span class="nav-text">jasmine</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始单元测试"><span class="nav-number">3.</span> <span class="nav-text">开始单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#了解angular-mocks"><span class="nav-number">3.1.</span> <span class="nav-text">了解angular-mocks</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Controller部分"><span class="nav-number">3.2.</span> <span class="nav-text">Controller部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Factory部分"><span class="nav-number">3.3.</span> <span class="nav-text">Factory部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Filter部分"><span class="nav-number">3.4.</span> <span class="nav-text">Filter部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Directive部分"><span class="nav-number">3.5.</span> <span class="nav-text">Directive部分</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始端到端测试"><span class="nav-number">4.</span> <span class="nav-text">开始端到端测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关资料"><span class="nav-number">5.</span> <span class="nav-text">相关资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

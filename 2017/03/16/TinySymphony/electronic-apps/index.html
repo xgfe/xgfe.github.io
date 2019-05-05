@@ -1,0 +1,749 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="electron,atom,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="在国内All in mobile的风气下谈论桌面客户端开发似乎是个很非主流的行为，但是作为JavaScript在桌面端伸出的利爪，Electron不仅仅是快速开发跨平台桌面客户端的一个技术选型，也有着其独特的象征意义~ 本文主要介绍Electron的应用结构、开发方式以及优缺点。在重温Electron开发的过程中写了个山寨的Mac版网易云音乐，这是demo地址">
+<meta name="keywords" content="electron,atom">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Electron开发跨平台桌面应用">
+<meta property="og:url" content="http://xgfe.github.io/2017/03/16/TinySymphony/electronic-apps/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="在国内All in mobile的风气下谈论桌面客户端开发似乎是个很非主流的行为，但是作为JavaScript在桌面端伸出的利爪，Electron不仅仅是快速开发跨平台桌面客户端的一个技术选型，也有着其独特的象征意义~ 本文主要介绍Electron的应用结构、开发方式以及优缺点。在重温Electron开发的过程中写了个山寨的Mac版网易云音乐，这是demo地址">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://7xjgb0.com1.z0.glb.clouddn.com/electron-structure.png">
+<meta property="og:image" content="http://7xjgb0.com1.z0.glb.clouddn.com/notify-window.png">
+<meta property="og:image" content="http://7xjgb0.com1.z0.glb.clouddn.com/top-menu.png">
+<meta property="og:image" content="http://7xjgb0.com1.z0.glb.clouddn.com/context-menu.png">
+<meta property="og:image" content="http://7xjgb0.com1.z0.glb.clouddn.com/music.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.372Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Electron开发跨平台桌面应用">
+<meta name="twitter:description" content="在国内All in mobile的风气下谈论桌面客户端开发似乎是个很非主流的行为，但是作为JavaScript在桌面端伸出的利爪，Electron不仅仅是快速开发跨平台桌面客户端的一个技术选型，也有着其独特的象征意义~ 本文主要介绍Electron的应用结构、开发方式以及优缺点。在重温Electron开发的过程中写了个山寨的Mac版网易云音乐，这是demo地址">
+<meta name="twitter:image" content="http://7xjgb0.com1.z0.glb.clouddn.com/electron-structure.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Electron开发跨平台桌面应用 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Electron开发跨平台桌面应用
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-03-16T11:25:57+08:00" content="2017-03-16">
+            2017-03-16
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/TinySymphony/" itemprop="url" rel="index">
+                  <span itemprop="name">TinySymphony</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/electron/" rel="tag"><i class="icon-next-tags"></i>electron</a>
+            
+              <a href="/tags/atom/" rel="tag"><i class="icon-next-tags"></i>atom</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在国内<code>All in mobile</code>的风气下谈论桌面客户端开发似乎是个很非主流的行为，但是作为JavaScript在桌面端伸出的利爪，<code>Electron</code>不仅仅是快速开发跨平台桌面客户端的一个技术选型，也有着其独特的象征意义~</p>
+<p>本文主要介绍<code>Electron</code>的应用结构、开发方式以及优缺点。在重温Electron开发的过程中写了个山寨的Mac版网易云音乐，这是<a href="https://github.com/Tinysymphony/electronic-netease-music" target="_blank" rel="noopener">demo地址</a></p>
+<a id="more"></a>
+<p>最早接触<code>Electron</code>的时候还是<code>0.3x</code>版本，转眼已经<code>1.6.2</code>，相比同是跨平台开发的<code>React Native</code>，Electron更早地完成“从0到1”的一步。在过去的2016年，Electron是Github上最热门的仓库之一。</p>
+<p>言归正传…</p>
+<h3 id="Electron是什么"><a href="#Electron是什么" class="headerlink" title="Electron是什么"></a>Electron是什么</h3><p>由Github出品、维护的跨平台桌面应用开发框架。</p>
+<p>说白了就是剥离Chromium内核拿来写桌面应用，应用的大部分UI就是web页面，也就是我们前端熟悉的dom. 交互逻辑全部是js，样式还是css写，相当于给用户一个浏览器去渲染应用……看到这里想必读者老爷会骂娘（这不就是web么？要这么折腾还不如直接写个网页）</p>
+<p>Electron的本质目的还是利用js构建跨平台的桌面端应用，个人认为它的使用场景主要是一些需要原生功能支持、有离线使用需求、迭代速度较快、对下载安装不太敏感同时桌面端开发人员不足的项目。Electron不仅仅是个“浏览器”，它也封装了一些原生系统的功能，提供给js开发者，比如可以简单地使用js定制不同系统的菜单栏、应用图标、任务栏，控制应用窗口的大小和位置，调用本地的程序等。相比web应用，开发者摆脱了来自浏览器的限制、并可以间接地和原生打交道。</p>
+<p>目前基于Electron最著名的桌面端应用是: <code>Atom编辑器</code>、<code>VS Code编辑器</code>、<code>Slack</code>、<code>Postman桌面版</code>、<code>Wordpress桌面版</code>等等，基本上都是国外公司在使用。</p>
+<p><code>Electron</code>源于Gihub开发<code>Atom</code>的技术选型，<code>Atom</code>开发初期使用的Cococa原生的开发方式；后来使用了<code>node-webkit</code>（后面略称NW，也是使用浏览器渲染开发的方式）；之后由于一些技术限制（如多窗口支持和性能原因）决定自行开发一套开发工具，即Electron。Electron最主要的贡献者也是目前的维护者是工作于Github的@zcbenz（国人骄傲~），关于他和NW的爱恨情仇这里略过不谈……</p>
+<h3 id="Electron原理"><a href="#Electron原理" class="headerlink" title="Electron原理"></a>Electron原理</h3><p>从分享的keynote里面截了一张图过来（<a href="https://pan.baidu.com/s/1qXIMd8w#list/path=%2Felectron-demo" target="_blank" rel="noopener">keynote下载地址</a>）：</p>
+<p><img src="http://7xjgb0.com1.z0.glb.clouddn.com/electron-structure.png" alt=""></p>
+<p>Electron运行时分为两个进程：主进程和渲染进程。主进程是启动app时创建的，主要负责app如何调用原生、如何创建并管理新窗口（页面）以及各种和原生相关的逻辑，可粗略理解为跑了个node；渲染进程负责所有页面的绘制（使用Chromium内核）、及其前端js的解析和运行，粗略理解为“前端”。两个进程通过ipc（跨进程交互）通信，窗口之间可以有附属关系，也可以使用消息机制互相通信。</p>
+<p>Electron帮开发者完成和原生的连接，和现在Facebook推出的<code>React Native</code>一样，开发者所需要做的无非是阅读文档、通过js调用封装好的接口，无需直接和原生打交道（写原生代码）</p>
+<h3 id="Electron开发的诱惑"><a href="#Electron开发的诱惑" class="headerlink" title="Electron开发的诱惑"></a>Electron开发的诱惑</h3><p>谈谈开发时感觉很棒的几点以及注意事项：</p>
+<h4 id="渲染进程中的页面js运行环境实际上是结合了node环境和浏览器环境"><a href="#渲染进程中的页面js运行环境实际上是结合了node环境和浏览器环境" class="headerlink" title="渲染进程中的页面js运行环境实际上是结合了node环境和浏览器环境"></a>渲染进程中的页面js运行环境实际上是结合了node环境和浏览器环境</h4><p>直接可以使用node相关api和第三方库，例如<code>require(&#39;child_process&#39;)</code>、<code>require(&#39;request&#39;)</code>；</p>
+<p>需要注意的是<code>require(&#39;electron&#39;)</code>在不同进程（主进程/渲染进程）中暴露的API是不一样的，具体看文档，例如<code>BrowserWindow</code>和<code>ipcMain</code>是主进程特有的API</p>
+<h4 id="简单地实现很“Native”的功能"><a href="#简单地实现很“Native”的功能" class="headerlink" title="简单地实现很“Native”的功能"></a>简单地实现很“Native”的功能</h4><p>用最近做的山寨云音乐举几个例子（目前只针对mac版开发）</p>
+<hr>
+<h5 id="栗子1-利用node-notifier定制系统提醒"><a href="#栗子1-利用node-notifier定制系统提醒" class="headerlink" title="栗子1.利用node-notifier定制系统提醒"></a>栗子1.利用<code>node-notifier</code>定制系统提醒</h5><p>当然也可以直接选择使用HTML5的 <code>Notification</code> API，不过相对来说用这个第三方模块可定制性会更高，而且多平台兼容性也不错。</p>
+<p>至于如何定制弹框的icon，可以看这个<a href="https://github.com/mikaelbr/node-notifier/issues/71" target="_blank" rel="noopener">issue</a>里@mbushpilot2b提供的解决方案。</p>
+<!-- ![](http://7xjgb0.com1.z0.glb.clouddn.com/notify-window.png) -->
+<p><img src="http://7xjgb0.com1.z0.glb.clouddn.com/notify-window.png" width="500"></p>
+<h5 id="栗子2-利用MenuAPI定制程序的菜单栏和快捷键"><a href="#栗子2-利用MenuAPI定制程序的菜单栏和快捷键" class="headerlink" title="栗子2.利用MenuAPI定制程序的菜单栏和快捷键"></a>栗子2.利用<code>Menu</code>API定制程序的菜单栏和快捷键</h5><!-- ![](http://7xjgb0.com1.z0.glb.clouddn.com/top-menu.png) -->
+<p><img src="http://7xjgb0.com1.z0.glb.clouddn.com/top-menu.png" width="500"></p>
+<h5 id="栗子3-利用remoteAPI在渲染进程中定义鼠标右键菜单"><a href="#栗子3-利用remoteAPI在渲染进程中定义鼠标右键菜单" class="headerlink" title="栗子3.利用remoteAPI在渲染进程中定义鼠标右键菜单"></a>栗子3.利用<code>remote</code>API在渲染进程中定义鼠标右键菜单</h5><p>web开发中我们写的右键菜单肯定是dom模拟的，但这里我们可以用js简单地写出原生的菜单，并且能有一定的层级。</p>
+<p><img src="http://7xjgb0.com1.z0.glb.clouddn.com/context-menu.png" width="900"></p>
+<h5 id="栗子4-自定义窗口"><a href="#栗子4-自定义窗口" class="headerlink" title="栗子4.自定义窗口"></a>栗子4.自定义窗口</h5><p>这个例子是主窗口缩小成迷你播放器并开启歌词窗口（歌词窗口可以设置成常驻最顶层，不被其他应用窗口覆盖）</p>
+<p><img src="http://7xjgb0.com1.z0.glb.clouddn.com/music.png" width="500"></p>
+<p>仔细观察上面的截图可以发现，窗口中使用了mac原生的毛玻璃模糊效果。而且和一般mac程序的窗口不同，没有顶部栏。</p>
+<hr>
+<p>简而言之，好好读文档，随着Electron社区对项目的迭代，各种原生的功能触手(js)可及。</p>
+<h4 id="进程间的交互可以使用ipc或者remoteAPI"><a href="#进程间的交互可以使用ipc或者remoteAPI" class="headerlink" title="进程间的交互可以使用ipc或者remoteAPI"></a>进程间的交互可以使用<code>ipc</code>或者<code>remote</code>API</h4><p>前端的逻辑可以使用进程间通信传递给app主进程，可以做一些类似原生应用才有的交互，如上面的迷你播放器，在dom上自定了关闭按钮，触发点击事件时，通过ipc传递给主进程，主进程控制当前窗口关闭。</p>
+<p>渲染进程可以使用<code>remote</code>API调用一些主进程才有的API，例如<code>remote.BrowserWindow</code>，可不用ipc完成进程间的通信（还是迷你播放器关闭按钮的例子，另一种方式是直接使用remote隐藏掉当前窗口）</p>
+<p>注意事项：最好统一管理ipc，避免信号重复；ipc监听过多时复杂的逻辑和时序问题需要考虑。</p>
+<h4 id="没有跨域"><a href="#没有跨域" class="headerlink" title="没有跨域"></a>没有跨域</h4><p>前端的各种跨域对于初级开发者来说简直是一个噩梦，然而因为有node的存在，摆脱了浏览器的束缚，请求可以用各种姿势完成。</p>
+<h4 id="兼容性-amp-Write-once-run-every-where"><a href="#兼容性-amp-Write-once-run-every-where" class="headerlink" title="兼容性 &amp; Write once, run every where"></a>兼容性 &amp; Write once, run every where</h4><p>因为本身UI是浏览器产出的，各个平台同用的Chromium，不需要考虑兼容性问题，浏览器前缀也只保留<code>-webkit</code>即可。用js写的逻辑基本上直接打包编译一波就能在windows/linux/mac三端安装使用。</p>
+<p>在开发时真正需要注意的是“跨平台兼容性”，不同的功能可能在不同平台上实现不同，或者未完全实现。这个时候就需要做一些妥协和让步，或者使用一些tricky的方法让大家保持一致。大部分问题活跃的社区都能给出方案~</p>
+<h4 id="热更新"><a href="#热更新" class="headerlink" title="热更新"></a>热更新</h4><p>这个热更新和前端开发时避免疯狂刷新页面不同，是应用的热更新。桌面应用被web应用不断替代的原因便是更新速度的缓慢及繁琐，web页面的上线便是开销非常小的“客户端更新”，用户几乎没有感知到文件变化（如css/js/html缓存失效重新加载）带来的延迟，保证了较好的体验。</p>
+<p>不过这里说的也不是在Electron中使用一个远程url渲染页面的方式（尽管这是可行的），而是整个应用的逻辑更新。Electron自带的auto updater按文档的意思是可以根据Github的release包自动更新应用，具体使用暂时没有经验……不过我的Atom编辑器确确实实无痕地在升级。</p>
+<h3 id="Electron的打包发布"><a href="#Electron的打包发布" class="headerlink" title="Electron的打包发布"></a>Electron的打包发布</h3><p>在整个项目打包前，要做的是对主进程和渲染进程代码的打包、压缩、混淆，这里可以使用webpack之类的工程化工具。</p>
+<p>而后真正打包成应用时需要结合Electron的内核。目前有两种方式：一种是使用<code>electron-packager</code>，直接打包成可运行的程序，基本在100mb+（体积相对正常原生应用偏大，主要是内核的原因）；另一种是使用<code>electron-builder</code>制作压缩安装包，可以打成<code>deb</code>/<code>msi</code>/<code>dmg</code>等格式，基本40mb+，不过<code>electron-builder</code>的文档真心非常非常烂，折腾了好久才配置出来（连一个完整示范和配置项对象的结构都没注明）</p>
+<p>我目前是两者都在使用，一个打包一个压缩。</p>
+<h3 id="End"><a href="#End" class="headerlink" title="End"></a>End</h3><p>没打算贴代码教程，文档上对API的功能介绍得比较详细，入门级别的例子google上也能搜到不少。需要注意的是一些文章中借用第三方实现的功能可能已经被Electron支持，推荐还是使用官方的做法。</p>
+<p>想看云音乐的开发demo可以到<a href="https://github.com/Tinysymphony/electronic-netease-music" target="_blank" rel="noopener">Github</a>上下载、build、然后安装，不过仍在开发中。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/23/lrdcq/ios-crash-catch-and-analyze/" rel="prev">iOS Crash栈的捕获和分析</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/03/wangweitao/AliActivityRouter/" rel="next">ActivityRouter</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Electron是什么"><span class="nav-number">1.</span> <span class="nav-text">Electron是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Electron原理"><span class="nav-number">2.</span> <span class="nav-text">Electron原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Electron开发的诱惑"><span class="nav-number">3.</span> <span class="nav-text">Electron开发的诱惑</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#渲染进程中的页面js运行环境实际上是结合了node环境和浏览器环境"><span class="nav-number">3.1.</span> <span class="nav-text">渲染进程中的页面js运行环境实际上是结合了node环境和浏览器环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单地实现很“Native”的功能"><span class="nav-number">3.2.</span> <span class="nav-text">简单地实现很“Native”的功能</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#栗子1-利用node-notifier定制系统提醒"><span class="nav-number">3.2.1.</span> <span class="nav-text">栗子1.利用node-notifier定制系统提醒</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#栗子2-利用MenuAPI定制程序的菜单栏和快捷键"><span class="nav-number">3.2.2.</span> <span class="nav-text">栗子2.利用MenuAPI定制程序的菜单栏和快捷键</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#栗子3-利用remoteAPI在渲染进程中定义鼠标右键菜单"><span class="nav-number">3.2.3.</span> <span class="nav-text">栗子3.利用remoteAPI在渲染进程中定义鼠标右键菜单</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#栗子4-自定义窗口"><span class="nav-number">3.2.4.</span> <span class="nav-text">栗子4.自定义窗口</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程间的交互可以使用ipc或者remoteAPI"><span class="nav-number">3.3.</span> <span class="nav-text">进程间的交互可以使用ipc或者remoteAPI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#没有跨域"><span class="nav-number">3.4.</span> <span class="nav-text">没有跨域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#兼容性-amp-Write-once-run-every-where"><span class="nav-number">3.5.</span> <span class="nav-text">兼容性 &amp; Write once, run every where</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#热更新"><span class="nav-number">3.6.</span> <span class="nav-text">热更新</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Electron的打包发布"><span class="nav-number">4.</span> <span class="nav-text">Electron的打包发布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#End"><span class="nav-number">5.</span> <span class="nav-text">End</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

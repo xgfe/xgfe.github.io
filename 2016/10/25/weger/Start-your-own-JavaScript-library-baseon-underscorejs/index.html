@@ -1,0 +1,769 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="library,underscore.js,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="在我们开发项目的时候，无论项目规模大小，在所难免会写一些工具型函数来解决一些问题，随着项目开发和维护的时间越来越长，这些工具型函数会越来越多，同时还会穿插在各个项目的各模块或者文件当中，使得项目变的越来越臃肿，也不方便复用和维护。这时我们就会提取出一个类似的工具库或者基础库作为项目基础依赖，在项目中重复利用起来，比如拿AngularJS这个框架来说，在他的全局作用域(angular)下就挂载很多类">
+<meta name="keywords" content="library,underscore.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跟underscore.js学如何打造前端类库">
+<meta property="og:url" content="http://xgfe.github.io/2016/10/25/weger/Start-your-own-JavaScript-library-baseon-underscorejs/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="在我们开发项目的时候，无论项目规模大小，在所难免会写一些工具型函数来解决一些问题，随着项目开发和维护的时间越来越长，这些工具型函数会越来越多，同时还会穿插在各个项目的各模块或者文件当中，使得项目变的越来越臃肿，也不方便复用和维护。这时我们就会提取出一个类似的工具库或者基础库作为项目基础依赖，在项目中重复利用起来，比如拿AngularJS这个框架来说，在他的全局作用域(angular)下就挂载很多类">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://jashkenas.s3.amazonaws.com/images/a_documentcloud_project.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.400Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跟underscore.js学如何打造前端类库">
+<meta name="twitter:description" content="在我们开发项目的时候，无论项目规模大小，在所难免会写一些工具型函数来解决一些问题，随着项目开发和维护的时间越来越长，这些工具型函数会越来越多，同时还会穿插在各个项目的各模块或者文件当中，使得项目变的越来越臃肿，也不方便复用和维护。这时我们就会提取出一个类似的工具库或者基础库作为项目基础依赖，在项目中重复利用起来，比如拿AngularJS这个框架来说，在他的全局作用域(angular)下就挂载很多类">
+<meta name="twitter:image" content="http://jashkenas.s3.amazonaws.com/images/a_documentcloud_project.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 跟underscore.js学如何打造前端类库 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              跟underscore.js学如何打造前端类库
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-10-25T11:30:00+08:00" content="2016-10-25">
+            2016-10-25
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/weger/" itemprop="url" rel="index">
+                  <span itemprop="name">weger</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/library/" rel="tag"><i class="icon-next-tags"></i>library</a>
+            
+              <a href="/tags/underscore-js/" rel="tag"><i class="icon-next-tags"></i>underscore.js</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在我们开发项目的时候，无论项目规模大小，在所难免会写一些工具型函数来解决一些问题，随着项目开发和维护的时间越来越长，这些工具型函数会越来越多，同时还会穿插在各个项目的各模块或者文件当中，使得项目变的越来越臃肿，也不方便复用和维护。这时我们就会提取出一个类似的工具库或者基础库作为项目基础依赖，在项目中重复利用起来，比如拿AngularJS这个框架来说，在他的全局作用域(angular)下就挂载很多类似angular.foreach这样的函数。</p>
+<p>为了这样的工具库或类库更易扩展、易维护、易复用和更加稳定，我们就需要更好的去管理，参考前端业界，正好underscore.js作为这样的一个工具型”类库”在各大项目而被广泛使用，那么我们就基于underscore.js，站在巨人的肩上，看看巨人怎么来打造前端类库的。<br><a id="more"></a></p>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>在开始之前，我们先了解下 “类库”的定义。</p>
+<blockquote>
+<p>类库（Class library）是指一个类的集合。一组在多个工程中可能会被重复使用的类，可以作为一个类库共享给其他相关的开发者  —wikipedia</p>
+</blockquote>
+<p>了解基本概念之后，明白了这是一个集合，我们就来看看underscore.js里面是怎样管理这些集合的吧</p>
+<h3 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h3><p>underscore.js项目目录结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">+-- docs  文档,gh-pages分支文件</span><br><span class="line">|   +-- underscore.html</span><br><span class="line">|   +-- ...</span><br><span class="line">+-- test  测试</span><br><span class="line">|   +-- utility.js</span><br><span class="line">|   +-- ...</span><br><span class="line">--- .eslintrc             eslint规范检测</span><br><span class="line">--- .gitignore            git忽略规则</span><br><span class="line">--- .travis.yml           travis CI配置文件</span><br><span class="line"></span><br><span class="line">--- CNAME                 gh-pages域名绑定</span><br><span class="line">--- CODE_OF_CONDUCT.md    规范</span><br><span class="line">--- CONTRIBUTING.md       贡献说明</span><br><span class="line">--- LICENSE               开源协议</span><br><span class="line">--- README.md             项目说明</span><br><span class="line"></span><br><span class="line">--- bower.json            bower配置</span><br><span class="line"></span><br><span class="line">--- favicon.ico	          官网</span><br><span class="line">--- index.html            官网</span><br><span class="line"></span><br><span class="line">--- karma.conf-sauce.js</span><br><span class="line">--- karma.conf.js         karma配置</span><br><span class="line"></span><br><span class="line">--- package.json          npm配置</span><br><span class="line"></span><br><span class="line">--- underscore.js         源文件</span><br><span class="line">--- underscore-min.js     压缩文件</span><br><span class="line">--- underscore-min.map    sourcemap</span><br></pre></td></tr></table></figure></p>
+<p>如上，已在每个文件和目录上加了简短说明，我们大概可以分为编码规范、源码、测试、配置、文档（官网+api）等几个大的模块。这几大模块串连起来基本就是一个完整的项目开发过程的体现，接下来我们就逐一的进行解析。</p>
+<h4 id="编码规范"><a href="#编码规范" class="headerlink" title="编码规范"></a>编码规范</h4><p>项目中使用eslint工具检测代码规则，涉及到要编码文件都有<code>.eslintrc</code>规则集文件，同时package.json提供了command支持<code>npm run lint</code>，方便随时调用。</p>
+<p>打开项目根下的<a href="https://github.com/jashkenas/underscore/blob/gh-pages/.eslintrc" target="_blank" rel="noopener">.eslintrc</a>里面是配置的规则，主要有两大块：执行环境和具体规则条目，具体每条规则的含义可以到<a href="http://eslint.org/docs/rules/" target="_blank" rel="noopener">eslint官网</a>查阅。</p>
+<p>underscore.js中主要是js文件，规范主要是针对javascript,如果需要检测html、css也有相应的工具可以使用，如：<a href="http://htmlhint.com/" target="_blank" rel="noopener">HTMLHint</a>、<a href="https://github.com/CSSLint" target="_blank" rel="noopener">CSSLint</a>、<a href="https://github.com/lesshint" target="_blank" rel="noopener">lesshint</a>、<a href="https://github.com/xgfe/lint-plus" target="_blank" rel="noopener">lint-plus</a>、<a href="http://fecs.baidu.com/" target="_blank" rel="noopener">fecs</a>。</p>
+<p>由此可见，在我们编写类库代码的时候，也通过一些检测工具配置上相应的规范，这样更有利于代码规范化和提升代码可维护性。</p>
+<h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h4><p>这部分从目录中可以看出，主要有三个文件，其中<code>underscore-min.js</code>和<code>underscore-min.map</code>都是有<code>underscore.js</code>文件通过压缩工具<a href="https://www.npmjs.com/package/uglify-js" target="_blank" rel="noopener">uglify-js</a>生成，具体可以到npm配置中<a href="https://github.com/jashkenas/underscore/blob/gh-pages/package.json#L25" target="_blank" rel="noopener">devDependencies</a>查看到，min.js为混淆压缩后的体积比较小的文件主要用于生产环境，.map文件用于开发调试，这两个我就不在深入了。</p>
+<p>整个项目的主体代码都在underscore.js文件里，也是其整个项目的精华部分，我们就一步步去探索其中奥妙吧。</p>
+<h5 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(function() &#123;</span><br><span class="line">  var root = this;</span><br><span class="line">  ....</span><br><span class="line">  var _ = function(obj) &#123;</span><br><span class="line">    if (obj instanceof _) return obj;</span><br><span class="line">    if (!(this instanceof _)) return new _(obj);</span><br><span class="line">    this._wrapped = obj;</span><br><span class="line">  &#125;;</span><br><span class="line">  _.</span><br><span class="line">  ....</span><br><span class="line">&#125;.call(this));</span><br></pre></td></tr></table></figure>
+<p>从代码中可看出，underscore.js采用了闭包的形式，隔离了内部变量，预防了冲突，声明了<code>_</code>这样的一个构造函数，后面一系列函数都绑定到<code>_</code>函数对象上面。同时上面这个函数默认传入一个<code>obj</code>参数，可以通过<code>_(obj)</code>用来校验<code>_</code>是否是<code>obj</code>的父类型以此判断继承关系，<code>_wrapped</code>用于后面链式操作。</p>
+<h5 id="冲突解决"><a href="#冲突解决" class="headerlink" title="冲突解决"></a>冲突解决</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var previousUnderscore = root._;</span><br><span class="line"></span><br><span class="line">_.noConflict = function() &#123;</span><br><span class="line">  root._ = previousUnderscore;</span><br><span class="line">  return this;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>如果一个文件中同时引入了多次underscore.js或者你在代码的上下文用到了<code>_</code>这个变量名，当然除了保证引入顺序和规避重复引入之外，还可以通过调用<code>_.noConflict()</code>方法，将变量<code>_</code>返回给underscore.js，转移控制权，同时还可以给这个方法赋值，用来取别名。</p>
+<p>这种冲突解决方案在很多类库都有实际运用，如果想详细了解，请参考jQuery里<code>noConflict</code>方法的源码部分。</p>
+<p>我们在编写类库时要处理同样情况时，也可以采用想通的方式来进行处理。</p>
+<h5 id="压缩处理"><a href="#压缩处理" class="headerlink" title="压缩处理"></a>压缩处理</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;</span><br><span class="line"></span><br><span class="line">var</span><br><span class="line">    push             = ArrayProto.push,</span><br><span class="line">    slice            = ArrayProto.slice,</span><br><span class="line">    toString         = ObjProto.toString,</span><br><span class="line">    hasOwnProperty   = ObjProto.hasOwnProperty;</span><br><span class="line"></span><br><span class="line">var</span><br><span class="line">    nativeIsArray      = Array.isArray,</span><br><span class="line">    nativeKeys         = Object.keys,</span><br><span class="line">    nativeBind         = FuncProto.bind,</span><br><span class="line">    nativeCreate       = Object.create;</span><br></pre></td></tr></table></figure>
+<p>通过保存原生方法的引用，后面多处使用到的地方可以通过引用名去调用，这样通过压缩工具压缩后，重复使用到的引用名就会被压缩成短变量的形式，从而减小文件的体积。</p>
+<h5 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Current version.</span><br><span class="line">_.VERSION = &apos;1.8.3&apos;;</span><br></pre></td></tr></table></figure>
+<p>可以看出underscore用一个常量<code>VERSION</code>保存了当前使用的版本信息，版本数值采用了：主版本号.次版本号.修订号，具体号的含义可以参考<a href="http://semver.org/lang/zh-CN/" target="_blank" rel="noopener">语义化版本管理</a>。</p>
+<p>开源的库或者框架都普遍采用这种版本号管理方式，如果我们的类库会持续迭代，或者开源和供第三方使用时，可以使用这个方法。</p>
+<h5 id="引入方式"><a href="#引入方式" class="headerlink" title="引入方式"></a>引入方式</h5><p>文档中有5种文件下载方法，分别如下：</p>
+<pre><code>Node.js `npm install underscore`
+Meteor.js `meteor add underscore`
+Require.js `require([&quot;underscore&quot;], ...`
+Bower `bower install underscore`
+Component `component install jashkenas/underscore `
+</code></pre><p>引入方式除了通过<code>script</code>，基本都是模块化引入方式，按运行环境，可以分为browser（前端）和nodejs（后端）。</p>
+<p>npm和meteor都属于后端环境下使用方法，采用的<a href="https://en.wikipedia.org/wiki/CommonJS" target="_blank" rel="noopener">CommonJS</a>模块化规范，代码实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if (typeof exports !== &apos;undefined&apos;) &#123;</span><br><span class="line">  if (typeof module !== &apos;undefined&apos; &amp;&amp; module.exports) &#123;</span><br><span class="line">    exports = module.exports = _;</span><br><span class="line">  &#125;</span><br><span class="line">  exports._ = _;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  root._ = _;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过对判断 exports是否存在来决定将局部变量<code>_</code>赋值给<code>exports</code>，这样就可以通过<code>require(&quot;underscore&quot;)</code>来引入使用。</p>
+<p><code>require.js</code>是属于browser环境下的，前端环境下更多的都是采用的<a href="https://github.com/amdjs/amdjs-api" target="_blank" rel="noopener">AMD</a> (Asynchronous Module Definition)规范，Underscore.js 是支持 AMD 的，在源码中有定义，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (typeof define === &apos;function&apos; &amp;&amp; define.amd) &#123;</span><br><span class="line">  define(&apos;underscore&apos;, [], function() &#123;</span><br><span class="line">    return _;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过<code>require([&quot;underscore&quot;], function (_..) {})</code>来引入使用.</p>
+<p>除此之外，其实有<a href="https://github.com/umdjs/umd" target="_blank" rel="noopener">UMD</a> (Universal Module Definition)和<a href="https://github.com/cmdjs/specification/blob/master/draft/module.md" target="_blank" rel="noopener">AMD</a>（Common Module Definition 国内）,每个规范的关键词我都已加上链接，如要详细理解请自行点击，这里不在赘述。</p>
+<p>编写类库如果只是用于browser前端环境的话，建议采用UMD的规范，而且最新发布的ECMAScript2016也是遵循的此规范，如果还需要满足其他情况下使用的话，可以再采取适配方式编写相应的适配代码。</p>
+<h5 id="继承方法"><a href="#继承方法" class="headerlink" title="继承方法"></a>继承方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var Ctor = function()&#123;&#125;;</span><br><span class="line">...</span><br><span class="line">var baseCreate = function(prototype) &#123;</span><br><span class="line">  if (!_.isObject(prototype)) return &#123;&#125;;</span><br><span class="line">  if (nativeCreate) return nativeCreate(prototype);</span><br><span class="line">  Ctor.prototype = prototype;</span><br><span class="line">  var result = new Ctor;</span><br><span class="line">  Ctor.prototype = null;</span><br><span class="line">  return result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>主要运用的<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Inheritance_and_the_prototype_chain" target="_blank" rel="noopener">基于原型链的继承</a>, <code>baseCreate</code>用于创建一个干净且只想要其<code>prototype</code>的函数，第一个判断是否具有<code>prototype</code>参数，第二个判断运用<code>Object.create</code>创建，余下则是自己运用<code>Ctor</code>这个空函数创建。</p>
+<p>继承的方式有很多种，编写类库时只要有相应的一种实现，同时提供了可以扩展的方式，达到这样的目的就可以了。</p>
+<h5 id="链式语法"><a href="#链式语法" class="headerlink" title="链式语法"></a>链式语法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> _.chain = function(obj) &#123;</span><br><span class="line">  var instance = _(obj);</span><br><span class="line">  instance._chain = true;</span><br><span class="line">  return instance;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>通过返回自己本身实例来实现链式调用，使用前先执行<code>_.chain()</code>方法就可以。</p>
+<p>链式调用的好处这里就不赘述了，如果编写的类库想支持的话可以考虑参考下类似的方式来实现，同时如果想继续深入的了解可以关注下函数式编程。</p>
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p>这部分主要是从代码封装的角度，去看怎么样组织一个类库，而且只提到封装相关的通用的一些组织方式,其实上面部分只是underscore.js源码的冰山一角，其各个部分函数的实现细节也是很值得学习和借鉴的，比如：集合(Collections)中的随机取样函数<code>_.sample</code>的<a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" target="_blank" rel="noopener">Fisher-Yates shuffle</a>的实现等，数组(Arrays)中多维数组转换<code>_.flatten</code>等,函数(Functions)中<code>_.throttle</code>和<code>_.debounce</code>等，以及对象(Objects)中<code>_.extend</code>等，除了这些还有很多很多，有机会大家可以继续深入解读。</p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>underscore.js有一个完整的<a href="http://underscorejs.org/test/" target="_blank" rel="noopener">Test Suite</a>,专门用一个<a href="https://github.com/jashkenas/underscore/tree/master/test" target="_blank" rel="noopener">test目录</a>来管理测试文件，下面我们就来看下这部分。</p>
+<p>文件基本都是按功能（collections\Arrays\Function\Objects\Utility\Chaining）拆分出了几个大的文件来组织。</p>
+<p>使用<a href="https://qunitjs.com/" target="_blank" rel="noopener">qunit</a>测试框架，通过<a href="https://github.com/karma-runner/karma" target="_blank" rel="noopener">karma</a>提供browser和nodejs测试运行环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;test-node&quot;: &quot;qunit-cli test/*.js&quot;,</span><br><span class="line">&quot;test-browser&quot;: &quot;npm i karma-phantomjs-launcher &amp;&amp; karma start&quot;</span><br></pre></td></tr></table></figure></p>
+<p>使用<a href="https://www.npmjs.com/package/nyc" target="_blank" rel="noopener">nyc</a>生成覆盖率报告<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;coverage&quot;: &quot;nyc npm run test-node &amp;&amp; nyc report&quot;</span><br></pre></td></tr></table></figure></p>
+<p>同时CI采用的是<a href="https://travis-ci.org/" target="_blank" rel="noopener">travis-ci</a> 做的集成，通过<a href="https://coveralls.io/" target="_blank" rel="noopener">coveralls</a>保存覆盖率记录，可以自动运行测试，展示测试和覆盖率结果</p>
+<p>测试是保障代码质量的最为直接有效的手段，underscore.js的测试都是通过npm script以命令方式提供出来的，同时使用了覆盖率生成、测试执行环境和自动化工具。</p>
+<p>编写类库测试代码时，可以参考照这种功能块来组织文件，同时再借助类似测试工具来进行管理，使其更方便高效。</p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>配置主要是分两部分，一部分是用于工具配置，如：<code>.eslintrc</code>、<code>karma.conf.js</code>、<code>.travis.yml</code>、<code>.gitignore</code>，<code>.eslintrc</code>前面已经讲过了，<code>karma.conf.js</code>这个主要是用于karmay运行测试环境的配置，<code>.travis.yml</code>这个主要是<a href="https://travis-ci.org/" target="_blank" rel="noopener">travis-ci</a>用于CI，<code>.gitignore</code>可以忽略一些不需要的提交到仓库的文件。</p>
+<p>另一部分是引入方式支持：bower.json、package.json，有了这个两个文件，就可以支持bower、component和npm工具install来下载文件了。</p>
+<p>类库如果要支持相应功能的话，可以考虑增加相应的配置文件，通过<code>npm install</code>安装相应工具包，编写好相应配置项就可以了。</p>
+<h4 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h4><p>underscore.js文档主要有API文档、官方网站、Change Log、README、CODE_OF_CONDUCT和CONTRIBUTING。</p>
+<p>其中除了用于github仓库说明的README、Contributor使用的代码行为规范CODE_OF_CONDUCT和贡献代码说明CONTRIBUTING。</p>
+<p>API文档、官方网站、Change Log的内容都写在了<a href="https://github.com/jashkenas/underscore/blob/master/index.html" target="_blank" rel="noopener">index.html</a>里面，同时还通过DocumentCloud生成了<a href="http://underscorejs.org/docs/underscore.html" target="_blank" rel="noopener">带注释的源码</a></p>
+<p>在<a href="http://underscorejs.org" target="_blank" rel="noopener">underscore.js</a>官方文档的最后可以看到documentcloud的大广告排:</p>
+<p><img src="http://jashkenas.s3.amazonaws.com/images/a_documentcloud_project.png" alt="documentcloud"></p>
+<p>在写类库的时候也可以参考underscore.js的做法，其中API文档和ChangLog应该说是不可或缺的部分，API文档说明类库提供的功能，ChangLog告知升级后没个版本之间的差异，这样才能让使用者更充分的了解你的类库，而且完善的文档才能让更多的人贡献集合，把集合汇集起来做成一个强大类库。</p>
+<h3 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h3><p>要编写易用、易扩展、易维护和稳定的一个类库，其实是个特复杂的过程，涉及到从目录结构组织，编码规范的制订，代码的作用域、OOP、方法集合、冲突、体积、引入方式等是否支持链式调用的管理，而且还要有完整的测试和测试覆盖，自动化CI的集成，还需要编写完善的文档的和维护各个版本，同时如果多人参与或者他人贡献还要制订相应的规范和标准，可以见得和开发一个工程已相差无几，而这里提到也只是一小部分，所以在编写类库，不要以为这只是一个小的东东，不妨按照工程的角度去思考，这样才能更加全面的考虑，构建和维护有效的、实用的和高质量的类库。</p>
+<h3 id="其他参考"><a href="#其他参考" class="headerlink" title="其他参考"></a>其他参考</h3><ul>
+<li><a href="http://underscorejs.org/docs/underscore.html" target="_blank" rel="noopener">http://underscorejs.org/docs/underscore.html</a></li>
+<li><a href="https://segmentfault.com/blog/kahn1990?tag=underscore" target="_blank" rel="noopener">https://segmentfault.com/blog/kahn1990?tag=underscore</a></li>
+<li><a href="https://github.com/krasimir/webpack-library-starter" target="_blank" rel="noopener">https://github.com/krasimir/webpack-library-starter</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/02/scliuyang/efficientQuestion/" rel="prev">如何进行高效的提问</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/08/zhouxiong/Service-in-AngularJS/" rel="next">AngularJS的服务</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备"><span class="nav-number">1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始"><span class="nav-number">2.</span> <span class="nav-text">开始</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编码规范"><span class="nav-number">2.1.</span> <span class="nav-text">编码规范</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码"><span class="nav-number">2.2.</span> <span class="nav-text">源码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#全局变量"><span class="nav-number">2.2.1.</span> <span class="nav-text">全局变量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#冲突解决"><span class="nav-number">2.2.2.</span> <span class="nav-text">冲突解决</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#压缩处理"><span class="nav-number">2.2.3.</span> <span class="nav-text">压缩处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#版本"><span class="nav-number">2.2.4.</span> <span class="nav-text">版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#引入方式"><span class="nav-number">2.2.5.</span> <span class="nav-text">引入方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#继承方法"><span class="nav-number">2.2.6.</span> <span class="nav-text">继承方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#链式语法"><span class="nav-number">2.2.7.</span> <span class="nav-text">链式语法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其他"><span class="nav-number">2.2.8.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">2.3.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置"><span class="nav-number">2.4.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文档"><span class="nav-number">2.5.</span> <span class="nav-text">文档</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结束"><span class="nav-number">3.</span> <span class="nav-text">结束</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他参考"><span class="nav-number">4.</span> <span class="nav-text">其他参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

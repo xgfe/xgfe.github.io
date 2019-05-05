@@ -1,0 +1,756 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="React,component,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文简单介绍了如何在React中编写组件。">
+<meta name="keywords" content="React,component">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现一个React 组件">
+<meta property="og:url" content="http://xgfe.github.io/2018/03/04/zhouyinian/React-component/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文简单介绍了如何在React中编写组件。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/933205a1ly1fp01hatymlj20y60hg75l.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/933205a1ly1fp020d7trzj21vi0okdl3.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/933205a1ly1fp02g9zniej21aq0pedi9.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/933205a1ly1fp02tjojipj21ai0mo0vb.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/933205a1ly1fp03zn79w8j21m60osaea.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/933205a1ly1fp04zmphioj21py0pygpy.jpg">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.412Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现一个React 组件">
+<meta name="twitter:description" content="本文简单介绍了如何在React中编写组件。">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/933205a1ly1fp01hatymlj20y60hg75l.jpg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 实现一个React 组件 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              实现一个React 组件
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-03-04T14:00:00+08:00" content="2018-03-04">
+            2018-03-04
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhouyinian/" itemprop="url" rel="index">
+                  <span itemprop="name">zhouyinian</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/React/" rel="tag"><i class="icon-next-tags"></i>React</a>
+            
+              <a href="/tags/component/" rel="tag"><i class="icon-next-tags"></i>component</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文简单介绍了如何在React中编写组件。<br><a id="more"></a></p>
+<h3 id="项目的搭建"><a href="#项目的搭建" class="headerlink" title="项目的搭建"></a>项目的搭建</h3><p>为了加快演示，用react-create-app快速搭建项目</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g create-react-app</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">create-react-app react-learn-component</span><br><span class="line">cd react-learn-component</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run start</span><br></pre></td></tr></table></figure>
+<p>浏览器会自动打开如下页面</p>
+<p><img src="//ww1.sinaimg.cn/large/933205a1ly1fp01hatymlj20y60hg75l.jpg"></p>
+<p>更多关于react-create-app介绍：<a href="//github.com/facebook/create-react-app">传送门</a></p>
+<h3 id="组件的介绍"><a href="#组件的介绍" class="headerlink" title="组件的介绍"></a>组件的介绍</h3><blockquote>
+<p>Components let you split the UI into independent, reusable pieces, and think about each piece in isolation.</p>
+</blockquote>
+<p>组件可以让你把UI切分成独立的、可复用的块去单独的考虑和开发。</p>
+<h3 id="React中组件的分类"><a href="#React中组件的分类" class="headerlink" title="React中组件的分类"></a>React中组件的分类</h3><h4 id="展示型组件（presentational）"><a href="#展示型组件（presentational）" class="headerlink" title="展示型组件（presentational）"></a>展示型组件（presentational）</h4><p>展示型组件是用来展示样式的，他们对应用的其余部分没有依赖性，会通过props明确地接收数据，可以写成函数的形式。如下的BlogList组件只是接收一个<code>bolglist</code>数组，便能展示博客列表，相同的输入会有相同的输出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import React from &quot;react&quot;;</span><br><span class="line">export const BlogList = bloglist =&gt; (  </span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            bloglist.map((&#123; body,author,id &#125;) =&gt;      </span><br><span class="line">                &lt;li key=&#123;id&#125;&gt;&#123;body&#125;-&#123;author&#125;&lt;/li&gt; </span><br><span class="line">            )</span><br><span class="line">        &#125;     </span><br><span class="line">    &lt;/ul&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="容器型组件-container"><a href="#容器型组件-container" class="headerlink" title="容器型组件(container)"></a>容器型组件(container)</h4><p>容器型组件关心组件如何工作，可以为展示组件或其他容器组件提供数据，通常是有状态的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">import React,&#123;Component&#125; from &quot;react&quot;;</span><br><span class="line">import &#123;BlogList&#125; from &apos;../BlogList/BlogList&apos;</span><br><span class="line">class Blog extends Component &#123;</span><br><span class="line">    constructor(props)&#123;</span><br><span class="line">        super(props)</span><br><span class="line">        this.state = &#123;</span><br><span class="line">            blogList:[]</span><br><span class="line">        &#125;</span><br><span class="line">        this.showBlodList = this.showBlodList.bind(this)</span><br><span class="line">    &#125;</span><br><span class="line">    componentDidMount()&#123;</span><br><span class="line">        const blogList = [</span><br><span class="line">            &#123;</span><br><span class="line">                id:1,</span><br><span class="line">                author:&apos;zyn&apos;,</span><br><span class="line">                body:&apos;这是blog内容111&apos;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                id:2,</span><br><span class="line">                author:&apos;zyn&apos;,</span><br><span class="line">                body:&apos;这是blog内容222&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">        this.setState(&#123;</span><br><span class="line">            blogList</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    showBlodList()&#123;</span><br><span class="line">        console.log(this.state.blogList)</span><br><span class="line">    &#125;</span><br><span class="line">    render()&#123;</span><br><span class="line">        const &#123;blogList&#125; = this.state</span><br><span class="line">        return(</span><br><span class="line">            &lt;div&gt;</span><br><span class="line">                &#123;BlogList(blogList)&#125;</span><br><span class="line">                &lt;button type=&quot;button&quot; onClick=&#123;this.showBlodList&#125;&gt;点击我&lt;/button&gt;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">export default Blog</span><br></pre></td></tr></table></figure>
+<p>显示效果如图</p>
+<p><img src="//ww1.sinaimg.cn/large/933205a1ly1fp020d7trzj21vi0okdl3.jpg"></p>
+<h3 id="编写一个复选框组件"><a href="#编写一个复选框组件" class="headerlink" title="编写一个复选框组件"></a>编写一个复选框组件</h3><p>最近用了AngularJS 和 Vue, 在写表单的时候基于双向数据绑定，写起来是相当的happy，当然React的单向数据流也有着自己的优点。基于此我们可以对项目中常用的表单控件进行组件的封装，下面以复选框为例。</p>
+<h4 id="第一步，创建文件"><a href="#第一步，创建文件" class="headerlink" title="第一步，创建文件"></a>第一步，创建文件</h4><p>首先我们在 components 文件夹下面创建Checkbox文件夹以及Checkbox.js 文件,先写一个无状态组件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// CheckBox.js</span><br><span class="line"></span><br><span class="line">import React, &#123; Component &#125; from &apos;react&apos;;</span><br><span class="line">class CheckBox extends Component &#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        return (</span><br><span class="line">            &lt;label&gt;&lt;input type=&quot;checkbox&quot; /&gt;点击我&lt;/label&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">export default CheckBox</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// App.js</span><br><span class="line">import React, &#123; Component &#125; from &apos;react&apos;;</span><br><span class="line">import logo from &apos;./logo.svg&apos;;</span><br><span class="line">import &apos;./App.css&apos;;</span><br><span class="line">import Blog from &apos;./components/Blog/Blog&apos;</span><br><span class="line">import CheckBox from &apos;./components/CheckBox/CheckBox&apos;</span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;header className=&quot;App-header&quot;&gt;</span><br><span class="line">          &lt;img src=&#123;logo&#125; className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;</span><br><span class="line">          &lt;h1 className=&quot;App-title&quot;&gt;Welcome to React&lt;/h1&gt;</span><br><span class="line">        &lt;/header&gt;</span><br><span class="line">        &lt;p className=&quot;App-intro&quot;&gt;</span><br><span class="line">          To get started, edit &lt;code&gt;src/App.js&lt;/code&gt; and save to reload.</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">        &lt;Blog/&gt;</span><br><span class="line">        &lt;CheckBox/&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure>
+<p>如图，会出现一个<code>点击我</code>的复选框</p>
+<p><img src="//ww1.sinaimg.cn/large/933205a1ly1fp02g9zniej21aq0pedi9.jpg"></p>
+<h4 id="第二步，实现label的可配置"><a href="#第二步，实现label的可配置" class="headerlink" title="第二步，实现label的可配置"></a>第二步，实现label的可配置</h4><p>我们会发现复选框的 <code>label</code> 的文字 <code>点击我</code> 是写死的，那么怎么让 <code>label</code> 的动态传入呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//Checkbox.js</span><br><span class="line">import React, &#123; Component &#125; from &apos;react&apos;;</span><br><span class="line">class CheckBox extends Component &#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        return (</span><br><span class="line">            &lt;label&gt;</span><br><span class="line">                &lt;input type=&quot;checkbox&quot; /&gt;</span><br><span class="line"></span><br><span class="line">                //这里由‘点击我’换成了如下代码</span><br><span class="line">                &#123;this.props.children !== undefined ? this.props.children : null&#125;</span><br><span class="line">            &lt;/label&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">export default CheckBox</span><br></pre></td></tr></table></figure>
+<p>这里要注意<code>this.props.children</code> 表示当前组件的所有子节点。<code>this.props.children</code> 的值有三种可能：如果当前组件没有子节点，它就是 <code>undefined</code> ;如果有一个子节点，数据类型是 <code>object</code> ；如果有多个子节点，数据类型就是 <code>array</code> 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">//App.js</span><br><span class="line">import React, &#123; Component &#125; from &apos;react&apos;;</span><br><span class="line">import logo from &apos;./logo.svg&apos;;</span><br><span class="line">import &apos;./App.css&apos;;</span><br><span class="line">import Blog from &apos;./components/Blog/Blog&apos;</span><br><span class="line">import CheckBox from &apos;./components/CheckBox/CheckBox&apos;</span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;header className=&quot;App-header&quot;&gt;</span><br><span class="line">          &lt;img src=&#123;logo&#125; className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;</span><br><span class="line">          &lt;h1 className=&quot;App-title&quot;&gt;Welcome to React&lt;/h1&gt;</span><br><span class="line">        &lt;/header&gt;</span><br><span class="line">        &lt;p className=&quot;App-intro&quot;&gt;</span><br><span class="line">          To get started, edit &lt;code&gt;src/App.js&lt;/code&gt; and save to reload.</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">        &lt;Blog/&gt;</span><br><span class="line">        &lt;CheckBox&gt;按钮1&lt;/CheckBox&gt;</span><br><span class="line">        &lt;CheckBox&gt;按钮2&lt;/CheckBox&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure>
+<p>查看浏览器，可以看到按钮的label已经变成可以配置的了。</p>
+<p><img src="//ww1.sinaimg.cn/large/933205a1ly1fp02tjojipj21ai0mo0vb.jpg"></p>
+<h4 id="第三步，实现可控组件及获值"><a href="#第三步，实现可控组件及获值" class="headerlink" title="第三步，实现可控组件及获值"></a>第三步，实现可控组件及获值</h4><p>现在的复选框的选中状态是由自身去控制的，也就是说现在还无法去动态控制复选框的选中状态。同时，在业务需求中，如果有多个复选框，我们希望可以获得选中的复选框的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">// Checkbox.js</span><br><span class="line"></span><br><span class="line">import React from &quot;react&quot;;</span><br><span class="line">class CheckBox extends React.Component &#123;</span><br><span class="line">    constructor(props) &#123;</span><br><span class="line">        super(props)</span><br><span class="line">        this.checkCheckBox = this.checkCheckBox.bind(this);</span><br><span class="line">        this.state = &#123;</span><br><span class="line">            is_checked: props.checked || false,</span><br><span class="line">            value: props.value || &apos;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    componentWillReceiveProps(nextProps)&#123;</span><br><span class="line">        if(&apos;checked&apos; in nextProps)&#123;</span><br><span class="line">            this.setState(&#123;</span><br><span class="line">                is_checked:nextProps.checked || false</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    checkCheckBox() &#123;</span><br><span class="line">        const onChange = this.props.onChange;</span><br><span class="line">        const value = this.props.value;</span><br><span class="line">        if (onChange) &#123;</span><br><span class="line">            onChange(value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        let &#123; is_checked, value &#125; = this.state;</span><br><span class="line">        return (</span><br><span class="line">            &lt;label&gt;</span><br><span class="line">                &lt;input value=&#123;value&#125; type=&quot;checkbox&quot; onClick=&#123;this.checkCheckBox&#125; checked=&#123;is_checked&#125; /&gt;</span><br><span class="line">                &#123;this.props.children !== undefined ? this.props.children : null&#125;</span><br><span class="line">            &lt;/label&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">export default CheckBox;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">//App.js</span><br><span class="line"></span><br><span class="line">import React, &#123; Component &#125; from &apos;react&apos;;</span><br><span class="line">import logo from &apos;./logo.svg&apos;;</span><br><span class="line">import &apos;./App.css&apos;;</span><br><span class="line">import Blog from &apos;./components/Blog/Blog&apos;</span><br><span class="line">import CheckBox from &apos;./components/CheckBox/CheckBox&apos;</span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  state = &#123;</span><br><span class="line">    checkedList: []</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  changeCheckBox = (value) =&gt; &#123;</span><br><span class="line">    const valueIndex = this.state.checkedList.indexOf(value)</span><br><span class="line">    const checkedList = [...this.state.checkedList]</span><br><span class="line">    if (valueIndex === -1) &#123;</span><br><span class="line">      checkedList.push(value);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      checkedList.splice(valueIndex, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    this.setState(&#123;</span><br><span class="line">      checkedList</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getChecked = (value) =&gt; &#123;</span><br><span class="line">    const valueIndex = this.state.checkedList.indexOf(value)</span><br><span class="line">    if (valueIndex === -1) &#123;</span><br><span class="line">      return false</span><br><span class="line">    &#125;</span><br><span class="line">    return true</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    console.log(&apos;当前点击&apos;, this.state.checkedList)</span><br><span class="line">    console.log(&apos;当前点击&apos;, this.getChecked(&apos;按钮1&apos;))</span><br><span class="line">    return (</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;header className=&quot;App-header&quot;&gt;</span><br><span class="line">          &lt;img src=&#123;logo&#125; className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;</span><br><span class="line">          &lt;h1 className=&quot;App-title&quot;&gt;Welcome to React&lt;/h1&gt;</span><br><span class="line">        &lt;/header&gt;</span><br><span class="line">        &lt;p className=&quot;App-intro&quot;&gt;</span><br><span class="line">          To get started, edit &lt;code&gt;src/App.js&lt;/code&gt; and save to reload.</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">        &lt;Blog /&gt;</span><br><span class="line">        &lt;CheckBox key=&quot;1&quot; value=&quot;按钮1&quot; checked=&#123;this.getChecked(&apos;按钮1&apos;)&#125; onChange=&#123;this.changeCheckBox&#125;&gt;按钮1&lt;/CheckBox&gt;</span><br><span class="line">        &lt;CheckBox key=&quot;2&quot; value=&quot;按钮2&quot; checked=&#123;this.getChecked(&apos;按钮2&apos;)&#125; onChange=&#123;this.changeCheckBox&#125;&gt;按钮2&lt;/CheckBox&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure>
+<p><img src="http://ww1.sinaimg.cn/large/933205a1ly1fp03zn79w8j21m60osaea.jpg"><br>上述代码，复选框增加了自身的状态，初始的<code>state</code>默认从<code>props</code>中读取，再在<code>onChange</code>的时候，再把组件的<code>value</code> 值传上去，然后在父组件中获取，从而实现复选框的可控制，并且可以在控制台中获取到了我们想要的值。</p>
+<h4 id="第四步，封装CheckBoxGroup组件"><a href="#第四步，封装CheckBoxGroup组件" class="headerlink" title="第四步，封装CheckBoxGroup组件"></a>第四步，封装CheckBoxGroup组件</h4><p>通过第三步，我们基本实现了我们的需求，但是App.js 文件里面操控复选框组件的逻辑代码太多了，影响了组件的简洁和使用。所以我们打算封装CheckBoxGroup 来包裹我们的复选框组件，把App.js中的逻辑抽离到CheckBoxGroup 组件上。</p>
+<p>首先创建CheckBoxGroup.js 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">// CheckBoxGroup.js</span><br><span class="line">import React from &quot;react&quot;</span><br><span class="line">import PropTypes from &apos;prop-types&apos;;</span><br><span class="line">class CheckBoxGroup extends React.Component &#123;</span><br><span class="line">    constructor(props) &#123;</span><br><span class="line">        super(props)</span><br><span class="line">        this.state = &#123;</span><br><span class="line">            value: props.value || props.defaultValue || [],</span><br><span class="line">        &#125;;</span><br><span class="line">        this.toggleOption = this.toggleOption.bind(this);</span><br><span class="line">    &#125;</span><br><span class="line">    componentWillReceiveProps(nextProps) &#123;</span><br><span class="line">        if (&apos;value&apos; in nextProps) &#123;</span><br><span class="line">            this.setState(&#123;</span><br><span class="line">                value: nextProps.value || [],</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    getChildContext() &#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            checkboxGroup: &#123;</span><br><span class="line">                toggleOption: this.toggleOption,</span><br><span class="line">                value: this.state.value,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    toggleOption(option) &#123;</span><br><span class="line">        const optionIndex = this.state.value.indexOf(option.value);</span><br><span class="line">        const value = [...this.state.value];</span><br><span class="line">        if (optionIndex === -1) &#123;</span><br><span class="line">            value.push(option.value);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            value.splice(optionIndex, 1);</span><br><span class="line">        &#125;</span><br><span class="line">        if (!(&apos;value&apos; in this.props)) &#123;</span><br><span class="line">            this.setState(&#123; value &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        const onChange = this.props.onChange;</span><br><span class="line">        if (onChange) &#123;</span><br><span class="line">            onChange(value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        const &#123; children, className &#125; = this.props</span><br><span class="line">        return (</span><br><span class="line">            &lt;div className=&#123;className&#125;&gt;</span><br><span class="line">                &#123;children&#125;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">CheckBoxGroup.childContextTypes = &#123;</span><br><span class="line">    checkboxGroup: PropTypes.any,</span><br><span class="line">&#125;;</span><br><span class="line">export default CheckBoxGroup</span><br></pre></td></tr></table></figure>
+<p>代码分析：首先从<code>render</code> 开始</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">        const &#123; children, className &#125; = this.props</span><br><span class="line">        return (</span><br><span class="line">            &lt;div className=&#123;className&#125;&gt;</span><br><span class="line">                &#123;children&#125;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这块代码和上面<code>BlodList</code>那里一样，也是通过<code>this.props.children</code> 加载子节点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getChildContext() &#123;</span><br><span class="line">       return &#123;</span><br><span class="line">           checkboxGroup: &#123;</span><br><span class="line">               toggleOption: this.toggleOption,</span><br><span class="line">               value: this.state.value,</span><br><span class="line">           &#125;,</span><br><span class="line">       &#125;;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>子组件可以通过设置<code>contextTypes</code>类型后在<code>this.content</code>访问到父组件的<code>getChildContext</code>函数返回的对象属性，需要注意的是，getChildContext 指定的传递给子组件的属性需要先通过 childContextTypes 来指定，不然会产生错误。</p>
+<p>同时，在子组件要把受控状态转移到<code>this.content</code>监听的对象中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">//CheckBox.js</span><br><span class="line">import React from &quot;react&quot;</span><br><span class="line">import PropTypes from &apos;prop-types&apos;;</span><br><span class="line">import CheckBoxGroup from &apos;../CheckBoxGroup/CheckBoxGroup&apos;</span><br><span class="line">class CheckBox extends React.Component &#123;</span><br><span class="line">    constructor(props) &#123;</span><br><span class="line">        super(props)</span><br><span class="line">        this.checkCheckBox = this.checkCheckBox.bind(this);</span><br><span class="line">        this.state = &#123;</span><br><span class="line">            is_checked: props.checked || false,</span><br><span class="line">            value: props.value || &apos;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    checkCheckBox() &#123;</span><br><span class="line">        const &#123; checkboxGroup &#125; = this.context;</span><br><span class="line">        if (checkboxGroup) &#123;</span><br><span class="line">            checkboxGroup.toggleOption(&#123; label: this.props.children, value: this.props.value &#125;)</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            const onChange = this.props.onChange;</span><br><span class="line">            const value = this.props.value;</span><br><span class="line">            if (onChange) &#123;</span><br><span class="line">                onChange(value);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">        let &#123; is_checked, value &#125; = this.state;</span><br><span class="line">        const &#123; checkboxGroup &#125; = this.context;</span><br><span class="line">        if (checkboxGroup) &#123;</span><br><span class="line">            is_checked = checkboxGroup.value.indexOf(this.props.value) !== -1;</span><br><span class="line">        &#125;</span><br><span class="line">        return (</span><br><span class="line">            &lt;label&gt;</span><br><span class="line">                &lt;input value=&#123;value&#125; type=&quot;checkbox&quot; checked=&#123;is_checked&#125;</span><br><span class="line">                    onClick=&#123;this.checkCheckBox&#125; /&gt;</span><br><span class="line">                &#123;this.props.children !== undefined ? this.props.children : null&#125;</span><br><span class="line">            &lt;/label&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">CheckBox.Group = CheckBoxGroup;</span><br><span class="line">CheckBox.contextTypes = &#123;</span><br><span class="line">    checkboxGroup: PropTypes.any,</span><br><span class="line">&#125;</span><br><span class="line">export default CheckBox;</span><br></pre></td></tr></table></figure>
+<p>子组件在点击的时候，会先判断是否有包裹的<code>this.content.checkboxGroup</code> 属性。如果有，就把状态转移到包裹的组件去管理。<br><code>CheckBox.Group = CheckboxGroup</code> 这段代码方便外部调用组件，即想引用CheckBoxGroup组件可以写成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import CheckBox from &apos;./components/CheckBox/CheckBox&apos;</span><br><span class="line">const CheckBoxGroup = CheckBox.Group;</span><br></pre></td></tr></table></figure>
+<p>然后在App.js 中引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">//App.js</span><br><span class="line">import React, &#123; Component &#125; from &apos;react&apos;;</span><br><span class="line">import logo from &apos;./logo.svg&apos;;</span><br><span class="line">import &apos;./App.css&apos;;</span><br><span class="line">import Blog from &apos;./components/Blog/Blog&apos;</span><br><span class="line">import CheckBox from &apos;./components/CheckBox/CheckBox&apos;</span><br><span class="line">const CheckBoxGroup = CheckBox.Group;</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  state=&#123;</span><br><span class="line">    checkList:[]</span><br><span class="line">  &#125;</span><br><span class="line">  selectCheckBtn=(values)=&gt;&#123;</span><br><span class="line">    console.log(values)</span><br><span class="line">    this.setState(&#123;</span><br><span class="line">      checkList:values</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">    const &#123;checkList&#125; = this.state</span><br><span class="line">    return (</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;header className=&quot;App-header&quot;&gt; </span><br><span class="line">         &lt;img src=&#123;logo&#125; className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;  </span><br><span class="line">         &lt;h1 className=&quot;App-title&quot;&gt;Welcome to React&lt;/h1&gt;</span><br><span class="line">        &lt;/header&gt; </span><br><span class="line">        &lt;p className=&quot;App-intro&quot;&gt;</span><br><span class="line">          To get started, edit &lt;code&gt;src/App.js&lt;/code&gt; and save to reload.</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">        &lt;Blog/&gt;</span><br><span class="line">        &lt;CheckBoxGroup value=&#123;checkList&#125; onChange=&#123;this.selectCheckBtn&#125;&gt; </span><br><span class="line">          &lt;CheckBox value=&#123;&apos;1&apos;&#125;&gt;按钮1&lt;/CheckBox&gt;</span><br><span class="line">          &lt;CheckBox value=&#123;&apos;2&apos;&#125;&gt;按钮2&lt;/CheckBox&gt;</span><br><span class="line">          &lt;CheckBox value=&#123;&apos;3&apos;&#125;&gt;按钮3&lt;/CheckBox&gt;</span><br><span class="line">          &lt;CheckBox value=&#123;&apos;4&apos;&#125;&gt;按钮4&lt;/CheckBox&gt;</span><br><span class="line">        &lt;/CheckBoxGroup&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;&#125;</span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure></p>
+<p>最后在浏览器点击复选框</p>
+<p><img src="//ww1.sinaimg.cn/large/933205a1ly1fp04zmphioj21py0pygpy.jpg"></p>
+<p>现在，我们就完成了一个复选框组件，可以给组件加上一些样式美化一下，然后在需要的时候直接引用就好了。</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>写一个组件很容易，但是写好一个组件就不是那么容易的事了，React也有一些现在比较成熟的UI组件库，比如蚂蚁金服的Antd Design <a href="//github.com/ant-design/ant-design/">传送门</a> ，可以打开看看里面的源码学习一下。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/20/Catherine/AndroidZxing扫码封装/" rel="prev">Android Zxing 扫码封装</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/09/caominkang/ListView源码分析/" rel="next">ListView源码分析</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#项目的搭建"><span class="nav-number">1.</span> <span class="nav-text">项目的搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件的介绍"><span class="nav-number">2.</span> <span class="nav-text">组件的介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React中组件的分类"><span class="nav-number">3.</span> <span class="nav-text">React中组件的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#展示型组件（presentational）"><span class="nav-number">3.1.</span> <span class="nav-text">展示型组件（presentational）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器型组件-container"><span class="nav-number">3.2.</span> <span class="nav-text">容器型组件(container)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写一个复选框组件"><span class="nav-number">4.</span> <span class="nav-text">编写一个复选框组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一步，创建文件"><span class="nav-number">4.1.</span> <span class="nav-text">第一步，创建文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二步，实现label的可配置"><span class="nav-number">4.2.</span> <span class="nav-text">第二步，实现label的可配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第三步，实现可控组件及获值"><span class="nav-number">4.3.</span> <span class="nav-text">第三步，实现可控组件及获值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第四步，封装CheckBoxGroup组件"><span class="nav-number">4.4.</span> <span class="nav-text">第四步，封装CheckBoxGroup组件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

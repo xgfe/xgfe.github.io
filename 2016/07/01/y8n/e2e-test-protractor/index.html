@@ -1,0 +1,818 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="测试,E2E,protractor,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="e2e或者端到端（end-to-end）或者UI测试是一种测试方法，它用来测试一个应用从头到尾的流程是否和设计时候所想的一样。简而言之，它从一个用户的角度出发，认为整个系统都是一个黑箱，只有UI会暴露给用户。    在我们的实际项目中碰到过多次测试不完善而出现的问题，很大程度上是因为人工测试的时候，很多功能并不能很好的覆盖到，尤其是当出现大范围代码重构的时候，一旦功能测不到，发布到线上就是定时炸">
+<meta name="keywords" content="测试,E2E,protractor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="E2E测试之protractor">
+<meta property="og:url" content="http://xgfe.github.io/2016/07/01/y8n/e2e-test-protractor/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="e2e或者端到端（end-to-end）或者UI测试是一种测试方法，它用来测试一个应用从头到尾的流程是否和设计时候所想的一样。简而言之，它从一个用户的角度出发，认为整个系统都是一个黑箱，只有UI会暴露给用户。    在我们的实际项目中碰到过多次测试不完善而出现的问题，很大程度上是因为人工测试的时候，很多功能并不能很好的覆盖到，尤其是当出现大范围代码重构的时候，一旦功能测不到，发布到线上就是定时炸">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="E2E测试之protractor">
+<meta name="twitter:description" content="e2e或者端到端（end-to-end）或者UI测试是一种测试方法，它用来测试一个应用从头到尾的流程是否和设计时候所想的一样。简而言之，它从一个用户的角度出发，认为整个系统都是一个黑箱，只有UI会暴露给用户。    在我们的实际项目中碰到过多次测试不完善而出现的问题，很大程度上是因为人工测试的时候，很多功能并不能很好的覆盖到，尤其是当出现大范围代码重构的时候，一旦功能测不到，发布到线上就是定时炸">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> E2E测试之protractor | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              E2E测试之protractor
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-07-01T10:58:49+08:00" content="2016-07-01">
+            2016-07-01
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/y8n/" itemprop="url" rel="index">
+                  <span itemprop="name">y8n</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/测试/" rel="tag"><i class="icon-next-tags"></i>测试</a>
+            
+              <a href="/tags/E2E/" rel="tag"><i class="icon-next-tags"></i>E2E</a>
+            
+              <a href="/tags/protractor/" rel="tag"><i class="icon-next-tags"></i>protractor</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><blockquote>
+<p>e2e或者端到端（end-to-end）或者UI测试是一种测试方法，它用来测试一个应用从头到尾的流程是否和设计时候所想的一样。简而言之，它从一个<strong>用户</strong>的角度出发，认为整个系统都是一个<strong>黑箱</strong>，只有<strong>UI</strong>会暴露给用户。  </p>
+</blockquote>
+<p>在我们的实际项目中碰到过多次测试不完善而出现的问题，很大程度上是因为人工测试的时候，很多功能并不能很好的覆盖到，尤其是当出现大范围代码重构的时候，一旦功能测不到，发布到线上就是定时炸弹💣所以自动化的测试就是我们当前的一大痛点，<a href="https://github.com/hexiaoming" target="_blank" rel="noopener">@HeOH</a>同学曾经分享过关于<a href="http://xgfe.github.io/2015/12/17/HeOH/AngularJS%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">Angular单元测试</a>的内容，那么我们就来聊一聊Angular的E2E测试。<br><a id="more"></a></p>
+<h1 id="protractor简介"><a href="#protractor简介" class="headerlink" title="protractor简介"></a>protractor简介</h1><p>protractor是为AngularJS定制的测试框架，也是由angular团队开发并维护的。顺便提一句，“Angular”本意为“角、角度”，框架名字源于“angular brackets”（尖括号），因为HTML中标签都是由尖括号包裹的。而protractor的意思为“量角器”，这就很好理解为什么说protractor是为angular定制的测试框架了，因为量角器就是用来测量角的啊。  </p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p>protractor有如下几个特点：</p>
+<ul>
+<li>端到端测试</li>
+<li>jasmine作为测试框架</li>
+<li>基于WebDriverJS</li>
+<li>针对angular的定位器</li>
+<li>实现自动等待，变异步为同步</li>
+<li>支持测试代码的调试</li>
+<li>支持多浏览器的并行UI测试</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>1.安装protractor工具</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g protractor</span><br></pre></td></tr></table></figure>
+<p>2.安装selenium-standlone(在安装完成protractor之后就可以调用webdriver-manager命令了)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ webdriver-manager update</span><br></pre></td></tr></table></figure>
+<p>3.安装v1.6以上版本的Java</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>写好配置文件之后，就可以执行测试了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ protractor protractor.conf.js</span><br></pre></td></tr></table></figure>
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p>使用protractor运行测试一般是需要指定配置文件的，配置文件都是一个npm module，导出一个config对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exports.config = &#123;</span><br><span class="line">	......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>可配置的内容有很多，这里就不一一介绍，只对主要的一些配置做一些说明，其他配置参考protractor的<a href="https://github.com/angular/protractor/blob/master/docs/referenceConf.js" target="_blank" rel="noopener">官方示例</a>。</p>
+<ul>
+<li>specs<br>指定测试文件路径</li>
+<li>exclude<br>指定需要被排除的测试文件</li>
+<li>suites<br>指定测试组合，比如一个流程包含多个测试文件，就可以指定测试“套件”</li>
+<li>baseUrl<br>基础路径，打开浏览器的baseUrl，指定该路径之后再在测试里直接打开相对路径即可</li>
+<li>rootElement<br>根路径，一般是指定<code>ng-app</code>的DOM节点，是一个DOM选择器</li>
+<li>framework<br>指定测试框架，默认是<a href="http://jasmine.github.io/" target="_blank" rel="noopener">jasmine</a>，也可以指定<a href="https://mochajs.org/" target="_blank" rel="noopener">mocha</a>等其他框架</li>
+<li>plugins<br>指定插件数组</li>
+<li>onPrepare, onComplete等<br>测试的生命周期，可以针对不同的生命周期做不同的操作</li>
+</ul>
+<p>一个简单的配置文件如下所示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// protractor.conf.js</span><br><span class="line">exports.config = &#123;</span><br><span class="line">    specs: [</span><br><span class="line">        &apos;test/e2e/*.js&apos;</span><br><span class="line">    ],</span><br><span class="line">    suites: &#123;</span><br><span class="line">        official: &apos;test/e2e/official.js&apos;,</span><br><span class="line">        page: &apos;test/e2e/phoneList.e2e.js&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    capabilities: &#123;</span><br><span class="line">        &apos;browserName&apos;: &apos;chrome&apos;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    baseUrl: &apos;http://localhost:9000/&apos;,</span><br><span class="line"></span><br><span class="line">    framework: &apos;jasmine&apos;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="测试文件"><a href="#测试文件" class="headerlink" title="测试文件"></a>测试文件</h1><p>protractor是基于Jasmine的，所以Jasmine的语法都可以使用，即<code>describe</code>表示测试块，<code>it</code>表示测试用例，<code>expect</code>表示断言。<br>和其他测试用例不同的是，protractor在测试的时候有几个比较特殊的对象可以使用，比如<code>browser</code>对象用于操作浏览器，<code>element</code>用于获取元素等，如下是一个简单的测试用例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">describe(&apos;Protractor Demo&apos;,function()&#123;</span><br><span class="line">    it(&apos;should have a title&apos;,function()&#123;</span><br><span class="line">        browser.get(&apos;http://www.facebook.com&apos;);</span><br><span class="line">        expect(browser.getTitle()).toEqual(&apos;no this site&apos;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><em>注：protractor中的expect可以对promise进行断言</em></p>
+<h2 id="browser对象"><a href="#browser对象" class="headerlink" title="browser对象"></a>browser对象</h2><p>browser对象主要用于执行操作浏览器相关的行为，比如打开链接，设置窗口大小，执行脚本等操作。以下是browser中几个比较重要的方法。</p>
+<ul>
+<li>browser.get()</li>
+<li>browser.waitForAngular()</li>
+<li>browser.addMockModule()</li>
+<li>browser.getTitle()</li>
+<li>browser.executeScript()</li>
+<li>browser.getCurrentUrl()</li>
+</ul>
+<h2 id="element、by对象"><a href="#element、by对象" class="headerlink" title="element、by对象"></a>element、by对象</h2><p>element和by对象主要用于获取浏览器中的元素和操作元素行为。by元素用于生成一个特殊的“选择器”，element接受选择器对参数从而获取到页面中的元素。<br>element中获取元素的方法，如：  </p>
+<ul>
+<li>element.all()</li>
+<li>element.filter()</li>
+<li>element.get()</li>
+<li>element.count()</li>
+</ul>
+<p>element获取到的元素可以调用一些方法操作元素的一些行为，如点击事件，输入框输入等。</p>
+<ul>
+<li>element.click()</li>
+<li>element.sendKeys()</li>
+<li>element.getText()</li>
+<li>element.isEnable()</li>
+</ul>
+<p>by对象用于生成选择器对象供element使用，可以把它理解为jQuery的选择器，有很多方式生成选择器，如</p>
+<ul>
+<li>by.id()</li>
+<li>by.css()</li>
+<li>by.tagName()</li>
+<li>by.model()</li>
+<li>by.binding()</li>
+<li>by.repeater()</li>
+<li>by.buttonText()</li>
+</ul>
+<p>其中，<code>model</code>、<code>bindling</code>、<code>repeater</code>等方法都是根据AngularJS定制的选择方法，更方便获取元素。</p>
+<h2 id="ExpectedConditionsd对象"><a href="#ExpectedConditionsd对象" class="headerlink" title="ExpectedConditionsd对象"></a>ExpectedConditionsd对象</h2><p>顾名思义， ExpectedConditions意为“期望条件”，也就是说在一定条件下，执行特定的操作，一般和<code>browser.wait</code>配合使用。protractor提供了有限的几个方法，浏览器会在满足条件之前停止运行一定时间，直到满足条件才会继续运行。如下面的测试表示当Checkbox在5秒之内被选中的时候再对列表的数目进行断言。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">it(&apos;should wait for checkoBox to be select&apos;, function() &#123;</span><br><span class="line">    var EC = protractor.ExpectedConditions;</span><br><span class="line">    var checkBox = element(by.model(&apos;$ctrl.isSelected&apos;));</span><br><span class="line">    browser.wait(EC.elementToBeSelected(checkBox), 5000);</span><br><span class="line">    var phoneList = element.all(by.repeater(&apos;phone in $ctrl.phones&apos;));</span><br><span class="line">    expect(phoneList.count()).toBe(20);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>以上只是简单地介绍了几个对象的一些方法，更多的内容可以查看<a href="http://www.protractortest.org/#/api" target="_blank" rel="noopener">官方文档</a></strong></p>
+<h1 id="测试用例编写原则-风格"><a href="#测试用例编写原则-风格" class="headerlink" title="测试用例编写原则/风格"></a>测试用例编写原则/风格</h1><h2 id="测试用例原则"><a href="#测试用例原则" class="headerlink" title="测试用例原则"></a>测试用例原则</h2><p>以下是protractor建议的用于编写测试用例的时候的规则：</p>
+<ol>
+<li>不要用E2E测试已经有单元测试的代码</li>
+<li>用不同的文件来区分和独立测试用例</li>
+<li>不要在测试中使用逻辑操作，如if判断、for循环等</li>
+<li>非必要情况下不要使用模拟数据</li>
+<li>使用jasmine2.x作为测试框架</li>
+<li>测试之间彼此独立</li>
+<li>对主要的模块有一套组合测试导航，即前面配置文件部分提到的suites</li>
+</ol>
+<h2 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h2><p>使用选择器获取元素的时候，应该尽量遵照如下原则：</p>
+<ol>
+<li>永远不要使用<a href="http://www.w3school.com.cn/xpath/xpath_intro.asp" target="_blank" rel="noopener">xpath</a></li>
+<li>尽量使用protractor提供的选择器，如by.model等</li>
+<li>当没有protractor选择器可以使用的时候，尽量选用by.id或by.css</li>
+<li>尽量不要使用经常变动的文本作为选择器，如by.linkText、by.buttonText等</li>
+</ol>
+<h2 id="使用页面对象配合测试用例"><a href="#使用页面对象配合测试用例" class="headerlink" title="使用页面对象配合测试用例"></a>使用页面对象配合测试用例</h2><p>页面对象是protractor推荐的一种写法，即页面是对象，从而把测试和页面的操作逻辑解耦，降低测试用例的复杂度，提高代码复用率，使测试专注于需要测试的逻辑，获取元素、操作浏览器等在页面对象中进行完成。具体写法参照<a href="http://www.protractortest.org/#/style-guide#page-objects" target="_blank" rel="noopener">文档</a></p>
+<ol>
+<li>使用页面对象与测试页面进行交互</li>
+<li>每一个文件定义各自的对象</li>
+<li>使用module.exports在文件末尾导出一个对象</li>
+<li>所有依赖的模块都在文件头部require</li>
+<li>在测试文件的开头对页面对象进行实例化</li>
+<li>把公共的元素定义到对象的构造函数中</li>
+<li>把需要多个步骤进行操作的定义为方法</li>
+<li>在页面对象中不要使用expec</li>
+<li>对指令、对话框或其他常见元素进行封装</li>
+</ol>
+<h2 id="项目目录结构"><a href="#项目目录结构" class="headerlink" title="项目目录结构"></a>项目目录结构</h2><p>测试文件的目录结构建议和源文件的目录进行对应。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">/* recommended */</span><br><span class="line"></span><br><span class="line">|-- project-folder</span><br><span class="line">  |-- app</span><br><span class="line">    |-- css</span><br><span class="line">    |-- img</span><br><span class="line">    |-- partials</span><br><span class="line">        home.html</span><br><span class="line">        profile.html</span><br><span class="line">        contacts.html</span><br><span class="line">    |-- js</span><br><span class="line">      |-- controllers</span><br><span class="line">      |-- directives</span><br><span class="line">      |-- services</span><br><span class="line">      app.js</span><br><span class="line">      ...</span><br><span class="line">    index.html</span><br><span class="line">  |-- test</span><br><span class="line">    |-- unit</span><br><span class="line">    |-- e2e</span><br><span class="line">      |-- page-objects</span><br><span class="line">          home-page.js</span><br><span class="line">          profile-page.js</span><br><span class="line">          contacts-page.js</span><br><span class="line">      home-spec.js</span><br><span class="line">      profile-spec.js</span><br><span class="line">      contacts-spec.js</span><br></pre></td></tr></table></figure>
+<h1 id="测试程序的调试"><a href="#测试程序的调试" class="headerlink" title="测试程序的调试"></a>测试程序的调试</h1><p>端到端测试是很难调试的,因为他们依赖于整个系统,而且可能取决于之前的行为(比如登录),并可能改变他们测试的应用程序的状态。使用<code>selenium-webdriver</code>操纵浏览器的时候更加困难,在这里protractor就提供调试方式 在代码中加入 <code>browser.pause()</code>; 并且在终端输入<code>repl</code>就可以使用WebDriver commands来调试程序了。</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>端到端测试是一个大坑！在实际的情况下更坑，有太多的不确定因素，实际情况下面临的问题比本文中讨论的基础特征要复杂得多，甚至有很多场景是无法用端到端测试覆盖到的。在实际项目中尽量要结合端到端测试和单元测试共同使用，多方面保证代码的质量。</p>
+<hr>
+<p>参考文献</p>
+<ul>
+<li><a href="http://www.protractortest.org/" target="_blank" rel="noopener">http://www.protractortest.org/</a></li>
+<li><a href="http://dj1211.com/?p=678" target="_blank" rel="noopener">http://dj1211.com/?p=678</a></li>
+<li><a href="http://ramonvictor.github.io/protractor/slides/#/" target="_blank" rel="noopener">http://ramonvictor.github.io/protractor/slides/#/</a></li>
+<li><a href="https://github.com/codef0rmer/proquery" target="_blank" rel="noopener">https://github.com/codef0rmer/proquery</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/13/zhiqin/PaperSourceCode/" rel="prev">Paper源码分析（Android上的`NoSql`）</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/16/scliuyang/ChromeDevTools1/" rel="next">Chrome Developers Tools基础篇</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#protractor简介"><span class="nav-number">1.</span> <span class="nav-text">protractor简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">1.3.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件"><span class="nav-number">2.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试文件"><span class="nav-number">3.</span> <span class="nav-text">测试文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#browser对象"><span class="nav-number">3.1.</span> <span class="nav-text">browser对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#element、by对象"><span class="nav-number">3.2.</span> <span class="nav-text">element、by对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ExpectedConditionsd对象"><span class="nav-number">3.3.</span> <span class="nav-text">ExpectedConditionsd对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试用例编写原则-风格"><span class="nav-number">4.</span> <span class="nav-text">测试用例编写原则/风格</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#测试用例原则"><span class="nav-number">4.1.</span> <span class="nav-text">测试用例原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择器"><span class="nav-number">4.2.</span> <span class="nav-text">选择器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用页面对象配合测试用例"><span class="nav-number">4.3.</span> <span class="nav-text">使用页面对象配合测试用例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目目录结构"><span class="nav-number">4.4.</span> <span class="nav-text">项目目录结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试程序的调试"><span class="nav-number">5.</span> <span class="nav-text">测试程序的调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结语"><span class="nav-number">6.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

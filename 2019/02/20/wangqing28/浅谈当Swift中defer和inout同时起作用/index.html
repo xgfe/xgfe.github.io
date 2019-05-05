@@ -1,0 +1,798 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="iOS,Swift,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文针对 Swift 中 defer、inout 以及 return 时相互影响的时候的情况进行简单的分析，目的是更好的理解 defer、inout 原理以及使用场合，减少踩坑和提高debug效率。  本文中的示例代码，均为 Swift 4.2 版本">
+<meta name="keywords" content="iOS,Swift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈当Swift中defer和inout同时起作用">
+<meta property="og:url" content="http://xgfe.github.io/2019/02/20/wangqing28/浅谈当Swift中defer和inout同时起作用/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文针对 Swift 中 defer、inout 以及 return 时相互影响的时候的情况进行简单的分析，目的是更好的理解 defer、inout 原理以及使用场合，减少踩坑和提高debug效率。  本文中的示例代码，均为 Swift 4.2 版本">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T10:21:43.549Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈当Swift中defer和inout同时起作用">
+<meta name="twitter:description" content="本文针对 Swift 中 defer、inout 以及 return 时相互影响的时候的情况进行简单的分析，目的是更好的理解 defer、inout 原理以及使用场合，减少踩坑和提高debug效率。  本文中的示例代码，均为 Swift 4.2 版本">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 浅谈当Swift中defer和inout同时起作用 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              浅谈当Swift中defer和inout同时起作用
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-02-20T00:00:00+08:00" content="2019-02-20">
+            2019-02-20
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/wangqing28/" itemprop="url" rel="index">
+                  <span itemprop="name">wangqing28</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/iOS/" rel="tag"><i class="icon-next-tags"></i>iOS</a>
+            
+              <a href="/tags/Swift/" rel="tag"><i class="icon-next-tags"></i>Swift</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文针对 <code>Swift</code> 中 <code>defer</code>、<code>inout</code> 以及 <code>return</code> 时相互影响的时候的情况进行简单的分析，目的是更好的理解 <code>defer</code>、<code>inout</code> 原理以及使用场合，减少踩坑和提高<code>debug</code>效率。</p>
+<blockquote>
+<p>本文中的示例代码，均为 <code>Swift 4.2</code> 版本</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="inout和defer"><a href="#inout和defer" class="headerlink" title="inout和defer"></a>inout和defer</h2><h3 id="inout"><a href="#inout" class="headerlink" title="inout"></a>inout</h3><p>有关 <code>inout</code> 关键字苹果官方描述</p>
+<blockquote>
+<p>If you want a function to modify a parameter’s value, and you want those changes to persist after the function call has ended, define that parameter as an in-out parameter instead.</p>
+</blockquote>
+<p>我们可以了解到，<code>inout</code> 关键字，有点类似于 <code>C</code> 语言中的引用传递或指针传递，目的是为了对入参进行修改。 但实际上 <code>inout</code> 的机制并不是引用传递，或者是指针传递。</p>
+<p>以下是两段比较详细的苹果官方描述，摘出来看比较清晰：</p>
+<blockquote>
+<p>You write an in-out parameter by placing the inout keyword right before a parameter’s type. An in-out parameter has a value that is passed in to the function, is modified by the function, and is passed back out of the function to replace the original value. </p>
+<p>in-out parameters are passed as follows:<br>When the function is called, the value of the argument is copied.<br>In the body of the function, the copy is modified.<br>When the function returns, the copy’s value is assigned to the original argument.<br>This behavior is known as copy-in copy-out or call by value result. </p>
+</blockquote>
+<p>从这两段我们可以看出，<code>inout</code> 的实现原理是：</p>
+<ol>
+<li>参数传入，拷贝一份 <strong>临时变量</strong></li>
+<li>函数体中，修改的是这一份 <strong>临时变量</strong></li>
+<li>函数返回时，这份 <strong>临时变量</strong> 被赋予给 <strong>原始参数</strong></li>
+</ol>
+<p>所以，是先拷贝，再修改，再拷贝回去的逻辑。这一点至关重要。</p>
+<p>使用示例：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(x: <span class="keyword">inout</span> Int)</span></span> &#123;</span><br><span class="line">    x += <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">10</span></span><br><span class="line">f(x: &amp;a)</span><br><span class="line"><span class="built_in">print</span>(a) <span class="comment">// 结果为 11</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>对于对象，即非 <code>Swift</code> 类型的，因为本身即为指针，所以本身就是指针传递，函数内部调用对象方法进行操作进而导致对象内部值的变化时，并不需要 <code>inout</code> 关键字。但是如果你想对这个对象变量整体进行的赋值替换操作，并且能反应到外部时，就需要 <code>inout</code>。<br>本文为了方便讨论，此处以及后续将仅仅以 <code>Swift</code> 原生类型作为例子。</p>
+</blockquote>
+<h3 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h3><p>有关 <code>defer</code> 关键字苹果官方的描述</p>
+<blockquote>
+<p>A defer statement is used for executing code just before transferring program control outside of the scope that the defer statement appears in.</p>
+<p>This means that a defer statement can be used, for example, to perform manual resource management such as closing file descriptors, and to perform actions that need to happen even if an error is thrown.</p>
+</blockquote>
+<p>简单说来， <code>defer</code> 是用来定义一段代码，用来在 <strong>离开</strong> 所在 <code>scope</code> 的时候执行。 苹果官方对 <code>defer</code> 的建议，也是用来关闭描述符、处理一些错误等等。</p>
+<p>使用示例<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">g</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"do defer"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"do func"</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"func done"</span>)</span><br><span class="line">&#125;</span><br><span class="line">g()</span><br><span class="line"><span class="comment">/* 输出结果</span></span><br><span class="line"><span class="comment">do func</span></span><br><span class="line"><span class="comment">func done</span></span><br><span class="line"><span class="comment">do defer</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></p>
+<p>这里注意一下， <code>defer</code> 的生效时机是 <code>scope</code> 离开的时候，而 <strong>不是函数执行完毕</strong> 的时候。 所以如果 <code>defer</code> 写在 <code>if</code> 或者 <code>for</code> 的内部， 会在 <code>if</code> 结束的时候立刻执行。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>因为很多写 <code>Swift</code> 的同学都是从 <code>Objective-C</code> 过来的，从使用习惯上来说，用 <code>inout</code> 会多一些， <code>defer</code> 并不太多。 但是当 <code>inout</code> 和 <code>defer</code> 以及 <code>return</code> 共同起作用的时候往往会有一些微妙的问题。</p>
+<ol>
+<li><code>defer</code> 本身是个 <code>block</code>，他内部也是可以修改变量。比如：<br><code>defer { x += 1 }</code></li>
+<li><code>return</code> 的时候，也是可以执行一个 <code>block</code> 的。 比如 <code>return { x + 1 }()</code>，同时自身也会往栈上压入值</li>
+<li><code>inout</code> 也是会改变入参的值。（再强调下，是复制-&gt;修改-&gt;写回，而不是原地修改）</li>
+</ol>
+<p>假如一个 <code>inout</code> 入参，在 <code>defer</code> 中被修改，在 <code>return</code> 的 <code>block</code> 中被修改。 那么问题来了：</p>
+<ol>
+<li>这几处修改的生效顺序是什么</li>
+<li>对于 <code>inout</code> 和 <code>return</code> 而言，外界拿到的是什么时候的什么值</li>
+</ol>
+<p>用代码来举例子<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fdo</span><span class="params">(x: <span class="keyword">inout</span> Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> &#123;</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    x += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    &#125;()</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> outX: <span class="type">Int</span> = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"ret: <span class="subst">\( fdo(x: &amp;outX)</span> )"</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"after-ret: <span class="subst">\( outX )</span>"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>问题：</p>
+<ol>
+<li>几处修改何时生效</li>
+<li><code>fdo</code> 返回的值是多少</li>
+<li>最后的 <code>outX</code> 值又是多少</li>
+</ol>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>为了能知道结果，对上述代码进行扩充<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">print</span><span class="params">(tag: String,  v:Int)</span></span> &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"<span class="subst">\(tag)</span>:\t<span class="subst">\(v)</span>"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fdo</span><span class="params">(x: <span class="keyword">inout</span> Int)</span></span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(tag: <span class="string">"st-def"</span>, v: x)</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(tag: <span class="string">"ed-def"</span>, v: x)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">print</span>(tag: <span class="string">"st-fdo"</span>, v: x)</span><br><span class="line">    x += <span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span>(tag: <span class="string">"ed-fdo"</span>, v: x)</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(tag: <span class="string">"st-ret"</span>, v: x)</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(tag: <span class="string">"ed-ret"</span>, v: x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    &#125;()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> outX: <span class="type">Int</span> = <span class="number">10</span></span><br><span class="line"><span class="built_in">print</span>(tag: <span class="string">"x-before"</span>, v: outX)</span><br><span class="line"><span class="built_in">print</span>(tag: <span class="string">"v-return"</span>, v: fdo(x: &amp;outX)) <span class="comment">// 如果代码改成 outX = fdo(x: &amp;outX)，下一行会如何？ 和现在会一样吗</span></span><br><span class="line"><span class="built_in">print</span>(tag: <span class="string">"x-after"</span>, v: outX)</span><br></pre></td></tr></table></figure></p>
+<p>输出如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x-before:	10	</span><br><span class="line">st-fdo:	10	</span><br><span class="line">ed-fdo:	11	</span><br><span class="line">st-ret:	11	</span><br><span class="line">ed-ret:	12	</span><br><span class="line">st-def:	12	</span><br><span class="line">ed-def:	13	</span><br><span class="line">v-return:	12	</span><br><span class="line">x-after:	13	</span><br><span class="line">// 如果代码改动 outX = fdo(x: &amp;outX)</span><br><span class="line">// 结果将是  x-after:	12</span><br></pre></td></tr></table></figure></p>
+<p>几个关注点</p>
+<ol>
+<li>打印顺序</li>
+<li>各个节点的值</li>
+<li><code>Swift</code> 执行的是写时拷贝</li>
+</ol>
+<blockquote>
+<p>除了打日志分析之外，也可以检查汇编代码。</p>
+</blockquote>
+<p>简单分析一下可知如下执行顺序：</p>
+<ol>
+<li>正常调用<ol>
+<li>此时内部生成临时变量 <code>x&#39;</code>，后续均操作此 <code>x&#39;</code></li>
+</ol>
+</li>
+<li><code>return</code> 中 <code>block</code> 执行</li>
+<li><code>defer</code> 执行 （如果多个，按倒序）</li>
+<li><code>return</code> 返回<ol>
+<li>此时返回出来的是 <strong>临时变量</strong></li>
+<li>只是返回，<strong>函数调用</strong> 所在的整个语句并未执行</li>
+</ol>
+</li>
+<li><code>inout</code> 生效<ol>
+<li>用内部生成 <code>x&#39;</code> 回填栈顶，即将入参的 <code>x</code> 替换成 <code>x&#39;</code>，调用方取回</li>
+</ol>
+</li>
+<li><strong>函数调用</strong> 所在的代码行生效，使用 <code>return</code> 返回的值对外操作，如外赋值、打印等等</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从实际的实现角度来说，执行顺序是:<br><strong>return中代码</strong> -&gt; <code>defer</code> -&gt; <code>return</code> -&gt; <code>inout</code> -&gt; <strong>调用处代码</strong></p>
+<p>从变量和内存的角度考虑</p>
+<ol>
+<li><code>Swift</code> 是写时拷贝</li>
+<li><code>inout</code> 是创建临时变量 -&gt; 返回时用临时变量覆盖传入变量，而不是原地修改</li>
+</ol>
+<p>从实际使用来说</p>
+<ol>
+<li>对于 <code>defer</code> 使用，应遵循苹果的官方建议，主要用于关闭描述符、处理一些错误。虽然可以做一些额外的副作用，甚至可以根据执行的特性，来在 <code>return</code> 之后再影响外部的一些东东，但是不建议做这些操作。</li>
+<li>对于 <code>inout</code> ，需要了解执行的机制，不能根据现象对机制有所误判。</li>
+<li>建议尽量少用 <strong>副作用</strong> 来达成一些预期，如在函数中过多的对外部变量进行修改，尤其是值类型的变量。</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://onevcat.com/2018/11/defer/" target="_blank" rel="noopener">关于 Swift defer 的正确使用</a></li>
+<li><a href="https://docs.swift.org/swift-book/LanguageGuide/Functions.html" target="_blank" rel="noopener">Swift Language Guide</a></li>
+<li><a href="https://docs.swift.org/swift-book/ReferenceManual/Statements.html#grammar_defer-statement" target="_blank" rel="noopener">Swift Language Reference - Statements - defer</a></li>
+<li><a href="https://docs.swift.org/swift-book/ReferenceManual/Declarations.html#ID545" target="_blank" rel="noopener">Swift Language Reference - Declarations - In-Out Parameters</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/23/wangwenming/Dagger2/" rel="prev">Dagger2 使用及原理分析</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/17/luanmingyang/Angular CDK 部分功能介绍/" rel="next">Angular CDK 部分功能介绍</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#inout和defer"><span class="nav-number">1.</span> <span class="nav-text">inout和defer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#inout"><span class="nav-number">1.1.</span> <span class="nav-text">inout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#defer"><span class="nav-number">1.2.</span> <span class="nav-text">defer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">3.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

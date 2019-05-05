@@ -1,0 +1,792 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="iOS,objective-c,hopper,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="在iOS应用开发和线上运行的过程中，我们总会被反馈到各种各样的崩溃。很多崩溃通过case的描述，就能很快的重现并得到修复，但是更多的崩溃也许这一辈子就发生这么一次，也许我们永远不知道它什么时候再会出现。 同时，就算我们捕获到一个Crash栈，由于版本环境等种种原因，或者发生崩溃的代码我们就无法得到它详细的源码，我们往往会对着一片全是程序指令偏移量的Crash栈一脸蒙蔽。基于以上事实，我们需要从Cr">
+<meta name="keywords" content="iOS,objective-c,hopper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Crash栈的捕获和分析">
+<meta property="og:url" content="http://xgfe.github.io/2017/03/23/lrdcq/ios-crash-catch-and-analyze/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="在iOS应用开发和线上运行的过程中，我们总会被反馈到各种各样的崩溃。很多崩溃通过case的描述，就能很快的重现并得到修复，但是更多的崩溃也许这一辈子就发生这么一次，也许我们永远不知道它什么时候再会出现。 同时，就算我们捕获到一个Crash栈，由于版本环境等种种原因，或者发生崩溃的代码我们就无法得到它详细的源码，我们往往会对着一片全是程序指令偏移量的Crash栈一脸蒙蔽。基于以上事实，我们需要从Cr">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.383Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS Crash栈的捕获和分析">
+<meta name="twitter:description" content="在iOS应用开发和线上运行的过程中，我们总会被反馈到各种各样的崩溃。很多崩溃通过case的描述，就能很快的重现并得到修复，但是更多的崩溃也许这一辈子就发生这么一次，也许我们永远不知道它什么时候再会出现。 同时，就算我们捕获到一个Crash栈，由于版本环境等种种原因，或者发生崩溃的代码我们就无法得到它详细的源码，我们往往会对着一片全是程序指令偏移量的Crash栈一脸蒙蔽。基于以上事实，我们需要从Cr">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> iOS Crash栈的捕获和分析 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              iOS Crash栈的捕获和分析
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-03-23T12:48:00+08:00" content="2017-03-23">
+            2017-03-23
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lrdcq/" itemprop="url" rel="index">
+                  <span itemprop="name">lrdcq</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/iOS/" rel="tag"><i class="icon-next-tags"></i>iOS</a>
+            
+              <a href="/tags/objective-c/" rel="tag"><i class="icon-next-tags"></i>objective-c</a>
+            
+              <a href="/tags/hopper/" rel="tag"><i class="icon-next-tags"></i>hopper</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在iOS应用开发和线上运行的过程中，我们总会被反馈到各种各样的崩溃。很多崩溃通过case的描述，就能很快的重现并得到修复，但是更多的崩溃也许这一辈子就发生这么一次，也许我们永远不知道它什么时候再会出现。</p>
+<p>同时，就算我们捕获到一个Crash栈，由于版本环境等种种原因，或者发生崩溃的代码我们就无法得到它详细的源码，我们往往会对着一片全是程序指令偏移量的Crash栈一脸蒙蔽。<br>基于以上事实，我们需要从Crash栈的捕获和分析这两个角度进行深入的了解。</p>
+<p>本博客主要内容分为两部分：</p>
+<ul>
+<li>OC中的Crash异常的总结和捕获方法</li>
+<li>利用Hopper对Crash栈进行分析</li>
+</ul>
+<a id="more"></a>
+<h2 id="OC中的Crash异常的总结和捕获方法"><a href="#OC中的Crash异常的总结和捕获方法" class="headerlink" title="OC中的Crash异常的总结和捕获方法"></a>OC中的Crash异常的总结和捕获方法</h2><p>相对于java从设计之初就养成的一条exception往下流，trycatch到底的作风，在我们iOS开发过程中，oc的异常处理就是一个不可逾越的障碍阻碍着程序的运行与调试。因为oc一般用NSError甩错误，一旦遇到异常，八成就是非常非常严重的不可挽回的错误了，并且由于oc往下直通c层，里面发生的异常简直是多种多样非常难以准确定位和分析。因此，我们来总结一下常见的异常和抓取处理分析方式。</p>
+<h3 id="OC-Exception"><a href="#OC-Exception" class="headerlink" title="OC Exception"></a>OC Exception</h3><p>oc层的异常是ios开发中最最最好抓取和分析的异常了。制造一个典型的oc异常简直再简单不过：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">NSString *str = nil;</span><br><span class="line">NSDictionary *dic = @&#123;@&quot;key&quot;:str&#125;;</span><br><span class="line">//or</span><br><span class="line">NSArray *array= @[@&quot;a&quot;,@&quot;b&quot;,@&quot;c&quot;];</span><br><span class="line">[array objectAtIndex:5];</span><br><span class="line">//or</span><br><span class="line">NSAssert(false, @&quot;OC Exception&quot;);</span><br></pre></td></tr></table></figure>
+<p>显然，分别是NSDictionary的value不能为空，和NSArray取数据越界，和最暴力的assert直接抛出来的异常。这些在oc层面由iOS库或者各种第三方库或者oc runtime验证出错误而抛出的异常，就是oc异常了。在debug环境下，oc异常导致的崩溃log中都会输出完整的异常信息，比如：<em>*</em> Terminating app due to uncaught exception ‘NSInternalInconsistencyException’, reason: ‘OC Exception’。包括这个Exception的类名和描述，下面是这个异常的完整堆栈。所以就算xcode的断点停在了main.m里面，我们也可以轻易的找到异常的位置修复问题。</p>
+<p>另外，oc异常还有一个非常好用的特性是可以用trycatch抓住（虽然苹果并不建议这么使用）。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@try &#123;</span><br><span class="line">    NSAssert(false, @&quot;OC Exception&quot;);</span><br><span class="line">&#125; @catch (NSException *exception) &#123;</span><br><span class="line">    NSLog(@&quot;%@&quot;,exception);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>就可以获取到当前抛出异常并且阻止异常继续往外抛导致程序崩溃。虽然苹果真的不建议这样做。对于程序真的往外抛出并且我们很难catch到的异常，比如界面和第三方库中甩出来的异常，我们也有方式可以截获到。NSException.m这个文件中携带了一个void NSSetUncaughtExceptionHandler(NSUncaughtExceptionHandler * _Nullable);的函数可以注册一个函数来处理未被捕获的异常。虽然无法阻止程序崩溃，但是可以取得异常进行一些准备和后续处理，使用起来这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">void HandleException(NSException *exception) &#123;</span><br><span class="line">    NSArray *stackArray = [exception callStackSymbols];</span><br><span class="line">    NSString *reason = [exception reason];</span><br><span class="line">    NSString *name = [exception name];</span><br><span class="line">    NSString *exceptionInfo = [NSString stringWithFormat:@&quot;Exception reason：%@\nException name：%@\nException stack：%@&quot;,name, reason, stackArray];</span><br><span class="line">    NSLog(@&quot;%@&quot;, exceptionInfo);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NSSetUncaughtExceptionHandler(&amp;HandleException);</span><br></pre></td></tr></table></figure>
+<p>往往我们要做的，是把异常信息保存到本地，等到下次启动的时候进行一些后续处理。这些就是crash收集工具所做的事儿。当然，如果妄想在HandleException时拉界面的话，就算了吧，这个函数运行完成后马上就崩溃了。</p>
+<h3 id="Mach-Exception"><a href="#Mach-Exception" class="headerlink" title="Mach Exception"></a>Mach Exception</h3><p>从OC异常往底层走，我们看到的是Mach异常。Mach异常是FreeBSD上特有定义的高层异常，当然，现在网络上能收集到的资料都和mac和ios开发有关。相关的源码网络上可以找到<a href="https://github.com/st3fan/osx-10.9/blob/master/xnu-2422.1.72/osfmk/mach/exception_types.h" target="_blank" rel="noopener">这里</a>。看到异常定义的名称我们会感觉到异常的亲切——EXC<em>MASK</em>开头的异常呢。我们一一来总结常见的两个Mach异常吧：</p>
+<h4 id="EXC-BAD-ACCESS-Bad-Memory-Access"><a href="#EXC-BAD-ACCESS-Bad-Memory-Access" class="headerlink" title="EXC_BAD_ACCESS (Bad Memory Access)"></a>EXC_BAD_ACCESS (Bad Memory Access)</h4><p>这是最常见并且我们觉得最头疼的，内存访问错误。这种异常分为两种：</p>
+<ol>
+<li>访问对象未初始化(SIGBUS信号)</li>
+<li>访问了什么东西已经被回收掉了(SIGSEGV信号)</li>
+</ol>
+<p>当然，事实上到底是怎样的错误比上面描述的复杂神秘得多，这才是这个最难处理的主要原因。<br>EXC_BAD_ACCESS同时也提供了辅助的异常code来帮助我们判断到底是什么错误，比如KERN_PROTECTION_FAILURE是指的地址无权限访问，KERN_INVALID_ADDRESS是指的地址不可用，异常信息中还会包括具体出错的地址。也许可以获得更多的帮助呢。在debug运行是打开内存管理的Zombie Objects可以获得有效的调试信息。</p>
+<h4 id="EXC-BAD-INSTRUCTION-Illegal-Instruction"><a href="#EXC-BAD-INSTRUCTION-Illegal-Instruction" class="headerlink" title="EXC_BAD_INSTRUCTION (Illegal Instruction)"></a>EXC_BAD_INSTRUCTION (Illegal Instruction)</h4><p>通常通过SIGILL信号触发的异常，很明显，它是在说运行了一条非法的指令。往往错误是这样子的：<br>XC_BAD_INSTRUCTION (code=EXC_I386_INVOP, subcode=0x0)<br>虽然是这样说，都是编译器编译出来的指令怎么会有非法指令嘛。所以事实上遇到这样的问题往往是运行指令的参数不对，多半是为0即nil了。然后我们又回到了空指针的问题了～。</p>
+<p>当然，除了代码中的问题。更多的是ios开发中的玄学问题导致的ios本身异常和bug，比如<a href="http://stackoverflow.com/questions/24337791/exc-bad-instruction-code-exc-i386-invop-subcode-0x0-on-dispatch-semaphore-dis" target="_blank" rel="noopener">这个</a>就是这样。解决这些问题，还是得老老实实的分析堆栈猜测和分析了。</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>其他在实际开发中有可能遇到的并不多，主要是:</p>
+<ol>
+<li>EXC_RESOURCE是指的程序到达资源上限，比如cpu占用过高，内存不足之类的。这样的问题也没法解决啦。</li>
+<li>EXC_GUARD是一些c层函数访问错误导致的异常，比如fopen文件访问错误之类的都会爆出这个。不过我们好好的oc不用肯定一般也不会使用这些，所以还安好。</li>
+<li>0x00000020，这些是被FreeBSD定义为玄学异常的异常都在里面了，也提供了特殊的code来提供辅助信息。其中其实最常见的code是0x8badf00d，是主线程阻塞时间太长，程序被os杀了。其他的遇到了就是见鬼了！</li>
+</ol>
+<h3 id="Unix-Signal-Exceptions"><a href="#Unix-Signal-Exceptions" class="headerlink" title="Unix Signal Exceptions"></a>Unix Signal Exceptions</h3><p>从Mach异常再往上走追根究底，其实，所以异常发生的本质途径都是Unix的异常信号。</p>
+<ol>
+<li>OC异常并不是真正的异常，但是当一个OC异常被抛出到最外层还没被谁捕获，程序会强行发送SIGABRT信号中断程序。</li>
+<li>Mach异常没有比较方便的捕获方式，不过由于它本质就是信号，所以这一段讲的东西也能包含处理Mach异常。</li>
+</ol>
+<p>产生一个不属于Mach异常的异常信号也是非常非常简单的事儿，比如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int *i;</span><br><span class="line">free(i);</span><br></pre></td></tr></table></figure>
+<p>总之，c层面，runtime或者其他东西控制程序就是通过信号，中断当然也不例外。通过不同的信号，我们也能知道很多不同的东西。在ios开发环境中，信号枚举在sys/signal.h文件中，我们可以看到大量的Unix信号罗列其中，参考<a href="https://en.wikipedia.org/wiki/Unix_signal" target="_blank" rel="noopener">wiki</a>可以看到各个信号的详解。当然，我们最终关心的是能否捕获这些异常信号来抓住异常和崩溃。对，方法是有的，这里提供了一个叫void (<em>signal(int, void (</em>)(int)))(int);的方法来注册一个处理函数。</p>
+<p>这个方法最后吐出来的是当前的信号，没异常信息堆栈怎么办，还好，从execinfo.h中，我们可以取出当然汇编层程序的堆栈情况。这就好办了，最后处理代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">void SignalExceptionHandler(int signal) &#123;</span><br><span class="line">    NSMutableString *mstr = [[NSMutableString alloc] init];</span><br><span class="line">    [mstr appendString:@&quot;Stack:\n&quot;];</span><br><span class="line">    void* callstack[128];</span><br><span class="line">    int i, frames = backtrace(callstack, 128);</span><br><span class="line">    char** strs = backtrace_symbols(callstack, frames);</span><br><span class="line">    for (i = 0; i &lt;frames; ++i) &#123;</span><br><span class="line">        [mstr appendFormat:@&quot;%s\n&quot;, strs[i]];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void InstallSignalHandler(void) &#123;</span><br><span class="line">    signal(SIGHUP, SignalExceptionHandler);</span><br><span class="line">    signal(SIGINT, SignalExceptionHandler);</span><br><span class="line">    signal(SIGQUIT, SignalExceptionHandler);</span><br><span class="line">    signal(SIGABRT, SignalExceptionHandler);</span><br><span class="line">    signal(SIGILL, SignalExceptionHandler);</span><br><span class="line">    signal(SIGSEGV, SignalExceptionHandler);</span><br><span class="line">    signal(SIGFPE, SignalExceptionHandler);</span><br><span class="line">    signal(SIGBUS, SignalExceptionHandler);</span><br><span class="line">    signal(SIGPIPE, SignalExceptionHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要注意的是这里获得的堆栈信息是，当前汇编子程序的offset+指令offset，要么我们需要符号表，要么我们需要反编译一些我们的程序来对应代码了。</p>
+<h2 id="利用Hopper对Crash栈进行分析"><a href="#利用Hopper对Crash栈进行分析" class="headerlink" title="利用Hopper对Crash栈进行分析"></a>利用Hopper对Crash栈进行分析</h2><p>对于上文已经获得的crash堆栈，无论是否可以通过符号表获得代码实际情况，只要我们没发看到确切的代码，都是无法直接通过crash栈直接进行分析。特别是遇到整个crash堆栈里面完全没有自己项目的代码，或者虽然是我们的项目名下的堆栈，却是通过pod引入的第三方库。更现实的是，为了加速代码编译或者开发者干脆就是闭源的，往往pod引入的库都是二进制的静态库，所以我们得到的堆栈肯定没有具体代码行数，看到堆栈肯定是无计可施。</p>
+<p>遇到这样的情况，我们看到的堆栈往往是：0x100072ea4 0x100050000 + 143012这样只会有堆栈指令的pc位置或者方法名 + offset显示出来的pc位置，而不是。这样我们需要分析代码，只有通过分析具体的汇编指令才能继续下去。</p>
+<p>而Hopper这个iOS查看和半反编译工具正适合这件事。</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>首先我们当然要下载一个<a href="https://www.hopperapp.com" target="_blank" rel="noopener">Hopper</a>。这个软件demo版可以直接使用完整功能，和Charles一样每次启动可以使用30分钟——对于我们勉强够用了，动心了可以买买买～<br>另外，我们还需要找到用于进行反编译的程序。理论上，它在ipa包的/Payload/xxx.app/xxx即对应的编译结果，其中在本地xcode编译出来的app在~/Library/Developer/Xcode/DerivedData下。<br>最后，我们当然要准备好需要的crash堆栈，另外在旁边准备一个科学计算器比较好。<br>另外再用浏览器开一个ARM汇编指令大全吧。<a href="http://blog.csdn.net/forever_2015/article/details/50285865" target="_blank" rel="noopener">比如</a></p>
+<h3 id="iOS的ARM汇编基础"><a href="#iOS的ARM汇编基础" class="headerlink" title="iOS的ARM汇编基础"></a>iOS的ARM汇编基础</h3><p>虽然基本上只需要一丁点儿汇编基础知识就可以开展工作，还是有一些需要知道的。<br>寄存器相关：一共有31个64位通用寄存器, x0~x30。其中x29是frame pointer；x30是procedure link register；还有sp和pc。</p>
+<p>常用的汇编指令我们需要了解的主要是：</p>
+<ul>
+<li>mov r1,r2 把r2的数据赋予r1</li>
+<li>ldr r1,r2 把r2指向的数据赋予r1</li>
+<li>str r1,r2 把r1的数据赋予r2指向的地方</li>
+<li>add sub之类的运算符肯定是需要的</li>
+<li>那一堆草鸡麻烦的跳转判断指令</li>
+<li>bl 调用子程序</li>
+<li>[r1, 0xXXXX]这样offset的方法</li>
+</ul>
+<p>另外oc方法调用的情况下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id value = [obj methodKey1:key1 andKey2:key2];</span><br></pre></td></tr></table></figure>
+<p>编译到c层实际调用是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id value = objc_msgSend(obj, @selector(methodKey1:andKey2:), key, key2);</span><br></pre></td></tr></table></figure>
+<p>当然，c的函数对应的其实是汇编调用子函数。因此我们需要的入口参数obj,selector,key,key2…其实是通过r0,r1,r2…..传输的，特殊情况下可能会通过堆栈传输，不过一般不会～。另外返回值会直接返回到r0里边。</p>
+<p>嗯，知道这些就可以了。</p>
+<h3 id="栗子：一次完整的分析"><a href="#栗子：一次完整的分析" class="headerlink" title="栗子：一次完整的分析"></a>栗子：一次完整的分析</h3><p>这次我们分析的完整的崩溃堆栈是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Exception Type:  EXC_CRASH (SIGABRT)</span><br><span class="line">Exception Codes: 0x0000000000000000, 0x0000000000000000</span><br><span class="line">Exception Note:  EXC_CORPSE_NOTIFY</span><br><span class="line">Triggered by Thread:  8</span><br><span class="line"></span><br><span class="line">Application Specific Information:</span><br><span class="line">abort() called</span><br><span class="line"></span><br><span class="line">Filtered syslog:</span><br><span class="line">None found</span><br><span class="line"></span><br><span class="line">Last Exception Backtrace:</span><br><span class="line">0   CoreFoundation                  0x18a1151b8 __exceptionPreprocess + 124</span><br><span class="line">1   libobjc.A.dylib                 0x188b4c55c objc_exception_throw + 56</span><br><span class="line">2   CoreFoundation                  0x18a11c268 -[NSObject(NSObject) doesNotRecognizeSelector:] + 140</span><br><span class="line">3   CoreFoundation                  0x18a119270 ___forwarding___ + 916</span><br><span class="line">4   CoreFoundation                  0x18a01280c _CF_forwarding_prep_0 + 92</span><br><span class="line">5   kmall                           0x1004b103c 0x100050000 + 4591676</span><br><span class="line">6   kmall                           0x1003d1ef8 0x100050000 + 3677944</span><br><span class="line">7   kmall                           0x1003d23a0 0x100050000 + 3679136</span><br><span class="line">8   libdispatch.dylib               0x188f9e1fc _dispatch_call_block_and_release + 24</span><br><span class="line">9   libdispatch.dylib               0x188f9e1bc _dispatch_client_callout + 16</span><br><span class="line">10  libdispatch.dylib               0x188fac3dc _dispatch_queue_serial_drain + 928</span><br><span class="line">11  libdispatch.dylib               0x188fa19a4 _dispatch_queue_invoke + 652</span><br><span class="line">12  libdispatch.dylib               0x188fac8d8 _dispatch_queue_override_invoke + 360</span><br><span class="line">13  libdispatch.dylib               0x188fae34c _dispatch_root_queue_drain + 572</span><br><span class="line">14  libdispatch.dylib               0x188fae0ac _dispatch_worker_thread3 + 124</span><br><span class="line">15  libsystem_pthread.dylib         0x1891a72a0 _pthread_wqthread + 1288</span><br><span class="line">16  libsystem_pthread.dylib         0x1891a6d8c start_wqthread + 4</span><br></pre></td></tr></table></figure>
+<p>从堆栈的角度，可以看到，倒数第三层调用到了doesNotRecognizeSelector方法然后抛出了异常，结合上下文，可以猜想到应该是某一个object存在，但是调用了不存在的方法——也许是类型错误，导致了这个崩溃的发生。</p>
+<p>而查询后，kmall的三层均不是我们项目代码，而是闭源的第三方库中抛出来的错误，无法得到其他信息。因此现在，只有从kmall最高的那一层，即第5层堆栈开始入手分析汇编代码了。</p>
+<h4 id="堆栈第一层"><a href="#堆栈第一层" class="headerlink" title="堆栈第一层"></a>堆栈第一层</h4><p>我们看到的地址是0x1004b103c 0x100050000 + 4591676，其实就是程序的0x46103C偏移位置。直接用hopper打开程序进行反汇编找到对应的子函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">        ; ================ B E G I N N I N G   O F   P R O C E D U R E ================</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                     +[GuardCommon encrypt:withKey:byAlgorithm:]:</span><br><span class="line">0000000100460f1c         stp        x29, x30, [sp, #-0x10]!                     ; Objective C Implementation defined at 0x1009fa370 (class method), DATA XREF=0x1009fa370</span><br><span class="line">0000000100460f20         mov        x29, sp</span><br><span class="line">0000000100460f24         sub        sp, sp, #0x80</span><br><span class="line">0000000100460f28         sub        x8, x29, #0x20</span><br><span class="line">0000000100460f2c         movz       x9, #0x0</span><br><span class="line">0000000100460f30         stur       x0, [x29, #-0x10]</span><br><span class="line">0000000100460f34         stur       x1, [x29, #-0x18]</span><br><span class="line">0000000100460f38         stur       x9, [x29, #-0x20]</span><br><span class="line">0000000100460f3c         mov        x0, x8</span><br><span class="line">0000000100460f40         mov        x1, x2</span><br><span class="line">0000000100460f44         str        x3, [sp, #0x40]</span><br><span class="line">0000000100460f48         str        x4, [sp, #0x38]</span><br><span class="line">0000000100460f4c         bl         imp___stubs__objc_storeStrong</span><br><span class="line">0000000100460f50         sub        x8, x29, #0x28</span><br><span class="line">0000000100460f54         movz       x9, #0x0</span><br><span class="line">0000000100460f58         stur       x9, [x29, #-0x28]</span><br><span class="line">0000000100460f5c         ldr        x9, [sp, #0x40]</span><br><span class="line">0000000100460f60         mov        x0, x8</span><br><span class="line">0000000100460f64         mov        x1, x9</span><br><span class="line">0000000100460f68         bl         imp___stubs__objc_storeStrong</span><br><span class="line">...</span><br><span class="line">0000000100460fd0         adrp       x8, #0x100a64000                            ; CODE XREF=+[GuardCommon encrypt:withKey:byAlgorithm:]+156</span><br><span class="line">0000000100460fd4         add        x8, x8, #0x630                              ; objc_cls_ref_GuardEncryptProcessor</span><br><span class="line">0000000100460fd8         ldr        x8, x8</span><br><span class="line">0000000100460fdc         ldur       x9, [x29, #-0x20]</span><br><span class="line">0000000100460fe0         mov        x0, x9</span><br><span class="line">0000000100460fe4         str        x8, [sp, #0x30]</span><br><span class="line">0000000100460fe8         bl         imp___stubs__objc_retainAutorelease</span><br><span class="line">0000000100460fec         adrp       x8, #0x100a53000                            ; @selector(setTitleLabelBackgroundColor:)</span><br><span class="line">0000000100460ff0         add        x8, x8, #0x488                              ; @selector(bytes)</span><br><span class="line">0000000100460ff4         ldr        x1, x8</span><br><span class="line">0000000100460ff8         bl         imp___stubs__objc_msgSend</span><br><span class="line">0000000100460ffc         adrp       x8, #0x100a52000</span><br><span class="line">0000000100461000         add        x8, x8, #0x3a0                              ; @selector(length)</span><br><span class="line">0000000100461004         ldur       x9, [x29, #-0x20]</span><br><span class="line">0000000100461008         ldr        x1, x8</span><br><span class="line">000000010046100c         str        x0, [sp, #0x28]</span><br><span class="line">0000000100461010         mov        x0, x9</span><br><span class="line">0000000100461014         bl         imp___stubs__objc_msgSend</span><br><span class="line">0000000100461018         mov        x2, x0</span><br><span class="line">000000010046101c         ldur       x8, [x29, #-0x28]</span><br><span class="line">0000000100461020         mov        x0, x8</span><br><span class="line">0000000100461024         str        w2, [sp, #0x24]</span><br><span class="line">0000000100461028         bl         imp___stubs__objc_retainAutorelease</span><br><span class="line">000000010046102c         adrp       x8, #0x100a55000                            ; @selector(clickGoPay:)</span><br><span class="line">0000000100461030         add        x8, x8, #0xfd0                              ; @selector(UTF8String)</span><br><span class="line">0000000100461034         ldr        x1, x8</span><br><span class="line">0000000100461038         bl         imp___stubs__objc_msgSend</span><br><span class="line">000000010046103c         ldur       x8, [x29, #-0x30]</span><br></pre></td></tr></table></figure>
+<p>这个子函数有点长，我先截取一部分看看。首先根据hopper部分反编译（其实是数据映射的结果），这个子函数对应的方法是 +[GuardCommon encrypt:withKey:byAlgorithm:]:。嗯，糟糕，这是一个第三方库里面的代码，并且我们找不到源码，到此为止我们落实要通过分析汇编代码的方式来查crash了。</p>
+<p>然后我们找到目标pc地址的上一句，是一句bl即调用子函数，hopper又很贴心的把ios中常见系统子函数给反编译告诉我们了，这是一句msgSend，和我们看到堆栈预期的一样，调用了不存在的方法。那么我们首先要做的就是找到msgSend的obj和selector，他们应该在调用子函数前被放置在了对应的x0和x1处。</p>
+<p>往上看，x1很快就找到了。hopper也很贴心的把常量指向的字符串在右侧标了出来。x1是从x8加载出来的，x8指向的字符串“UTF8String”。然后x0呢，在0x461020看到x0是从x8挪过来的，而那里x8是从[x29, #-0x28]加载出来的。那么我们接下来就是需要关心[x29, #-0x28]是哪儿来的了。</p>
+<p>继续往上看，在子函数开始部分0x460f58，把原本x9的数据放入了[x29, #-0x28]指向的位置中，但是注意到0x460f50开始的sub最后得到的x8也是指向的这个位置，所以我们综合看一下。那一段结束之后调用了objc_storeStrong方法，我们知道objc_storeStrong是处理入参的持有问题，把入参数转换到另一个新的id上。因此考虑到分别传入了一个空的指针和一个x0，因此这其实是在对x8做storeStrong初始化。</p>
+<p>那么看到传入的x1即原始数据，是从哪儿来的？在0x460f5c从[sp, #0x40]读出来的，而[sp, #0x40]哪儿来的，就在上面几行从x3中储存进去的，x3到此为止——嗯，x3不就是子函数的入参么，应该是oc方法的第二个参数吧。即+[GuardCommon encrypt:withKey:byAlgorithm:]的key咯。</p>
+<p>到此为止，我们第一层堆栈分析完毕，可以继续往上了。</p>
+<h4 id="堆栈第二层"><a href="#堆栈第二层" class="headerlink" title="堆栈第二层"></a>堆栈第二层</h4><p>然而，分析第二层我们可见的堆栈子程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">        ; ================ B E G I N N I N G   O F   P R O C E D U R E ================</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                     -[WindFingerprintGenerator tranformToFingerprint:]:</span><br><span class="line">0000000100381db0         stp        x29, x30, [sp, #-0x10]!                     ; Objective C Implementation defined at 0x1009e41f8 (instance method), DATA XREF=0x1009e41f8</span><br><span class="line">0000000100381db4         mov        x29, sp</span><br><span class="line">0000000100381db8         sub        sp, sp, #0xb0</span><br><span class="line">0000000100381dbc         sub        x8, x29, #0x30</span><br><span class="line">0000000100381dc0         movz       x9, #0x0</span><br><span class="line">0000000100381dc4         adrp       x10, #0x100918000</span><br><span class="line">0000000100381dc8         ldr        x10, [x10, #0x400]                          ; ___stack_chk_guard_100918400,___stack_chk_guard</span><br><span class="line">0000000100381dcc         ldr        x10, x10</span><br><span class="line">0000000100381dd0         mov        x3, x10</span><br><span class="line">0000000100381dd4         stur       x10, [x29, #-0x8]</span><br><span class="line">0000000100381dd8         stur       x0, [x29, #-0x20]</span><br><span class="line">...</span><br><span class="line">0000000100381e64         adrp       x8, #0x100a5b000                            ; @selector(readStream)</span><br><span class="line">0000000100381e68         add        x8, x8, #0x270                              ; @selector(aesKey)</span><br><span class="line">0000000100381e6c         stur       x0, [x29, #-0x40]</span><br><span class="line">0000000100381e70         ldur       x9, [x29, #-0x20]</span><br><span class="line">0000000100381e74         ldr        x1, x8</span><br><span class="line">0000000100381e78         mov        x0, x9</span><br><span class="line">0000000100381e7c         bl         imp___stubs__objc_msgSend</span><br><span class="line">0000000100381e80         mov        x29, x29</span><br><span class="line">0000000100381e84         bl         imp___stubs__objc_retainAutoreleasedReturnValue</span><br><span class="line">0000000100381e88         str        x0, [sp, #0x48]</span><br><span class="line">0000000100381e8c         cbz        x0, loc_100381e9c</span><br><span class="line"></span><br><span class="line">0000000100381e90         ldr        x8, [sp, #0x48]</span><br><span class="line">0000000100381e94         str        x8, [sp, #0x40]</span><br><span class="line">0000000100381e98         b          loc_100381eac</span><br><span class="line"></span><br><span class="line">                     loc_100381e9c:</span><br><span class="line">0000000100381e9c         adrp       x8, #0x10092e000                            ; CODE XREF=-[WindFingerprintGenerator tranformToFingerprint:]+220</span><br><span class="line">0000000100381ea0         add        x8, x8, #0x390                              ; _kAESKey</span><br><span class="line">0000000100381ea4         ldr        x8, x8</span><br><span class="line">0000000100381ea8         str        x8, [sp, #0x40]</span><br><span class="line"></span><br><span class="line">                     loc_100381eac:</span><br><span class="line">0000000100381eac         ldr        x0, [sp, #0x40]                             ; CODE XREF=-[WindFingerprintGenerator tranformToFingerprint:]+232</span><br><span class="line">0000000100381eb0         bl         imp___stubs__objc_retain</span><br><span class="line">0000000100381eb4         stur       x0, [x29, #-0x48]</span><br><span class="line">0000000100381eb8         ldr        x0, [sp, #0x48]</span><br><span class="line">0000000100381ebc         bl         imp___stubs__objc_release</span><br><span class="line">0000000100381ec0         adrp       x0, #0x10096d000                            ; @&quot;- (int64_t)%@;&quot;</span><br><span class="line">0000000100381ec4         add        x0, x0, #0xc60                              ; @&quot;AES&quot;</span><br><span class="line">0000000100381ec8         adrp       x30, #0x100a5b000                           ; @selector(readStream)</span><br><span class="line">0000000100381ecc         add        x30, x30, #0x278                            ; @selector(encrypt:withKey:byAlgorithm:)</span><br><span class="line">0000000100381ed0         adrp       x8, #0x100a64000</span><br><span class="line">0000000100381ed4         add        x8, x8, #0x338                              ; objc_cls_ref_GuardCommon</span><br><span class="line">0000000100381ed8         ldr        x8, x8</span><br><span class="line">0000000100381edc         ldur       x2, [x29, #-0x40]</span><br><span class="line">0000000100381ee0         ldur       x3, [x29, #-0x48]</span><br><span class="line">0000000100381ee4         ldr        x1, x30</span><br><span class="line">0000000100381ee8         str        x0, [sp, #0x38]</span><br><span class="line">0000000100381eec         mov        x0, x8</span><br><span class="line">0000000100381ef0         ldr        x4, [sp, #0x38]</span><br><span class="line">0000000100381ef4         bl         imp___stubs__objc_msgSend</span><br><span class="line">0000000100381ef8         mov        x29, x29</span><br></pre></td></tr></table></figure>
+<p>依然是一段分析过后的关键段落截取。首先看到的方法名-[WindFingerprintGenerator tranformToFingerprint:]:，嗯，不是可见的方法，但是和刚才不同的是这是一个实例方法了，所以当前对象很重要。另外虽然方法没见过，WindFingerprintGenerator却是有暴露给用户使用，所以可以找到一些有用的信息。</p>
+<p>然后从堆栈出口看，嗯，果然是msgSend而且selector对得上，没问题。然后刚才我们注意到的是x3，那在哪儿放进去的呢？原来是0x381ee0行，从[x29, #-0x48]读取出来的。然后继续往上0x381eb4处，讲0x储存到了[x29, #-0x48]中，而x0又是从[sp, #0x40]读取出来的。</p>
+<p>然后上面这一段是一个双goto，本质上是一个if判断，看一下判断指令：cbz x0是否存在？如果存在，往下，0x381e90把[sp, #0x48]读出来赋予了[sp, #0x40]，而[sp, #0x48]正好又是x0。所以结论是如果x0存在，传给后面了x0的值。</p>
+<p>另一个分支，如果x0不存在，0x381ea0开始从一个叫_kAESKey的静态变量读取了数据并赋予了[sp, #0x40]。</p>
+<p>所以这一段其实是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[sp, #<span class="number">0x40</span>] = x0 ? x0 : _kAESKey;</span><br></pre></td></tr></table></figure>
+<p>那关键其实就是x0了。考虑到后面的崩溃应该是对象存在但是没有方法，因此这里要么是x0不存在_kAESKey不对，要不是x0不对，我们需要继续追踪。</p>
+<p>这里往上，x0就是0x381e7c中sendMsg的返回值，其中selector是aesKey，而对象x0是x9从[x29, #-0x20]来的。继续往上找，[x29, #-0x20]在0x381dd8从x0赋予，而这里是x0最早出现的位置，即当前子函数的obj。因此完整解释出来，就是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[sp, #<span class="number">0x40</span>] = self.aesKey ? self.aesKey : _kAESKey;</span><br></pre></td></tr></table></figure>
+<p>诶，打住，到此为止。写过相关代码的同学立刻会发现，self，即WindFingerprintGenerator的实例的aesKey好像是暴露出来给用户设置的诶。赶快去看看～～～</p>
+<p>至此，这次crash分析就结束了，事实上看到的是api希望aesKey是一个NSString，而我们代码中设置成了NSNumber，由此导致的错误。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上Crash捕获处理就可以兜底式的涵盖所有的ios应用异常和崩溃的情况，是非常有效率。而结合hopper帮助给子程序映射oc方法进行拆分，和对常用oc子程序进行部分反编译之后，阅读iOS的汇编结果进行crash堆栈分析并不是什么困难的事情。我们可以得到很多有用的信息，结合传统的crash分析方法和经验，可以更可靠有效的解决问题。</p>
+<p>通过以上一个完整的Crash栈捕获和抓取的流程，我们可以亲手抓住iOS应用在运行中遇到的所有大大小小的崩溃情况，并且在非常劣势的条件下，有效的对Crash进行分析，解决疑难杂症。</p>
+<p>虽然通过各种第三方崩溃统计服务，它们可能帮助我们把以上的大部分工作都完成了。但是最好解决bug的还是我们自己啊，不知彼知己拿着Crash能不方么～</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/21/shsoul/router/" rel="prev">如何实现一套iOS-router</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/16/TinySymphony/electronic-apps/" rel="next">Electron开发跨平台桌面应用</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OC中的Crash异常的总结和捕获方法"><span class="nav-number">1.</span> <span class="nav-text">OC中的Crash异常的总结和捕获方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OC-Exception"><span class="nav-number">1.1.</span> <span class="nav-text">OC Exception</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mach-Exception"><span class="nav-number">1.2.</span> <span class="nav-text">Mach Exception</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EXC-BAD-ACCESS-Bad-Memory-Access"><span class="nav-number">1.2.1.</span> <span class="nav-text">EXC_BAD_ACCESS (Bad Memory Access)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EXC-BAD-INSTRUCTION-Illegal-Instruction"><span class="nav-number">1.2.2.</span> <span class="nav-text">EXC_BAD_INSTRUCTION (Illegal Instruction)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他"><span class="nav-number">1.2.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unix-Signal-Exceptions"><span class="nav-number">1.3.</span> <span class="nav-text">Unix Signal Exceptions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用Hopper对Crash栈进行分析"><span class="nav-number">2.</span> <span class="nav-text">利用Hopper对Crash栈进行分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">2.1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS的ARM汇编基础"><span class="nav-number">2.2.</span> <span class="nav-text">iOS的ARM汇编基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栗子：一次完整的分析"><span class="nav-number">2.3.</span> <span class="nav-text">栗子：一次完整的分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#堆栈第一层"><span class="nav-number">2.3.1.</span> <span class="nav-text">堆栈第一层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#堆栈第二层"><span class="nav-number">2.3.2.</span> <span class="nav-text">堆栈第二层</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

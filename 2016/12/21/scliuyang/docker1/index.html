@@ -1,0 +1,730 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="docker,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="docker经过这么几年的发展，到如今更是火热到即使你没吃过猪也见过猪跑的地步,本节会给大家介绍docker的一些含义，让大家了解docker">
+<meta name="keywords" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识docker">
+<meta property="og:url" content="http://xgfe.github.io/2016/12/21/scliuyang/docker1/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="docker经过这么几年的发展，到如今更是火热到即使你没吃过猪也见过猪跑的地步,本节会给大家介绍docker的一些含义，让大家了解docker">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://i1.piimg.com/4851/5356edebd8c82056.png">
+<meta property="og:image" content="http://p1.bqimg.com/4851/12e0188ee1b32356.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.394Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初识docker">
+<meta name="twitter:description" content="docker经过这么几年的发展，到如今更是火热到即使你没吃过猪也见过猪跑的地步,本节会给大家介绍docker的一些含义，让大家了解docker">
+<meta name="twitter:image" content="http://i1.piimg.com/4851/5356edebd8c82056.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 初识docker | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              初识docker
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-12-21T16:32:00+08:00" content="2016-12-21">
+            2016-12-21
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/scliuyang/" itemprop="url" rel="index">
+                  <span itemprop="name">scliuyang</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/docker/" rel="tag"><i class="icon-next-tags"></i>docker</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>docker经过这么几年的发展，到如今更是火热到即使你没吃过猪也见过猪跑的地步,本节会给大家介绍docker的一些含义，让大家了解docker</p>
+<a id="more"></a>
+<h1 id="什么是Docker"><a href="#什么是Docker" class="headerlink" title="什么是Docker"></a>什么是Docker</h1><p>Docker是一个开放源代码软件项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。Docker利用Linux核心中的资源分离机制，例如cgroups，以及Linux核心命名空间（name space），来建立独立的软件容器（containers）。这可以在单一Linux实体下运作，避免启动一个虚拟机器造成的额外负担。</p>
+<p>——摘自维基百科</p>
+<h1 id="Docker到底牛逼在哪里"><a href="#Docker到底牛逼在哪里" class="headerlink" title="Docker到底牛逼在哪里"></a>Docker到底牛逼在哪里</h1><p>docker的中文含义<code>码头工人</code>，这个翻译初看会觉得很怪异,其实官方取名这个名字有包含隐喻的意思在内.</p>
+<p>我们再看看docker的logo，一头像船的鲸鱼上面装载着许许多多的箱子，结合<code>码头工人</code>的意思，我们其实可以想到<code>集装箱</code>这个概念，<code>集装箱</code>是全球物流系统中一个非常重要的发明，他带来了物流的规范化，统一化，极大的节约了人力物理和时间成本。<br><img src="http://i1.piimg.com/4851/5356edebd8c82056.png" style="width:200px;"></p>
+<h2 id="集装箱的作用"><a href="#集装箱的作用" class="headerlink" title="集装箱的作用"></a>集装箱的作用</h2><p>  我们可以想想在集装箱这个定义出来之前的货物运输：货物一箱箱的搬上货车送到附近的火车站，然后一箱箱卸下，再一箱箱的搬上火车运送到附近的码头…<br>  上述的过程中不难发现大量的人力和时间成本都花费在一箱箱的搬运上面，在运输速度一定的情况下，装卸就成为了物流的瓶颈。<br>  在<code>集装箱</code>出现后这个问题得到了极大的改善。集装箱重要在它提供了一种通用的封装货物的标准规格（尺寸，外形符合统一标准），这样就产生了一个巨大的优点：在物流运输中只需要在运输前一次封装，集装箱就可以放上火车，卡车，拉到码头，直接放在货船上；卸船之后直接再放上火车，卡车，运送到目的地。而且由于集装箱符合统一标准，整个流程非常容易机械化，这引发了以集装箱为中心的整个全球物流的标准化进程，从而节省了大量的时间资源和人力资源，成本迅速下降，促进了全球资源的流动与重新配置。</p>
+<h2 id="Docker与集装箱"><a href="#Docker与集装箱" class="headerlink" title="Docker与集装箱"></a>Docker与集装箱</h2><p>docker就像码头的工人一样，把应用打包为一个个封装好的标准集装箱，就是大家口中经常镜像文件。那docker为业内带来了什么呢？</p>
+<h3 id="docker诞生以前，运维的蛮荒时代"><a href="#docker诞生以前，运维的蛮荒时代" class="headerlink" title="docker诞生以前，运维的蛮荒时代"></a>docker诞生以前，运维的蛮荒时代</h3><p>  以前我们搭建一个网站，你可能会装PHP,Mysql，Apache等等一堆软件，好花费大半天的时间这个网站能正常运行起来了。</p>
+<p>  一段时间后我们需要更高的PHP版本来搭建一个其他类型的网站，版本冲突了咋整？一番google后，费了九牛二虎之力两个网站终于能共同运行了。<br>老板后来告诉你由于网站太火爆了我们需要换一台服务器迁移过去，于是你又不得不巴拉巴拉的折腾一番将所有的环境重新配置一遍。</p>
+<p>  老板小手一拍，我们要优化我们的服务，在全国各地都建立节点提供服务，你掰一掰的你手指头发现有数不清的环境需要搭建，你的内心是崩溃的。</p>
+<h3 id="docker出现后，我们步入了工业时代"><a href="#docker出现后，我们步入了工业时代" class="headerlink" title="docker出现后，我们步入了工业时代"></a>docker出现后，我们步入了工业时代</h3><p>就和<code>集装箱</code>一样，docker为我们带来的是标准，具体一点说就是镜像。在docker当中镜像其实就是你把一大包工具打包成一个集装箱交于docker运行，镜像与镜像之间互不影响(集装箱与集装箱之间也是互不影响运输)。</p>
+<p>在docker中，镜像是无法直接运行的，我猜想这并不是技术上的原因，而是工程设计上的原因。因为一般来说，一个软件的某个具体版本只会打包成一个镜像。如果镜像可以配置，运行的话，在使用过程中很可能会对镜像造成破坏。</p>
+<p>那怎么样避免这个问题呢，就是再加一层，也就是相当于用了分身术，只要本尊没问题，分身怎么扑街都不会真正的跪掉。多加的这一层分身，就叫容器（container），这个名字也挺形象，它就像个盒子一样，你的应用在里面运行，而且多了一层安全机制。你想使用服务或把你的应用跑起来的话，只需要使用镜像新创建一个容器就可以了（也是一条命令搞定），而镜像还放在那里不动，没办法，金贵嘛。</p>
+<h3 id="docker究竟做了什么？"><a href="#docker究竟做了什么？" class="headerlink" title="docker究竟做了什么？"></a>docker究竟做了什么？</h3><p>docker正是在部署过程中，将上面那些重复的部分，由docker自动化完成。只需要在第一次部署时，构建完可用的docker镜像。然后在以后使用的过程中，短短的几行命令，就可以直接拉取镜像，根据这个镜像创建出一个容器，把服务跑起来了。所需要的仅仅是安装了docker的服务器，一个Dockerfile文件，以及比较流畅的网络而已。真可谓<code>一次构建，到处部署</code>。</p>
+<ul>
+<li>需要nginx,直接pull nginx镜像完事</li>
+<li>迁移服务器？直接下载一个非常小的Dockerfile，安装一个docker环境即可，简单的不能在简单</li>
+<li>多个版本共存？新建一个镜像，爱用哪个版本用哪个，容器的隔离性让我们就是这么任性</li>
+</ul>
+<p>到这个地方，你可能已经发现了，docker镜像成为了一种像集装箱那样的标准货件。它不像传统的软件交付方式那样，只把代码以及说明文档之类的给你就完了，而是直接给你一个标准docker货件，它可能是Dockerfile，或者直接就是镜像，这个标准件不仅包括了代码本身，还包括了代码运行的OS等各种整体环境。</p>
+<p>于是，谁想用我的服务，直接拉取镜像，实例化一个容器就可以了，能直接提供你所要的服务，不再像之前那样有繁复的安装过程————这些都有人给你做过了。</p>
+<h1 id="与传统虚拟机对比"><a href="#与传统虚拟机对比" class="headerlink" title="与传统虚拟机对比"></a>与传统虚拟机对比</h1><p>有人可能会说，这些不是虚拟机都做到了么，还要docker干嘛？</p>
+<p>传统虚拟机就像一个老爷爷，走路晃晃悠悠，还需要分配资源，给予照顾才行。反观docker则像是一个健步如飞的年轻小伙子，干啥事都是一个字<code>快</code>.</p>
+<ul>
+<li>容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。</li>
+<li>传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。</li>
+<li>Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外，Docker 团队同各个开源项目团队一起维护了一大批高质量的官方镜像，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本。</li>
+</ul>
+<p>下图是docker与传统虚拟机性能对比，图片来自 <a href="https://yeasy.gitbooks.io/docker_practice/content/" target="_blank" rel="noopener">Docker — 从入门到实践</a><br><img src="http://p1.bqimg.com/4851/12e0188ee1b32356.png"></p>
+<h1 id="下一节预告"><a href="#下一节预告" class="headerlink" title="下一节预告"></a>下一节预告</h1><p>下一节会给大家来带一些docker常用的使用命令介绍</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/22/zhouxiong/Vue2.0+Vue-router2.0+Vuex2.0/" rel="prev">Vue2.0+Vue-router2.0+Vuex2.0搭建简书</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/30/scliuyang/yarn/" rel="next">js新的包管理工具yarn</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Docker"><span class="nav-number">1.</span> <span class="nav-text">什么是Docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker到底牛逼在哪里"><span class="nav-number">2.</span> <span class="nav-text">Docker到底牛逼在哪里</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集装箱的作用"><span class="nav-number">2.1.</span> <span class="nav-text">集装箱的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker与集装箱"><span class="nav-number">2.2.</span> <span class="nav-text">Docker与集装箱</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker诞生以前，运维的蛮荒时代"><span class="nav-number">2.2.1.</span> <span class="nav-text">docker诞生以前，运维的蛮荒时代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker出现后，我们步入了工业时代"><span class="nav-number">2.2.2.</span> <span class="nav-text">docker出现后，我们步入了工业时代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker究竟做了什么？"><span class="nav-number">2.2.3.</span> <span class="nav-text">docker究竟做了什么？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#与传统虚拟机对比"><span class="nav-number">3.</span> <span class="nav-text">与传统虚拟机对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#下一节预告"><span class="nav-number">4.</span> <span class="nav-text">下一节预告</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

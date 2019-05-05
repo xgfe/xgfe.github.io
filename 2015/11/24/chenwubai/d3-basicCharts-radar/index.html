@@ -1,0 +1,932 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="数据可视化,svg,D3.js,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="&amp;emsp;&amp;emsp;基本图表一共有六种，分别是柱状图、折线图、散点图、气泡图、饼图和雷达图。前面五种图形都已经介绍过如何实现了，今天我们一起来看看最后的雷达图。">
+<meta name="keywords" content="数据可视化,svg,D3.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于D3.js的雷达图的实现">
+<meta property="og:url" content="http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-radar/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;基本图表一共有六种，分别是柱状图、折线图、散点图、气泡图、饼图和雷达图。前面五种图形都已经介绍过如何实现了，今天我们一起来看看最后的雷达图。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-radar/radarAnalysis.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-radar/web.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-radar/webWithLine.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-radar/radar.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-radar/radarWithText.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.375Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于D3.js的雷达图的实现">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;基本图表一共有六种，分别是柱状图、折线图、散点图、气泡图、饼图和雷达图。前面五种图形都已经介绍过如何实现了，今天我们一起来看看最后的雷达图。">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-radar/radarAnalysis.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 基于D3.js的雷达图的实现 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              基于D3.js的雷达图的实现
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-11-24T15:28:00+08:00" content="2015-11-24">
+            2015-11-24
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/chenwubai/" itemprop="url" rel="index">
+                  <span itemprop="name">chenwubai</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/数据可视化/" rel="tag"><i class="icon-next-tags"></i>数据可视化</a>
+            
+              <a href="/tags/svg/" rel="tag"><i class="icon-next-tags"></i>svg</a>
+            
+              <a href="/tags/D3-js/" rel="tag"><i class="icon-next-tags"></i>D3.js</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>&emsp;&emsp;基本图表一共有六种，分别是柱状图、折线图、散点图、气泡图、饼图和雷达图。前面五种图形都已经介绍过如何实现了，今天我们一起来看看最后的雷达图。<br><a id="more"></a><br>&emsp;&emsp;依然是先把简单的画图框架搭起来，添加SVG画布。这里和饼图有点类似，为了方便后面的绘制，我们把组合这些元素的g元素移动到画布的中心：  </p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot;&gt;
+        &lt;title&gt;雷达图&lt;/title&gt;
+        &lt;style&gt;
+            .container {
+                margin: 30px auto;
+                width: 600px;
+                height: 300px;
+                border: 1px solid #000;
+            }
+
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            &lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;script src=&quot;http://d3js.org/d3.v3.min.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+        &lt;script&gt;
+            window.onload = function() {
+                var width = 600, height = 300;
+                // 创建一个分组用来组合要画的图表元素
+                var main = d3.select(&apos;.container svg&apos;).append(&apos;g&apos;)
+                        .classed(&apos;main&apos;, true)
+                        .attr(&apos;transform&apos;, &quot;translate(&quot; + width/2 + &apos;,&apos; + height/2 + &apos;)&apos;);
+
+            };
+            function getColor(idx) {
+                var palette = [
+                    &apos;#2ec7c9&apos;, &apos;#b6a2de&apos;, &apos;#5ab1ef&apos;, &apos;#ffb980&apos;, &apos;#d87a80&apos;,
+                    &apos;#8d98b3&apos;, &apos;#e5cf0d&apos;, &apos;#97b552&apos;, &apos;#95706d&apos;, &apos;#dc69aa&apos;,
+                    &apos;#07a2a4&apos;, &apos;#9a7fd1&apos;, &apos;#588dd5&apos;, &apos;#f5994e&apos;, &apos;#c05050&apos;,
+                    &apos;#59678c&apos;, &apos;#c9ab00&apos;, &apos;#7eb00a&apos;, &apos;#6f5553&apos;, &apos;#c14089&apos;
+                ]
+                return palette[idx % palette.length];
+            }
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>&emsp;&emsp;这里为什么我会说雷达图和饼图会有点类似呢？看一下下面这张图。<br><img src="/uploads/chenwubai/d3-basicCharts-radar/radarAnalysis.png" width="400" height="289"><br>&emsp;&emsp;可以看到，雷达图的网轴（蓝色部分）是由多个正多边形所组成的，而正多边形的绘制正好是可以利用圆半径的特性来绘制的，所以从一开始把绘制的原点移动到画布的中心是很方便后面的绘制工作的。  </p>
+<h2 id="模拟数据"><a href="#模拟数据" class="headerlink" title="模拟数据"></a>模拟数据</h2><p>&emsp;&emsp;我们先模拟一些原始数据。  </p>
+<pre><code>var data = {
+    fieldNames: [&apos;语文&apos;,&apos;数学&apos;,&apos;外语&apos;,&apos;物理&apos;,&apos;化学&apos;,&apos;生物&apos;,&apos;政治&apos;,&apos;历史&apos;],
+    values: [
+        [10,20,30,40,50,60,70,80]
+    ]
+};
+</code></pre><h2 id="计算网轴坐标并绘制"><a href="#计算网轴坐标并绘制" class="headerlink" title="计算网轴坐标并绘制"></a>计算网轴坐标并绘制</h2><p>&emsp;&emsp;在前面的其他图表的实现中，都有比例尺或者布局这样的东西来为我们转化数据提供便利，雷达图是否也存在这样的工具函数呢？答案是没有！没有！没有！重要的事情说三遍！(-_-) 所以，我们只能开动自己的小脑瓜自己算了。  </p>
+<pre><code>// 设定一些方便计算的常量
+var radius = 100,
+    // 指标的个数，即fieldNames的长度
+    total = 8,
+    // 需要将网轴分成几级，即网轴上从小到大有多少个正多边形
+    level = 4,
+    // 网轴的范围，类似坐标轴
+    rangeMin = 0,
+    rangeMax = 100,
+    arc = 2 * Math.PI;
+// 每项指标所在的角度
+var onePiece = arc/total;
+// 计算网轴的正多边形的坐标
+var polygons = {
+    webs: [],
+    webPoints: []
+};
+for(var k=level;k&gt;0;k--) {
+    var webs = &apos;&apos;,
+            webPoints = [];
+    var r = radius/level * k;
+    for(var i=0;i&lt;total;i++) {
+        var x = r * Math.sin(i * onePiece),
+            y = r * Math.cos(i * onePiece);
+        webs += x + &apos;,&apos; + y + &apos; &apos;;
+        webPoints.push({
+            x: x,
+            y: y
+        });
+    }
+    polygons.webs.push(webs);
+    polygons.webPoints.push(webPoints);
+}  
+</code></pre><p>&emsp;&emsp;计算网轴的坐标就是计算一个个多边形的各点坐标，为了后面添加polygon元素时方便绘制（points属性的赋值），我们需要在求点坐标的时候顺便把它们拼成字符串。上述代码的for循环中，外层循环代表一个多边形，内层循环代表多边形上的点，多边形与多边形之间差异仅仅在于它们的外圆的半径不同，而同一多边形的点与点之间的差异在于它们的角度不同。点的坐标由半径乘以角度的正弦或者余弦来求得。<br>&emsp;&emsp;得到了计算好的坐标以后，我们就开始添加网轴。  </p>
+<pre><code>// 绘制网轴
+var webs = main.append(&apos;g&apos;)
+        .classed(&apos;webs&apos;, true);
+webs.selectAll(&apos;polygon&apos;)
+        .data(polygons.webs)
+        .enter()
+        .append(&apos;polygon&apos;)
+        .attr(&apos;points&apos;, function(d) {
+            return d;
+        });
+</code></pre><p>&emsp;&emsp;添加一个g元素用来组合所有代表网轴的元素，选择其中的polygon元素并绑定polygons.webs数组，enter()搭配append()添加新的polygon元素，对points属性进行复制。完成这一系列在前面几篇文章中已经反复练习的操作以后，为了让网轴更加的明显，我们给它加一点样式。  </p>
+<pre><code>.webs polygon {
+    fill: white;
+    fill-opacity: 0.5;
+    stroke: gray;
+    stroke-dasharray: 10 5;
+}  
+</code></pre><p>&emsp;&emsp;我们得到了如下图所示的网轴。<br><img src="/uploads/chenwubai/d3-basicCharts-radar/web.png" width="320" height="160">   </p>
+<h2 id="添加纵轴"><a href="#添加纵轴" class="headerlink" title="添加纵轴"></a>添加纵轴</h2><p>&emsp;&emsp;接着我们把纵轴也添加上。纵轴就是添加一根根的线条，连接中心点和最外层的多边形上的点，需要的数据可以从polygons.webPoints[0]中取。  </p>
+<pre><code>// 添加纵轴
+var lines = main.append(&apos;g&apos;)
+        .classed(&apos;lines&apos;, true);
+lines.selectAll(&apos;line&apos;)
+        .data(polygons.webPoints[0])
+        .enter()
+        .append(&apos;line&apos;)
+        .attr(&apos;x1&apos;, 0)
+        .attr(&apos;y1&apos;, 0)
+        .attr(&apos;x2&apos;, function(d) {
+            return d.x;
+        })
+        .attr(&apos;y2&apos;, function(d) {
+            return d.y;
+        });
+</code></pre><p>&emsp;&emsp;雷达图的坐标轴部分就完成了。<br><img src="/uploads/chenwubai/d3-basicCharts-radar/webWithLine.png" width="320" height="160">  </p>
+<h2 id="计算雷达图区域并添加"><a href="#计算雷达图区域并添加" class="headerlink" title="计算雷达图区域并添加"></a>计算雷达图区域并添加</h2><p>&emsp;&emsp;雷达图区域也是一个多边形，只不过是一个不规则的多边形。但是他的几个点始终处在纵轴上，并且点在纵轴上的位置可以通过点所代表的值在纵轴范围内的占比计算出来的。  </p>
+<pre><code>// 计算雷达图表的坐标
+var areasData = [];
+var values = data.values;
+for(var i=0;i&lt;values.length;i++) {
+    var value = values[i],
+            area = &apos;&apos;,
+            points = [];
+    for(var k=0;k&lt;total;k++) {
+        var r = radius * (value[k] - rangeMin)/(rangeMax - rangeMin);
+        var x = r * Math.sin(k * onePiece),
+            y = r * Math.cos(k * onePiece);
+        area += x + &apos;,&apos; + y + &apos; &apos;;
+        points.push({
+            x: x,
+            y: y
+        })
+    }
+    areasData.push({
+        polygon: area,
+        points: points
+    });
+}
+</code></pre><p>&emsp;&emsp;计算完点的坐标以后我们就可以添加雷达图区域了。为了使雷达图更可观，我们除了添加多边形表示雷达图的区域以外，也把多边形在各纵轴上的点标记出来。  </p>
+<pre><code>// 添加g分组包含所有雷达图区域
+var areas = main.append(&apos;g&apos;)
+    .classed(&apos;areas&apos;, true);
+// 添加g分组用来包含一个雷达图区域下的多边形以及圆点 
+areas.selectAll(&apos;g&apos;)
+    .data(areasData)
+    .enter()
+    .append(&apos;g&apos;)
+    .attr(&apos;class&apos;,function(d, i) {
+        return &apos;area&apos; + (i+1);
+    });
+for(var i=0;i&lt;areasData.length;i++) {
+    // 依次循环每个雷达图区域
+    var area = areas.select(&apos;.area&apos; + (i+1)),
+            areaData = areasData[i];
+    // 绘制雷达图区域下的多边形
+    area.append(&apos;polygon&apos;)
+            .attr(&apos;points&apos;, areaData.polygon)
+            .attr(&apos;stroke&apos;, function(d, index) {
+                return getColor(i);
+            })
+            .attr(&apos;fill&apos;, function(d, index) {
+                return getColor(i);
+            });
+    // 绘制雷达图区域下的点    
+    var circles = area.append(&apos;g&apos;)
+            .classed(&apos;circles&apos;, true);
+    circles.selectAll(&apos;circle&apos;)
+            .data(areaData.points)
+            .enter()
+            .append(&apos;circle&apos;)
+            .attr(&apos;cx&apos;, function(d) {
+                return d.x;
+            })
+            .attr(&apos;cy&apos;, function(d) {
+                return d.y;
+            })
+            .attr(&apos;r&apos;, 3)
+            .attr(&apos;stroke&apos;, function(d, index) {
+                return getColor(i);
+            });  
+}
+</code></pre><p>&emsp;&emsp;这里为了体验层次关系，我用areas包含住所有雷达图区域，又在里面用一个g分组表示一个雷达图区域，在雷达图区域里包含组成该区域的多边形和圆点。这里因为我们数据用一个雷达图区域就表示了，所以这个for循环只会循环一次。给绘制好的区域加上样式。  </p>
+<pre><code>.areas polygon {
+    fill-opacity: 0.5;
+    stroke-width: 3;
+}
+.areas circle {
+    fill: white;
+    stroke-width: 3;
+}
+</code></pre><p>&emsp;&emsp;于是得到了下图这个样子的图表。<br><img src="/uploads/chenwubai/d3-basicCharts-radar/radar.png" width="320" height="160">   </p>
+<h2 id="计算文字标签坐标并添加"><a href="#计算文字标签坐标并添加" class="headerlink" title="计算文字标签坐标并添加"></a>计算文字标签坐标并添加</h2><p>&emsp;&emsp;为了让上面的图表更完整一些，我们给它加上文字标签。文字标签标注在网轴的外围，所以可以以计算网轴多边形点坐标的同样的原理计算文字标签的坐标。  </p>
+<pre><code>// 计算文字标签坐标
+var textPoints = [];
+var textRadius = radius + 20;
+for(var i=0;i&lt;total;i++) {
+    var x = textRadius * Math.sin(i * onePiece),
+            y = textRadius * Math.cos(i * onePiece);
+    textPoints.push({
+        x: x,
+        y: y
+    });
+}  
+</code></pre><p>计算好坐标以后再添加到画布中。  </p>
+<pre><code>// 绘制文字标签
+var texts = main.append(&apos;g&apos;)
+        .classed(&apos;texts&apos;, true);
+texts.selectAll(&apos;text&apos;)
+        .data(textPoints)
+        .enter()
+        .append(&apos;text&apos;)
+        .attr(&apos;x&apos;, function(d) {
+            return d.x;
+        })
+        .attr(&apos;y&apos;, function(d) {
+            return d.y;
+        })
+        .text(function(d,i) {
+            return data.fieldNames[i];
+        });  
+</code></pre><p>&emsp;&emsp;最后的样子是这样的。<br><img src="/uploads/chenwubai/d3-basicCharts-radar/radarWithText.png" width="320" height="160"><br>&emsp;&emsp;完整的代码及展示可参见<a href="/uploads/chenwubai/d3-basicCharts-radar/radar.html">radar.html</a>。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/30/felix/forms-in-angularjs-1.3/" rel="prev">学习如何使用AngularJs 1.3中的新form表单特性</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/24/chenwubai/d3-basicCharts-pie/" rel="next">基于D3.js的饼图的实现</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">1.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算网轴坐标并绘制"><span class="nav-number">2.</span> <span class="nav-text">计算网轴坐标并绘制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加纵轴"><span class="nav-number">3.</span> <span class="nav-text">添加纵轴</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算雷达图区域并添加"><span class="nav-number">4.</span> <span class="nav-text">计算雷达图区域并添加</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算文字标签坐标并添加"><span class="nav-number">5.</span> <span class="nav-text">计算文字标签坐标并添加</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

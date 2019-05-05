@@ -1,0 +1,790 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Chrome Developers Tools,Debug,DevTools,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="Chrome开发工具(简称DevTools),是一组内置Google Chrome网页编辑和调试工具。DevTools提供web开发人员进入浏览器和web应用程序代码内部深处。使用DevTools有效追踪布局问题,设置JavaScript断点,获得代码优化的建议。">
+<meta name="keywords" content="Chrome Developers Tools,Debug,DevTools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chrome Developers Tools基础篇">
+<meta property="og:url" content="http://xgfe.github.io/2016/05/16/scliuyang/ChromeDevTools1/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="Chrome开发工具(简称DevTools),是一组内置Google Chrome网页编辑和调试工具。DevTools提供web开发人员进入浏览器和web应用程序代码内部深处。使用DevTools有效追踪布局问题,设置JavaScript断点,获得代码优化的建议。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/4.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/5.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/6.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/7.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/9.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/10.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/11.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/12.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/13.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/14.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/15.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/16.gif">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/17.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/18.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/19.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/20.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.393Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chrome Developers Tools基础篇">
+<meta name="twitter:description" content="Chrome开发工具(简称DevTools),是一组内置Google Chrome网页编辑和调试工具。DevTools提供web开发人员进入浏览器和web应用程序代码内部深处。使用DevTools有效追踪布局问题,设置JavaScript断点,获得代码优化的建议。">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/scliuyang/ChromeDevTools/4.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Chrome Developers Tools基础篇 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Chrome Developers Tools基础篇
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-05-16T16:32:00+08:00" content="2016-05-16">
+            2016-05-16
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/scliuyang/" itemprop="url" rel="index">
+                  <span itemprop="name">scliuyang</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Chrome-Developers-Tools/" rel="tag"><i class="icon-next-tags"></i>Chrome Developers Tools</a>
+            
+              <a href="/tags/Debug/" rel="tag"><i class="icon-next-tags"></i>Debug</a>
+            
+              <a href="/tags/DevTools/" rel="tag"><i class="icon-next-tags"></i>DevTools</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>Chrome开发工具(简称DevTools),是一组内置Google Chrome网页编辑和调试工具。DevTools提供web开发人员进入浏览器和web应用程序代码内部深处。使用DevTools有效追踪布局问题,设置JavaScript断点,获得代码优化的建议。</p>
+<a id="more"></a>
+<h1 id="Chrome开发工具基础篇"><a href="#Chrome开发工具基础篇" class="headerlink" title="Chrome开发工具基础篇"></a>Chrome开发工具基础篇</h1><h2 id="第一部分-Elements"><a href="#第一部分-Elements" class="headerlink" title="第一部分 Elements"></a>第一部分 Elements</h2><p>在Elements面板中主要分为两大部分</p>
+<ol>
+<li>HTML DOM结构面板</li>
+<li>查看和操作DOM样式，结构面板<br><img src="/uploads/scliuyang/ChromeDevTools/4.png" style="width:500px;"><br>在DOM结构面板中，每当你的鼠标移动到任何一个元素上，对应HTML视图中会高亮显示对应的元素，方便开发者查看<br><img src="/uploads/scliuyang/ChromeDevTools/5.png" style="width:500px;"><br>而且选中的元素会在dev工具下面列出该元素在DOM结构中的关系<br><img src="/uploads/scliuyang/ChromeDevTools/6.png" style="width:500px;"><br>选中DOM元素后，在属性栏中会列出该元素所有的CSS属性，</li>
+<li>可以输入属性名进行筛选，这样可以只看关注的属性名</li>
+<li>可以模拟元素的伪状态，方便调试</li>
+<li>属性定义的位置，点击可以跳转到源文件</li>
+<li>双击可以修改属性值，方便调试</li>
+</ol>
+<p><img src="/uploads/scliuyang/ChromeDevTools/7.png" style="width:500px;"><br>Event Listeners面板可以查看当前DOM节点上绑定的事件，上面每个功能点意义如下</p>
+<ol>
+<li>Ancestors 是否显示祖先上绑定的事件，不选中时click下面的body项会消失</li>
+<li>Framework listeners (建议勾上)勾上后浏览器会处理主流框架的绑定事件，这样第4部分显示位置更加准确。</li>
+<li>该事件监听的元素</li>
+<li>事件定义的位置，点击可以跳转到源码</li>
+<li>是否是捕获阶段触发</li>
+<li>事件响应函数，鼠标放上去可以显示源码</li>
+</ol>
+<h2 id="第二部分-Console"><a href="#第二部分-Console" class="headerlink" title="第二部分 Console"></a>第二部分 Console</h2><p>Console控制台搜集程序运行信息，使用得当可以有如下功效</p>
+<ul>
+<li>更高「逼格」更快「开发调试」更强「进阶级的Frontender」</li>
+<li>Bug无处遁形「Console大法好」</li>
+</ul>
+<h3 id="console-log"><a href="#console-log" class="headerlink" title="console.log"></a>console.log</h3><p>大家都会用log，但鲜有人很好地利用console.error , console.warn 等将输出到控制台的信息进行分类整理。<br>他们功能区别不大，意义在于将输出到控制台的信息进行归类，或者说让它们更语义化。<br>各个所代表的语义如下：</p>
+<ul>
+<li>console.log：普通信息</li>
+<li>console.info：提示类信息</li>
+<li>console.error：错误信息</li>
+<li>console.warn：警示信息</li>
+</ul>
+<p>当合理使用上述log方法后，可以很方便地在控制台选择查看特定类型的信息。<br><img src="/uploads/scliuyang/ChromeDevTools/9.png" style="width:500px;"><br>如果再配合console.group 与console.groupEnd，可以将这种分类管理的思想发挥到极致。这适合于在开发一个规模很大模块很多很复杂的Web APP时，将各自的log信息分组到以各自命名空间为名称的组里面。<br><img src="/uploads/scliuyang/ChromeDevTools/10.png" style="width:500px;"><br>而关于console.log，早已被玩儿坏了。一切都源于Chrome提供了这么一个API：第一个参数可以包含一些格式化的指令比如%c。</p>
+<p>比如给hello world 做件漂亮的嫁衣再拉出来见人：<br><img src="/uploads/scliuyang/ChromeDevTools/11.png" style="width:500px;"><br>除此，console.table 更是直接以表格的形式将数据输出<br><img src="/uploads/scliuyang/ChromeDevTools/12.png" style="width:500px;"></p>
+<h3 id="console-dir"><a href="#console-dir" class="headerlink" title="console.dir"></a>console.dir</h3><p>将DOM结点以JavaScript对象的形式输出到控制台<br>而console.log是直接将该DOM结点以DOM树的结构进行输出，与在元素审查时看到的结构是一致的。不同的展现形式，同样的优雅<br><img src="/uploads/scliuyang/ChromeDevTools/13.png" style="width:500px;"></p>
+<h3 id="console-time-amp-console-timeEnd"><a href="#console-time-amp-console-timeEnd" class="headerlink" title="console.time &amp; console.timeEnd"></a>console.time &amp; console.timeEnd</h3><p>当做一些性能测试时，同样可以在这里很方便地进行。<br>比如需要考量一段代码执行的耗时情况时，可以用console.time与 console.timeEnd来做此事。</p>
+<p>这里借用官方文档的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">console.time(&quot;Array initialize&quot;);</span><br><span class="line">var array= new Array(1000000);</span><br><span class="line">for (var i = array.length - 1; i &gt;= 0; i--) &#123;</span><br><span class="line">    array[i] = new Object();</span><br><span class="line">&#125;;</span><br><span class="line">console.timeEnd(&quot;Array initialize&quot;);</span><br></pre></td></tr></table></figure>
+<p><img src="/uploads/scliuyang/ChromeDevTools/14.png" style="width:500px;"></p>
+<h3 id="console-profile-amp-console-timeLime"><a href="#console-profile-amp-console-timeLime" class="headerlink" title="console.profile &amp; console.timeLime"></a>console.profile &amp; console.timeLime</h3><p>当想要查看CPU使用相关的信息时，可以使用console.profile配合 console.profileEnd来完成这个需求。<br>这一功能可以通过UI界面来完成，Chrome 开发者工具里面有个tab便是Profile。</p>
+<p>与此类似的功能还有console.timeLine配合 console.timeLineEnd,它的作用是开始记录一段时间轴，同样可以通过Chrome开发者工具里的Timeline 标签来进行相应操作。</p>
+<p>所以在我看来这两个方法有点鸡肋，因为都可以通过操作界面来完成。但至少他提供了一种命令行方式的交互，还是多了种姿势供选择吧。</p>
+<h3 id="console-trace"><a href="#console-trace" class="headerlink" title="console.trace"></a>console.trace</h3><p>堆栈跟踪相关的调试可以使用console.trace。这个同样可以通过UI界面完成。当代码被打断点后，可以在Call Stack面板中查看相关堆栈信息。</p>
+<p>上面介绍的都是挂在window.console这个对象下面的方法，统称为<a href="https://developer.chrome.com/devtools/docs/console-api" target="_blank" rel="noopener">Console API</a>，接下来的这些方法确切地说应该叫命令，是Chrome内置提供，在控制台中使用的，他们统称为<a href="https://developer.chrome.com/devtools/docs/commandline-api" target="_blank" rel="noopener">Command Line API</a>。</p>
+<h3 id=""><a href="#" class="headerlink" title="$_"></a>$_</h3><p>代表着最近一次命令返回的结果，并且可以作为一个变量使用在接下来的表达式中：<br><img src="/uploads/scliuyang/ChromeDevTools/15.png" style="width:500px;"></p>
+<h3 id="0-4"><a href="#0-4" class="headerlink" title="$0-$4"></a>$0-$4</h3><p>$0~$4则代表了最近5个你选择过的DOM节点<br>在页面右击选择审查元素，然后在弹出来的DOM结点树上面随便点选，这些被点过的节点会被记录下来，而$0会返回最近一次点选的DOM结点，以此类推，$1返回的是上上次点选的DOM节点，最多保存了5个，如果不够5个，则返回undefined。<br><img src="/uploads/scliuyang/ChromeDevTools/16.gif" style="width:500px;"></p>
+<h3 id="-1"><a href="#-1" class="headerlink" title="$"></a>$</h3><p>$其实是document.querySelector()的别称，返回第一个选中的DOM节点</p>
+<h3 id="-2"><a href="#-2" class="headerlink" title="$$"></a>$$</h3><p>$$调用document.querySelectorAll()函数，返回一个数组形式的DOM节点</p>
+<h3 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h3><p>通过此命令可以将在控制台获取到的内容复制到剪贴板。</p>
+<h3 id="inspect"><a href="#inspect" class="headerlink" title="inspect"></a>inspect</h3><p>传入一个DOM节点，自动转到Elements面板中对应node的位置，是不是很方便呐<br><img src="/uploads/scliuyang/ChromeDevTools/17.png" style="width:500px;"></p>
+<h2 id="Resources"><a href="#Resources" class="headerlink" title="Resources"></a>Resources</h2><p>Resources部分较简单，他主要向我们展示了本界面所加载的资源列表。还有cookie和local storage 、SESSION 等本地存储信息，在这里，我们可以自由地修改、增加、删除本地存储。<br><img src="/uploads/scliuyang/ChromeDevTools/18.png" style="width:500px;"></p>
+<h2 id="Network"><a href="#Network" class="headerlink" title="Network"></a>Network</h2><p>Network是一个监控当前网页所有的http请求的面版，它主体部分展示的是每个http请求，每个字段表示着该请求的不同属性和状态<br><img src="/uploads/scliuyang/ChromeDevTools/19.png" style="width:500px;"></p>
+<ul>
+<li>Name：请求文件名称</li>
+<li>Method：方法（常见的是get post）</li>
+<li>Status：请求完成的状态</li>
+<li>Type：请求的类型</li>
+<li>Initiator：请求源也就是说该链接通过什么发送（常见的是Parser、Script）</li>
+<li>Size：下载文件或者请求占的资源大小</li>
+<li>Time：请求或下载的时间</li>
+<li>Timeline：该链接在发送过程中的时间状态轴（我们可以把鼠标移动到这些红红绿绿的时间轴上，对应的会有它的详细信息：开始下载时间，等待加载时间，自身下载耗时）</li>
+</ul>
+<p><img src="/uploads/scliuyang/ChromeDevTools/20.png" style="width:500px;"></p>
+<ul>
+<li>Stalled: 即请求处于阻塞状态, 如之前有很多请求没处理完，而浏览器对同域并发请求有限制，导致后面的请求处于阻塞状态</li>
+<li>Proxy negotiation: 与代理服务器的连接通信阶段</li>
+<li>DNS Lookup: DNS查找阶段（本请求未涉及，只有在首次访问一个新的域名的时候才会有该阶段）</li>
+<li>Initial Connection / connecting: 建立连接的过程，包含TCP握手/重试，商定SSL</li>
+<li>SSL: 完成SSL握手阶段</li>
+<li>Request sent: 发送请求，通常只要不到1ms的时间</li>
+<li>Waiting(TTFB): 发出请求后等待服务端响应的时间，响应时间极为第一个字节发送过来的时间</li>
+<li>Content Download: 接收响应数据的时间</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/01/y8n/e2e-test-protractor/" rel="prev">E2E测试之protractor</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/16/scliuyang/ChromeDevTools4/" rel="next">内存泄露分析</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Chrome开发工具基础篇"><span class="nav-number">1.</span> <span class="nav-text">Chrome开发工具基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一部分-Elements"><span class="nav-number">1.1.</span> <span class="nav-text">第一部分 Elements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二部分-Console"><span class="nav-number">1.2.</span> <span class="nav-text">第二部分 Console</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#console-log"><span class="nav-number">1.2.1.</span> <span class="nav-text">console.log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console-dir"><span class="nav-number">1.2.2.</span> <span class="nav-text">console.dir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console-time-amp-console-timeEnd"><span class="nav-number">1.2.3.</span> <span class="nav-text">console.time &amp; console.timeEnd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console-profile-amp-console-timeLime"><span class="nav-number">1.2.4.</span> <span class="nav-text">console.profile &amp; console.timeLime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console-trace"><span class="nav-number">1.2.5.</span> <span class="nav-text">console.trace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">1.2.6.</span> <span class="nav-text">$_</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0-4"><span class="nav-number">1.2.7.</span> <span class="nav-text">$0-$4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#-1"><span class="nav-number">1.2.8.</span> <span class="nav-text">$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#-2"><span class="nav-number">1.2.9.</span> <span class="nav-text">$$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy"><span class="nav-number">1.2.10.</span> <span class="nav-text">copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inspect"><span class="nav-number">1.2.11.</span> <span class="nav-text">inspect</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resources"><span class="nav-number">1.3.</span> <span class="nav-text">Resources</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Network"><span class="nav-number">1.4.</span> <span class="nav-text">Network</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

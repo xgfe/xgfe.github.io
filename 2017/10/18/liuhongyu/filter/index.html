@@ -1,0 +1,762 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="CSS3,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本演示关键使用了几个新型的CSS属性(background-blend-mode, mix-blend-mode, 和 filter)，利用这些属性，我们可以让同一张图片呈现出各种不可思议的神奇效果。">
+<meta name="keywords" content="CSS3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用CSS实现各种图片滤镜效果演示">
+<meta property="og:url" content="http://xgfe.github.io/2017/10/18/liuhongyu/filter/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本演示关键使用了几个新型的CSS属性(background-blend-mode, mix-blend-mode, 和 filter)，利用这些属性，我们可以让同一张图片呈现出各种不可思议的神奇效果。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p0.meituan.net/xgfe/5bdb72c861a17a9749cff76b099a356d212585.jpg">
+<meta property="og:image" content="http://p0.meituan.net/xgfe/4c64f176d177c77b4fb42d988015af19145095.jpg">
+<meta property="og:image" content="http://p1.meituan.net/xgfe/27a8948fbda95756722abcc5b7c8aba5227184.jpg">
+<meta property="og:image" content="http://p0.meituan.net/xgfe/50e1cef7923d032a304a90c078bdbbba86681.jpg">
+<meta property="og:image" content="http://p1.meituan.net/xgfe/c3f854448e4e29a81747f6f2cc27426a90904.jpg">
+<meta property="og:image" content="http://p1.meituan.net/xgfe/c0b7f1e52f4e11a4a55bad3ba1157f6f69507.jpg">
+<meta property="og:image" content="http://p1.meituan.net/xgfe/02a2dec38a572e4175a74533c2589854308285.jpg">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.383Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用CSS实现各种图片滤镜效果演示">
+<meta name="twitter:description" content="本演示关键使用了几个新型的CSS属性(background-blend-mode, mix-blend-mode, 和 filter)，利用这些属性，我们可以让同一张图片呈现出各种不可思议的神奇效果。">
+<meta name="twitter:image" content="http://p0.meituan.net/xgfe/5bdb72c861a17a9749cff76b099a356d212585.jpg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 用CSS实现各种图片滤镜效果演示 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              用CSS实现各种图片滤镜效果演示
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-10-18T21:46:00+08:00" content="2017-10-18">
+            2017-10-18
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/liuhongyu/" itemprop="url" rel="index">
+                  <span itemprop="name">liuhongyu</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/CSS3/" rel="tag"><i class="icon-next-tags"></i>CSS3</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本演示关键使用了几个新型的CSS属性(background-blend-mode, mix-blend-mode, 和 filter)，利用这些属性，我们可以让同一张图片呈现出各种不可思议的神奇效果。</p>
+<a id="more"></a>
+<h3 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h3><ul>
+<li>以下大多数的效果图中，背景图片源 background-image url 通常会反复使用数次，同时利用CSS混合模式 (multiply, overlay, screen, difference 等)进行处理。</li>
+<li>在某些效果中，使用了 CSS filter 属性进一步处理图片，比如 grayscale(), brightness(), 和 contrast() 等可以让图片呈现出更好的效果。</li>
+<li>使用 CSS @supports 来检测某种 CSS 属性是否在浏览器中受支持，不支持展示原图。</li>
+</ul>
+<h3 id="属性介绍"><a href="#属性介绍" class="headerlink" title="属性介绍"></a>属性介绍</h3><h4 id="mix-blend-mode属性"><a href="#mix-blend-mode属性" class="headerlink" title="mix-blend-mode属性"></a>mix-blend-mode属性</h4><pre><code>mix-blend-mode: normal; //正常
+mix-blend-mode: multiply; //正片叠底
+mix-blend-mode: screen;  //滤色
+mix-blend-mode: overlay; //叠加
+mix-blend-mode: darken; //变暗
+mix-blend-mode: lighten; //变亮
+mix-blend-mode: color-dodge; //颜色变淡
+mix-blend-mode: color-burn; //颜色加深
+mix-blend-mode: hard-light; //强光
+mix-blend-mode: soft-light; //柔光
+mix-blend-mode: difference; //插值
+mix-blend-mode: exclusion; //排除
+mix-blend-mode: hue; //色调
+mix-blend-mode: saturation; //饱和度
+mix-blend-mode: color; //颜色
+mix-blend-mode: luminosity; //亮度
+</code></pre><p><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode" target="_blank" rel="noopener">具体可参考</a></p>
+<h4 id="background-blend-mode属性"><a href="#background-blend-mode属性" class="headerlink" title="background-blend-mode属性"></a>background-blend-mode属性</h4><p>*属性值和mix-blend-mode一样<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-blend-mode" target="_blank" rel="noopener">具体可参考</a></p>
+<h4 id="filter属性"><a href="#filter属性" class="headerlink" title="filter属性"></a>filter属性</h4><pre><code>/* URL to SVG filter */
+filter: url(&quot;filters.svg#filter-id&quot;);
+
+/* &lt;filter-function&gt; values */
+filter: blur(5px); //模糊
+filter: brightness(0.4); //亮度
+filter: contrast(200%); //对比度
+filter: drop-shadow(16px 16px 20px blue); //阴影
+filter: grayscale(50%); //灰度
+filter: hue-rotate(90deg); //色相旋转
+filter: invert(75%); //反色
+filter: opacity(25%); //透明度
+filter: saturate(30%); //饱和度
+filter: sepia(60%); //褪色
+
+/* Multiple filters */
+filter: contrast(175%) brightness(3%);
+</code></pre><p><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter" target="_blank" rel="noopener">具体可参考</a></p>
+<h3 id="效果示例"><a href="#效果示例" class="headerlink" title="效果示例"></a>效果示例</h3><h4 id="原图效果"><a href="#原图效果" class="headerlink" title="原图效果"></a>原图效果</h4><p><img src="http://p0.meituan.net/xgfe/5bdb72c861a17a9749cff76b099a356d212585.jpg" alt=""></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.pencil-effect</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">  <span class="attribute">background-size</span>: cover;</span><br><span class="line">  <span class="attribute">background-position</span>: center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">supports</span> (filter: invert(<span class="number">1</span>)) and (background-blend-mode: difference) &#123;</span><br><span class="line">  <span class="selector-class">.pencil-effect</span> &#123;</span><br><span class="line">    <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg), <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">    <span class="attribute">background-blend-mode</span>: difference;</span><br><span class="line">    <span class="attribute">background-position</span>: <span class="built_in">calc</span>(50% - 1px) <span class="built_in">calc</span>(50% - 1px), <span class="built_in">calc</span>(50% + 1px) <span class="built_in">calc</span>(50% + 1px);</span><br><span class="line">    <span class="attribute">filter</span>: <span class="built_in">brightness</span>(2) <span class="built_in">invert</span>(1) <span class="built_in">grayscale</span>(1);</span><br><span class="line">    <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1px</span> black;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="pencil效果"><a href="#pencil效果" class="headerlink" title="pencil效果"></a>pencil效果</h4><p><img src="http://p0.meituan.net/xgfe/4c64f176d177c77b4fb42d988015af19145095.jpg" alt=""></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.watercolor-effect</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">  <span class="attribute">background-size</span>: cover;</span><br><span class="line">  <span class="attribute">background-position</span>: center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">supports</span> (filter: blur(<span class="number">2px</span>)) and (mix-blend-mode: multiply) &#123;</span><br><span class="line">  <span class="selector-class">.watercolor-effect</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">overflow</span>: hidden;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.watercolor-effect</span><span class="selector-pseudo">:before</span>, <span class="selector-class">.watercolor-effect</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: block;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">""</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">background-size</span>: cover;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.watercolor-effect</span><span class="selector-pseudo">:before</span> &#123;</span><br><span class="line">    <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg), <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">    <span class="attribute">background-blend-mode</span>: difference;</span><br><span class="line">    <span class="attribute">background-position</span>: <span class="built_in">calc</span>(50% - 1px) <span class="built_in">calc</span>(50% - 1px), <span class="built_in">calc</span>(50% + 1px) <span class="built_in">calc</span>(50% + 1px);</span><br><span class="line">    <span class="attribute">filter</span>: <span class="built_in">brightness</span>(2) <span class="built_in">invert</span>(1) <span class="built_in">grayscale</span>(1);</span><br><span class="line">    <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1px</span> black;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.watercolor-effect</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">    <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">    <span class="attribute">background-position</span>: center;</span><br><span class="line">    <span class="attribute">mix-blend-mode</span>: multiply;</span><br><span class="line">    <span class="attribute">filter</span>: <span class="built_in">brightness</span>(1.3) <span class="built_in">blur</span>(2px) <span class="built_in">contrast</span>(2);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="watercolor效果"><a href="#watercolor效果" class="headerlink" title="watercolor效果"></a>watercolor效果</h4><p><img src="http://p1.meituan.net/xgfe/27a8948fbda95756722abcc5b7c8aba5227184.jpg" alt=""></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.colored-pencil-effect</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">  <span class="attribute">background-size</span>: cover;</span><br><span class="line">  <span class="attribute">background-position</span>: center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">supports</span> (filter: invert(<span class="number">1</span>)) and (mix-blend-mode: color) &#123;</span><br><span class="line">  <span class="selector-class">.colored-pencil-effect</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.colored-pencil-effect</span><span class="selector-pseudo">:before</span>, <span class="selector-class">.colored-pencil-effect</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: block;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">""</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">background-size</span>: cover;</span><br><span class="line">    <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1px</span> black;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.colored-pencil-effect</span><span class="selector-pseudo">:before</span> &#123;</span><br><span class="line">    <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg), <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">    <span class="attribute">background-blend-mode</span>: difference;</span><br><span class="line">    <span class="attribute">background-position</span>: <span class="built_in">calc</span>(50% - 1px) <span class="built_in">calc</span>(50% - 1px), <span class="built_in">calc</span>(50% + 1px) <span class="built_in">calc</span>(50% + 1px);</span><br><span class="line">    <span class="attribute">filter</span>: <span class="built_in">brightness</span>(2) <span class="built_in">invert</span>(1) <span class="built_in">grayscale</span>(1);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.colored-pencil-effect</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: inherit;</span><br><span class="line">    <span class="attribute">mix-blend-mode</span>: color;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="colored-pencil效果"><a href="#colored-pencil效果" class="headerlink" title="colored-pencil效果"></a>colored-pencil效果</h4><p><img src="http://p0.meituan.net/xgfe/50e1cef7923d032a304a90c078bdbbba86681.jpg" alt=""></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.warhol-effect</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">  <span class="attribute">background-size</span>: cover;</span><br><span class="line">  <span class="attribute">background-position</span>: center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">supports</span> (background-blend-mode: color) &#123;</span><br><span class="line">  <span class="selector-class">.warhol-effect</span> &#123;</span><br><span class="line">    <span class="attribute">background-image</span>: <span class="built_in">linear-gradient</span>(#14EBFF 0, #14EBFF 50%, #FFFF70 50%, #FFFF70 100%), <span class="built_in">linear-gradient</span>(#FF85DA 0, #FF85DA 50%, #AAA 50%, #AAA 100%), <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">    <span class="attribute">background-size</span>: <span class="number">50%</span> <span class="number">100%</span>, <span class="number">50%</span> <span class="number">100%</span>, <span class="number">50%</span> <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">background-position</span>: top left, top right;</span><br><span class="line">    <span class="attribute">background-repeat</span>: no-repeat, no-repeat, repeat;</span><br><span class="line">    <span class="attribute">background-blend-mode</span>: color;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="warhol效果"><a href="#warhol效果" class="headerlink" title="warhol效果"></a>warhol效果</h4><p><img src="http://p1.meituan.net/xgfe/c3f854448e4e29a81747f6f2cc27426a90904.jpg" alt=""></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.infrared-effect</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(minions.jpg);</span><br><span class="line">  <span class="attribute">background-size</span>: cover;</span><br><span class="line">  <span class="attribute">background-position</span>: center;</span><br><span class="line">  <span class="attribute">filter</span>: <span class="built_in">hue-rotate</span>(180deg) <span class="built_in">saturate</span>(2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="infrared效果"><a href="#infrared效果" class="headerlink" title="infrared效果"></a>infrared效果</h4><p><img src="http://p1.meituan.net/xgfe/c0b7f1e52f4e11a4a55bad3ba1157f6f69507.jpg" alt=""></p>
+<h3 id="浏览器兼容性"><a href="#浏览器兼容性" class="headerlink" title="浏览器兼容性"></a>浏览器兼容性</h3><ul>
+<li>background-blend-mode不支持IE具体详情见下图（mix-blend-mode类似） </li>
+</ul>
+<p><img src="http://p1.meituan.net/xgfe/02a2dec38a572e4175a74533c2589854308285.jpg" alt=""></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/31/lulutia/vue-lifecycle/" rel="prev">Vue生命周期总结</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/18/lulutia/IntersectionObserver/" rel="next">基于IntersectionObserver的曝光统计测试</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#技术原理"><span class="nav-number">1.</span> <span class="nav-text">技术原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性介绍"><span class="nav-number">2.</span> <span class="nav-text">属性介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mix-blend-mode属性"><span class="nav-number">2.1.</span> <span class="nav-text">mix-blend-mode属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#background-blend-mode属性"><span class="nav-number">2.2.</span> <span class="nav-text">background-blend-mode属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#filter属性"><span class="nav-number">2.3.</span> <span class="nav-text">filter属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果示例"><span class="nav-number">3.</span> <span class="nav-text">效果示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原图效果"><span class="nav-number">3.1.</span> <span class="nav-text">原图效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pencil效果"><span class="nav-number">3.2.</span> <span class="nav-text">pencil效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#watercolor效果"><span class="nav-number">3.3.</span> <span class="nav-text">watercolor效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#colored-pencil效果"><span class="nav-number">3.4.</span> <span class="nav-text">colored-pencil效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#warhol效果"><span class="nav-number">3.5.</span> <span class="nav-text">warhol效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#infrared效果"><span class="nav-number">3.6.</span> <span class="nav-text">infrared效果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览器兼容性"><span class="nav-number">4.</span> <span class="nav-text">浏览器兼容性</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

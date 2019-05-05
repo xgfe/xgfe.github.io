@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>气泡图</title>
+        <style>
+            .container {
+                margin: 30px auto;
+                width: 600px;
+                height: 300px;
+                border: 1px solid #000;
+            }
+            .axis path,
+            .axis line {
+                stroke: #000;
+                fill: none;
+            }
+            .bubble {
+                fill: #2ec7c9;
+                fill-opacity: 0.5;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <svg width="100%" height="100%"></svg>
+        </div>
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script>
+            window.onload = function() {
+                var width = 600, height = 300;
+                // SVG画布边缘与图表内容的距离
+                var padding = { top: 50, right: 50, bottom: 50, left: 50 };
+                // 创建一个分组用来组合要画的图表元素
+                var main = d3.select('.container svg').append('g')
+                        .classed('main', true)
+                        .attr('transform', "translate(" + padding.top + ',' + padding.left + ')');
+                // 模拟数据
+                var dataset = [
+                    { x: 69, y: 45, weight: 5 },{ x: 30, y: 37, weight: 10 },
+                    { x: 43, y: 10, weight: 23 },{ x: 54, y: 48, weight: 41 },
+                    { x: 18, y: 18, weight: 41 },{ x: 88, y: 21, weight: 32 },
+                    { x: 45, y: 48, weight: 12 },{ x: 14, y: 32, weight: 9 },
+                    { x: 78, y: 18, weight: 16 },{ x: 13, y: 45, weight: 32 }
+                ];
+                // 添加x轴和y轴
+                var xScale = d3.scale.linear()
+                        .domain([0, 100])
+                        .range([0, width - padding.left - padding.right]);
+                var yScale = d3.scale.linear()
+                        .domain([0, 50])
+                        .range([height - padding.top - padding.bottom, 0]);
+                var xAxis = d3.svg.axis()
+                        .scale(xScale)
+                        .orient('bottom');
+                var yAxis = d3.svg.axis()
+                        .scale(yScale)
+                        .orient('left');
+
+                main.append('g')
+                        .attr('class', 'axis')
+                        .attr('transform', 'translate(0,' + (height - padding.top - padding.bottom) + ')')
+                        .call(xAxis);
+                main.append('g')
+                        .attr('class', 'axis')
+                        .call(yAxis);
+                // 添加气泡
+                main.selectAll('.bubble')
+                        .data(dataset)
+                        .enter()
+                        .append('circle')
+                        .attr('class', 'bubble')
+                        .attr('cx', function(d) {
+                            return xScale(d.x);
+                        })
+                        .attr('cy', function(d) {
+                            return yScale(d.y);
+                        })
+                        .attr('r', function(d) {
+                            return d.weight;
+                        });
+            };
+        </script>
+    </body>
+</html>

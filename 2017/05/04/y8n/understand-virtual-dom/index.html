@@ -1,0 +1,761 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="react,virtual dom,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="前言使用过React的同学对于Virtual DOM并不陌生，作为React的重要核心概念，Virtual DOM凭借其高效的diff算法，让我们不用关心应用的性能问题，毫无顾忌地修改各种数据状态。在实际的开发中，我们并不需要关注Virtual DOM在一个框架中是如何运行的，但是理解Virtual DOM的实现原理却是非常有必要的，同时也有助于我们更加深入React。">
+<meta name="keywords" content="react,virtual dom">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解Virtual DOM">
+<meta property="og:url" content="http://xgfe.github.io/2017/05/04/y8n/understand-virtual-dom/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="前言使用过React的同学对于Virtual DOM并不陌生，作为React的重要核心概念，Virtual DOM凭借其高效的diff算法，让我们不用关心应用的性能问题，毫无顾忌地修改各种数据状态。在实际的开发中，我们并不需要关注Virtual DOM在一个框架中是如何运行的，但是理解Virtual DOM的实现原理却是非常有必要的，同时也有助于我们更加深入React。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/8521368/25689709/3fe7eaa8-30bd-11e7-8e00-45ec2e40726e.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/8521368/25689831/fe51cf0e-30bd-11e7-92fc-6fc69bcab700.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/8521368/25689882/5decd9ea-30be-11e7-8252-b164d6a642ae.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/8521368/25689889/6922dddc-30be-11e7-882d-94c47f9c6390.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/8521368/25689892/72533f28-30be-11e7-8d67-8fa3fb8ae26b.png">
+<meta property="og:image" content="https://cloud.githubusercontent.com/assets/8521368/25689897/7b4fbb88-30be-11e7-85f5-9fb4cc423149.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解Virtual DOM">
+<meta name="twitter:description" content="前言使用过React的同学对于Virtual DOM并不陌生，作为React的重要核心概念，Virtual DOM凭借其高效的diff算法，让我们不用关心应用的性能问题，毫无顾忌地修改各种数据状态。在实际的开发中，我们并不需要关注Virtual DOM在一个框架中是如何运行的，但是理解Virtual DOM的实现原理却是非常有必要的，同时也有助于我们更加深入React。">
+<meta name="twitter:image" content="https://cloud.githubusercontent.com/assets/8521368/25689709/3fe7eaa8-30bd-11e7-8e00-45ec2e40726e.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 理解Virtual DOM | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              理解Virtual DOM
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-05-04T12:30:13+08:00" content="2017-05-04">
+            2017-05-04
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/y8n/" itemprop="url" rel="index">
+                  <span itemprop="name">y8n</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/react/" rel="tag"><i class="icon-next-tags"></i>react</a>
+            
+              <a href="/tags/virtual-dom/" rel="tag"><i class="icon-next-tags"></i>virtual dom</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>使用过React的同学对于Virtual DOM并不陌生，作为React的重要核心概念，Virtual DOM凭借其高效的diff算法，让我们不用关心应用的性能问题，毫无顾忌地修改各种数据状态。在实际的开发中，我们并不需要关注Virtual DOM在一个框架中是如何运行的，但是理解Virtual DOM的实现原理却是非常有必要的，同时也有助于我们更加深入React。<br><a id="more"></a></p>
+<h2 id="一、前端应用状态管理"><a href="#一、前端应用状态管理" class="headerlink" title="一、前端应用状态管理"></a>一、前端应用状态管理</h2><p>在日益复杂的前端应用中，状态管理是一个经常被提及的话题，从早期的刀耕火种时代到jQuery，再到现在流行的MVVM时代，状态管理的形式发生了翻天覆地的变化，我们再也不用维护茫茫多的事件回调、监听来更新视图，转而使用使用双向数据绑定，只需要维护相应的数据状态，就可以自动更新视图，极大提高开发效率。</p>
+<p>但是，双向数据绑定也并不是唯一的办法，还有一个非常粗暴有效的方式：一旦数据发生变化，重新绘制<strong>整个视图</strong>，也就是重新设置一下innerHTML。这样的做法确实简单、粗暴、有效，但是如果只是因为局部一个小的数据发生变化而更新整个视图，性价比未免太低了，而且，像事件，获取焦点的输入框等，都需要重新处理。所以，对于小的应用或者说局部的小视图，这样处理完全是可以的，但是面对复杂的大型应用，这样的做法不可取。</p>
+<p>说到这里，你会说这跟Virtual DOM有什么关系呢？其实Virtual DOM就是这么做的，只是在高效的diff算法计算下，避免对整棵DOM树进行变更，而是进行针对性的视图变更，将效率做到最优化。</p>
+<h2 id="二、什么是Virtual-DOM"><a href="#二、什么是Virtual-DOM" class="headerlink" title="二、什么是Virtual DOM"></a>二、什么是Virtual DOM</h2><p>Virtual DOM的概念有很多解释，从我的理解来看，主要是三个方面，分别是：一个对象，两个前提，三个步骤。</p>
+<p>一个对象指的是Virtual DOM是一个基本的JavaScript对象，也是整个Virtual DOM树的基本。</p>
+<p>两个前提分别是JavaScript很快和直接操作DOM很慢，这是Virtual DOM得以实现的两个基本前提。得益于V8引擎的出现，让JavaScript可以高效地运行，在性能上有了极大的提高。直接操作DOM的低效和JavaScript的高效相对比，为Virtual DOM的产生提供了大前提。</p>
+<p>三个步骤指的是Virtual DOM的三个重要步骤，分别是：生成Virtual DOM树、对比两棵树的差异、更新视图。这三个步骤的具体实现也是本文将简述的一大重点。</p>
+<h2 id="三、Virtual-DOM三板斧"><a href="#三、Virtual-DOM三板斧" class="headerlink" title="三、Virtual DOM三板斧"></a>三、Virtual DOM三板斧</h2><p>下面就将介绍Virtual DOM的三个步骤具体的含义以及实现思路。</p>
+<h3 id="1、生成Virtual-DOM树"><a href="#1、生成Virtual-DOM树" class="headerlink" title="1、生成Virtual DOM树"></a>1、生成Virtual DOM树</h3><p>DOM是前端工程师最常接触的内容之一，一个DOM节点包含了很多的内容，但是一个抽象出一个DOM节点却只需要三部分：节点类型，节点属性、子节点。所以围绕这三个部分，我们可以使用JavaScript简单地实现一棵DOM树，然后给节点实现渲染方法，就可以实现虚拟节点到真是DOM的转化。</p>
+<p><img src="https://cloud.githubusercontent.com/assets/8521368/25689709/3fe7eaa8-30bd-11e7-8e00-45ec2e40726e.png" alt="DOM树的状态转化"></p>
+<h3 id="2、对比两棵树的差异"><a href="#2、对比两棵树的差异" class="headerlink" title="2、对比两棵树的差异"></a>2、对比两棵树的差异</h3><p>比较两棵DOM树的差异是Virtual DOM算法最核心的部分，这也是我们常说的的 Virtual DOM的diff算法。在比较的过程中，我们只比较同级的节点，非同级的节点不在我们的比较范围内，这样既可以满足我们的需求，又可以简化算法实现。</p>
+<p><img src="https://cloud.githubusercontent.com/assets/8521368/25689831/fe51cf0e-30bd-11e7-92fc-6fc69bcab700.png" alt="diff"></p>
+<p>比较“树”的差异，首先是要对树进行遍历，常用的有两种遍历算法，分别是深度优先遍历和广度优先遍历，一般的diff算法中都采用的是深度优先遍历。对新旧两棵树进行一次深度优先的遍历，这样每个节点都会有一个唯一的标记。在遍历的时候，每遍历到一个节点就把该节点和新的树的同一个位置的节点进行对比，如果有差异的话就记录到一个对象里面。</p>
+<p><img src="https://cloud.githubusercontent.com/assets/8521368/25689882/5decd9ea-30be-11e7-8252-b164d6a642ae.png" alt="深度优先遍历"></p>
+<p>例如，上面的div和新的div有差异，当前的标记是0，那么：<code>patches[0] = [{difference}, {difference}, ...]</code>同理<code>p</code>是<code>patches[1]</code>，<code>ul</code>是<code>patches[3]</code>，以此类推。这样当遍历完整棵树的时候，就可以获得一个完整的差异对象。</p>
+<p>在这个差异对象中记录了有改变的节点，每一个发生改变的内容也不尽相同，但也是有迹可循，常见的差异包括四种，分别是：</p>
+<ul>
+<li>替换节点</li>
+<li>增加/删除子节点</li>
+<li>修改节点属性</li>
+<li>改变文本内容</li>
+</ul>
+<p>所以在记录差异的时候要根据不同的差异类型，记录不同的内容。</p>
+<h3 id="3、更新视图"><a href="#3、更新视图" class="headerlink" title="3、更新视图"></a>3、更新视图</h3><p>在第二步得到整棵树的差异之后，就可以根据这些差异的不同类型，对DOM进行针对性的更新。与四种差异类型相对应的，是更新视图时具体的更新方法，分别是：</p>
+<ul>
+<li><code>replaceChild()</code></li>
+<li><code>appendChild()</code>/<code>removeChild()</code></li>
+<li><code>setAttribute()</code>/<code>removeAttribute()</code></li>
+<li><code>textContent</code></li>
+</ul>
+<p><img src="https://cloud.githubusercontent.com/assets/8521368/25689889/6922dddc-30be-11e7-882d-94c47f9c6390.png" alt="更新视图"></p>
+<h2 id="四、动手实现Virtual-DOM"><a href="#四、动手实现Virtual-DOM" class="headerlink" title="四、动手实现Virtual DOM"></a>四、动手实现Virtual DOM</h2><p>对原理有了一定的认识之后，自然是动手实现一番了，GitHub上有很多对Virtual DOM的实现，比如<a href="https://github.com/livoras/simple-virtual-dom/" target="_blank" rel="noopener">https://github.com/livoras/simple-virtual-dom/</a>、<a href="https://github.com/Matt-Esch/virtual-dom" target="_blank" rel="noopener">https://github.com/Matt-Esch/virtual-dom</a>等，我也对其进行了一个基本的实现，比较简陋，<a href="https://github.com/y8n/simple-virtual-dom" target="_blank" rel="noopener">传送门</a>。</p>
+<h2 id="五、进一步思考"><a href="#五、进一步思考" class="headerlink" title="五、进一步思考"></a>五、进一步思考</h2><p>Virtual DOM的原理和实现的说明已经结束了，但是对于Virtual DOM的思考远没有结束，Virtual DOM 对前端开发的影响难道就只是一堆算法吗？</p>
+<h3 id="1、性能对比"><a href="#1、性能对比" class="headerlink" title="1、性能对比"></a>1、性能对比</h3><p>首先，先来看一下性能，在诸多的Virtual DOM实现中，都会强调算法的高效，那么在实际的使用中，Virtual DOM的性能到底如何呢？</p>
+<p><img src="https://cloud.githubusercontent.com/assets/8521368/25689892/72533f28-30be-11e7-8d67-8fa3fb8ae26b.png" alt="简单性能对比"></p>
+<p>上图是对一个简单的DOM树进行不同方式的操作，由左边的结构更新为右边的结构，通过原生操作、jQuery、Virtual DOM和React四种方式，在Chrome的timeline中得到的性能对比，在这个图中，我们并没有看出Virtual DOM或者React的优势，通过对比我们发现，原生的操作要比其他三种方式快，而其他三种方式就相差无几了。当然，这样一个简单测试并没有说明什么，测试的DOM结构简单，和我们平时面对的业务场景不是一个量级，代表不了什么，但是起码我们可以看到，这种情况下好像Virtual DOM并没有我们想象的性能优势。</p>
+<p><img src="https://cloud.githubusercontent.com/assets/8521368/25689897/7b4fbb88-30be-11e7-85f5-9fb4cc423149.png" alt="复杂性能对比"></p>
+<p>在接下来的测试中我们增加测试量。上图分别是使用原生操作、Virtual DOM和React三种方式进行两类测试：插入10000个节点100次和修改3000个节点的属性100次。分别取这100次的耗时最大值、最小值和平均值。从图中我们可以看到明显的差异，Virtual DOM和React的差异可以理解，毕竟我们自己实现的Virtual DOM没有那么庞大，只是针对虚拟DOM而实现的，比React快一点可以理解，但是原生的操作比Virtual DOM和React都要快得多，这又是怎么一回事，好像和我们预想的不一样，回到最初，我们提到，Virtual DOM的产生前提之一就是直接操作DOM很<strong>慢</strong>，现在看来直接操作不但不慢，反而快了很多，这不得不让我产生了怀疑，是我对Virtual DOM的理解有误还是对DOM的理解有误呢？</p>
+<h3 id="2、再次审视Virtual-DOM"><a href="#2、再次审视Virtual-DOM" class="headerlink" title="2、再次审视Virtual DOM"></a>2、再次审视Virtual DOM</h3><p>框架存在的意义是什么？是提高性能？提高开发效率？亦或是其他用途，每个人对框架的理解不同，答案也不尽相同。但是不得不承认，存在框架的情况下，项目的可维护性有了极大的提高，而对于其他方面就要做出牺牲，比如性能。在上面的性能测试中，其实完全走入了一个误区，在测试中我们用到的原生的操作其实是“人为”地对操作进行优化之后的结果，而如果抛开人为优化的前提，最终的结果可能就不是这样了。<strong>Virtual DOM的优势不在于单次的操作，而是在大量、频繁的数据更新下，能够对视图进行合理、高效的更新。</strong>这一点是原生操作远远无法替代的。</p>
+<p>到此为止，再次审视Virtual DOM，可以简单得出如下结论：</p>
+<ul>
+<li>Virtual DOM 在牺牲部分性能的前提下，增加了可维护性，这也是很多框架的通性</li>
+<li>实现了对DOM的集中化操作，在数据改变时先对虚拟DOM进行修改，再反映到真实的DOM中，用最小的代价来更新DOM，提高效率</li>
+<li>打开了函数式UI编程的大门</li>
+<li><strong>可以渲染到DOM以外的端，比如ReactNative</strong></li>
+</ul>
+<h2 id="六、结语"><a href="#六、结语" class="headerlink" title="六、结语"></a>六、结语</h2><p>本文对Virtual DOM有一个简单的介绍，包括实现的部分也很简单，甚至对列表的diff算法也偷工减料，跟多高级的特性也没有涉及，比如事件绑定、生命周期、JSX语法等，如果加上这些内容，就是一个小型版的React了。</p>
+<p>本文旨在让大家了解并认识Virtual DOM的基本概念、组成和实现，同时对Virtual DOM更深层的意义有所了解，这样在以后用到相关的框架的时候也不会两眼一抹黑了，起码在性能优化上有点认识，比如列表要带上<code>key</code>这样基本的优化操作。</p>
+<h2 id="七、参考资料"><a href="#七、参考资料" class="headerlink" title="七、参考资料"></a>七、参考资料</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank" rel="noopener">Levenshtein distance算法</a></li>
+<li><a href="https://github.com/livoras/blog/issues/13" target="_blank" rel="noopener">深度剖析：如何实现一个 Virtual DOM 算法</a></li>
+<li><a href="http://www.jianshu.com/p/cbb7d7094fb9" target="_blank" rel="noopener">50行代码实现Virtual DOM</a></li>
+<li><a href="http://chrisharrington.github.io/demos/performance/" target="_blank" rel="noopener">Performance Comparison for React, Angular and Knockout</a></li>
+<li><a href="https://www.zhihu.com/question/31809713" target="_blank" rel="noopener">网上都说操作真实 DOM 慢，但测试结果却比 React 更快，为什么？</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/15/jakii/cocos2d-x introduction/" rel="prev">cocos2d-Js 基础入门</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/03/LexHuang/web-worker/" rel="next">web worker详解</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、前端应用状态管理"><span class="nav-number">2.</span> <span class="nav-text">一、前端应用状态管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、什么是Virtual-DOM"><span class="nav-number">3.</span> <span class="nav-text">二、什么是Virtual DOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Virtual-DOM三板斧"><span class="nav-number">4.</span> <span class="nav-text">三、Virtual DOM三板斧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、生成Virtual-DOM树"><span class="nav-number">4.1.</span> <span class="nav-text">1、生成Virtual DOM树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、对比两棵树的差异"><span class="nav-number">4.2.</span> <span class="nav-text">2、对比两棵树的差异</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、更新视图"><span class="nav-number">4.3.</span> <span class="nav-text">3、更新视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、动手实现Virtual-DOM"><span class="nav-number">5.</span> <span class="nav-text">四、动手实现Virtual DOM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、进一步思考"><span class="nav-number">6.</span> <span class="nav-text">五、进一步思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、性能对比"><span class="nav-number">6.1.</span> <span class="nav-text">1、性能对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、再次审视Virtual-DOM"><span class="nav-number">6.2.</span> <span class="nav-text">2、再次审视Virtual DOM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、结语"><span class="nav-number">7.</span> <span class="nav-text">六、结语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、参考资料"><span class="nav-number">8.</span> <span class="nav-text">七、参考资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

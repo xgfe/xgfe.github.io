@@ -1,0 +1,732 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="javascript,debounce&throttle,性能优化,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="在开发过程中,我们经常以各种方式控制事件的触发。防抖和节流可以使我们在实现功能的同时提升用户体验和页面性能。接下来我将从概念、应用场景、及简单的代码实现来介绍防抖和节流。">
+<meta name="keywords" content="javascript,debounce&amp;throttle,性能优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="函数防抖与函数节流">
+<meta property="og:url" content="http://xgfe.github.io/2019/03/09/yangfan/debounce&throttle/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="在开发过程中,我们经常以各种方式控制事件的触发。防抖和节流可以使我们在实现功能的同时提升用户体验和页面性能。接下来我将从概念、应用场景、及简单的代码实现来介绍防抖和节流。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/yangfan/DebounceThrottle/debouncebefore.gif">
+<meta property="og:image" content="http://xgfe.github.io/uploads/yangfan/DebounceThrottle/debounceafter.gif">
+<meta property="og:image" content="http://xgfe.github.io/uploads/yangfan/DebounceThrottle/throttlebefore.gif">
+<meta property="og:image" content="http://xgfe.github.io/uploads/yangfan/DebounceThrottle/throttleafter.gif">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.402Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="函数防抖与函数节流">
+<meta name="twitter:description" content="在开发过程中,我们经常以各种方式控制事件的触发。防抖和节流可以使我们在实现功能的同时提升用户体验和页面性能。接下来我将从概念、应用场景、及简单的代码实现来介绍防抖和节流。">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/yangfan/DebounceThrottle/debouncebefore.gif">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 函数防抖与函数节流 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              函数防抖与函数节流
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-03-09T16:15:00+08:00" content="2019-03-09">
+            2019-03-09
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/yangfan/" itemprop="url" rel="index">
+                  <span itemprop="name">yangfan</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/javascript/" rel="tag"><i class="icon-next-tags"></i>javascript</a>
+            
+              <a href="/tags/debounce-throttle/" rel="tag"><i class="icon-next-tags"></i>debounce&throttle</a>
+            
+              <a href="/tags/性能优化/" rel="tag"><i class="icon-next-tags"></i>性能优化</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在开发过程中,我们经常以各种方式控制事件的触发。防抖和节流可以使我们在实现功能的同时提升用户体验和页面性能。接下来我将从概念、应用场景、及简单的代码实现来介绍防抖和节流。</p>
+<a id="more"></a>
+<h2 id="Debounce（防抖）"><a href="#Debounce（防抖）" class="headerlink" title="Debounce（防抖）"></a>Debounce（防抖）</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><blockquote>
+<p>当调用动作过n毫秒后，才会执行该动作，若在这n毫秒内又调用此动作则将重新计算执行时间。</p>
+</blockquote>
+<h3 id="典型应用场景"><a href="#典型应用场景" class="headerlink" title="典型应用场景"></a>典型应用场景</h3><p>用户注册时验证用户名是否被占用为例在输入的时候就在判断这个用户名是否已被注册。</p>
+<div style="overflow:hidden;"><br><div style="float:left;width:50%;text-align: center;"><br>使用防抖函数前<br><img src="/uploads/yangfan/DebounceThrottle/debouncebefore.gif" width="400px"><br></div><div style="float:left;width:50%;text-align: center;"><br>使用防抖函数后<br><img src="/uploads/yangfan/DebounceThrottle/debounceafter.gif" width="400px"><br></div><br></div>
+
+<p>使用防抖函数前做法存在明显缺陷当用户输入发生变化的时候，就请求判断了，不仅对服务器的压力增大了，而且用户在输入中时频繁的校验提示中断用户交互明显降低了用户体验。而理想的做法应该是，用户输入发生变化后的一段时间内如果还有字符输入的话，那就暂时不去请求判断用户名是否被占用。而函数防抖所做的工作就是延迟一段时间去执行函数而在延迟期间又调用了此动作则重新计时。</p>
+<h3 id="DemoCode"><a href="#DemoCode" class="headerlink" title="DemoCode"></a>DemoCode</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"ordinary"</span>&gt;</span>普通<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">'ordinary'</span> <span class="attr">id</span>=<span class="string">'ordinary'</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"debounce"</span>&gt;</span>防抖<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">'debounce'</span> <span class="attr">id</span>=<span class="string">'debounce'</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`ajax requestDtae:<span class="subst">$&#123;e.target.value&#125;</span>`</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> ordinaryInput = <span class="built_in">document</span>.getElementById(<span class="string">'ordinary'</span>);</span><br><span class="line"><span class="keyword">const</span> debounceInput = <span class="built_in">document</span>.getElementById(<span class="string">'debounce'</span>);</span><br><span class="line"><span class="keyword">const</span> debounceAjax = _.debounce(ajax, <span class="number">1000</span>)</span><br><span class="line">ordinaryInput.addEventListener(<span class="string">'keyup'</span>, ajax);</span><br><span class="line">debounceInput.addEventListener(<span class="string">'keyup'</span>, debounceAjax);</span><br></pre></td></tr></table></figure>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param &#123;function&#125; func 传入函数</span></span><br><span class="line"><span class="comment"> * @param &#123;number&#125; wait 表示时间间隔</span></span><br><span class="line"><span class="comment"> * @return &#123;function&#125; 返回客户调用函数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> debounce = <span class="function"><span class="keyword">function</span> (<span class="params">func, wait</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> timer;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">args</span>) </span>&#123;</span><br><span class="line">        clearTimeout(timer);</span><br><span class="line">        timer = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span>&#123;</span><br><span class="line">            func(args);</span><br><span class="line">        &#125;, wait);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="Throttle（节流）"><a href="#Throttle（节流）" class="headerlink" title="Throttle（节流）"></a>Throttle（节流）</h2><h3 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h3><blockquote>
+<p>预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新周期。</p>
+</blockquote>
+<h3 id="典型应用场景-1"><a href="#典型应用场景-1" class="headerlink" title="典型应用场景"></a>典型应用场景</h3><p>在瀑布流式布局的页面中，随着页面滚动条向下滚动，这种布局还会不断加载数据块并附加至当前尾部。在发生滚动时就需要判断页面是否滚动到底部。</p>
+<div style="overflow:hidden;"><br><div style="float:left;width:50%;text-align: center;"><br>使用节流函数前<br><img src="/uploads/yangfan/DebounceThrottle/throttlebefore.gif" width="400px"><br></div><div style="float:left;width:50%;text-align: center;"><br>使用节流函数后<br><img src="/uploads/yangfan/DebounceThrottle/throttleafter.gif" width="400px"><br></div><br></div>
+
+<p>使用节流函数前明显缺点是消耗性能，因为当在滚动的时候，浏览器会无时不刻地在计算判断是否滚动到底部的逻辑，而在实际的场景中是不需要这么做的，在实际场景中可能是这样的：在滚动过程中，每隔一段时间在去计算这个判断逻辑。而函数节流所做的工作就是每隔一段时间去执行一次原本需要无时不刻地在执行的函数。</p>
+<h3 id="DemoCode-1"><a href="#DemoCode-1" class="headerlink" title="DemoCode"></a>DemoCode</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> body = <span class="built_in">document</span>.body;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">scrollAnimation</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`scroll bodyY:<span class="subst">$&#123;body.getBoundingClientRect().y&#125;</span>`</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> throttleScrollAnimation = _.throttle(scrollAnimation, <span class="number">200</span>);</span><br><span class="line"><span class="comment">//window.addEventListener('scroll', scrollAnimation);</span></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'scroll'</span>, throttleScrollAnimation);</span><br></pre></td></tr></table></figure>
+<h3 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param &#123;function&#125; func 传入函数</span></span><br><span class="line"><span class="comment"> * @param &#123;number&#125; wait 表示时间窗口的间隔</span></span><br><span class="line"><span class="comment"> * @return &#123;function&#125; 返回客户调用函数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> throttle = <span class="function"><span class="keyword">function</span> (<span class="params">func, wait</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> timeout;</span><br><span class="line">    <span class="keyword">let</span> start = +<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">args</span>) </span>&#123;</span><br><span class="line">        curr = +<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">        clearTimeout(timeout);</span><br><span class="line">        <span class="keyword">if</span> (curr - start &gt;= wait) &#123;</span><br><span class="line">            func(args);</span><br><span class="line">            start = curr;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            timeout = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                func(args);</span><br><span class="line">            &#125;, wait);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如果还是不能完全体会 debounce 和 throttle 的差异，可以到 <a href="http://demo.nimius.net/debounce_throttle/" target="_blank" rel="noopener">这个页面</a> 看一下两者可视化的比较。<br>在实际的开发中根据根据需求的不同合理使用 debounce 或 throttle。<br>例如：在模糊查询时使用 debounce 在无限滚动时使用 throttle。（requestAnimationFrame）</p>
+<h2 id="附lodash实现代码"><a href="#附lodash实现代码" class="headerlink" title="附lodash实现代码"></a>附lodash实现代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> isObject <span class="keyword">from</span> <span class="string">'./isObject.js'</span></span><br><span class="line"><span class="keyword">import</span> root <span class="keyword">from</span> <span class="string">'./.internal/root.js'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Creates a debounced function that delays invoking `func` until after `wait`</span></span><br><span class="line"><span class="comment"> * milliseconds have elapsed since the last time the debounced function was</span></span><br><span class="line"><span class="comment"> * invoked, or until the next browser frame is drawn. The debounced function</span></span><br><span class="line"><span class="comment"> * comes with a `cancel` method to cancel delayed `func` invocations and a</span></span><br><span class="line"><span class="comment"> * `flush` method to immediately invoke them. Provide `options` to indicate</span></span><br><span class="line"><span class="comment"> * whether `func` should be invoked on the leading and/or trailing edge of the</span></span><br><span class="line"><span class="comment"> * `wait` timeout. The `func` is invoked with the last arguments provided to the</span></span><br><span class="line"><span class="comment"> * debounced function. Subsequent calls to the debounced function return the</span></span><br><span class="line"><span class="comment"> * result of the last `func` invocation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * **Note:** If `leading` and `trailing` options are `true`, `func` is</span></span><br><span class="line"><span class="comment"> * invoked on the trailing edge of the timeout only if the debounced function</span></span><br><span class="line"><span class="comment"> * is invoked more than once during the `wait` timeout.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred</span></span><br><span class="line"><span class="comment"> * until the next tick, similar to `setTimeout` with a timeout of `0`.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * If `wait` is omitted in an environment with `requestAnimationFrame`, `func`</span></span><br><span class="line"><span class="comment"> * invocation will be deferred until the next frame is drawn (typically about</span></span><br><span class="line"><span class="comment"> * 16ms).</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)</span></span><br><span class="line"><span class="comment"> * for details over the differences between `debounce` and `throttle`.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @since 0.1.0</span></span><br><span class="line"><span class="comment"> * @category Function</span></span><br><span class="line"><span class="comment"> * @param &#123;Function&#125; func The function to debounce.</span></span><br><span class="line"><span class="comment"> * @param &#123;number&#125; [wait=0]</span></span><br><span class="line"><span class="comment"> *  The number of milliseconds to delay; if omitted, `requestAnimationFrame` is</span></span><br><span class="line"><span class="comment"> *  used (if available).</span></span><br><span class="line"><span class="comment"> * @param &#123;Object&#125; [options=&#123;&#125;] The options object.</span></span><br><span class="line"><span class="comment"> * @param &#123;boolean&#125; [options.leading=false]</span></span><br><span class="line"><span class="comment"> *  Specify invoking on the leading edge of the timeout.</span></span><br><span class="line"><span class="comment"> * @param &#123;number&#125; [options.maxWait]</span></span><br><span class="line"><span class="comment"> *  The maximum time `func` is allowed to be delayed before it's invoked.</span></span><br><span class="line"><span class="comment"> * @param &#123;boolean&#125; [options.trailing=true]</span></span><br><span class="line"><span class="comment"> *  Specify invoking on the trailing edge of the timeout.</span></span><br><span class="line"><span class="comment"> * @returns &#123;Function&#125; Returns the new debounced function.</span></span><br><span class="line"><span class="comment"> * @example</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * // Avoid costly calculations while the window size is in flux.</span></span><br><span class="line"><span class="comment"> * jQuery(window).on('resize', debounce(calculateLayout, 150))</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * // Invoke `sendMail` when clicked, debouncing subsequent calls.</span></span><br><span class="line"><span class="comment"> * jQuery(element).on('click', debounce(sendMail, 300, &#123;</span></span><br><span class="line"><span class="comment"> *   'leading': true,</span></span><br><span class="line"><span class="comment"> *   'trailing': false</span></span><br><span class="line"><span class="comment"> * &#125;))</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * // Ensure `batchLog` is invoked once after 1 second of debounced calls.</span></span><br><span class="line"><span class="comment"> * const debounced = debounce(batchLog, 250, &#123; 'maxWait': 1000 &#125;)</span></span><br><span class="line"><span class="comment"> * const source = new EventSource('/stream')</span></span><br><span class="line"><span class="comment"> * jQuery(source).on('message', debounced)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * // Cancel the trailing debounced invocation.</span></span><br><span class="line"><span class="comment"> * jQuery(window).on('popstate', debounced.cancel)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * // Check for pending invocations.</span></span><br><span class="line"><span class="comment"> * const status = debounced.pending() ? "Pending..." : "Ready"</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">debounce</span>(<span class="params">func, wait, options</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> lastArgs, </span><br><span class="line">        lastThis,</span><br><span class="line">        maxWait,</span><br><span class="line">        result,</span><br><span class="line">        timerId,</span><br><span class="line">        lastCallTime</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> lastInvokeTime = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> leading = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">let</span> maxing = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">let</span> trailing = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Bypass `requestAnimationFrame` by explicitly setting `wait=0`.</span></span><br><span class="line">    <span class="keyword">const</span> useRAF = (!wait &amp;&amp; wait !== <span class="number">0</span> &amp;&amp; <span class="keyword">typeof</span> root.requestAnimationFrame === <span class="string">'function'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> func !== <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Expected a function'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    wait = +wait || <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> (isObject(options)) &#123;</span><br><span class="line">        leading = !!options.leading</span><br><span class="line">        maxing = <span class="string">'maxWait'</span> <span class="keyword">in</span> options</span><br><span class="line">        maxWait = maxing ? <span class="built_in">Math</span>.max(+options.maxWait || <span class="number">0</span>, wait) : maxWait</span><br><span class="line">        trailing = <span class="string">'trailing'</span> <span class="keyword">in</span> options ? !!options.trailing : trailing</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">invokeFunc</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> args = lastArgs</span><br><span class="line">        <span class="keyword">const</span> thisArg = lastThis</span><br><span class="line"></span><br><span class="line">        lastArgs = lastThis = <span class="literal">undefined</span></span><br><span class="line">        lastInvokeTime = time</span><br><span class="line">        result = func.apply(thisArg, args)</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">startTimer</span>(<span class="params">pendingFunc, wait</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (useRAF) &#123;</span><br><span class="line">            root.cancelAnimationFrame(timerId);</span><br><span class="line">            <span class="keyword">return</span> root.requestAnimationFrame(pendingFunc)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> setTimeout(pendingFunc, wait)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">cancelTimer</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (useRAF) &#123;</span><br><span class="line">            <span class="keyword">return</span> root.cancelAnimationFrame(id)</span><br><span class="line">        &#125;</span><br><span class="line">        clearTimeout(id)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">leadingEdge</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// Reset any `maxWait` timer.</span></span><br><span class="line">        lastInvokeTime = time</span><br><span class="line">        <span class="comment">// Start the timer for the trailing edge.</span></span><br><span class="line">        timerId = startTimer(timerExpired, wait)</span><br><span class="line">        <span class="comment">// Invoke the leading edge.</span></span><br><span class="line">        <span class="keyword">return</span> leading ? invokeFunc(time) : result</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">remainingWait</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> timeSinceLastCall = time - lastCallTime</span><br><span class="line">        <span class="keyword">const</span> timeSinceLastInvoke = time - lastInvokeTime</span><br><span class="line">        <span class="keyword">const</span> timeWaiting = wait - timeSinceLastCall</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> maxing ?</span><br><span class="line">            <span class="built_in">Math</span>.min(timeWaiting, maxWait - timeSinceLastInvoke) :</span><br><span class="line">            timeWaiting</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">shouldInvoke</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> timeSinceLastCall = time - lastCallTime</span><br><span class="line">        <span class="keyword">const</span> timeSinceLastInvoke = time - lastInvokeTime</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Either this is the first call, activity has stopped and we're at the</span></span><br><span class="line">        <span class="comment">// trailing edge, the system time has gone backwards and we're treating</span></span><br><span class="line">        <span class="comment">// it as the trailing edge, or we've hit the `maxWait` limit.</span></span><br><span class="line">        <span class="comment">// timeSinceLastCall &lt; 0 修改系统时间时不会出现bug</span></span><br><span class="line">        <span class="keyword">return</span> (lastCallTime === <span class="literal">undefined</span> || (timeSinceLastCall &gt;= wait) ||</span><br><span class="line">            (timeSinceLastCall &lt; <span class="number">0</span>) || (maxing &amp;&amp; timeSinceLastInvoke &gt;= maxWait))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">timerExpired</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> time = <span class="built_in">Date</span>.now()</span><br><span class="line">        <span class="keyword">if</span> (shouldInvoke(time)) &#123;</span><br><span class="line">            <span class="keyword">return</span> trailingEdge(time)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Restart the timer.</span></span><br><span class="line">        timerId = startTimer(timerExpired, remainingWait(time))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">trailingEdge</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">        timerId = <span class="literal">undefined</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Only invoke if we have `lastArgs` which means `func` has been</span></span><br><span class="line">        <span class="comment">// debounced at least once.</span></span><br><span class="line">        <span class="keyword">if</span> (trailing &amp;&amp; lastArgs) &#123;</span><br><span class="line">            <span class="keyword">return</span> invokeFunc(time)</span><br><span class="line">        &#125;</span><br><span class="line">        lastArgs = lastThis = <span class="literal">undefined</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">cancel</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (timerId !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">            cancelTimer(timerId)</span><br><span class="line">        &#125;</span><br><span class="line">        lastInvokeTime = <span class="number">0</span></span><br><span class="line">        lastArgs = lastCallTime = lastThis = timerId = <span class="literal">undefined</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">flush</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> timerId === <span class="literal">undefined</span> ? result : trailingEdge(<span class="built_in">Date</span>.now())</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">pending</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> timerId !== <span class="literal">undefined</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">debounced</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> time = <span class="built_in">Date</span>.now()</span><br><span class="line">        <span class="keyword">const</span> isInvoking = shouldInvoke(time)</span><br><span class="line"></span><br><span class="line">        lastArgs = args</span><br><span class="line">        lastThis = <span class="keyword">this</span></span><br><span class="line">        lastCallTime = time</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isInvoking) &#123;</span><br><span class="line">            <span class="keyword">if</span> (timerId === <span class="literal">undefined</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> leadingEdge(lastCallTime)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (maxing) &#123;</span><br><span class="line">                <span class="comment">// Handle invocations in a tight loop.</span></span><br><span class="line">                timerId = startTimer(timerExpired, wait)</span><br><span class="line">                <span class="keyword">return</span> invokeFunc(lastCallTime)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (timerId === <span class="literal">undefined</span>) &#123;</span><br><span class="line">            timerId = startTimer(timerExpired, wait)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br><span class="line">    debounced.cancel = cancel</span><br><span class="line">    debounced.flush = flush</span><br><span class="line">    debounced.pending = pending</span><br><span class="line">    <span class="keyword">return</span> debounced</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">func, wait, options</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> leading = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">let</span> trailing = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> func !== <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Expected a function'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (isObject(options)) &#123;</span><br><span class="line">        leading = <span class="string">'leading'</span> <span class="keyword">in</span> options ? !!options.leading : leading</span><br><span class="line">        trailing = <span class="string">'trailing'</span> <span class="keyword">in</span> options ? !!options.trailing : trailing</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> debounce(func, wait, &#123;</span><br><span class="line">        leading,</span><br><span class="line">        trailing,</span><br><span class="line">        <span class="string">'maxWait'</span>: wait,</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://lodash.com/" target="_blank" rel="noopener">lodash</a></li>
+<li><a href="https://css-tricks.com/debouncing-throttling-explained-examples/" target="_blank" rel="noopener">Debouncing and Throttling Explained Through Examples</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/16/zhangpeng/宏任务和微任务/" rel="prev">宏任务和微任务</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/23/wangwenming/Dagger2/" rel="next">Dagger2 使用及原理分析</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Debounce（防抖）"><span class="nav-number">1.</span> <span class="nav-text">Debounce（防抖）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典型应用场景"><span class="nav-number">1.2.</span> <span class="nav-text">典型应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DemoCode"><span class="nav-number">1.3.</span> <span class="nav-text">DemoCode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.4.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Throttle（节流）"><span class="nav-number">2.</span> <span class="nav-text">Throttle（节流）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念-1"><span class="nav-number">2.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典型应用场景-1"><span class="nav-number">2.2.</span> <span class="nav-text">典型应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DemoCode-1"><span class="nav-number">2.3.</span> <span class="nav-text">DemoCode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现-1"><span class="nav-number">2.4.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附lodash实现代码"><span class="nav-number">4.</span> <span class="nav-text">附lodash实现代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

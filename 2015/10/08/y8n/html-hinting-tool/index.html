@@ -1,0 +1,801 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="htmlhint,代码规范,html,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="前言作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一">
+<meta name="keywords" content="htmlhint,代码规范,html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTML代码检查工具实践">
+<meta property="og:url" content="http://xgfe.github.io/2015/10/08/y8n/html-hinting-tool/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="前言作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTML代码检查工具实践">
+<meta name="twitter:description" content="前言作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> HTML代码检查工具实践 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              HTML代码检查工具实践
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-10-08T00:00:00+08:00" content="2015-10-08">
+            2015-10-08
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/y8n/" itemprop="url" rel="index">
+                  <span itemprop="name">y8n</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/htmlhint/" rel="tag"><i class="icon-next-tags"></i>htmlhint</a>
+            
+              <a href="/tags/代码规范/" rel="tag"><i class="icon-next-tags"></i>代码规范</a>
+            
+              <a href="/tags/html/" rel="tag"><i class="icon-next-tags"></i>html</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。<br>就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一套符合现有团队的规范、更需要检查代码是否符合规范的自动化工具。<br><a id="more"></a></p>
+<h2 id="制定规则"><a href="#制定规则" class="headerlink" title="制定规则"></a>制定规则</h2><p>没有规矩，不成方圆。参照业界其他优秀团队的规范，如<a href="https://github.com/fex-team/styleguide/blob/master/html.md" target="_blank" rel="noopener">百度FEX团队</a>、<a href="http://codeguide.bootcss.com/" target="_blank" rel="noopener">BootstrapCodeGuide</a>、<a href="http://google.github.io/styleguide/htmlcssguide.xml" target="_blank" rel="noopener">Google style guide</a>，结合W3C的标准规范，加上大家的踩坑经验，七嘴八舌地制定了一套适合团队自身的<a href="http://wiki.sankuai.com/pages/viewpage.action?pageId=341813735" target="_blank" rel="noopener">HTML规范草案(内网访问)</a>或者<a href="https://github.com/yangjiyuan/xg-htmlhint/wiki/Rules" target="_blank" rel="noopener">xg-htmlhint Rules</a>。</p>
+<h2 id="自动化检查工具的探索和实现"><a href="#自动化检查工具的探索和实现" class="headerlink" title="自动化检查工具的探索和实现"></a>自动化检查工具的探索和实现</h2><h3 id="探索阶段"><a href="#探索阶段" class="headerlink" title="探索阶段"></a>探索阶段</h3><p>在做自己的代码检查工具之前，我们调研过几个类似的工具，其他团队对此类工具也有调研，参照<a href="http://efe.baidu.com/blog/comparison-of-html-linting-tool/" target="_blank" rel="noopener">HTML代码风格检查工具对比</a>，以此为铺垫，我们对比了<a href="https://github.com/twbs/bootlint" target="_blank" rel="noopener">Bootlint</a>、<a href="https://github.com/globant-ui/arialinter" target="_blank" rel="noopener">AriaLinter</a>、<a href="https://github.com/htmllint/htmllint" target="_blank" rel="noopener">htmllint</a>、<a href="https://github.com/yaniswang/HTMLHint" target="_blank" rel="noopener">HTMLHint</a>、<a href="https://github.com/ecomfe/htmlcs" target="_blank" rel="noopener">htmlcs</a>等多种代码检查工具，各个工具的对比如下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th style="text-align:center">开发团队/作者</th>
+<th style="text-align:center">是否支持配置文件</th>
+<th style="text-align:center">是否支持行内配置</th>
+<th style="text-align:center">特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bootlint</td>
+<td style="text-align:center"><a href="https://github.com/twbs/" target="_blank" rel="noopener">Bootstrap团队</a></td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">针对 Bootstrap 相关的检查</td>
+</tr>
+<tr>
+<td>AriaLinter</td>
+<td style="text-align:center"><a href="https://github.com/globant-ui/" target="_blank" rel="noopener">globant-ui</a></td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">偏重语义检查规则</td>
+</tr>
+<tr>
+<td>htmllint</td>
+<td style="text-align:center"><a href="https://github.com/htmllint" target="_blank" rel="noopener">htmllint</a></td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">多数情况都能用，没有明显的优势</td>
+</tr>
+<tr>
+<td>HTMLHint</td>
+<td style="text-align:center"><a href="https://github.com/yaniswang" target="_blank" rel="noopener">yaniswang</a></td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">重点针对格式规则进行检查，没有AST操作，轻便</td>
+</tr>
+<tr>
+<td>htmlcs</td>
+<td style="text-align:center"><a href="https://github.com/ecomfe/htmlcs" target="_blank" rel="noopener">百度EFE</a></td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">大而全，覆盖面比较大</td>
+</tr>
+</tbody>
+</table>
+<p>我们的主要需求点在于以下几个方面：</p>
+<ul>
+<li>需要支持命令行，模块引入等多种操作</li>
+<li>需要支持配置文件传入规则</li>
+<li>对代码片段，如template进行规则豁免</li>
+<li>轻量可扩展</li>
+</ul>
+<p>综上，决定在HTMLHint的基础上进行扩展和补充。</p>
+<h3 id="xg-htmlhint简介"><a href="#xg-htmlhint简介" class="headerlink" title="xg-htmlhint简介"></a>xg-htmlhint简介</h3><p><a href="https://github.com/yangjiyuan/xg-htmlhint" target="_blank" rel="noopener">xg-htmlhint</a>是在<a href="https://github.com/yaniswang/HTMLHint" target="_blank" rel="noopener">HTMLHint</a>的基础上进行改进的，为什么选择这个工具呢？一方面是该工具比较简单，实现起来比较简单，且具有较强的可扩展性；另一方面，HTMLHint会在对HTML进行parse的时候检查规则，不包含对<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="noopener">AST</a>的操作，性能方面有一点优势，但这也是它的短板，即在语义化规则的检查上略显不足。<br>HTMLHint主要由四部分组成：</p>
+<ul>
+<li>core：组织各个对象，接入规则</li>
+<li>HTML parser：parse HTML 代码片段</li>
+<li>reporter：输出检验结果</li>
+<li>rules：检查规则</li>
+</ul>
+<p>本次对HTMLHint的改进和扩展包括：</p>
+<ul>
+<li>修复部分不准确的规则</li>
+<li>在parser中添加对标签属性的定位</li>
+<li>将原有的自定义规则和默认规则的优先级进行改变</li>
+<li>删除或增加部分规则</li>
+<li>改变命令行中检查结果的展示方式</li>
+<li>改变命令行参数</li>
+</ul>
+<h3 id="使用xg-htmlhint"><a href="#使用xg-htmlhint" class="headerlink" title="使用xg-htmlhint"></a>使用xg-htmlhint</h3><ol>
+<li><p>安装和命令选项</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ [sudo] npm install -g xg-htmlhint </span><br><span class="line"></span><br><span class="line">$ htmlhint -V   // 显示当前版本号</span><br><span class="line">$ htmlhint -l   // 列出所有可用的规则</span><br><span class="line">$ htmlhint -c rule.conf  // 自定义配置文件（默认是执行命令目录下的.htmlhintrc文件）</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行检查</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">htmlhint test.html   // 单个文件</span><br><span class="line">htmlhint <span class="built_in">test</span>/       // 整个目录及子目录</span><br><span class="line">htmlhint             // 当前目录及子目录</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输出结果</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">test.html:</span><br><span class="line">   	line 1, col 1: Doctype must be uppercase.</span><br><span class="line">   	line 11, col 21: The value of attribute [ class ] must be <span class="keyword">in</span> double quotes.  </span><br><span class="line">   	line 14, col 2: Special characters must be escaped : [ &lt; ].</span><br><span class="line">   	line 14, col 49: Special characters must be escaped : [ &gt; ].</span><br><span class="line">   	line 14, col 78: Tag must be paired, no start tag: [ &lt;button&gt; ]</span><br><span class="line"></span><br><span class="line">4 Errors,1 Warnings</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置规则<br> 根目录下获取<code>.htmlhintrc</code>文件中的内容作为自定义配置规则，如果没有就使用<a href="https://github.com/yangjiyuan/xg-htmlhint/wiki/Rules#default-rules" target="_blank" rel="noopener">默认规则</a>。也可以指定配置文件，使用命令<code>htmlhint -c rule.conf</code>。<br> 行内嵌套规则</p>
+<pre><code class="html"><span class="comment">&lt;!--htmlhint tag-pair:false,id-class-value:underline --&gt;</span>
+<span class="tag">&lt;<span class="name">html</span>&gt;</span>
+<span class="tag">&lt;<span class="name">head</span>&gt;</span>
+</code></pre>
+</li>
+</ol>
+<h3 id="Guide"><a href="#Guide" class="headerlink" title="Guide"></a>Guide</h3><ol>
+<li><a href="https://github.com/yangjiyuan/xg-htmlhint/wiki/Usage" target="_blank" rel="noopener">如何使用</a></li>
+<li><a href="https://github.com/yangjiyuan/xg-htmlhint/wiki/Rules" target="_blank" rel="noopener">规则列表</a></li>
+<li><a href="https://github.com/yangjiyuan/xg-htmlhint/wiki/Developer-Guide" target="_blank" rel="noopener">如何添加自定义规则</a></li>
+</ol>
+<h2 id="鸣谢"><a href="#鸣谢" class="headerlink" title="鸣谢"></a>鸣谢</h2><ul>
+<li><a href="https://github.com/yaniswang/" target="_blank" rel="noopener">yaniswang(原作者)</a></li>
+<li><a href="https://github.com/yaniswang/HTMLHint/" target="_blank" rel="noopener">HTMLHint</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/20/chenwubai/xg-htmlhint-config-in-Sublime-Text-3/" rel="prev">Sublime Text 3使用xg-htmlhint配置教程</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/24/felix/blog-instructions/" rel="next">使用说明书</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#制定规则"><span class="nav-number">2.</span> <span class="nav-text">制定规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动化检查工具的探索和实现"><span class="nav-number">3.</span> <span class="nav-text">自动化检查工具的探索和实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#探索阶段"><span class="nav-number">3.1.</span> <span class="nav-text">探索阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xg-htmlhint简介"><span class="nav-number">3.2.</span> <span class="nav-text">xg-htmlhint简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用xg-htmlhint"><span class="nav-number">3.3.</span> <span class="nav-text">使用xg-htmlhint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Guide"><span class="nav-number">3.4.</span> <span class="nav-text">Guide</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#鸣谢"><span class="nav-number">4.</span> <span class="nav-text">鸣谢</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

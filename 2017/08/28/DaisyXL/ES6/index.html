@@ -1,0 +1,771 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="javascript,ES6,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要结合自己学习ES6的过程，说明了如何从零开始搭建一个ES6前端框架，并在大家都很关注的彩票业务中进行应用。">
+<meta name="keywords" content="javascript,ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6项目构建">
+<meta property="og:url" content="http://xgfe.github.io/2017/08/28/DaisyXL/ES6/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要结合自己学习ES6的过程，说明了如何从零开始搭建一个ES6前端框架，并在大家都很关注的彩票业务中进行应用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p0.meituan.net/dpnewvc/98edd093d4e832cd1c7bcfdfd2f699d8277917.png">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/dcb6af4925ecdda34fa5ab6452b969ad99150.png">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/ba5a70a25d75752961db41f1b315cb7627416.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.368Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6项目构建">
+<meta name="twitter:description" content="本文主要结合自己学习ES6的过程，说明了如何从零开始搭建一个ES6前端框架，并在大家都很关注的彩票业务中进行应用。">
+<meta name="twitter:image" content="https://p0.meituan.net/dpnewvc/98edd093d4e832cd1c7bcfdfd2f699d8277917.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> ES6项目构建 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              ES6项目构建
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-08-28T00:00:00+08:00" content="2017-08-28">
+            2017-08-28
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/DaisyXL/" itemprop="url" rel="index">
+                  <span itemprop="name">DaisyXL</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/javascript/" rel="tag"><i class="icon-next-tags"></i>javascript</a>
+            
+              <a href="/tags/ES6/" rel="tag"><i class="icon-next-tags"></i>ES6</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要结合自己学习ES6的过程，说明了如何从零开始搭建一个ES6前端框架，并在大家都很关注的彩票业务中进行应用。</p>
+<a id="more"></a>
+<h1 id="前言：为什么要使用ES6？"><a href="#前言：为什么要使用ES6？" class="headerlink" title="前言：为什么要使用ES6？"></a>前言：为什么要使用ES6？</h1><p>ECMAScript6，又叫ECMAScript 2015，和ES3以及ES5的区别大概就像下面这个图一样，ES6相对早先几个版本有更加强大的生产力，能够提高开发效率。<br><img src="https://p0.meituan.net/dpnewvc/98edd093d4e832cd1c7bcfdfd2f699d8277917.png" width="1000px" height="300px"></p>
+<h1 id="ES6一些比较好的特性"><a href="#ES6一些比较好的特性" class="headerlink" title="ES6一些比较好的特性"></a>ES6一些比较好的特性</h1><p><strong>1.默认参数</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ES5</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params">txt</span>) </span>&#123;</span><br><span class="line">    txt = txt || <span class="string">'hello world'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//ES6</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params">txt = <span class="string">'hello'</span></span>) </span>&#123;</span><br><span class="line">    <span class="comment">//减少了代码冗余</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>2.字符串模版</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ES5-引用underscore这个第三方库实现</span></span><br><span class="line"><span class="keyword">var</span> compiled = _.template(<span class="string">"hello: &lt;%= name %&gt;"</span>);</span><br><span class="line">compiled(&#123;<span class="attr">name</span>: <span class="string">'xueningjiejie'</span>&#125;);</span><br><span class="line"><span class="comment">//ES6</span></span><br><span class="line"><span class="keyword">var</span> name = <span class="string">'xnjj'</span>;</span><br><span class="line"><span class="keyword">var</span> txt = <span class="string">`hello <span class="subst">$&#123;name&#125;</span>`</span>;</span><br></pre></td></tr></table></figure></p>
+<p>当然，这篇文章不是一篇讲解ES6特性的文章，因此不会一一陈述，那么ES6还有哪些特性呢？<br>1.解构赋值： 改变了参数赋值和变量赋值的形式，使赋值方式更加多样。<br>2.箭头函数<br>3.Set和Map<br>4.异步操作，如Promise()<br>5.类和对象<br>6.模块化<br>…<br>想要了解更多具体特性，请认真研读阮一峰的<a href="http://es6.ruanyifeng.com/" target="_blank" rel="noopener">ECMAScript 6入门</a> </p>
+<h1 id="项目构建"><a href="#项目构建" class="headerlink" title="项目构建"></a>项目构建</h1><p>ES6是无法直接在浏览器中运行的，因此想要实现一个ES6工程并在浏览器中看到实现效果，需要先进行项目构建。</p>
+<p><strong>1 基础架构</strong><br><img src="https://p1.meituan.net/dpnewvc/dcb6af4925ecdda34fa5ab6452b969ad99150.png" width="800px" height="350px"></p>
+<p>模块说明：</p>
+<ul>
+<li>业务逻辑<br>  写页面，表现为html,js,css，通过js实现和服务器端进行交互</li>
+<li>自动构建-编译<br>  把ES6的代码根据需要编译成ES5或ES3（需要兼容IE8以下低级浏览器的时候）的代码。         </li>
+<li>自动构建-辅助<br>  实现修改代码自动刷新网页（livereload）  文件合并资源压缩（js,css,图片→base64编码）</li>
+<li>服务接口<br>  后端服务器提供数据和接口</li>
+<li>mock接口<br>  用于开发阶段纯前端的交互测试</li>
+</ul>
+<p><strong>2 任务自动化（gulp）</strong><br>定义：减少人工操作，让电脑自动监听操作，记性响应，提高效率。<br>作用：自动化处理sass／less转化为css的编译过程，文件合并，模块依赖，文件压缩。<br>gulp：自动化工具，替代之前流行grant，通过stream流操作使得级联操作非常块，完成任务自动化，顺畅工作流，由nodejs开发。</p>
+<p><strong>gulp</strong> 使用说明</p>
+<pre>(全局安装）<code>$ npm instal --global gulp</code></pre>
+<pre>(项目安装）<code>$ npm install --save-dev gulp</code></pre>
+<pre>(根目录创建gulpfile.js/gulpfile.babel.js）<code>$ touch gulpfile.js</code></pre>
+
+<p>gulpfile.js文件内容<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>);</span><br><span class="line">gulp.task(<span class="string">'default'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<pre>(运行）<code>$ gulp</code></pre>
+<pre>(运行并监听）<code>$ gulp --watch</code></pre>
+
+<p>具体使用说明可以阅读<a href="http://www.gulpjs.com.cn/" target="_blank" rel="noopener">gulp中文文档</a></p>
+<p><strong>3 编译工具（ babel, webpack ）</strong> </p>
+<p>babel：js编译器，把ES6代码编译成ES5代码。<br>webpack：处理模块化，项目依赖的关系，import实现。<br>webpack-stream—webpack：对gulp对支持。</p>
+<p><strong>4 代码实现</strong> </p>
+<p>1.创建ES6前端工程,并创建三个并行模块：</p>
+<ul>
+<li><strong>app</strong></li>
+<li><strong>server</strong></li>
+<li><strong>tasks</strong></li>
+</ul>
+<p>2.app目录为前端项目代码，包含<strong>html</strong>（模板页面）,<strong>js</strong>（交互实现）,<strong>css</strong>（样式）<br><em>ps.1:这里的模版页面创建的不是html页面，而是ejs文件，是因为实战工程的服务器端代码是通过express这个nodejs框架创建的。</em><br><em>ps.2:js目录下的index.js文件为入口脚本文件，同样的views目录下的index.ejs为入口模板文件。</em></p>
+<p>3.server为服务器端目录，这里面我们使用<strong>nodejs</strong>来写服务器端代码。<br>在server目录下执行下面命令,在当前目录使用ejs模板引擎,如果执行express出错，先检查下是否已经安装nodejs，并install了express脚手架。</p>
+<pre><code>express -e .
+npm install
+</code></pre>
+
+<p>4.task为构建工具目录</p>
+<ul>
+<li>util–放置常见脚本的目录<br>   args.js–定义gulp命令行脚本 .option就是定义gulp -<em>*</em>中对内容  .argv表示输入对命令行以字符串形式进行解析</li>
+<li>scripts.js–构建脚本，通过gulp对js文件进行重命名，压缩和存放  脚本服务文件</li>
+<li>pages.js–模板脚本</li>
+<li>server.js–服务器脚本</li>
+<li>css.js–监听样式脚本</li>
+<li>browser.js–浏览器自动监听变化并编译到指定文件夹</li>
+<li>clean.js–编译前情况文件夹</li>
+<li>build.js–把所有脚本关联起来，编排执行顺序</li>
+<li>default.js–默认执行的任务</li>
+</ul>
+<p>5.使用npm自动生成package.json文件，有这个文件就可以使用npm来获取依赖包了</p>
+<pre><code>npm init</code></pre>
+
+<p>6.创建设置babel编译工具的文件.babelrc</p>
+<p>7.创建gulp的配置文件gulpfile.babel.js</p>
+<p><em>ps.2:官网上给的是创建gulpfile.js,是ES5使用的，但是当前工程是ES6工程，使用官网给出的文件名运行gulp命令会报错。</em></p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="strong">**最终目录结构**</span></span><br><span class="line">app</span><br><span class="line"><span class="code">    js--交互实现</span></span><br><span class="line"><span class="code">        class--类</span></span><br><span class="line"><span class="code">            test.js</span></span><br><span class="line"><span class="code">        index.js</span></span><br><span class="line"><span class="code">    css--样式</span></span><br><span class="line"><span class="code">    views--模板页面</span></span><br><span class="line"><span class="code">        error.ejs</span></span><br><span class="line"><span class="code">        index.ejs</span></span><br><span class="line">server</span><br><span class="line">tasks</span><br><span class="line"><span class="code">    util</span></span><br><span class="line"><span class="code">        args.js</span></span><br><span class="line"><span class="code">    scripts.js</span></span><br><span class="line"><span class="code">    pages.js</span></span><br><span class="line"><span class="code">    server.js</span></span><br><span class="line"><span class="code">    css.js</span></span><br><span class="line"><span class="code">    browser.js</span></span><br><span class="line"><span class="code">    clean.js</span></span><br><span class="line"><span class="code">    build.js</span></span><br><span class="line"><span class="code">    default.js</span></span><br><span class="line">package.json</span><br><span class="line">.babelrc</span><br><span class="line">gulpfile.babel.js</span><br></pre></td></tr></table></figure>
+<p>这里没有粘贴每个配置文件的内容，若需要可以克隆<a href="https://github.com/DaisyGXL/Lemmon-tree.git" target="_blank" rel="noopener">https://github.com/DaisyGXL/Lemmon-tree.git</a> 仓库的地址获取搭建好的工程es6-project查看具体配置文件，其中我对每个文件的配置和依赖包的用处进行了注释说明。</p>
+<p>8.通过<code>npm install <em>*</em> –save-dev</code>命令把涉及到的依赖包依赖到本地，并添加到package.json文件中，可以通过<code>gulp</code>命令检查是否有使用的依赖包没有更新到本地,直到命令行输出下面内容为止，ES6工程基本搭建完成。</p>
+<p><pre><code>➜  es6 git:(master) gulp<br>[16:53:30] Requiring external module babel-register<br>[16:53:31] Using gulpfile ~/works/es6/gulpfile.babel.js<br>[16:53:31] Starting ‘build’…<br>[16:53:31] Starting ‘clean’…<br>[16:53:31] Finished ‘clean’ after 10 ms<br>[16:53:31] Starting ‘css’…<br>[16:53:31] Finished ‘css’ after 16 ms<br>[16:53:31] Starting ‘pages’…<br>[16:53:31] Finished ‘pages’ after 17 ms<br>[16:53:31] Starting ‘scripts’…<br>[16:53:31] Version: webpack 3.5.5<br>   Asset     Size  Chunks             Chunk Names<br>index.js  2.94 kB       0  [emitted]  index<br>[16:53:31] Finished ‘scripts’ after 290 ms<br>[16:53:31] Starting ‘browser’…<br>[16:53:31] Finished ‘browser’ after 92 μs<br>[16:53:31] Starting ‘serve’…<br>[16:53:31] Finished ‘serve’ after 77 μs<br>[16:53:31] Finished ‘build’ after 338 ms<br>[16:53:31] Starting ‘default’…<br>[16:53:31] Finished ‘default’ after 25 μs</code></pre><br>从输出可以看出，gulp执行的顺序，build –&gt; clean –&gt; css –&gt; pages –&gt; scripts，那么为什么会按照这样的顺序执行呢？<br>我们前面创建了一个gulpfile.babel.js，在文件中指定了gulp运行时，先进入task目录。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requireDir(<span class="string">'./tasks'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>那么，gulp 会进入task目录寻找一个叫做default.js的文件,该文件中指定了启动时默认要执行的脚本build，也就是编译脚本。在build.js这个文件中，我们来编排编译步骤，即是上面运行的这种步骤。<br><img src="https://p1.meituan.net/dpnewvc/ba5a70a25d75752961db41f1b315cb7627416.png" width="520px" height="260px"><br>9.无报错后，通过gulp –watch使服务处于监听状态,运行出现最后一行，则启动并监听成功。</p>
+<p><pre><code>➜  es6 git:(master) gulp –watch<br>[17:02:49] Requiring external module babel-register<br>[17:02:50] Using gulpfile ~/works/es6/gulpfile.babel.js<br>[17:02:50] Starting ‘build’…<br>[17:02:50] Starting ‘clean’…<br>[17:02:50] Finished ‘clean’ after 9.31 ms<br>[17:02:50] Starting ‘css’…<br>[17:02:50] Finished ‘css’ after 16 ms<br>[17:02:50] Starting ‘pages’…<br>[17:02:50] Finished ‘pages’ after 16 ms<br>[17:02:50] Starting ‘scripts’…<br>[17:02:50] Version: webpack 3.5.5<br>   Asset     Size  Chunks             Chunk Names<br>index.js  2.94 kB       0  [emitted]  index<br>[17:02:50] Finished ‘scripts’ after 281 ms<br>[17:02:50] Starting ‘browser’…<br>[17:02:50] Starting ‘serve’…<br>livereload[tiny-lr] listening on 35729 …</code></pre></p>
+<p>至此，前端开发框架已经搭建好了，编辑index.ejs模板页面显示内容，通过localhost：3000访问</p>
+<p>然而，我们发现，有一些ES6的项目网页依赖了livereload包却并不能自动进行刷新，仍然需要手动去刷新，也就是自动构建中的辅助功能未得到实现。<br>那么检查一下在server目录中的app.js中是否缺少这样一行代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="built_in">require</span>(<span class="string">'connect-livereload'</span>)());</span><br></pre></td></tr></table></figure></p>
+<p>最后，因为学习那段时间身边的小伙伴们都很沉迷彩票，就简单做了个彩票业务的demo，有些逻辑还没有写完，后面会不断完善。<br>git仓库地址：<a href="https://github.com/DaisyGXL/Lemmon-tree.git" target="_blank" rel="noopener">https://github.com/DaisyGXL/Lemmon-tree.git</a>  工程名：cp-project</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/07/huanglifen/html2image/" rel="prev">如何将html保存成图片</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/10/lulutia/immutable-RN-Redux/" rel="next">基于React-Native及Redux的Immutable.js引入</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言：为什么要使用ES6？"><span class="nav-number">1.</span> <span class="nav-text">前言：为什么要使用ES6？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ES6一些比较好的特性"><span class="nav-number">2.</span> <span class="nav-text">ES6一些比较好的特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#项目构建"><span class="nav-number">3.</span> <span class="nav-text">项目构建</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

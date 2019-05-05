@@ -1,0 +1,799 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Observable,RxJS,Functional Reactive Programming,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要是利用Rx.js介绍Observable相关的一些概念，以及通过实现Observable的创建、一些常用的操作符了解Observable的执行原理。">
+<meta name="keywords" content="Observable,RxJS,Functional Reactive Programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谈谈Observable">
+<meta property="og:url" content="http://xgfe.github.io/2018/08/23/objectisundefined/observable/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要是利用Rx.js介绍Observable相关的一些概念，以及通过实现Observable的创建、一些常用的操作符了解Observable的执行原理。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cn.rx.js.org/img/map.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/filter.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/merge.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/combineLatest.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/combineAll.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/share.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/take.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/concat.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/concatMap.png">
+<meta property="og:image" content="https://cn.rx.js.org/img/switchMap.png">
+<meta property="og:updated_time" content="2019-05-05T10:15:56.830Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谈谈Observable">
+<meta name="twitter:description" content="本文主要是利用Rx.js介绍Observable相关的一些概念，以及通过实现Observable的创建、一些常用的操作符了解Observable的执行原理。">
+<meta name="twitter:image" content="https://cn.rx.js.org/img/map.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 谈谈Observable | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              谈谈Observable
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-08-23T12:00:00+08:00" content="2018-08-23">
+            2018-08-23
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/tianzhen/" itemprop="url" rel="index">
+                  <span itemprop="name">tianzhen</span>
+                </a>
+              </span>
+
+              
+              
+                ， 
+              
+
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/tianzhen/Observable/" itemprop="url" rel="index">
+                  <span itemprop="name">Observable</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Observable/" rel="tag"><i class="icon-next-tags"></i>Observable</a>
+            
+              <a href="/tags/RxJS/" rel="tag"><i class="icon-next-tags"></i>RxJS</a>
+            
+              <a href="/tags/Functional-Reactive-Programming/" rel="tag"><i class="icon-next-tags"></i>Functional Reactive Programming</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要是利用Rx.js介绍Observable相关的一些概念，以及通过实现Observable的创建、一些常用的操作符了解Observable的执行原理。</p>
+<a id="more"></a>
+<h2 id="Observable是什么"><a href="#Observable是什么" class="headerlink" title="Observable是什么"></a>Observable是什么</h2><p>数据处理过程中，存在数据的生产者 (Producer) 和数据的消费者 (Consumer) ，处理方式基本分为拉取 (Pull) 和 推送 (Push)两种。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>生产者</th>
+<th>消费者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>拉取</strong></td>
+<td><strong>被动的:</strong> 当被请求时产生数据。</td>
+<td><strong>主动的:</strong> 决定何时请求数据。</td>
+</tr>
+<tr>
+<td><strong>推送</strong></td>
+<td><strong>主动的:</strong> 按自己的节奏产生数据。</td>
+<td><strong>被动的:</strong> 对收到的数据做出反应。</td>
+</tr>
+</tbody>
+</table>
+<p>在拉取体系中，由消费者来决定何时从生产者那里接收数据。生产者本身不知道数据是何时交付到消费者手中的。每个 JavaScript 函数都是拉取体系。函数是数据的生产者，调用该函数的代码通过从函数调用中“取出”一个单个返回值来对该函数进行消费。ES2015 引入了一种新的的拉取体系, generator 和 iterator。由消费者调用 iterator.next() 从 iterator(生产者) 那“取出”值。</p>
+<p>在推送体系中，由生产者来决定何时把数据发送给消费者。消费者本身不知道何时会接收到数据。在当今的 JavaScript 世界中，Promise 是最常见的推送类型。Promise(生产者) 将一个 resolve 过的值传递给已注册的回调函数(消费者)，但不同于函数的是，由 Promise 来决定何时把值“推送”给回调函数。</p>
+<p><strong>Observable 是多个值的生产者，并将值“推送”给观察者(消费者)。</strong></p>
+<pre><code>Function 是惰性的评估运算，调用时会同步地返回一个单一值。
+Generator 是惰性的评估运算，调用时会同步地返回零到(有可能的)无限多个值。
+Promise 是最终可能(或可能不)返回单个值的运算。
+Observable 是惰性的评估运算，它可以从它被调用的时刻起同步或异步地返回零到(有可能的)无限多个值。
+</code></pre><p><strong>Observable 像是没有参数, 但可以泛化为多个值的函数。</strong></p>
+<p>考虑如下代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = foo.call(); <span class="comment">// 等同于 foo()</span></span><br><span class="line"><span class="built_in">console</span>.log(x);</span><br><span class="line"><span class="keyword">var</span> y = foo.call(); <span class="comment">// 等同于 foo()</span></span><br><span class="line"><span class="built_in">console</span>.log(y);</span><br></pre></td></tr></table></figure></p>
+<p>我们期待看到的输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br></pre></td></tr></table></figure></p>
+<p>使用Rx.js，你可以使用 Observable 重写上面的代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = Rx.Observable.create(<span class="function"><span class="keyword">function</span> (<span class="params">observer</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  observer.next(<span class="number">42</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">foo.subscribe(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line">foo.subscribe(<span class="function"><span class="keyword">function</span> (<span class="params">y</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(y);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>输出是一样的:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"Hello"</span></span><br><span class="line"><span class="number">42</span></span><br><span class="line"><span class="string">"Hello"</span></span><br><span class="line"><span class="number">42</span></span><br></pre></td></tr></table></figure></p>
+<p>这是因为函数和 Observable 都是惰性运算。如果你不调用函数，console.log(‘Hello’) 就不会执行。Observable 也是如此，如果你不“调用”它(使用 subscribe)，console.log(‘Hello’) 也不会执行。此外，“调用”或“订阅”是独立的操作：两个函数调用会触发两个单独的副作用，两个 Observable 订阅同样也是触发两个单独的副作用。EventEmitters 共享副作用并且无论是否存在订阅者都会尽早执行，Observable 与之相反，不会共享副作用并且是延迟执行。</p>
+<p>订阅 Observable 类似于调用函数。</p>
+<p>如果你使用console.log包围一个函数调用，像这样：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(foo.call());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>你会看到这样的输出:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure></p>
+<p>使用 Observable 来做同样的事：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>输出是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure></p>
+<p>这证明了 foo 的订阅完全是同步的，就像函数一样。Observable 传递值可以是同步的，也可以是异步的。<br>那么 Observable 和 函数的区别是什么呢？Observable 可以随着时间的推移“返回”多个值，这是函数所做不到的。你无法这样：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">100</span>; <span class="comment">// 死代码，永远不会执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>函数只能返回一个值。但 Observable 可以这样：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = Rx.Observable.create(<span class="function"><span class="keyword">function</span> (<span class="params">observer</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  observer.next(<span class="number">42</span>);</span><br><span class="line">  observer.next(<span class="number">100</span>); <span class="comment">// “返回”另外一个值</span></span><br><span class="line">  observer.next(<span class="number">200</span>); <span class="comment">// 还可以再“返回”值</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>同步输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure></p>
+<p>但你也可以异步地“返回”值：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = Rx.Observable.create(<span class="function"><span class="keyword">function</span> (<span class="params">observer</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  observer.next(<span class="number">42</span>);</span><br><span class="line">  observer.next(<span class="number">100</span>);</span><br><span class="line">  observer.next(<span class="number">200</span>);</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    observer.next(<span class="number">300</span>); <span class="comment">// 异步执行</span></span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br><span class="line">300</span><br></pre></td></tr></table></figure></p>
+<p>结论:</p>
+<pre><code>func.call() 意思是 &quot;同步地给我一个值&quot;
+observable.subscribe() 意思是 &quot;给我任意数量的值，无论是同步还是异步&quot;
+</code></pre><h2 id="创建Observable"><a href="#创建Observable" class="headerlink" title="创建Observable"></a>创建Observable</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> once = <span class="function"><span class="params">f</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> called = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (called) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    called = <span class="literal">true</span></span><br><span class="line">    f(...args)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">create</span> (<span class="params">f</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// just return a subscribe function</span></span><br><span class="line">  <span class="comment">// error and complete can be invoked just once</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">next, error, complete</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> finished = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> unsubscribe = f(&#123;</span><br><span class="line">      next: <span class="function">(<span class="params">val</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (finished) &#123;</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        next(val)</span><br><span class="line">      &#125;,</span><br><span class="line">      error: once(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (finished) &#123;</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        finished = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">        error &amp;&amp; error(err)</span><br><span class="line">      &#125;),</span><br><span class="line">      complete: once(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (finished) &#123;</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        finished = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">        complete &amp;&amp; complete()</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// should return a dispose function</span></span><br><span class="line">    <span class="comment">// think case like timeout, interval, websocket connection...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      finished = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">      unsubscribe &amp;&amp; unsubscribe()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// test</span></span><br><span class="line"><span class="keyword">const</span> number$ = create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  observer.next(<span class="number">1</span>)</span><br><span class="line">  observer.next(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">  observer.error(<span class="built_in">Error</span>(<span class="string">'crash'</span>))</span><br><span class="line"></span><br><span class="line">  observer.next(<span class="number">3</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// subscribe</span></span><br><span class="line">number$(</span><br><span class="line">  val =&gt; <span class="built_in">console</span>.log(<span class="string">'next:'</span>, val),</span><br><span class="line">  err =&gt; <span class="built_in">console</span>.log(<span class="string">'error:'</span>, err),</span><br><span class="line">  () =&gt; <span class="built_in">console</span>.log(<span class="string">'completed'</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// next: 1</span></span><br><span class="line"><span class="comment">// next: 2</span></span><br><span class="line"><span class="comment">// error: Error: crash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> interval = <span class="function"><span class="params">delay</span> =&gt;</span> create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> timer = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> observer.next(i++), delay)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    observer.complete()</span><br><span class="line"></span><br><span class="line">    clearInterval(timer)</span><br><span class="line">    timer = <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> interval$ = interval(<span class="number">200</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> unsubscribe = interval$(</span><br><span class="line">  val =&gt; <span class="built_in">console</span>.log(<span class="string">'next:'</span>, val),</span><br><span class="line">  err =&gt; <span class="built_in">console</span>.log(<span class="string">'error:'</span>, err),</span><br><span class="line">  () =&gt; <span class="built_in">console</span>.log(<span class="string">'completed'</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// next: 0</span></span><br><span class="line"><span class="comment">// next: 1</span></span><br><span class="line"><span class="comment">// next: 2</span></span><br><span class="line"><span class="comment">// next: 3</span></span><br><span class="line"><span class="comment">// completed</span></span><br><span class="line"></span><br><span class="line">setTimeout(unsubscribe, <span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h2><p>Observable 作为多个值的生产者这样的数据抽象，在使用时，我们还需要操作符。操作符是允许复杂的异步代码以声明式的方式进行轻松组合的基础代码单元。操作符本质上是一个纯函数 (pure function)，它接收一个 Observable 作为输入，并生成一个新的 Observable 作为输出。</p>
+<p><img src="https://cn.rx.js.org/img/map.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="function"><span class="params">f</span> =&gt;</span> observable =&gt; create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  observable(</span><br><span class="line">    x =&gt; &#123;</span><br><span class="line">      observer.next(f(x))</span><br><span class="line">    &#125;,</span><br><span class="line">    observer.error,</span><br><span class="line">    observer.complete</span><br><span class="line">  )</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/filter.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> filter = <span class="function"><span class="params">f</span> =&gt;</span> observable =&gt; create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  observable(</span><br><span class="line">    x =&gt; &#123;</span><br><span class="line">      f(x) &amp;&amp; observer.next(x)</span><br><span class="line">    &#125;,</span><br><span class="line">    observer.error,</span><br><span class="line">    observer.complete</span><br><span class="line">  )</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/merge.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> merge = <span class="function">(<span class="params">...observables</span>) =&gt;</span> create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> l = observables.length</span><br><span class="line">  <span class="keyword">let</span> i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  observables.forEach(<span class="function"><span class="params">observable</span> =&gt;</span> &#123;</span><br><span class="line">    observable(</span><br><span class="line">      x =&gt; observer.next(x),</span><br><span class="line">      observer.error,</span><br><span class="line">      () =&gt; &#123;</span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        i === l &amp;&amp; observer.complete()</span><br><span class="line">      &#125;</span><br><span class="line">    )</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/combineLatest.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> combineLatest = <span class="function">(<span class="params">...observables</span>) =&gt;</span> create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> l = observables.length</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> arr = []</span><br><span class="line">  <span class="keyword">let</span> k = <span class="number">0</span></span><br><span class="line">  <span class="keyword">let</span> n = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  observables.forEach(<span class="function">(<span class="params">observable, i</span>) =&gt;</span> &#123;</span><br><span class="line">    observable(</span><br><span class="line">      x =&gt; &#123;</span><br><span class="line">        !(i <span class="keyword">in</span> arr) &amp;&amp; (k += <span class="number">1</span>)</span><br><span class="line">        arr[i] = x</span><br><span class="line"></span><br><span class="line">        k === l &amp;&amp; observer.next(arr)</span><br><span class="line">      &#125;,</span><br><span class="line">      observer.error,</span><br><span class="line">      () =&gt; &#123;</span><br><span class="line">        n += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        n === l &amp;&amp; observer.complete()</span><br><span class="line">      &#125;</span><br><span class="line">    )</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/combineAll.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> combineAll = <span class="function">(<span class="params">...observables</span>) =&gt;</span> observer =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> l = observables.length</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> arr = []</span><br><span class="line">  <span class="keyword">let</span> n = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  observables.forEach(<span class="function">(<span class="params">observable, i</span>) =&gt;</span> &#123;</span><br><span class="line">    observable(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">      !(i <span class="keyword">in</span> arr) &amp;&amp; (n += <span class="number">1</span>)</span><br><span class="line">      arr[i] = x</span><br><span class="line"></span><br><span class="line">      n === l &amp;&amp; observer(arr)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/share.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> share = <span class="function"><span class="params">observable</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> finished = <span class="literal">false</span></span><br><span class="line">  <span class="keyword">let</span> obs = []</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> start = <span class="function"><span class="params">()</span> =&gt;</span> observable(</span><br><span class="line">    x =&gt; obs.forEach(<span class="function"><span class="params">ob</span> =&gt;</span> ob.next(x)),</span><br><span class="line">    err =&gt; obs.forEach(<span class="function"><span class="params">ob</span> =&gt;</span> ob.error(err)),</span><br><span class="line">    () =&gt; &#123;</span><br><span class="line">      finished = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">      obs.forEach(<span class="function"><span class="params">ob</span> =&gt;</span> ob.complete())</span><br><span class="line">      obs = <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (finished || obs.indexOf(observer) !== <span class="number">-1</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    obs.push(observer)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// lazy subscribe until the first observer occurs</span></span><br><span class="line">    obs.length === <span class="number">1</span> &amp;&amp; start()</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/take.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> take = <span class="function"><span class="params">n</span> =&gt;</span> observable =&gt; create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">    observer.complete()</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> unsubscribe = observable(</span><br><span class="line">    x =&gt; &#123;</span><br><span class="line">      observer.next(x)</span><br><span class="line"></span><br><span class="line">      n--</span><br><span class="line">      <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        unsubscribe()</span><br><span class="line">        observer.complete()</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    observer.error,</span><br><span class="line">    observer.complete</span><br><span class="line">  )</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/concat.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> concat = <span class="function">(<span class="params">...observables</span>) =&gt;</span> create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> l = observables.length</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> f = <span class="function"><span class="params">n</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (n &gt;= l) &#123;</span><br><span class="line">      <span class="keyword">return</span> observer.complete()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    observables[n](</span><br><span class="line">      x =&gt; observer.next(x),</span><br><span class="line">      observer.error,</span><br><span class="line">      () =&gt; &#123;</span><br><span class="line">        f(n + <span class="number">1</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  f(<span class="number">0</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/concatMap.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> concatMap = <span class="function"><span class="params">f</span> =&gt;</span> observable =&gt; create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> observables = []</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> c = <span class="literal">false</span></span><br><span class="line">  <span class="keyword">let</span> flushing = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> g = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (flushing || !observables.length) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    flushing = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> observable = observables.shift()</span><br><span class="line"></span><br><span class="line">    observable(</span><br><span class="line">      x =&gt; &#123;</span><br><span class="line">        observer.next(x)</span><br><span class="line">      &#125;,</span><br><span class="line">      observer.error,</span><br><span class="line">      () =&gt; &#123;</span><br><span class="line">        flushing = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (c) &#123;</span><br><span class="line">          observables = <span class="literal">null</span></span><br><span class="line">          <span class="keyword">return</span> observer.complete()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        g()</span><br><span class="line">      &#125;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  observable(</span><br><span class="line">    x =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (c) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      observables.push(f(x))</span><br><span class="line">      g()</span><br><span class="line">    &#125;,</span><br><span class="line">    observer.error,</span><br><span class="line">    () =&gt; &#123;</span><br><span class="line">      c = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  )</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://cn.rx.js.org/img/switchMap.png"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> switchMap = <span class="function"><span class="params">f</span> =&gt;</span> observable =&gt; create(<span class="function"><span class="params">observer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> current</span><br><span class="line">  <span class="keyword">let</span> unsubscribe</span><br><span class="line"></span><br><span class="line">  observable(</span><br><span class="line">    x =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (unsubscribe) &#123;</span><br><span class="line">        unsubscribe()</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      current = f(x)</span><br><span class="line"></span><br><span class="line">      unsubscribe = current(</span><br><span class="line">        x =&gt; observer.next(x),</span><br><span class="line">        (err) =&gt; &#123;</span><br><span class="line">          observer.error(err)</span><br><span class="line"></span><br><span class="line">          unsubscribe()</span><br><span class="line">          unsubscribe = <span class="literal">null</span></span><br><span class="line">        &#125;,</span><br><span class="line">        () =&gt; &#123;</span><br><span class="line">          observer.complete()</span><br><span class="line"></span><br><span class="line">          unsubscribe()</span><br><span class="line">          unsubscribe = <span class="literal">null</span></span><br><span class="line">        &#125;</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">  )</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们从数据处理的拉取和推送的方式着手，了解了 Observable 是基于推送模型的多值生产者的抽象，像是没有参数, 但可以泛化为多个值的函数。通过代码实现了一个 Observable 的创建函数，还实现了很多操作符。这只是个开始，在工作和学习中，你要认真思考自己的场景，观察这个场景中是不是存在着类似多个管道产生值，这些管道也存在着组合变换的逻辑，这时候，Observable 就可以大显身手了。从编程范式上来讲，使用 Observable，其实是 反应式编程（Reactive Programming） 的思维，它可以帮助我们摆脱命令式的状态处理，状态和逻辑杂合在一起，用声明式的方式去组合我们的逻辑，希望你能去探索下 Reactive Programming 和 Functional Reactive Programming的世界。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754" target="_blank" rel="noopener">The introduction to Reactive Programming you’ve been missing</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/20213244" target="_blank" rel="noopener">谈谈FRP和Observable（一）</a></li>
+<li><a href="http://jerryzou.com/posts/rxjs-practice-01/" target="_blank" rel="noopener">RxJS 实战篇（一）拖拽</a></li>
+<li><a href="http://reactivex.io/rxjs/" target="_blank" rel="noopener">http://reactivex.io/rxjs/</a></li>
+<li><a href="https://cn.rx.js.org/manual/overview.html" target="_blank" rel="noopener">cn.rx.js.org</a></li>
+<li><a href="https://github.com/btroncone/learn-rxjs" target="_blank" rel="noopener">learn-rxjs</a></li>
+<li><a href="https://github.com/ichpuchtli/awesome-rxjs" target="_blank" rel="noopener">awesome-rxjs</a></li>
+<li><a href="https://github.com/staltz/xstream" target="_blank" rel="noopener">xstream</a></li>
+<li><a href="https://github.com/paldepind/flyd" target="_blank" rel="noopener">flyd</a></li>
+<li><a href="https://github.com/staltz/callbag-basics/" target="_blank" rel="noopener">callbag-basics</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/19/zhangpeng/宏任务与微任务/" rel="prev">宏任务和微任务</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/15/yangxiaotong/angularjs双向绑定/" rel="next">angularjs的双向数据绑定</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Observable是什么"><span class="nav-number">1.</span> <span class="nav-text">Observable是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Observable"><span class="nav-number">2.</span> <span class="nav-text">创建Observable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作符"><span class="nav-number">3.</span> <span class="nav-text">操作符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

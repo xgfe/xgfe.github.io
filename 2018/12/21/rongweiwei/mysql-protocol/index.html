@@ -1,0 +1,1321 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="nodejs,mysql,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="序计划通过本地代理远程mysql，尝试实现透明缓存中间件功能这个需求，在实现过程中，需要对mysql协议的请求和下发包进行解析以便进一步处理，网络上有大量关于mysql协议的文章，但过于分散，而且mysql协议在4.1版本做了大升级，本文将涉及到的一部分整理汇总，资料来自mysql官网，网络blog，和npm上的mysql模块源码。 代码部分经过nodejs的mysql模块和php的mysqli模">
+<meta name="keywords" content="nodejs,mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql通信协议浅解">
+<meta property="og:url" content="http://xgfe.github.io/2018/12/21/rongweiwei/mysql-protocol/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="序计划通过本地代理远程mysql，尝试实现透明缓存中间件功能这个需求，在实现过程中，需要对mysql协议的请求和下发包进行解析以便进一步处理，网络上有大量关于mysql协议的文章，但过于分散，而且mysql协议在4.1版本做了大升级，本文将涉及到的一部分整理汇总，资料来自mysql官网，网络blog，和npm上的mysql模块源码。 代码部分经过nodejs的mysql模块和php的mysqli模">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T11:28:18.939Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql通信协议浅解">
+<meta name="twitter:description" content="序计划通过本地代理远程mysql，尝试实现透明缓存中间件功能这个需求，在实现过程中，需要对mysql协议的请求和下发包进行解析以便进一步处理，网络上有大量关于mysql协议的文章，但过于分散，而且mysql协议在4.1版本做了大升级，本文将涉及到的一部分整理汇总，资料来自mysql官网，网络blog，和npm上的mysql模块源码。 代码部分经过nodejs的mysql模块和php的mysqli模">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> mysql通信协议浅解 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              mysql通信协议浅解
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-12-21T00:00:00+08:00" content="2018-12-21">
+            2018-12-21
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/rongweiwei/" itemprop="url" rel="index">
+                  <span itemprop="name">rongweiwei</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/nodejs/" rel="tag"><i class="icon-next-tags"></i>nodejs</a>
+            
+              <a href="/tags/mysql/" rel="tag"><i class="icon-next-tags"></i>mysql</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>计划通过本地代理远程mysql，尝试实现透明缓存中间件功能这个需求，在实现过程中，需要对mysql协议的请求和下发包进行解析以便进一步处理，网络上有大量关于mysql协议的文章，但过于分散，而且mysql协议在4.1版本做了大升级，本文将涉及到的一部分整理汇总，资料来自mysql官网，网络blog，和npm上的mysql模块源码。</p>
+<p>代码部分经过nodejs的mysql模块和php的mysqli模块验证。</p>
+<p>此次只作为对mysql协议熟悉的练习，对数据变动自动清理相应缓存建议还是使用基于binlog的解析,然后通过消息机制更新。</p>
+<a id="more"></a>
+<hr>
+<h2 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h2><p>mysql链接分为TCP握手链接，服务端对客户端认证，数据交互，断开链接几个阶段。<br>服务器启动后，会使用 TCP 监听一个本地端口，当客户端的连接请求到达时，就会执行三段握手以及 MySQL 的权限验证；验证成功后，客户端开始发送请求，服务器会以响应的报文格式返回数据；当客户端发送完成后，会发送一个特殊的报文，告知服务器已结束会话。</p>
+<p>MySQL 定义了几种包类型，A) 客户端-&gt;服务器，登录时的 auth 包、执行 SQL 时的 CMD 包；B) 服务器-&gt;客户端，登录时的握手包、数据包、数据流结束包、成功包(OK Packet)、错误信息包。</p>
+<p>协议定义了基本的数据类型，如 int、string 等；数据的传送格式等。</p>
+<h3 id="一些规则"><a href="#一些规则" class="headerlink" title="一些规则"></a>一些规则</h3><p>当server端和client端数据交互时，如果数据包size大于2^24时，要将包拆成多个；<br>每个包由header和payload两部分组成；</p>
+<h3 id="认证阶段"><a href="#认证阶段" class="headerlink" title="认证阶段"></a>认证阶段</h3><pre><code>服务端 -&gt; 客户端：发送握手初始化包 (Handshake Initialization Packet)。
+客户端 -&gt; 服务端：发送验证包 (Client Authentication Packet)。
+服务端 -&gt; 客户端：认证结果消息
+</code></pre><p>mysql的认证过程相对复杂，这里简单介绍4.1版本之后的认证过程（计划功能中对这部分请求可以透明透给远程mysql，没有必要进行处理，以下内容摘自网络）。</p>
+<ol>
+<li><p>服务器发送随机字符串 (scramble) 给客户端。</p>
+</li>
+<li><p>客户端作如下计算，然后客户端将 token 发送给服务端。</p>
+<blockquote>
+<p>stage1_hash = SHA1(明文密码)</p>
+<p>token = SHA1(scramble + SHA1(stage1_hash)) XOR stage1_hash</p>
+</blockquote>
+</li>
+<li><p>服务端作如下计算，比对 SHA1(stage1_hash) 和 mysql.user.password 是否相同</p>
+<blockquote>
+<p>stage1_hash = token XOR SHA1(scramble + mysql.user.password)<br>server -&gt; client， client-&gt; server 包类型</p>
+</blockquote>
+<p> 校验时，只需要 SHA1(stage1_hash) 与 mysql.user.password 比较一下即可</p>
+</li>
+</ol>
+<p>handshake包(protocol41)</p>
+<table>
+<thead>
+<tr>
+<th>Bytes</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>protocol_version</td>
+</tr>
+<tr>
+<td>n</td>
+<td>(Null-Terminated String)   server_version</td>
+</tr>
+<tr>
+<td>4</td>
+<td>thread_id</td>
+</tr>
+<tr>
+<td>8</td>
+<td>scramble_buff</td>
+</tr>
+<tr>
+<td>1</td>
+<td>(filler) always 0x00</td>
+</tr>
+<tr>
+<td>2</td>
+<td>server_capabilities</td>
+</tr>
+<tr>
+<td>1</td>
+<td>server_language</td>
+</tr>
+<tr>
+<td>2</td>
+<td>server_status</td>
+</tr>
+<tr>
+<td>13</td>
+<td>(filler) always 0x00 …</td>
+</tr>
+<tr>
+<td>13</td>
+<td>rest of scramble_buff (4.1)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="获得use-db"><a href="#获得use-db" class="headerlink" title="获得use db"></a>获得use db</h3><p> 对本次需求只需要取出初始化mysql链接的时候会初始化使用哪个库(use database;),需要从包里解出，其它部分忽略。</p>
+<pre><code>function parseHandShake(buff){
+    let _check_pos = buff.indexOf(Buffer.alloc(23,0x00));
+    if (_check_pos &gt; 0){
+        //protocol41
+        buff =  buff.slice(_check_pos + 23);
+        protocol41 = true;
+    }
+    //find user field end
+    _check_pos = buff.indexOf(0x00);
+    buff =  buff.slice(_check_pos + 1);
+    if (protocol41) {
+        buff =  buff.slice(21);     
+    } else {
+        buff =  buff.slice(10);     
+    }
+    _check_pos = buff.indexOf(0x00);
+
+
+    let default_db = buff.slice(0, _check_pos).toString();
+ }
+</code></pre><hr>
+<h2 id="query请求-封包"><a href="#query请求-封包" class="headerlink" title="query请求 封包"></a>query请求 封包</h2><p>client到server的包（Command Packet ），由两部分构成：header 和 payload。header包括3位整数表示payload长度，1位整数表示顺序号；payload包括1位COM标识符和请求sql语句</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int<3></3></td>
+<td>payload_length</td>
+<td>payload的长度</td>
+</tr>
+<tr>
+<td>int<1></1></td>
+<td>sequence_id</td>
+<td>顺序号，每次从0开始</td>
+</tr>
+<tr>
+<td>string<var></var></td>
+<td>payload</td>
+<td>COM + sql ，COM_QUERY 标识符为0x03</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<table>
+<thead>
+<tr>
+<th>header</th>
+<th>sequence</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 00 00</td>
+<td>00</td>
+<td>03 xx xx…</td>
+</tr>
+<tr>
+<td>length 1</td>
+<td>sequence_id 0</td>
+<td>payload [0x03,Buffer from sql string …]</td>
+</tr>
+</tbody>
+</table>
+<p>部分代码</p>
+<pre><code> var MAX_PACKET_LENGTH = Math.pow(2, 24) - 1;
+ var buffer = Buffer.from(sql);
+
+ for (var packet = 0; packet &lt; packets; packet++) {
+        var isLast = (packet + 1 === packets);
+    var packetLength = (isLast)
+           ? length % MAX_PACKET_LENGTH
+           : MAX_PACKET_LENGTH;
+
+       var packetNumber = incrementPacketNumber();
+
+       this.writeUnsignedNumber(3, packetLength);
+       this.writeUnsignedNumber(1, packetNumber);
+
+       var start = packet * MAX_PACKET_LENGTH;
+       var end   = start + packetLength;
+
+       this.writeBuffer(buffer.slice(start, end));
+}
+</code></pre><p>writeUnsignedNumber用来把包长度和序号写入packet header</p>
+<pre><code>function writeUnsignedNumber(bytes, value) {
+       for (var i = 0; i &lt; bytes; i++) {
+       this._buffer[this._offset++] = (value &gt;&gt; (i * 8)) &amp; 0xff
+       }
+}
+</code></pre><p>当header的长度小于MAX_PACKET_LENGTH时表示包传输完成，极端情况下会多传个空包过去（正好整分）。</p>
+<p>通常sql不长的情况下，只需要一个包就可以。</p>
+<pre><code>ComQueryPacket.prototype.write = function write(){
+    let _sql_buff = Buffer.from(this.sql),
+        _cmd_len = Buffer.byteLength(this.sql),
+        _buff = Buffer.alloc(_cmd_len + 1 + 3 + 1);    
+
+    _sql_buff.copy(_buff , 5);
+
+    this._buffer = _buff;
+    this.writeUnsignedNumber(4, _cmd_len+1);
+    this.writeUnsignedNumber(1, this.command);
+
+
+    return this._buffer; 
+}
+</code></pre><hr>
+<h2 id="query返回-解包"><a href="#query返回-解包" class="headerlink" title="query返回 解包"></a>query返回 解包</h2><p>从服务器发往客户端的数据包有四种：成功报告包以及错误消息包，数据结束包、数据包。</p>
+<ul>
+<li>0x00: Packets.OkPacket</li>
+<li>0xff: Packets.ErrorPacket</li>
+<li>0xfe: Packets.EofPacket</li>
+<li>其它</li>
+</ul>
+<h3 id="处理逻辑"><a href="#处理逻辑" class="headerlink" title="处理逻辑"></a>处理逻辑</h3><pre><code>let first = data.readUInt8(4)，    //探测包类型
+    last = data.readUInt8(Buffer.byteLength(data) -1); //用来检测字符串类型数据是否传输完成
+
+if (first === 0xff) {
+    //查询错误
+} else if (first === 0x00) {
+    //查询OK，这里可以解析握手包等
+} else {
+    //数据包
+    //NullTerminatedString（Null结尾方式）: 字符串以遇到Null作为结束标志，相应的字节为00
+    if (last === 0x00 ){ 
+        //检查数据包中列信息和数据信息是否都接收完成
+    }
+}
+</code></pre><h3 id="OK-Packet"><a href="#OK-Packet" class="headerlink" title="OK Packet"></a>OK Packet</h3><p>Payload</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度（字节）</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>包头标识</td>
+<td>0x00 代表这是一个OK 包</td>
+</tr>
+<tr>
+<td>1</td>
+<td>rows_len</td>
+<td>影响行数</td>
+<td>相应操作影响的行数，比如一个Update操作的记录是5条，那么这个值就为5</td>
+</tr>
+<tr>
+<td>1 + rows_len</td>
+<td>id_len</td>
+<td>自增id</td>
+<td>插入一条记录时，如果是自增id的话，返回的id值</td>
+</tr>
+<tr>
+<td>1 + rows_len + id_len</td>
+<td>2</td>
+<td>服务器状态</td>
+<td>用于表示服务器状态，比如是否是事务模式或者自动提交模式</td>
+</tr>
+<tr>
+<td>3 + rows_len + id_len</td>
+<td>2</td>
+<td>警告数</td>
+<td>上次命令引起的警告数</td>
+</tr>
+<tr>
+<td>5 + rows_len + id_len</td>
+<td>msg_len</td>
+<td>额外信息</td>
+<td>此次操作的一些额外信息</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Error-Packet"><a href="#Error-Packet" class="headerlink" title="Error Packet"></a>Error Packet</h3><p>Payload</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int<1> [ff]</1></td>
+<td>header</td>
+<td>header of the ERR packet</td>
+</tr>
+<tr>
+<td>int<2></2></td>
+<td>error_code</td>
+<td>错误码</td>
+</tr>
+<tr>
+<td>if capabilities &amp; CLIENT_PROTOCOL_41 {</td>
+</tr>
+<tr>
+<td>string[1]</td>
+<td>sql_state_marker</td>
+<td># marker of the SQL State</td>
+</tr>
+<tr>
+<td>string[5]</td>
+<td>sql_state</td>
+<td>SQL State</td>
+</tr>
+<tr>
+<td>} </td>
+</tr>
+<tr>
+<td>string<eof></eof></td>
+<td>error_message</td>
+<td>报错信息</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Result-Set-Packet"><a href="#Result-Set-Packet" class="headerlink" title="Result Set Packet"></a>Result Set Packet</h3><p>Result Set包产生于我们每次数据库执行需要返回结果集的时候，Server端发送给我们的包，比如平常的SELECT,SHOW等命令，Result Set包相对比较复杂，查询结果的完整内容由：<br>列数量信息 + 列包 + EOF包 + 行包 + EOF包，这五部分组成。</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Result Set Header</td>
+<td>返回数据的字段(列)数量</td>
+</tr>
+<tr>
+<td>Field</td>
+<td>返回数据的列信息（多个）</td>
+</tr>
+<tr>
+<td>EOF</td>
+<td>列结束</td>
+</tr>
+<tr>
+<td>Row Data</td>
+<td>行数据（多个）</td>
+</tr>
+<tr>
+<td>EOF</td>
+<td>数据结束</td>
+</tr>
+</tbody>
+</table>
+<p>例子 SELECT @@version_comment查询的返回结果：</p>
+<pre><code>01 00 00 01 01|27 00 00    02 03 64 65 66 00 00 00    .....&apos;....def...
+11 40 40 76 65 72 73 69    6f 6e 5f 63 6f 6d 6d 65    .@@version_comme
+6e 74 00 0c 08 00 1c 00    00 00 fd 00 00 1f 00 00|   nt..............
+05 00 00 03 fe 00 00 02    00|1d 00 00 04 1c 4d 79    ..............My
+53 51 4c 20 43 6f 6d 6d    75 6e 69 74 79 20 53 65    SQL Community Se
+72 76 65 72 20 28 47 50    4c 29|05 00 00 05 fe 00    rver (GPL)......
+00 02 00                                              ...
+</code></pre><p>VERSION 4.0</p>
+<table>
+<thead>
+<tr>
+<th>Bytes</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n (Length Coded String)</td>
+<td>table</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>name</td>
+</tr>
+<tr>
+<td>4 (Length Coded Binary)</td>
+<td>length</td>
+</tr>
+<tr>
+<td>2 (Length Coded Binary)</td>
+<td>type</td>
+</tr>
+<tr>
+<td>2 (Length Coded Binary)</td>
+<td>flags</td>
+</tr>
+<tr>
+<td>1</td>
+<td>decimals</td>
+</tr>
+<tr>
+<td>n (Length Coded Binary)</td>
+<td>default</td>
+</tr>
+</tbody>
+</table>
+<p>VERSION 4.1</p>
+<table>
+<thead>
+<tr>
+<th>Bytes</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n (Length Coded String)</td>
+<td>catalog</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>db</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>table</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>org_table 原表名</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>name</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>org_name 原字段名</td>
+</tr>
+<tr>
+<td>(filler)            0c</td>
+<td></td>
+</tr>
+<tr>
+<td>charsetnr           08 00</td>
+<td></td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>length</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>type</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>flags</td>
+</tr>
+<tr>
+<td>n (Length Coded String)</td>
+<td>decimals</td>
+</tr>
+<tr>
+<td>(filler) 00 00</td>
+</tr>
+</tbody>
+</table>
+<p> 处理代码：</p>
+<pre><code>/*
+* 解析字段信息
+* @param Buffer 
+* @result Object 
+*/
+function parseColDef(buff){
+    let _stack = _parseLine(buff);
+    if (_stack.length &lt; 2) return false;
+    if (!_stack) return false;
+    if (_stack[0] === &apos;def&apos;){
+        //protocol41
+        return {
+            &apos;db&apos; : _stack[1],
+            &apos;table&apos; : _stack[2],
+            &apos;table_full&apos; : _stack[3],
+            &apos;field&apos; : _stack[4],
+            &apos;field_full&apos; : _stack[5]
+        };    
+    }else{
+        return {
+            &apos;table&apos; : _stack[0],
+            &apos;field&apos; : _stack[1],
+        };
+    }
+}
+
+/*
+* 解析行数据
+* @param Buffer 
+* @result Array 
+*/
+function parseColVal(buff){
+    let _stack = _parseLine(buff);
+    return _stack;
+}
+
+function _parseLine(buff){
+    let _stack = [];
+    for(let i=0,j=buff.length ; i &lt; j ; i++){
+        let _len = buff[i].toString() * 1;
+        let _content = buff.slice(i+1, i+ 1 + _len  );
+        _stack.push(_content.toString());
+        i += _len;  
+    }
+    return _stack;
+}
+
+
+function Parser(options) {
+    options = options || {};
+    this.reset(options);
+}
+
+Parser.prototype.reset = function(options){
+    this._header = [];
+    this._body = [];
+    this._parsed_columns = [];
+    this._parsed_col_vals = [];
+    this.header_len = 4;
+    this._head_set = false;
+    this._body_set = false;
+    this._reset();
+}
+Parser.prototype._reset = function(){
+    this._buffer = Buffer.alloc(0);
+    this._offset = 0;
+}
+
+//将字段部分和数据部分分开存放
+Parser.prototype._put = function(chunk){
+    if (0 === chunk.length) return;
+    if (this._head_set){
+        this._body.push(chunk);
+    }else{
+        this._header.push(chunk);
+    }
+}
+
+//获得result packet
+Parser.prototype.write = function(chunk ,to_parse){
+    if (this._body_set) return false;
+    this._buffer = Buffer.concat([this._buffer,chunk]);
+    this._offset = 0;
+    this._process(to_parse);
+}
+
+Parser.prototype._process = function(to_parse){
+    let _header_len = this.header_len;
+    while(true){
+        if (this._buffer.length === 0 ){
+            break;
+        }
+        let _len = this.parseUnsignedNumber(3),
+            _number = this.parseUnsignedNumber(1);
+        if ((_len + _header_len) &gt; this._buffer.length){
+            break;
+        }
+        let _piece = this._buffer.slice(0,_len + _header_len), 
+            _first = _piece.readUInt8(4);
+
+        this._put(_piece);
+        if (0xfe === _first){
+            if (!this._head_set){
+                this._head_set = true;    
+                this._parsed_col_vals = [];
+                for (let _m = 0,_n = this._parsed_columns.length; _m &lt; _n ; _m++){
+                    this._parsed_col_vals.push([]);
+                }
+
+            }else{
+                this._body_set = true;
+            }
+        } else if(to_parse){
+            if (!this._head_set){
+                let _column = parseColDef(_piece.slice(_header_len));
+                if (_column){
+                    this._parsed_columns.push(_column.field);
+                }
+            }else{
+                let _col_val = parseColVal(_piece.slice(_header_len));
+                for(let _m=0,_n=_col_val.length; _m &lt; _n;_m++){
+                    this._parsed_col_vals[_m].push(_col_val[_m]);    
+                } 
+            }
+        }
+
+        this._buffer = this._buffer.slice(_piece.length );
+
+        this._offset = 0;
+    }
+}
+
+//读取解析后数据
+Parser.prototype.read = function(){
+    return {
+        head : this._header,
+        body : this._body,
+        headed : this._head_set,
+        bodyed : this._body_set,
+        columns : this._parsed_columns,
+        columns_vals : this._parsed_col_vals
+    }
+}
+
+
+//写入数字类型信息
+Parser.prototype.parseUnsignedNumber = function parseUnsignedNumber(bytes) {
+    if (bytes === 1) {
+        return this._buffer[this._offset++];
+    }
+
+    var buffer = this._buffer;
+    var offset = this._offset + bytes - 1;
+    var value  = 0;
+
+    if (bytes &gt; 4) {
+        var err    = new Error(&apos;parseUnsignedNumber: Supports only up to 4 bytes&apos;);
+        err.offset = (this._offset - this._packetOffset - 1);
+        err.code   = &apos;PARSER_UNSIGNED_TOO_LONG&apos;;
+        throw err;
+    }
+
+    while (offset &gt;= this._offset) {
+        value = ((value &lt;&lt; 8) | buffer[offset]) &gt;&gt;&gt; 0;
+        offset--;
+    }
+
+    this._offset += bytes;
+
+    return value;
+}; 
+</code></pre><hr>
+<h2 id="资料"><a href="#资料" class="headerlink" title="资料"></a>资料</h2><p><a href="https://dev.mysql.com/doc/internals/en/text-protocol.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/internals/en/text-protocol.html</a><br><a href="https://blog.csdn.net/caisini_vc/article/details/5356136" target="_blank" rel="noopener">https://blog.csdn.net/caisini_vc/article/details/5356136</a><br><a href="https://jin-yang.github.io/post/mysql-protocol.html" target="_blank" rel="noopener">https://jin-yang.github.io/post/mysql-protocol.html</a></p>
+<p>HandShake:<br><a href="https://my.oschina.net/alchemystar/blog/833598" target="_blank" rel="noopener">https://my.oschina.net/alchemystar/blog/833598</a> ,  <a href="https://my.oschina.net/alchemystar/blog/833598" target="_blank" rel="noopener">https://my.oschina.net/alchemystar/blog/833598</a></p>
+<p>com标识:<br><a href="https://dev.mysql.com/doc/internals/en/text-protocol.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/internals/en/text-protocol.html</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/17/luanmingyang/Angular CDK 部分功能介绍/" rel="prev">Angular CDK 部分功能介绍</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/25/juga/浅谈React-Native与Redux数据流/" rel="next">浅谈 React-Native 与 Redux 数据流</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本"><span class="nav-number">2.</span> <span class="nav-text">基本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一些规则"><span class="nav-number">2.1.</span> <span class="nav-text">一些规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认证阶段"><span class="nav-number">2.2.</span> <span class="nav-text">认证阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得use-db"><span class="nav-number">2.3.</span> <span class="nav-text">获得use db</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#query请求-封包"><span class="nav-number">3.</span> <span class="nav-text">query请求 封包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#query返回-解包"><span class="nav-number">4.</span> <span class="nav-text">query返回 解包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理逻辑"><span class="nav-number">4.1.</span> <span class="nav-text">处理逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OK-Packet"><span class="nav-number">4.2.</span> <span class="nav-text">OK Packet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Error-Packet"><span class="nav-number">4.3.</span> <span class="nav-text">Error Packet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Result-Set-Packet"><span class="nav-number">4.4.</span> <span class="nav-text">Result Set Packet</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资料"><span class="nav-number">5.</span> <span class="nav-text">资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

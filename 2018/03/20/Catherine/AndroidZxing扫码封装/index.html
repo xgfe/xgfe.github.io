@@ -1,0 +1,884 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Android,Zxing,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="Zxing 是一个开放源码的，用 Java 实现的多种格式的 1D/2D 条码图像处理库，它包含了联系到其他语言的端口。Zxing 可以实现使用手机的内置的摄像头完成条形码的扫描及解码。">
+<meta name="keywords" content="Android,Zxing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Zxing 扫码封装">
+<meta property="og:url" content="http://xgfe.github.io/2018/03/20/Catherine/AndroidZxing扫码封装/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="Zxing 是一个开放源码的，用 Java 实现的多种格式的 1D/2D 条码图像处理库，它包含了联系到其他语言的端口。Zxing 可以实现使用手机的内置的摄像头完成条形码的扫描及解码。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.368Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Zxing 扫码封装">
+<meta name="twitter:description" content="Zxing 是一个开放源码的，用 Java 实现的多种格式的 1D/2D 条码图像处理库，它包含了联系到其他语言的端口。Zxing 可以实现使用手机的内置的摄像头完成条形码的扫描及解码。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Android Zxing 扫码封装 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Android Zxing 扫码封装
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-03-20T10:49:30+08:00" content="2018-03-20">
+            2018-03-20
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/Catherine/" itemprop="url" rel="index">
+                  <span itemprop="name">Catherine</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Android/" rel="tag"><i class="icon-next-tags"></i>Android</a>
+            
+              <a href="/tags/Zxing/" rel="tag"><i class="icon-next-tags"></i>Zxing</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>Zxing 是一个开放源码的，用 Java 实现的多种格式的 1D/2D 条码图像处理库，它包含了联系到其他语言的端口。Zxing 可以实现使用手机的内置的摄像头完成条形码的扫描及解码。</p>
+<a id="more"></a>
+<h2 id="一、条码码型"><a href="#一、条码码型" class="headerlink" title="一、条码码型"></a>一、条码码型</h2><p>Zxing 目前支持扫描和解析以下码型：</p>
+<table>
+<thead>
+<tr>
+<th>码型</th>
+<th>中文名</th>
+<th>维度</th>
+<th>字符类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AZTEC</td>
+<td>阿兹特克码</td>
+<td>2D</td>
+<td>ASCII</td>
+</tr>
+<tr>
+<td>CODABAR</td>
+<td>库德巴码</td>
+<td>1D</td>
+<td>数字、字母</td>
+</tr>
+<tr>
+<td>CODE_39</td>
+<td>39码</td>
+<td>1D</td>
+<td>(0-9)10个数字、“ABCD”四个字母和“$-:/.+”六个特殊字符</td>
+</tr>
+<tr>
+<td>CODE_93</td>
+<td>93码</td>
+<td>1D</td>
+<td>(0-9)10个数字、“ABCD”四个字母和“$-:/.+”六个特殊字符</td>
+</tr>
+<tr>
+<td>CODE_128</td>
+<td>128码</td>
+<td>1D</td>
+<td>ASCII</td>
+</tr>
+<tr>
+<td>DATA_MATRIX</td>
+<td>Matrix 25码</td>
+<td>2D</td>
+<td>任意字符</td>
+</tr>
+<tr>
+<td>EAN_8</td>
+<td>EAN商品码</td>
+<td>1D</td>
+<td>数字</td>
+</tr>
+<tr>
+<td>EAN_13</td>
+<td>EAN商品码</td>
+<td>1D</td>
+<td>数字</td>
+</tr>
+<tr>
+<td>ITF</td>
+<td>交插25码</td>
+<td>1D</td>
+<td>数字</td>
+</tr>
+<tr>
+<td>MAXICODE</td>
+<td>UPC快递码</td>
+<td>2D</td>
+<td>ASCII</td>
+</tr>
+<tr>
+<td>PDF_417</td>
+<td>PDF417</td>
+<td>2D</td>
+<td>扩展的字母数字压缩格式、二进制 、ASCII、数字压缩格式</td>
+</tr>
+<tr>
+<td>QR_CODE</td>
+<td>二维条码</td>
+<td>2D</td>
+<td>任意字符</td>
+</tr>
+<tr>
+<td>RSS_14</td>
+<td>RSS码</td>
+<td>1D+2D</td>
+<td>数字</td>
+</tr>
+<tr>
+<td>RSS_EXPANDED</td>
+<td>RSS码</td>
+<td>1D+2D</td>
+<td>数字</td>
+</tr>
+<tr>
+<td>UPC_A</td>
+<td>UPC美国码</td>
+<td>1D</td>
+<td>数字</td>
+</tr>
+<tr>
+<td>UPC_E</td>
+<td>UPC美国码</td>
+<td>1D</td>
+<td>数字</td>
+</tr>
+<tr>
+<td>UPC_EAN_EXTENSION</td>
+<td>EAN/UPC混合码</td>
+<td>1D</td>
+<td>数字</td>
+</tr>
+</tbody>
+</table>
+<p>在 <code>build.gradle</code> 中引入依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">implementation &quot;com.google.zxing:core:$&#123;zxingCoreVer&#125;&quot;</span><br><span class="line">implementation &quot;com.google.zxing:android-core:$&#123;zxingAndroidVer&#125;&quot;</span><br><span class="line">implementation &quot;com.google.zxing:android-integration:$&#123;zxingAndroidVer&#125;&quot;</span><br></pre></td></tr></table></figure>
+<p>引入依赖后即可使用 Zxing 的解码库，对条形码或二维码进行解析，但是需要封装扫码界面、取图流程和解析后的数据返回，才能方便 Android 应用中使用。为此，我们封装了整个扫码和解析的组件库，使得 Android 应用中仅需关注布局的构建。</p>
+<h2 id="二、CaptureActivity-界面部分封装"><a href="#二、CaptureActivity-界面部分封装" class="headerlink" title="二、CaptureActivity 界面部分封装"></a>二、CaptureActivity 界面部分封装</h2><p><code>CaptureActivity</code> 是一个抽象类，继承于 <code>AppCompatActivity</code> ，这个Activity不包含界面，所以其子类需要在 <code>onCreate()</code> 中设置布局。</p>
+<p><code>CaptureActivity</code> 中有多个抽象方法：</p>
+<ul>
+<li>boolean getResult(Result, byte[]) : 每次扫码结束后会调用此方法，实现类可以从参数中获取扫码结果；</li>
+<li>SurfaceView getScanPreview() : 子类 Activity 需要自定义布局，可实现此方法，返回自定义布局中的 <code>SurfaceView</code> 对象；</li>
+<li>View getCropView() : 返回子类自定义布局中的扫码框 View，用于裁剪取图图片。</li>
+</ul>
+<p><code>CaptureActivity</code> 中封装了扫码的流程，包括：</p>
+<ol>
+<li>摄像头预览：通过 <code>SurfaceView</code> 和 <code>Camera</code> 的初始化，在界面中显示摄像头的预览画面；</li>
+<li>自动取图：通过定时获取 <code>SurfaceView</code> 预览图片的方式，得到预览图的二进制数据，然后裁剪出扫码框中部分；</li>
+<li>解析：通过 Zxing Core 解析图片的二进制数据，获取解析结果；</li>
+<li>封装解析结果：结果包含一个字符串、一个图片二进制数组、条码位置数组，封装为 <code>Result</code> 对象；</li>
+<li>界面接收结果：通过抽象方法 <code>boolean getResult(Result, byte[])</code> ，将结果返回给子类 Activity 。</li>
+</ol>
+<p>另外，此抽象类中还封装了扫码界面中常用闪光灯开关方法，并且封装了适配 Android 6.0 的动态权限申请。</p>
+<h3 id="2-1-摄像头预览"><a href="#2-1-摄像头预览" class="headerlink" title="2.1 摄像头预览"></a>2.1 摄像头预览</h3><p>为了在界面中显示摄像头预览画面，需要子类 Activity 提供布局中的 <code>SurfaceView</code> 对象，即可在 Activity 生命周期中处理其初始化和销毁：</p>
+<ul>
+<li>完成 <code>SurfaceView</code> 的初始化后，打开 <code>Camera</code> 获取摄像头数据显示预览画面；</li>
+<li>在 Activity 暂停时，停止预览，释放 <code>Camera</code> 资源；</li>
+<li>在 Activity 重新显示时，重新初始化。</li>
+</ul>
+<h3 id="2-2-自动取图"><a href="#2-2-自动取图" class="headerlink" title="2.2 自动取图"></a>2.2 自动取图</h3><p>取图，即获取 <code>SurfaceView</code> 预览画面的一帧图片。为 <code>SurfaceView</code> 设置取图回调，即可在请求取图后，获取到此刻一帧图像的二进制数据。</p>
+<p>自动取图的实现方式有很多种：</p>
+<ol>
+<li>自动对焦方式，启动摄像头的自动对焦功能，在每次对焦成功的回调中执行取图。这种取图方式依赖自动对焦，在极端情况下可能无法对焦，或者对焦时间较长，造成扫码速度降低。</li>
+<li>定时取图方式，需要开启定时任务，每隔一定时间请求取图方法。这种取图方法的取图间隔是固定的，可以提高取图速度，但是在解析速度较慢的手机上可能出现解析未完成而再次取图的情况，造成混乱。</li>
+<li>线性取图方式，即完成“取图——解析——取图”的线性操作，取图和解析都是由我们自己的代码请求的，这样可以完全控制整个操作流程，避免了定时取图的弊端；因为不需要在完成对焦后再取图，我们可以通过控制延迟时间控制取图速度。</li>
+</ol>
+<p>建议使用线性取图方式，以完全控制取图速度和取图过程，也可以在子类 Activity 获取到结果后，自由控制继续取图或暂停取图。</p>
+<h3 id="2-3-解析图片"><a href="#2-3-解析图片" class="headerlink" title="2.3 解析图片"></a>2.3 解析图片</h3><p>解析取图数据的过程由 zxing:core 库完成。</p>
+<p>具体解析原理代码较多，此处不详述，代码在 <code>com.google.zxing.MultiFormatReader</code> 中。</p>
+<h3 id="2-4-结果封装"><a href="#2-4-结果封装" class="headerlink" title="2.4 结果封装"></a>2.4 结果封装</h3><p><code>com.google.zxing.Result</code> 类中定义了扫码结果。</p>
+<ul>
+<li>String text: 即上一步解析出来的字符串；</li>
+<li>byte[] rawBytes: 图片的二进制数据；</li>
+<li>ResultPoint[] resultPoints: 一个或多个关键点，可以用于在界面中标出条码位置；</li>
+<li>BarcodeFormat format: 条码的码型；</li>
+<li>long timestamp: 时间戳。</li>
+</ul>
+<p>以上数据，可以帮助我们获取扫码结果和展示友好的界面。</p>
+<h2 id="三、预览和摄像头"><a href="#三、预览和摄像头" class="headerlink" title="三、预览和摄像头"></a>三、预览和摄像头</h2><p>我们将摄像头预览相关的操作，封装在 <code>camera</code> 包中，关键类有：</p>
+<ul>
+<li>CameraManager：控制摄像头的开启和关闭；</li>
+<li>CameraConfigurationManager：设置摄像头和预览的参数；</li>
+<li>AutoFocusManager：控制摄像头的自动对焦。</li>
+</ul>
+<h2 id="四、图片解析"><a href="#四、图片解析" class="headerlink" title="四、图片解析"></a>四、图片解析</h2><p>我们将图片解析相关的操作，封装在 <code>decode</code> 包中，关键类有：</p>
+<ul>
+<li>DecodeHandler: 从摄像头获取的原始二进制数据是 YUV 格式，我们在此类中将其转换为 <code>Bitmap</code> ，然后发送到 zxing:core 库解析；</li>
+<li>DecodeThread: 解析图片是耗时操作，所以需要在非 UI 线程中进行。</li>
+</ul>
+<p>在 <code>DecodeThread</code> 类中，我们定义了多种码型组合，例如所有条形码、条形码与二维码、CODE128与二维码等，以满足不同业务场景。在 <code>CaptureActivity</code> 中定义了方法 <code>int getBarcodeMode()</code>，可以在子类中重写，即可定义应用需要的码型。</p>
+<blockquote>
+<p>注意：支持的码型数量越多，解析速度越慢；二维码的解析速度大大慢于一维码的解析速度。</p>
+</blockquote>
+<h2 id="五、App-中实现扫码界面"><a href="#五、App-中实现扫码界面" class="headerlink" title="五、App 中实现扫码界面"></a>五、App 中实现扫码界面</h2><p>在依赖以上组件库后，即可快速实现扫码功能，在 App 开发中仅需自定义界面即可。</p>
+<p>我们首先继承 <code>CaptureActivity</code> ，创建 <code>MyScanActivity</code> 和布局文件 <code>activity_my_scan.xml</code></p>
+<p>MyScanActivity.java:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyScanActivity</span> <span class="keyword">extends</span> <span class="title">CaptureActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SurfaceView mPreviewSv;</span><br><span class="line">    <span class="keyword">private</span> View mCropView;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_my_scan);</span><br><span class="line">        mPreviewSv = findViewById(R.id.scan_preview);</span><br><span class="line">        mCropView = findViewById(R.id.scan_crop);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取扫码结果</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> result 扫码结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bytes  图片二进制数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> true - 继续扫描；false - 暂停扫描</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">getResult</span><span class="params">(Result result, <span class="keyword">byte</span>[] bytes)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span> || TextUtils.isEmpty(result.getText()))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> SurfaceView <span class="title">getScanPreview</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mPreviewSv;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> View <span class="title">getCropView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mCropView;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>activity_my_scan.xml:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">FrameLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">SurfaceView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/scan_preview"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">View</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/scan_crop"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"300dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"200dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"#33ffffff"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以上仅仅是实现扫码界面的最简单代码，如果需要更好的界面效果，还需要修改布局和获取结果后的逻辑。</p>
+</blockquote>
+<p>至此，我们就快速实现了扫码页面的功能。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/24/lixiaoqiang/ios中对象关联的底层实现/" rel="prev">iOS源码解读-对象关联实现分析</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/04/zhouyinian/React-component/" rel="next">实现一个React 组件</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、条码码型"><span class="nav-number">1.</span> <span class="nav-text">一、条码码型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、CaptureActivity-界面部分封装"><span class="nav-number">2.</span> <span class="nav-text">二、CaptureActivity 界面部分封装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-摄像头预览"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 摄像头预览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-自动取图"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 自动取图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-解析图片"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 解析图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-结果封装"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 结果封装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、预览和摄像头"><span class="nav-number">3.</span> <span class="nav-text">三、预览和摄像头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、图片解析"><span class="nav-number">4.</span> <span class="nav-text">四、图片解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、App-中实现扫码界面"><span class="nav-number">5.</span> <span class="nav-text">五、App 中实现扫码界面</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

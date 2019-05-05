@@ -1,0 +1,926 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Thrift,NodeJS,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="ThriftThrift是一个跨语言的远程调用框架(RPC)，它允许你根据IDL规则定义数据类型和服务接口，然后通过Thrift编译器生成跨语言的client和server端，目前支持市面上所有的主流语言。">
+<meta name="keywords" content="Thrift,NodeJS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="远程调用框架Thrift分享">
+<meta property="og:url" content="http://xgfe.github.io/2017/05/03/zhouxiong/Thrift/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="ThriftThrift是一个跨语言的远程调用框架(RPC)，它允许你根据IDL规则定义数据类型和服务接口，然后通过Thrift编译器生成跨语言的client和server端，目前支持市面上所有的主流语言。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/c8ae7c1cd293f4317d504b39289f7924517918.png">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/e6b5b5b48d0fe84953da10fbffe70edb16813.png">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/14ff01bccad5570e9e923b31798c820d28373.png">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/8d37bd540b2967cbf8367ce454b4740c23797.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.410Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="远程调用框架Thrift分享">
+<meta name="twitter:description" content="ThriftThrift是一个跨语言的远程调用框架(RPC)，它允许你根据IDL规则定义数据类型和服务接口，然后通过Thrift编译器生成跨语言的client和server端，目前支持市面上所有的主流语言。">
+<meta name="twitter:image" content="https://p1.meituan.net/dpnewvc/c8ae7c1cd293f4317d504b39289f7924517918.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 远程调用框架Thrift分享 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              远程调用框架Thrift分享
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-05-03T00:00:00+08:00" content="2017-05-03">
+            2017-05-03
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhouxiong/" itemprop="url" rel="index">
+                  <span itemprop="name">zhouxiong</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Thrift/" rel="tag"><i class="icon-next-tags"></i>Thrift</a>
+            
+              <a href="/tags/NodeJS/" rel="tag"><i class="icon-next-tags"></i>NodeJS</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="Thrift"><a href="#Thrift" class="headerlink" title="Thrift"></a>Thrift</h2><p>Thrift是一个跨语言的远程调用框架(RPC)，它允许你根据IDL规则定义数据类型和服务接口，然后通过Thrift编译器生成跨语言的client和server端，目前支持市面上所有的主流语言。</p>
+<a id="more"></a>
+<ul>
+<li>主要目标</li>
+</ul>
+<p>建立一种高效，可信赖的跨语言通信方案，不再将客户端和服务端局限于同一种语言上。</p>
+<h2 id="Thrift-VS-Restful"><a href="#Thrift-VS-Restful" class="headerlink" title="Thrift VS Restful"></a>Thrift VS Restful</h2><p>Thrift RPC相比于HTTP的Restful模式有自己的优势，也有不足的地方。</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th style="text-align:center">Thrift</th>
+<th>Restful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>架构设计</td>
+<td style="text-align:center">基于C/S模式</td>
+<td>基于B/S模式</td>
+</tr>
+<tr>
+<td>传输协议</td>
+<td style="text-align:center">可以通过Socket，HTTP传输</td>
+<td>通过HTTP传输</td>
+</tr>
+<tr>
+<td>传输格式</td>
+<td style="text-align:center">基于二进制数据传输</td>
+<td>基于JSON或者XML格式传输</td>
+</tr>
+<tr>
+<td>优势</td>
+<td style="text-align:center">体积更小，传输更快</td>
+<td>充分利用HTTP协议优势</td>
+</tr>
+<tr>
+<td>劣势</td>
+<td style="text-align:center">增加额外序列化和反序列化成本</td>
+<td>针对业务场景HTTP动词太少   </td>
+</tr>
+</tbody>
+</table>
+<h2 id="Thrift基础知识之IDL"><a href="#Thrift基础知识之IDL" class="headerlink" title="Thrift基础知识之IDL"></a>Thrift基础知识之IDL</h2><p>Thrift是一门接口定义语言(interface definition language, IDL)，遵循自己的语言原则。一个IDL文件中包含定义的数据结构以及接口服务，可以由Thrift的代码生成器将源文件(.thrift)编译成各种目标语言支持的文件，例如可以将IDL文件编译成Java支持的.java文件，NodeJS支持的.js文件等。</p>
+<h3 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h3><ul>
+<li><p>bool 表示一个布尔值，取true或false</p>
+</li>
+<li><p>byte 表示一个带符号的字节</p>
+</li>
+<li><p>i16 表示一个带符号的16位整形</p>
+</li>
+<li><p>i32 表示一个带符号的32位整形 </p>
+</li>
+<li><p>i64 表示一个带符号的64位整形</p>
+</li>
+<li><p>double 表示一个带符号的64位浮点数is</p>
+</li>
+<li><p>string 表示一个不可知编码的文本或二进制串</p>
+</li>
+</ul>
+<h3 id="结构struct"><a href="#结构struct" class="headerlink" title="结构struct"></a>结构struct</h3><p>类似于C++里的结构体，定义一个通用的对象以此来跨语言，通过struct来描述，对于struct有一些限制</p>
+<ul>
+<li><p>struct不能继承，可以嵌套</p>
+</li>
+<li><p>成员必须有明确的数据类型</p>
+</li>
+<li><p>成员是被整数编过号的，编号不能被重复使用</p>
+</li>
+<li><p>字段有required和optional之分，默认值为optional，设置为required，则必须赋值而且会被序列化；设置为optional，则在没有设置值的时候不会进行序列化。而且如果设置为required，而没有赋值时会报错<code>Required field XX is unset!</code></p>
+</li>
+<li><p>字段可以设置默认值</p>
+</li>
+</ul>
+<p>例如定义一个User对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> struct User &#123;</span><br><span class="line">    1: i16 id,</span><br><span class="line">    2: string username,</span><br><span class="line">    3: string password = &apos;123456&apos;,</span><br><span class="line">    4: required string email,</span><br><span class="line">    5: optional string telphone</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="容器Containers"><a href="#容器Containers" class="headerlink" title="容器Containers"></a>容器Containers</h3><p>Thrift容器类似于主流编程语言的容器，主要有三种类型：</p>
+<ul>
+<li><p>list&lt; type &gt;：元素类型为type的有序列表，允许重复元素</p>
+</li>
+<li><p>set&lt; type &gt;：元素类型为type的无序列表，不允许重复元素</p>
+</li>
+<li><p>map&lt; key, value&gt;：&lt; key, value&gt;类型的键值对，key不允许重复，一般情况下map的key最好是thrift的基本类型</p>
+</li>
+</ul>
+<p>例如定义一个struct，里面包含三种类型的容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">struct User &#123;</span><br><span class="line">    1: i16 id,</span><br><span class="line">    2: string username,</span><br><span class="line">    3: string password,</span><br><span class="line">    4: required string email,</span><br><span class="line">    5: optional string telphone</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct Person &#123; </span><br><span class="line">    1: list&lt;User&gt; userList,</span><br><span class="line">    2: set&lt;User&gt; userSet,</span><br><span class="line">    3: map&lt;string, User&gt; userMap</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="枚举Enum"><a href="#枚举Enum" class="headerlink" title="枚举Enum"></a>枚举Enum</h3><p>枚举是很多语言中都有的概念，是有穷序列的所有成员的一种表示方式，具有以下一些特征：</p>
+<ul>
+<li><p>编译器会将每个成员变量赋予一个整数值，默认从0开始</p>
+</li>
+<li><p>可以赋予成员变量任意一个整数值</p>
+</li>
+</ul>
+<p>例如定义一个运算符的枚举</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">enum Operation &#123;</span><br><span class="line">    ADD = 1,</span><br><span class="line">    SUBTRACT = 2,</span><br><span class="line">    MULTIPLY = 3,</span><br><span class="line">    DIVIDE = 4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="异常Exception"><a href="#异常Exception" class="headerlink" title="异常Exception"></a>异常Exception</h3><p>Thrift中同样提供了自定义异常信息的exception属性，Thrift的exception继承了每种语言的基础异常类。</p>
+<p>例如，自定义一个运算错误的异常</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 运算异常</span><br><span class="line">exception InvalidOperation &#123;</span><br><span class="line">    1: i32 whatOp,  </span><br><span class="line">    2: string why</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="服务Service"><a href="#服务Service" class="headerlink" title="服务Service"></a>服务Service</h3><p>Thrift中的service定义相当于其他语言中的接口定义，service中只有方法的声明，没有方法的实现。Thrift编译器会产生实现这些接口的client和server。</p>
+<p>例如定义个NodeJS的运算Service，注意在service中不需要进行顺序的编码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">service Calculate &#123;</span><br><span class="line">    void ping(),</span><br><span class="line"></span><br><span class="line">    i32 add(1: i32 num1, 2: i32 num2),</span><br><span class="line"></span><br><span class="line">    i32 calculate(1: i32 logid, 2: Work work) throws (1: InvalidOperation invalid)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="命名空间Namespace"><a href="#命名空间Namespace" class="headerlink" title="命名空间Namespace"></a>命名空间Namespace</h3><p>Thrift中的namespace类似于c++中的namespace和java中的package，将相关代码组织在一起</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">namespace cpp com.example.test</span><br><span class="line">namespace java com.example.test </span><br><span class="line">namespace php com.example.test</span><br></pre></td></tr></table></figure>
+<h3 id="include"><a href="#include" class="headerlink" title="include"></a>include</h3><p>为了方便管理、重用和提高模块性/组织性，我们常常分割Thrift定义在不同的文件中。Thrift允许文件通过include关键字来引入其它thrift文件，用户需要使用thrift文件名作为前缀访问被包含的对像。</p>
+<p>注意：在include关键那行后面没有逗号或者分号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">include &quot;test.thrift&quot;   </span><br><span class="line">...</span><br><span class="line">struct StSearchResult &#123;</span><br><span class="line">    1: i32 uid,</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Thrift基础之底层网络通信"><a href="#Thrift基础之底层网络通信" class="headerlink" title="Thrift基础之底层网络通信"></a>Thrift基础之底层网络通信</h2><p>Thrift的整体架构图如下所示</p>
+<p><img src="https://p1.meituan.net/dpnewvc/c8ae7c1cd293f4317d504b39289f7924517918.png" alt="架构图"></p>
+<p>从架构图中可以看出，我们自己编写的代码只需要实现service就可以，我们其实并不关心底层的Protocol和Transport的实现。</p>
+<h3 id="Transport"><a href="#Transport" class="headerlink" title="Transport"></a>Transport</h3><p>Transport提供了一个简单的网络读写抽象层，是thrift最底层的服务，Transport接口定义了以下一些方法</p>
+<ul>
+<li><p>open</p>
+</li>
+<li><p>close</p>
+</li>
+<li><p>read</p>
+</li>
+<li><p>write</p>
+</li>
+<li><p>flush</p>
+</li>
+</ul>
+<p>目前提供的transport有以下这些：</p>
+<ul>
+<li><p>TSocket：使用阻塞的socket I/O</p>
+</li>
+<li><p>TFramedTransport：以帧的形式发送，每帧前面是一个长度。要求服务器来non-blocking server</p>
+</li>
+<li><p>TFileTransport：写到文件。没有包括在java实现中。</p>
+</li>
+<li><p>TMemoryTransport：使用内存 I/O 。java实现中在内部使用了ByteArrayOutputStream。</p>
+</li>
+<li><p>TZlibTransport：压缩使用zlib。在java实现中还不可用。</p>
+</li>
+</ul>
+<h3 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h3><p>Protocol抽象层定义了一种将内存中数据结构映射成可传输格式的机制。换句话说，Protocol定义了datatype怎样使用底层的Transport对自己进行编解码。因此，Protocol的实现要给出编码机制并负责对数据进行序列化。</p>
+<p>目前支持的协议有：</p>
+<ul>
+<li><p>TBinaryProtocol：二进制格式</p>
+</li>
+<li><p>TCompactProtocol：效率和高压缩编码数据</p>
+</li>
+<li><p>TDenseProtocol：和TCompactProtocol相似，但是省略了meta信息，从哪里发送的，增加了receiver。还在实验中，java中还不可用</p>
+</li>
+<li><p>TJSONProtocol：使用JSON</p>
+</li>
+<li><p>TSimpleJSONProtocol：只写的protocol使用JSON</p>
+</li>
+<li><p>TDebugProtocol：使用人类可读的text格式，帮助调试</p>
+</li>
+</ul>
+<h2 id="Thrift使用"><a href="#Thrift使用" class="headerlink" title="Thrift使用"></a>Thrift使用</h2><p>在这里我们要完成的一个功能是使用NodeJS编程，建立Thrift服务，通过客户端向服务端发送请求完成加减乘除的计算，下面对整个过程进行详细讲解。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>参考地址：<a href="https://thrift.apache.org/docs/BuildingFromSource" target="_blank" rel="noopener">https://thrift.apache.org/docs/BuildingFromSource</a></p>
+<ul>
+<li>下载</li>
+</ul>
+<p>首先将thrift项目clone到本地，thrift地址为<code>https://github.com/apache/thrift.git</code>，然后进入到项目中。</p>
+<ul>
+<li>构建和安装thrift的编译器</li>
+</ul>
+<p>进入到项目的顶级目录中，执行以下命令，安装boost</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bootstrap.sh</span><br></pre></td></tr></table></figure>
+<p>然后执行以下命令，安装libevent</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/usr/local</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>在安装过程中可能出现<code>Bison version 2.5 or higher must be installed on the system!</code>的问题，需要安装bison的最新版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install bison</span><br></pre></td></tr></table></figure>
+<p>然后链接bison</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew link bison --force</span><br></pre></td></tr></table></figure>
+<h3 id="建立-thrift文件"><a href="#建立-thrift文件" class="headerlink" title="建立.thrift文件"></a>建立.thrift文件</h3><p>建立一个calculate.thrift文件，在文件中定义struct以及服务接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">// 操作运算符</span><br><span class="line">enum Operation &#123;</span><br><span class="line">    ADD = 1,</span><br><span class="line">    SUBTRACT = 2,</span><br><span class="line">    MULTIPLY = 3,</span><br><span class="line">    DIVIDE = 4</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 运算实体</span><br><span class="line">struct Work &#123;</span><br><span class="line">    1: i32 num1 = 0,</span><br><span class="line">    2: i32 num2,</span><br><span class="line">    3: Operation op,</span><br><span class="line">    4: string comment</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 异常信息</span><br><span class="line">exception InvalidOperation &#123;</span><br><span class="line">    1: i32 whatOp,</span><br><span class="line">    2: string why</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 服务接口</span><br><span class="line">service Calculate &#123;</span><br><span class="line">    void ping(),</span><br><span class="line"></span><br><span class="line">    i32 add(1: i32 num1, 2: i32 num2),</span><br><span class="line"></span><br><span class="line">    i32 calculate(1: i32 logid, 2: Work work) throws (1: InvalidOperation invalid)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="编译-thrift文件"><a href="#编译-thrift文件" class="headerlink" title="编译.thrift文件"></a>编译.thrift文件</h3><p>通过以下命令来编译calculate.thrift文件，—gen后面的参数表示编译成支持NodeJS的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">thrift -r --gen js:node tutorial.thrift</span><br></pre></td></tr></table></figure>
+<p>编译后会发现生成了一个gen-nodejs文件夹，下面包含了两个文件<br><img src="https://p1.meituan.net/dpnewvc/e6b5b5b48d0fe84953da10fbffe70edb16813.png" alt="生成的文件夹"></p>
+<h3 id="编写server文件"><a href="#编写server文件" class="headerlink" title="编写server文件"></a>编写server文件</h3><p>Thrift是基于Client/Server模式的，我们需要分别编写server和client文件。</p>
+<ul>
+<li>require</li>
+</ul>
+<p>首先需要通过require的方式引入thrift和刚才生成的gen-nodejs文件夹下的两个文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var thrift = require(&apos;thrift&apos;);</span><br><span class="line">var Calculate = require(&apos;../gen-nodejs/Calculate&apos;);</span><br><span class="line">var ttypes = require(&apos;../gen-nodejs/calculate_types&apos;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建server</li>
+</ul>
+<p>通过createServer()方法创建一个server，并在内部实现service中定义的几个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var server = thrift.createServer(Calculate, &#123;&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>监听端口</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server.listen(9090);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>完整代码如下</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">var thrift = require(&apos;thrift&apos;);</span><br><span class="line">var Calculate = require(&apos;../gen-nodejs/Calculate&apos;);</span><br><span class="line">var ttypes = require(&apos;../gen-nodejs/calculate_types&apos;);</span><br><span class="line"></span><br><span class="line">var server = thrift.createServer(Calculate, &#123;</span><br><span class="line">    ping: function (result) &#123;</span><br><span class="line">        console.log(&apos;ping success&apos;);</span><br><span class="line">        result(null);</span><br><span class="line">    &#125;,</span><br><span class="line">    add: function (num1, num2, result) &#123;</span><br><span class="line">        console.log(&apos;add success&apos;);</span><br><span class="line">        result(null, num1 + num2);</span><br><span class="line">    &#125;,</span><br><span class="line">    calculate: function (logid, work, result) &#123;</span><br><span class="line">        console.log(&apos;calculate success&apos;);</span><br><span class="line">        var val = 0;</span><br><span class="line">        if (work.op === ttypes.Operation.ADD) &#123;</span><br><span class="line">            val = work.num1 + work.num2;</span><br><span class="line">        &#125; else if (work.op === ttypes.Operation.SUBTRACT) &#123;</span><br><span class="line">            val = work.num1 - work.num2;</span><br><span class="line">        &#125; else if (work.op === ttypes.Operation.MULTIPLY) &#123;</span><br><span class="line">            val = work.num1 * work.num2;</span><br><span class="line">        &#125; else if (work.op === ttypes.Operation.DIVIDE) &#123;</span><br><span class="line">            if (work.num2 === 0) &#123;</span><br><span class="line">                var o = new ttypes.InvalidOperation();</span><br><span class="line">                o.whatOp = work.op;</span><br><span class="line">                o.why = &apos;Can not divide by 0&apos;;</span><br><span class="line">                result(o);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            val = work.num1 / work.num2;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            var o = new ttypes.InvalidOperation();</span><br><span class="line">            o.whatOp = work.op;</span><br><span class="line">            o.why = &apos;invalid operation&apos;;</span><br><span class="line">            result(o);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        result(null, val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(9090);</span><br></pre></td></tr></table></figure>
+<h3 id="编写client文件"><a href="#编写client文件" class="headerlink" title="编写client文件"></a>编写client文件</h3><ul>
+<li>require</li>
+</ul>
+<p>类似于server端，client端也需要引入相关文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var thrift = require(&apos;thrift&apos;);</span><br><span class="line">var Calculator = require(&apos;../gen-nodejs/Calculate&apos;);</span><br><span class="line">var ttypes = require(&apos;../gen-nodejs/calculate_types&apos;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>建立连接</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var transport = thrift.TBufferedTransport;</span><br><span class="line">var protocol = thrift.TBinaryProtocol;</span><br><span class="line"></span><br><span class="line">var connection = thrift.createConnection(&quot;localhost&quot;, 9090, &#123;</span><br><span class="line">  transport : transport,</span><br><span class="line">  protocol : protocol</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建client</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var client = thrift.createClient(Calculator, connection);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>调用service中的方法</li>
+</ul>
+<p>client端通过调用service中的方法向server发送请求</p>
+<ul>
+<li>完整代码</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">var thrift = require(&apos;thrift&apos;);</span><br><span class="line">var Calculator = require(&apos;../gen-nodejs/Calculate&apos;);</span><br><span class="line">var ttypes = require(&apos;../gen-nodejs/calculate_types&apos;);</span><br><span class="line"></span><br><span class="line">var transport = thrift.TBufferedTransport;</span><br><span class="line">var protocol = thrift.TBinaryProtocol;</span><br><span class="line"></span><br><span class="line">var connection = thrift.createConnection(&apos;localhost&apos;, 9090, &#123;</span><br><span class="line">    transport: transport,</span><br><span class="line">    protocol: protocol</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">connection.on(&apos;error&apos;, function (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var client = thrift.createClient(Calculator, connection);</span><br><span class="line"></span><br><span class="line">client.ping(function (response) &#123;</span><br><span class="line">    console.log(&apos;client ping&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">client.add(1, 1, function (error, response) &#123;</span><br><span class="line">    console.log(&apos;1 + 1 = &apos;, response);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var work = new ttypes.Work();</span><br><span class="line">work.op = ttypes.Operation.SUBTRACT;</span><br><span class="line">work.num1 = 10;</span><br><span class="line">work.num2 = 4;</span><br><span class="line"></span><br><span class="line">var work2 = new ttypes.Work(&#123;</span><br><span class="line">    num1: 10,</span><br><span class="line">    num2: 4,</span><br><span class="line">    op: ttypes.Operation.SUBTRACT</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">client.calculate(1, work2, function (error, response) &#123;</span><br><span class="line">    if (error) &#123;</span><br><span class="line">        console.log(error);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        console.log(&apos;10 - 4 = &apos; + response);</span><br><span class="line">    &#125;</span><br><span class="line">    connection.end();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="调用server和client"><a href="#调用server和client" class="headerlink" title="调用server和client"></a>调用server和client</h3><p>直接通过node命令启动server监听端口，然后通过node创建client</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">node server/server.js</span><br><span class="line"></span><br><span class="line">node client/client.js</span><br></pre></td></tr></table></figure>
+<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h3><ul>
+<li><p>服务端<br><img src="https://p1.meituan.net/dpnewvc/14ff01bccad5570e9e923b31798c820d28373.png" alt="服务端结果"></p>
+</li>
+<li><p>客户端<br><img src="https://p1.meituan.net/dpnewvc/8d37bd540b2967cbf8367ce454b4740c23797.png" alt="客户端结果"></p>
+</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>1.<a href="http://www.jianshu.com/p/0f4113d6ec4b" target="_blank" rel="noopener">Thrift IDL入门教程</a></p>
+<p>2.<a href="https://thrift.apache.org/tutorial/nodejs" target="_blank" rel="noopener">thrift官网的NodeJS实例</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/03/LexHuang/web-worker/" rel="prev">web worker详解</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/21/shsoul/router/" rel="next">如何实现一套iOS-router</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift"><span class="nav-number">1.</span> <span class="nav-text">Thrift</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift-VS-Restful"><span class="nav-number">2.</span> <span class="nav-text">Thrift VS Restful</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift基础知识之IDL"><span class="nav-number">3.</span> <span class="nav-text">Thrift基础知识之IDL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本数据类型"><span class="nav-number">3.1.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结构struct"><span class="nav-number">3.2.</span> <span class="nav-text">结构struct</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器Containers"><span class="nav-number">3.3.</span> <span class="nav-text">容器Containers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#枚举Enum"><span class="nav-number">3.4.</span> <span class="nav-text">枚举Enum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常Exception"><span class="nav-number">3.5.</span> <span class="nav-text">异常Exception</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务Service"><span class="nav-number">3.6.</span> <span class="nav-text">服务Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命名空间Namespace"><span class="nav-number">3.7.</span> <span class="nav-text">命名空间Namespace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include"><span class="nav-number">3.8.</span> <span class="nav-text">include</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift基础之底层网络通信"><span class="nav-number">4.</span> <span class="nav-text">Thrift基础之底层网络通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Transport"><span class="nav-number">4.1.</span> <span class="nav-text">Transport</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Protocol"><span class="nav-number">4.2.</span> <span class="nav-text">Protocol</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thrift使用"><span class="nav-number">5.</span> <span class="nav-text">Thrift使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">5.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立-thrift文件"><span class="nav-number">5.2.</span> <span class="nav-text">建立.thrift文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译-thrift文件"><span class="nav-number">5.3.</span> <span class="nav-text">编译.thrift文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写server文件"><span class="nav-number">5.4.</span> <span class="nav-text">编写server文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写client文件"><span class="nav-number">5.5.</span> <span class="nav-text">编写client文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用server和client"><span class="nav-number">5.6.</span> <span class="nav-text">调用server和client</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行结果"><span class="nav-number">5.7.</span> <span class="nav-text">运行结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

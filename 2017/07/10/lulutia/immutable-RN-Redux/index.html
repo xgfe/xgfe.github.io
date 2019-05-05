@@ -1,0 +1,885 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="React Native,React,optimization,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要介绍了如何对RN项目进行render count的优化，着重介绍了Immutable.js及其如何与Redux和React Native融合。">
+<meta name="keywords" content="React Native,React,optimization">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于React-Native及Redux的Immutable.js引入">
+<meta property="og:url" content="http://xgfe.github.io/2017/07/10/lulutia/immutable-RN-Redux/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要介绍了如何对RN项目进行render count的优化，着重介绍了Immutable.js及其如何与Redux和React Native融合。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-oldPref.png?">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-coperation.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-exampleLayout.png?imageView2/2/w/500/h/500/q/100|watermark/2/text/bHVsdXRpYQ==/font/5a6L5L2T/fontsize/240/fill/IzAwMDAwMA==/dissolve/20/gravity/SouthEast/dx/10/dy/10|imageslim">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-examplePref.png?">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-setstate.png?">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-share.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-after.png?">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.385Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于React-Native及Redux的Immutable.js引入">
+<meta name="twitter:description" content="本文主要介绍了如何对RN项目进行render count的优化，着重介绍了Immutable.js及其如何与Redux和React Native融合。">
+<meta name="twitter:image" content="http://okzzg7ifm.bkt.clouddn.com/immutable-oldPref.png?">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 基于React-Native及Redux的Immutable.js引入 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              基于React-Native及Redux的Immutable.js引入
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-07-10T20:07:00+08:00" content="2017-07-10">
+            2017-07-10
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lulutia/" itemprop="url" rel="index">
+                  <span itemprop="name">lulutia</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/React-Native/" rel="tag"><i class="icon-next-tags"></i>React Native</a>
+            
+              <a href="/tags/React/" rel="tag"><i class="icon-next-tags"></i>React</a>
+            
+              <a href="/tags/optimization/" rel="tag"><i class="icon-next-tags"></i>optimization</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要介绍了如何对RN项目进行render count的优化，着重介绍了Immutable.js及其如何与Redux和React Native融合。</p>
+<a id="more"></a>
+<h4 id="前菜之背景介绍"><a href="#前菜之背景介绍" class="headerlink" title="前菜之背景介绍"></a>前菜之背景介绍</h4><p>话说某天，楼主吃着火锅唱着歌，逛到了React的Performance Tools版块，心血来潮，放到了手上的项目里面玩了玩，看完后整个人都不太好了，数据如下(我一页屏幕都截不完……)：<br><img src="http://okzzg7ifm.bkt.clouddn.com/immutable-oldPref.png?" alt="性能图"><br>但实际上我所执行的操作仅仅只是为颜色外观打了个分，如下所示：<br><img src="http://okzzg7ifm.bkt.clouddn.com/immutable-coperation.png" alt="操作图"></p>
+<p>根据上面的统计数据，初略计算了下，一个打分操作render count为293。一个页面必填5个打分项，如此一来总共render count  &gt;= 1465，其中还排除了用户打分完毕后继续修改的情况。不用我说，大家也能看出这是一个相当不合理的数字。因为就理想状况而言，打分操作最多只影响当前的打分项，一个打分组件五颗星，其具体结构如下所示:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;View key=&#123;i&#125;&gt;</span><br><span class="line">      &lt;TouchableOpacity</span><br><span class="line">        style=&#123;&#123;<span class="attr">marginTop</span>: <span class="number">5</span>, <span class="attr">marginRight</span>: <span class="number">5</span>&#125;&#125;</span><br><span class="line">        onPress=&#123;() =&gt;&#123;......&#125;</span><br><span class="line">        &gt;</span><br><span class="line">        &lt;IconFont name=<span class="string">"star"</span> size=&#123;StyleSheet.r(<span class="number">22</span>)&#125; color=&#123;color&#125;/&gt;</span><br><span class="line">      &lt;<span class="regexp">/TouchableOpacity&gt;</span></span><br><span class="line"><span class="regexp"> &lt;/</span>View&gt;</span><br></pre></td></tr></table></figure>
+<p>因此直接改变量为3*5=15是比较合理，再加上全局的Navar以及connect等操作，render count达到293也是绝对不合理且，通过分析，我们可以看到有很多数据根本没改变的组件也被重新渲染了的，这部分开销完全是不必要且有相当大的改进空间的。既然如此，我们来改进下吧~</p>
+<p>为了减少环境变量且便于修改与测试，我们基于种子项目来模拟当前的状况。种子项目在React Native官方项目基础上集成了Redux进行数据处理，除此之外还提供了一些基本的工具函数及路由封装。<br>我们构造了两个页面，点击第一个页面的button会跳转到第二个页面，在第二个页面会从服务器端获取数据，渲染成列表形式，除此之外在列表上方有一个button，它会记录点击次数并且展示出来。大概布局如下：<br><img src="http://okzzg7ifm.bkt.clouddn.com/immutable-exampleLayout.png?imageView2/2/w/500/h/500/q/100|watermark/2/text/bHVsdXRpYQ==/font/5a6L5L2T/fontsize/240/fill/IzAwMDAwMA==/dissolve/20/gravity/SouthEast/dx/10/dy/10|imageslim" alt="demo图"></p>
+<p>既然是模拟前文的情况，那我们可以预测点击addCount button后，整个列表应该是被重新渲染了的，虽然他的数据实际上并没有变化，讲道理是不应该重新渲染的。实际结果如下图所示，的确和我们的预测一样，List下的Text render count是不必要的。<br><img src="http://okzzg7ifm.bkt.clouddn.com/immutable-examplePref.png?" alt="demo性能图"></p>
+<p>这里有一个点要注意，所谓的重新渲染指的是在virtual dom层面的。下图是整个渲染过程开始到结束的主要流程，而本文关心的是下图黄色框中的部分，而重中之重是黄色框中的第三部: 其后代组件执行Update。<br><img src="http://okzzg7ifm.bkt.clouddn.com/immutable-setstate.png?" alt="渲染过程"></p>
+<p>因为我们采用Redux进行数据处理，每个页面的initailState为一个对象，而从不直接修改state 是Redux 的核心理念之一，所以触发action后reducer返回的是一个新的对象。这一流程相当于执行了setState操作，因此整个页面开始执行dirty的标记，因为是新对象，所以几乎所有与state相关的组件及其后代组件都要执行Update的流程，如果我们不对Update的流程进行特殊定制，则shouldComponentUpdate默认返回true，之后执行render函数。因此，出现了上述中多次不必要render的情况。<br>所以，首要任务是添加shouldComponentUpdate函数进行处理。但是这里会有两个明显的问题：</p>
+<ul>
+<li>每个页面，甚至每个组件的state，props结构不一样，很难有统一的对比函数</li>
+<li>state，props的结构可能很复杂，一步步的循环迭代对比对性能的消耗可能很大</li>
+</ul>
+<p>针对shouldComponentUpdate，React提供了PureRenderMixin的方式来进行处理，但是这种方式其进行的只是浅对比，如果是复杂数据结构的深层次不一样，它也可能返回false。因此只能处理简单的数据结构，或者针对开发者对整个state层次有完全的把握，能够在深层次变化后显示调用this.forceUpdate()的情况。显然与我们的需求不符。此时，本文的主题Immutable.js终于要出场了。</p>
+<h4 id="主菜之Immutable-js介绍"><a href="#主菜之Immutable-js介绍" class="headerlink" title="主菜之Immutable.js介绍"></a>主菜之Immutable.js介绍</h4><p>讨论Immutable.js之前，我们首先看看啥叫Immutable。来，看看维基百科的定义：</p>
+<blockquote>
+<p>In object-oriented and functional programming, an immutable object is an object whose state cannot be modified after it is created.This is in contrast to a mutable object (changeable object), which can be modified after it is created.</p>
+</blockquote>
+<ul>
+<li><p>需要解决的问题</p>
+<ul>
+<li><p>减少复杂性，增加代码的可控性</p>
+<p>  对于immutable object在创建后就再也不能修改了，而mutable object却可以修改，举个很简单的栗子：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fruit = &#123;<span class="attr">apple</span>: <span class="number">1</span>&#125;;</span><br><span class="line">friuit.apple = <span class="number">2</span>;</span><br><span class="line">fruit; <span class="comment">// &#123;apple: 2&#125;</span></span><br></pre></td></tr></table></figure>
+<p>  上面这种特性在频繁需要修改原对象的时候特别好用，可以节约内存。但是这种灵活性往往以可控性为代价，多处使用中的任意一处修改都会影响所有的使用，比如下面的栗子：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> animal = &#123;<span class="attr">dog</span>: <span class="number">1</span>&#125;;</span><br><span class="line">changeAnimalCount(animal);</span><br><span class="line">animal; <span class="comment">// ?</span></span><br></pre></td></tr></table></figure>
+<p>  经过函数调用后，我们谁都不知道animal变成了啥样 = =。处理这种情况，我们往往需要执行深拷贝，然后在拷贝出的对象上执行操作，这样可以保证数据的可控性，但这个又往往以内存的大量使用为代价。特别不巧的是，我们的项目中还真的有很多地方用到了深拷贝，并且为了这个操作引入了extend库。因此，如何在花费很少的情况下对state的状态做一个很好的记录成为了一个问题。</p>
+</li>
+<li><p>减少UI框架中View层与Model层的耦合</p>
+<p>  在我们进行应用交互时，我们相当关注状态的改变，因为状态的改变意味着我们需要做哪些UI层面的变动，这部分是数据驱动的。简单的说，我们可能实现下面的代码：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> storeData = &#123;<span class="attr">key</span>: <span class="string">'before'</span>&#125;;</span><br><span class="line">renderUI(storeData);</span><br><span class="line">getDataFromServer(url, ()=&gt;&#123;</span><br><span class="line">	renderUI(storeData);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>  但是上面这种情况造成的问题是，也许和服务器交互后的数据根本没有改变，然而我们要执行UI渲染。或者的确执行了UI渲染，但是我们并不知道是具体的哪块数据进行了变动。因此我们可能改良出下面的代码：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> storeData = &#123;<span class="attr">key</span>: <span class="string">'before'</span>&#125;;</span><br><span class="line">renderUI(storeData);</span><br><span class="line"><span class="built_in">Object</span>.observer(storeData, (changes) =&gt; &#123;</span><br><span class="line">	renderUI(storeData, changes);</span><br><span class="line">&#125;)</span><br><span class="line">getDataFromServer(url);</span><br></pre></td></tr></table></figure>
+<p>  这种情况下，我们通过Object.observer()来对数据进行监听，这样至少我们知道哪些数据进行了变化。但是这种情况下依然有问题，因为Object.observer()执行的只是第一层的比较，因此如果是深层次的变化它依然没法处理。同时，如果数据变化频繁的情况下，它也做了很多的无用功，毕竟我们只关心最后的状态。因此现在的做法基本是使用如下所示的：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = &#123;</span><br><span class="line">	dirty: <span class="literal">false</span>,</span><br><span class="line">	_raw: &#123;<span class="attr">key</span>: <span class="string">'value'</span>&#125;,</span><br><span class="line">	get: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">		...</span><br><span class="line">	&#125;,</span><br><span class="line">	set: <span class="function"><span class="keyword">function</span> (<span class="params">key, newValue</span>) </span>&#123;</span><br><span class="line">		...</span><br><span class="line">		<span class="keyword">this</span>.dirty = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">renderUI</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!data.dirty) &#123;<span class="keyword">return</span>;&#125;</span><br><span class="line">	data.dirty = <span class="literal">false</span>;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  但是这种情况如果同时对一个状态进行多种渲染，因为在第一个渲染中已经改变了dirty的状态，这样并不会调用第二个渲染，如下：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">renderTop(data);</span><br><span class="line">renderBottom(data);</span><br></pre></td></tr></table></figure>
+<p>  因此，既然每一个render都要执行dirty状态的检测，所以可以建立一个UI框架，将这层检测包裹进去，而不用使用者自己来做。但这样一来Model层和View层就耦合了。因此，如何在不对MV进行强耦合的情况下对数据的变化进行监听成为了一个问题。</p>
+</li>
+<li><p>处理缓存</p>
+<p>  当我们在处理一些消耗很大的操作时，我们可能希望将之前的结果存储起来而不是每一次都重新计算。比如像下面这样：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">expensiveCoperation</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> data = memorize(expensiveCoperation);</span><br><span class="line"><span class="keyword">let</span> initialData = ...;</span><br><span class="line">data(initialData);</span><br></pre></td></tr></table></figure>
+<p>  市面上有很多对于memorize的实现，比如下面这个：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">memorize</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> cache = &#123;&#125;;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">arg</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">let</span> hash = arg === <span class="built_in">Object</span>(arg) ? <span class="built_in">JSON</span>.stringify(arg) : currentArg;</span><br><span class="line">		<span class="keyword">return</span> hash <span class="keyword">in</span> cache ? cache[hash] : (cache[hash] = fn.call(<span class="keyword">this</span>, arg));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  但是上面这种实现里面的JSON.stringify()是一个O(n)的操作，当数据量够大时，执行这个函数的操作说不定还没有不执行的快。在具体实现中也许我们可以简化这个操作，只对比前一次的输入和这一次的输入，只关心前一次的结果和这一次的结果。此时我们便可以不必使用JSON.stringify了。实际上React中的shouldComponentUpdate就是只对前一次状态和这一次状态进行对比。但对比时我们其实进行的是值的对比而不是引用的对比。所以缓存性能的提高最后落脚点到如何快速进行值的比较。因此，如何对复杂结构的值进行对比成为了一个问题。</p>
+</li>
+</ul>
+</li>
+<li><p>解决办法</p>
+<p>  针对以上问题，Immutable.js提出了一下几个解决方案：</p>
+<ul>
+<li><p>持久化结构数据</p>
+<p>所谓持久化结构数据即Persistent data structire，我们来看维基百科的定义：</p>
+<blockquote>
+<p>In computing, a persistent data structure is a data structure that always preserves the previous version of itself when it is modified. Such data structures are effectively immutable, as their operations do not (visibly) update the structure in-place, but instead always yield a new updated structure.</p>
+</blockquote>
+<p>我们如果用时间流的概念来看这个问题，即每一次改变都保存了一个类似快照的东西，之后的改变并不会影响之前的快照。这样我们就能够对state的变化做一个很好的记录，解决了上面的第一个问题。但是你可能会担心这样等于说是进行拷贝，会耗费很多内存，因此请看下面的解决方案。</p>
+</li>
+<li><p>结构共享</p>
+<p>当我们使用一个新的值时，我们希望能够尽量复用老值不变的部分，因为这样意味着少量的copy操作和少量的内存使用。数据结构中的有向无环图可以实现这个需求。但是JS中基本的数据结构Array和Object显然都不是用DAG[Directed Acyclic Graph]实现的。因此Immutable.js等于用Trie自己实现了一套数据结构。基本的思路如下：</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/immutable-share.png" alt="结构共享"><br>每个节点都有自己的hashCode，因此比较两个对象时，实际就是比较其hashCode，这样就避免了深度遍历。</p>
+</li>
+<li><p>惰性加载</p>
+<p>在Immutable.js中提供了Seq来执行惰性加载。Seq执行最小的工作来对任何方法作出反应。比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> oddSquares = Seq([ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span> ])</span><br><span class="line">  .filter(<span class="function"><span class="params">x</span> =&gt;</span> x % <span class="number">2</span>)</span><br><span class="line">  .map(<span class="function"><span class="params">x</span> =&gt;</span> x * x)</span><br><span class="line">  <span class="built_in">console</span>.log(oddSquares.get(<span class="number">1</span>)); <span class="comment">//9</span></span><br></pre></td></tr></table></figure>
+<p>上面这个例子filter将只会执行三次，而map只会执行一次。这种特性对于处理大型数据相当有用。</p>
+</li>
+<li><p>其他</p>
+<p>  Immutable的特性意味着它特别适合用于多线程开发，它避免了很多不必要的锁的存在。虽然这点对于现在的JS没啥作用，但谁知道未来呢，毕竟多核已经越来越普遍。</p>
+</li>
+</ul>
+</li>
+<li><p>基本API</p>
+<p>  Immutable.js主要提供了下面几种数据类型：</p>
+<ul>
+<li>List：类似Array</li>
+<li>Map：类似Object</li>
+<li>OrderedMap：在Map的基础上根据set顺序进行排序</li>
+<li>Set： 类似ES6中的Set</li>
+<li>OrderedSet：在Set的基础上根据add顺序进行排序</li>
+<li>Stack：有序集合，进行unshift和shift的操作复杂度为O(1)</li>
+<li>Range(start, end, step)：返回Seq.Indexed类型数据的集合</li>
+<li>Repeat(value, times)：返回Seq.Indexed类型的数据集合，重复times生成value值</li>
+<li>Record：；类似ES6中的Class，细节上不同</li>
+<li>Seq：序列</li>
+<li>Iterable：可以被迭代的key，value集合，是其他所有集合的基类</li>
+<li><p>Collection：抽象类，无法直接构建此类型</p>
+<p>其中最常用的是List和Map。</p>
+</li>
+<li><p>常用API：</p>
+<ul>
+<li><p>fromJS(): 最常用的将原生JS数据转换为Immutable数据的转换方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> data = Immutable.from(&#123;<span class="attr">a</span>: &#123;<span class="attr">b</span>: [<span class="number">10</span>, <span class="number">11</span>]&#125;&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>toJS(): 将Immutable数据转换为原生JS</p>
+</li>
+<li><p>set()</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> originalList = List([ <span class="number">0</span> ]);</span><br><span class="line"><span class="comment">// List [ 0 ]</span></span><br><span class="line">originalList.set(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"><span class="comment">// List [ 0, 1 ]		</span></span><br><span class="line">List().set(<span class="number">50000</span>, <span class="string">'value'</span>).size;</span><br><span class="line"><span class="comment">// 50001</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>setIn(): 进行深度赋值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = List([ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, List([ <span class="number">3</span>, <span class="number">4</span> ])])</span><br><span class="line">list.setIn([<span class="number">3</span>, <span class="number">0</span>], <span class="number">999</span>);</span><br><span class="line"><span class="comment">// List [ 0, 1, 2, List [ 999, 4 ] ]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>get()</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = List([ <span class="number">0</span> ]);</span><br><span class="line"><span class="keyword">let</span> value = list.get(<span class="number">0</span>); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>getIn(): 进行深度取值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = List([ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, List([ <span class="number">3</span>, <span class="number">4</span> ])]);</span><br><span class="line"><span class="keyword">let</span> value = list.getIn([<span class="number">3</span>, <span class="number">0</span>]); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>is(): 进行值对比[对于复杂对象其实是hashCode的对比]</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> map1 = <span class="built_in">Map</span>(&#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">1</span>, <span class="attr">c</span>: <span class="number">1</span> &#125;)</span><br><span class="line"><span class="keyword">const</span> map2 = <span class="built_in">Map</span>(&#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">1</span>, <span class="attr">c</span>: <span class="number">1</span> &#125;)</span><br><span class="line">assert(map1 !== map2)</span><br><span class="line">assert(<span class="built_in">Object</span>.is(map1, map2) === <span class="literal">false</span>)</span><br><span class="line">assert(is(map1, map2) === <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
+<p>除了上面这些，Immutable.js基本提供了所有的对应原生操作的方法，具体见<a href="https://facebook.github.io/immutable-js/docs/#/List/getIn" target="_blank" rel="noopener">这里</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="甜点之具体集成到RN-Redux的项目中"><a href="#甜点之具体集成到RN-Redux的项目中" class="headerlink" title="甜点之具体集成到RN+Redux的项目中"></a>甜点之具体集成到RN+Redux的项目中</h4><p>在第一点中我们分析了遇到的优化点，在第二点中我们讲解了能进行优化的工具，现在我们来进行具体的优化。</p>
+<ul>
+<li><p>combineReducers的切换<br>  我们之前combineReducers用的是Redux提供的，但是它只能处理原生JS，所以我们需要引入redux-immutable，它提供的combineReducers可以处理Immutable数据</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createStore, applyMiddleware, compose&#125; <span class="keyword">from</span> <span class="string">'redux'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;combineReducers&#125; <span class="keyword">from</span> <span class="string">'redux-immutable'</span>;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> (data = Immutable.Map(&#123;&#125;)) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> rootReducer = combineReducers(&#123;</span><br><span class="line">    route: routeReducer,</span><br><span class="line">    modules: combineReducers(reducers)</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> createStore(rootReducer, data, middleware);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>每个Reducer的初始化数据也应该采用Immutable数据</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> initialState = Immutable.Map(&#123;</span><br><span class="line">  dataList: Immutable.List([]),</span><br><span class="line">  count1: <span class="number">0</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>与服务端数据的交互在第获取一时间转换为Immutable数据，在发送第一时间转化为原生数据</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> fetch(url).then(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">     <span class="keyword">return</span> res.json();</span><br><span class="line">   &#125;, (er) =&gt; &#123;<span class="built_in">console</span>.log(er);&#125;).then(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">     data = Immutable.fromJS(data || &#123;&#125;);</span><br><span class="line">     dispatch(&#123;</span><br><span class="line">       type: GETDATA_END,</span><br><span class="line">       payload: &#123;</span><br><span class="line">         dataList: data.get(<span class="string">'data'</span>)</span><br><span class="line">       &#125;</span><br><span class="line">     &#125;);</span><br><span class="line">   &#125;, (error) =&gt; &#123;</span><br><span class="line">     <span class="built_in">console</span>.log(error);</span><br><span class="line">     dispatch(&#123;</span><br><span class="line">       type: GETDATA_BEGIN</span><br><span class="line">     &#125;);</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+<p>  这里需要注意以下两点：</p>
+<ul>
+<li>如果使用安卓模拟器，且使用localhost的数据，需要直接填写localhost的ip地址。因为模拟器有自己的localhost ip，如果直接用localhost就指向了它提供的地址，而不是本机的地址了</li>
+<li><p>如果使用iOS模拟器，其请求的是http协议的地址，需要在info.plist开启对http的支持，如下：</p>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;</span><br><span class="line">    &lt;dict&gt;</span><br><span class="line">      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;</span><br><span class="line">      &lt;true/&gt;</span><br><span class="line">     &lt;/dict&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>因为Persistent data structire，Reducer返回的数据不用新建一个对象了</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[GETDATA_END]: <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">   <span class="keyword">const</span> &#123;dataList&#125; = action.payload;</span><br><span class="line">   <span class="keyword">return</span> state.set(<span class="string">'dataList'</span>, dataList);</span><br><span class="line"> &#125;,</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>shouldComponentUpdate可以进行统一处理了</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">shouldComponentUpdate(nextProps, nextState) &#123;</span><br><span class="line">  <span class="keyword">const</span> thisProps = <span class="keyword">this</span>.props || &#123;&#125;;</span><br><span class="line">  <span class="keyword">const</span> thisState = <span class="keyword">this</span>.state || &#123;&#125;;</span><br><span class="line">  nextState = nextState || &#123;&#125;;</span><br><span class="line">  nextProps = nextProps || &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Object</span>.keys(thisProps).length !== <span class="built_in">Object</span>.keys(nextProps).length ||</span><br><span class="line">    <span class="built_in">Object</span>.keys(thisState).length !== <span class="built_in">Object</span>.keys(nextState).length) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> nextProps) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!Immutable.is(thisProps[key], nextProps[key])) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> nextState) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!Immutable.is(thisState[key], nextState[key])) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>函数的传递方式需要注意</p>
+<p>  如果每次render时都是重新声明的函数，则其对比会有问题，因为is()内部对函数的对比是基于ValueOf的，所以将下面的第一种方式改为第二种方式：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;TouchableOpacity onPress=&#123;() =&gt; <span class="keyword">this</span>.addCount()&#125; style=&#123;Style.btnContainer&#125;&gt;</span><br><span class="line">     &lt;Text style=&#123;Style.btnWord&#125;&gt;addCount&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp"> &lt;/</span>TouchableOpacity&gt;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;TouchableOpacity onPress=&#123;<span class="keyword">this</span>.addCount&#125; style=&#123;Style.btnContainer&#125;&gt;</span><br><span class="line">      &lt;Text style=&#123;Style.btnWord&#125;&gt;addCount&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>TouchableOpacity&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>经过上面这些改造后，我们的demo文件Render count如下所示，很好，楼主又可以欢快的吃火锅啦：<br><img src="http://okzzg7ifm.bkt.clouddn.com/immutable-after.png?" alt="优化之后"></p>
+<h4 id="酒水之利弊介绍"><a href="#酒水之利弊介绍" class="headerlink" title="酒水之利弊介绍"></a>酒水之利弊介绍</h4><ul>
+<li>优<ul>
+<li>能便利的进行时间溯洄，便于状态的把控与调试</li>
+<li>结构共享，节约内存</li>
+<li>并发安全</li>
+<li>能抽象出统一的对比函数</li>
+<li>Model与View耦合度不高</li>
+</ul>
+</li>
+<li>缺<ul>
+<li>有学习成本</li>
+<li>容易与原生函数混淆，并且原生函数一旦重写可能会导致问题</li>
+<li>资源大小增加</li>
+<li>跨页面数据同步方式会有变动，之前页面间进行引用传递，在B页面进行的修改会自动呈现到A页面，但是现在是Persistent data structire，因此B页面的改动A页面无感，需要特殊的触发机制来进行状态同步</li>
+<li>因为并非原生的数据结构，所以像解构这种用法需要引入特殊的库后才能使用</li>
+</ul>
+</li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
+<li><a href="https://www.youtube.com/watch?v=I7IdS-PbEgI&amp;feature=youtu.be" target="_blank" rel="noopener">React.js Conf 2015 - Immutable Data and React</a></li>
+<li><a href="https://facebook.github.io/react/docs/optimizing-performance.html" target="_blank" rel="noopener">Optimizing Performance</a></li>
+<li><a href="http://facebook.github.io/immutable-js/" target="_blank" rel="noopener">Immutable.js</a></li>
+<li><a href="https://juejin.im/post/5948985ea0bb9f006bed7472" target="_blank" rel="noopener">Immutable.js 以及在 react+redux 项目中的实践</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/20295971?columnSlug=purerender" target="_blank" rel="noopener">Immutable 详解及 React 中实践</a></li>
+<li><a href="http://stylechen.com/react-and-immutable.html" target="_blank" rel="noopener">从 React 的组件更新谈 Immutable 的应用</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/28/DaisyXL/ES6/" rel="prev">ES6项目构建</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/28/lulutia/reactnative02/" rel="next">React Native 学习系列二</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前菜之背景介绍"><span class="nav-number">1.</span> <span class="nav-text">前菜之背景介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主菜之Immutable-js介绍"><span class="nav-number">2.</span> <span class="nav-text">主菜之Immutable.js介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#甜点之具体集成到RN-Redux的项目中"><span class="nav-number">3.</span> <span class="nav-text">甜点之具体集成到RN+Redux的项目中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#酒水之利弊介绍"><span class="nav-number">4.</span> <span class="nav-text">酒水之利弊介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

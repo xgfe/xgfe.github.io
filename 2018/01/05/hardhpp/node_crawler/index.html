@@ -1,0 +1,828 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Node,爬虫,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="Node学习系列(1) – 使用Node实现爬虫，介绍了如何实现一个简单的爬虫程序、多页面的爬虫程序、如何保存爬虫的结果等内容。">
+<meta name="keywords" content="Node,爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node学习系列(1) -- Node实现爬虫">
+<meta property="og:url" content="http://xgfe.github.io/2018/01/05/hardhpp/node_crawler/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="Node学习系列(1) – 使用Node实现爬虫，介绍了如何实现一个简单的爬虫程序、多页面的爬虫程序、如何保存爬虫的结果等内容。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture1.png?raw=true">
+<meta property="og:image" content="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture2.png?raw=true">
+<meta property="og:image" content="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture3.png?raw=true">
+<meta property="og:image" content="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture4.png?raw=true">
+<meta property="og:image" content="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture5.png?raw=true">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.379Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node学习系列(1) -- Node实现爬虫">
+<meta name="twitter:description" content="Node学习系列(1) – 使用Node实现爬虫，介绍了如何实现一个简单的爬虫程序、多页面的爬虫程序、如何保存爬虫的结果等内容。">
+<meta name="twitter:image" content="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture1.png?raw=true">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Node学习系列(1) -- Node实现爬虫 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Node学习系列(1) -- Node实现爬虫
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-01-05T00:00:00+08:00" content="2018-01-05">
+            2018-01-05
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/hardhpp/" itemprop="url" rel="index">
+                  <span itemprop="name">hardhpp</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Node/" rel="tag"><i class="icon-next-tags"></i>Node</a>
+            
+              <a href="/tags/爬虫/" rel="tag"><i class="icon-next-tags"></i>爬虫</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>Node学习系列(1) – 使用Node实现爬虫，介绍了如何实现一个简单的爬虫程序、多页面的爬虫程序、如何保存爬虫的结果等内容。</p>
+<a id="more"></a>
+<p><strong>前提</strong>：已安装Node.js和npm<br><strong>开发环境</strong>：推荐Visual Studio Code<br><strong>使用到的模块</strong>：http cheerio fs (说明：Node中的原生模块之外的其他模块，需要使用<code>npm install &lt;package&gt;</code>进行安装)</p>
+<p><strong>blog背景</strong>：现在需要获取xgfe博客(<a href="http://xgfe.github.io/">http://xgfe.github.io/</a>) 中所有博客的相关数据，数据包括：博客的题目、链接地址、创建时间、作者以及关键字。</p>
+<h2 id="Step1：确定要爬取的网页"><a href="#Step1：确定要爬取的网页" class="headerlink" title="Step1：确定要爬取的网页"></a>Step1：确定要爬取的网页</h2><p>在开始爬虫程序开始之前，我们应该先明确需要爬取的网页以及内容。  </p>
+<p>本文要爬取的网页是：<a href="http://xgfe.github.io/">http://xgfe.github.io/</a>   </p>
+<p>爬取网页全部数据，程序如下：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// app01.js</span><br><span class="line">var http = require(&apos;http&apos;)</span><br><span class="line">var url = &apos;http://xgfe.github.io/&apos;</span><br><span class="line"></span><br><span class="line">http.get(url,function(res)&#123;</span><br><span class="line">    var html = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">    res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">        html+=data;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">        console.log(html);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">    console.log(&apos;获取数据出错&apos;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>运行结果：输出网页的源代码（图略）<br>本步骤获取到页面的所有信息，为之后获取指定信息做铺垫。</p>
+<h3 id="http模块简单介绍"><a href="#http模块简单介绍" class="headerlink" title="http模块简单介绍"></a>http模块简单介绍</h3><p>http模块是Node中的原生模块，该部分在Node进程启动时，就被直接加载进内存中，不需要再次安装。<br>Node的http模块包含对HTTP处理的封装。http服务继承自TCP服务器，能够与多个客户端保持连接，采用事件驱动的形式，低内存占用，高并发。   </p>
+<p>引入http模块： <code>require(&#39;http&#39;)</code></p>
+<ul>
+<li><p>HTTP服务器</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// http_createServer.js</span><br><span class="line">var http = require(&apos;http&apos;);</span><br><span class="line"></span><br><span class="line">http.createServer(function(req, res)&#123;</span><br><span class="line">    res.writeHead(200, &#123;&apos;Content-type&apos; : &apos;text/html&apos;&#125;);</span><br><span class="line">    res.write(&apos;&lt;h1&gt;Node&lt;/h1&gt;&apos;);</span><br><span class="line">    res.end(&apos;&lt;p&gt;Hello World&lt;/p&gt;&apos;);</span><br><span class="line">&#125;).listen(3000);</span><br></pre></td></tr></table></figure>
+<p>  运行代码，在浏览器访问<code>http://localhost:3000</code></p>
+</li>
+<li><p>HTTP客户端(http模块提供了两个函数http.request和http.get，功能是客户端向服务器端发送请求)</p>
+<ol>
+<li><p>http.request(options,callback)用于发起http请求，接收两个参数，options是一个类似关联数组的对象，里面包含一些请求的参数，callback表示请求后的回调。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">// http_request.js</span><br><span class="line">var http = require(&apos;http&apos;)</span><br><span class="line">var querystring = require(&apos;querystring&apos;)   // querystring模块需要使用npm安装</span><br><span class="line"></span><br><span class="line">var postData = querystring.stringify(&#123;</span><br><span class="line">    &apos;msg&apos;: Hello World!&apos;</span><br><span class="line"> &#125;);</span><br><span class="line">  </span><br><span class="line">var options = &#123;</span><br><span class="line">    hostname: &apos;www.baidu.com&apos;,</span><br><span class="line">    port: null,</span><br><span class="line">    path: &apos;/&apos;,</span><br><span class="line">    method: &apos;POST&apos;,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        &apos;Content-Type&apos;: &apos;application/x-www-form-urlencoded&apos;,</span><br><span class="line">        &apos;Content-Length&apos;: Buffer.byteLength(postData)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;		</span><br><span class="line"></span><br><span class="line">var req = http.request(options, function (res) &#123;</span><br><span class="line">    var html = &apos;&apos;</span><br><span class="line"></span><br><span class="line">    console.log(&apos;状态码:&apos; + res.statusCode);</span><br><span class="line">    console.log(&apos;头部信息:&apos; + JSON.stringify(res.headers));</span><br><span class="line">    res.setEncoding(&apos;utf8&apos;);</span><br><span class="line">    res.on(&apos;data&apos;, function (chunk) &#123;</span><br><span class="line">        html += chunk;</span><br><span class="line">    &#125;)</span><br><span class="line">    res.on(&apos;end&apos;, function () &#123;</span><br><span class="line">        console.log(html);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;).on(&apos;error&apos;, function (e) &#123;</span><br><span class="line">   	console.error(&apos;请求出错了！&apos;);	</span><br><span class="line">&#125;);</span><br><span class="line">  </span><br><span class="line">// write data to request body</span><br><span class="line">req.write(postData);</span><br><span class="line">req.end();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>http.get(options,callback)，用来更简单的处理GET方式的请求，它是http.request的简化版本，唯一的区别在于http.get自动将请求方法设为GET请求，同时不需要手动调用req.end()。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// http_get.js</span><br><span class="line">var http = require(&apos;http&apos;)</span><br><span class="line">	</span><br><span class="line">http.get(&apos;http://www.baidu.com&apos;,function (res) &#123;</span><br><span class="line">    var html = &apos;&apos;;</span><br><span class="line">    </span><br><span class="line">    console.log(&apos;状态码:&apos; + res.statusCode);</span><br><span class="line">    res.on(&apos;data&apos;, function (data) &#123;</span><br><span class="line">        html += data</span><br><span class="line">    &#125;)</span><br><span class="line">    res.on(&apos;end&apos;, function ()&#123;</span><br><span class="line">        console.log(html)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;).on(&apos;error&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;获取数据出错&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="Step2：分析网页结构，确定数据的结构"><a href="#Step2：分析网页结构，确定数据的结构" class="headerlink" title="Step2：分析网页结构，确定数据的结构"></a>Step2：分析网页结构，确定数据的结构</h2><p>分析网页结构如下：</p>
+<p><img src="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture1.png?raw=true" alt=""></p>
+<p>可以看出，图中方框内显示的数据，是最终应该获取的数据。</p>
+<h3 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h3><p>根据最终的需求以及网页的结构，我们可以定义数据结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">    blogTitle: blogTitle,       // 博客名称</span><br><span class="line">    blogHref: blogHref,         // 博客链接</span><br><span class="line">    blogTime: blogTime,	         // 博客创建时间</span><br><span class="line">    blogAuthor: blogAuthor,     // 博客作者</span><br><span class="line">    blogKeywords: [],           // 博客关键词</span><br><span class="line">    blogAbstract: blogAbstract  // 博客简介</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+<p>xgfe博客的数据与页面的对应如下：</p>
+<p><img src="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture2.png?raw=true" alt=""></p>
+<p>引入chreeio模块(chreeio模块需要使用<code>npm</code>进行安装)，使得可以更方便的访问html的结点，方便查找所需数据。  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">// app02.js</span><br><span class="line">var http = require(&apos;http&apos;)</span><br><span class="line">var cheerio = require(&apos;cheerio&apos;)</span><br><span class="line">var url = &apos;http://xgfe.github.io/&apos;</span><br><span class="line"></span><br><span class="line">var urlArr = url.split(&apos;&apos;)</span><br><span class="line">urlArr.splice(-1)</span><br><span class="line">var rootUrl = urlArr.join(&apos;&apos;)</span><br><span class="line"></span><br><span class="line">var index =0 </span><br><span class="line"></span><br><span class="line">// 获取内容</span><br><span class="line">function filterBlogInfo(html) &#123;</span><br><span class="line"></span><br><span class="line">    var $ = cheerio.load(html)</span><br><span class="line">    var blogContent = $(&apos;#content .post&apos;)</span><br><span class="line">    var blogInfo =  []</span><br><span class="line">    var root</span><br><span class="line"></span><br><span class="line">    blogContent.each(function (index,item) &#123;</span><br><span class="line">        var blogItemHeader = $(this).find(&apos;.post-header&apos;)</span><br><span class="line">        var blogItemBody = $(this).find(&apos;.post-body&apos;)</span><br><span class="line">        var blogArticleInfo = &#123;&#125;</span><br><span class="line">        var blogTitle = blogItemHeader.find(&apos;.post-title-link&apos;).text().trim()</span><br><span class="line">        var blogHref = rootUrl + blogItemHeader.find(&apos;.post-title-link&apos;).attr(&apos;href&apos;)</span><br><span class="line">        var blogTime = blogItemHeader.find(&apos;.post-time time&apos;).text().trim()</span><br><span class="line">        var blogAuthor = blogItemHeader.find(&apos;.post-category a&apos;).text().trim()</span><br><span class="line">        var blogKeywords = []</span><br><span class="line">        blogItemHeader.find(&apos;.post-tags a&apos;).each(function (tagItem) &#123;</span><br><span class="line">            blogKeywords.push($(this).text().trim())</span><br><span class="line">        &#125;)</span><br><span class="line">        var blogAbstract = blogItemBody.find(&apos;p&apos;).text().trim()</span><br><span class="line"></span><br><span class="line">        blogArticleInfo.blogTitle = blogTitle</span><br><span class="line">        blogArticleInfo.blogHref = blogHref</span><br><span class="line">        blogArticleInfo.blogTime = blogTime</span><br><span class="line">        blogArticleInfo.blogAuthor = blogAuthor</span><br><span class="line">        blogArticleInfo.blogKeywords = blogKeywords</span><br><span class="line">        blogArticleInfo.blogAbstract = blogAbstract</span><br><span class="line"></span><br><span class="line">        blogInfo.push(blogArticleInfo)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    return blogInfo</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 打印数据</span><br><span class="line">function printBlogInfo (blogInfo) &#123;</span><br><span class="line"></span><br><span class="line">    blogInfo.forEach(function (item) &#123;</span><br><span class="line">        console.log(index++)</span><br><span class="line">        console.log(&apos;题目： &apos; + item.blogTitle)</span><br><span class="line">        console.log(&apos;链接： &apos; + item.blogHref)</span><br><span class="line">        console.log(&apos;时间： &apos; + item.blogTime)</span><br><span class="line">        console.log(&apos;作者： &apos; + item.blogAuthor)</span><br><span class="line">        console.log(&apos;关键字： &apos;)</span><br><span class="line">        item.blogKeywords.forEach( function (tagItem) &#123;</span><br><span class="line">            console.log(tagItem)</span><br><span class="line">        &#125;)</span><br><span class="line">        console.log(&quot;简介： &quot; + item.blogAbstract +&apos;\n&apos;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取网页源代码</span><br><span class="line">http.get(url,function(res)&#123;</span><br><span class="line">    var html = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">    res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">        html+=data;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">        var data = filterBlogInfo(html)</span><br><span class="line">        printBlogInfo(data)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">    console.log(&apos;获取数据出错&apos;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>运行结果如图：<br><img src="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture3.png?raw=true" alt=""></p>
+<h3 id="cheerio模块简单介绍"><a href="#cheerio模块简单介绍" class="headerlink" title="cheerio模块简单介绍"></a>cheerio模块简单介绍</h3><p>cheerio模块不是Node的原生模块，需要安装<br>安装：<code>npm install cheerio</code>    </p>
+<p>cheerio模块是为服务器特别定制的，快速、灵活、实施的jQuery核心实现。  </p>
+<ol>
+<li><strong>相似的语法:</strong> Cheerio 包括了 jQuery 核心的子集。Cheerio  从jQuery库中去除了所有 DOM不一致性和浏览器尴尬的部分，揭示了它真正优雅的API。</li>
+<li><strong>闪电般的块:</strong> Cheerio 工作在一个非常简单，一致的DOM模型之上。解析，操作，呈送都变得难以置信的高效。基础的端到端的基准测试显示Cheerio 大约比JSDOM快八倍(8x)。 </li>
+<li><strong>巨灵活:</strong> Cheerio 封装了兼容的htmlparser。Cheerio 几乎能够解析任何的 HTML 和 XML document。</li>
+</ol>
+<p>使用：<br>step1: 需要加载HTML    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var html = &apos;&lt;ul id=&quot;fruits&quot;&gt;...&lt;/ul&gt;&apos;</span><br><span class="line">var $ = cheerio.load(html)</span><br></pre></td></tr></table></figure>
+<p>step2: 使用选择器，选择需要处理的元素  <code>$(selectior,[context],[root])</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 选择器在 Context 范围内搜索，Context又在Root范围内搜索</span><br><span class="line">$(&apos;.apple&apos;, &apos;#fruits&apos;)</span><br><span class="line">// selector 和 context可以是一个字符串表达式</span><br><span class="line">$(&apos;#fruits .apple&apos;)</span><br><span class="line"></span><br><span class="line">// 使用find()</span><br><span class="line">$(&apos;#fruits&apos;).find(&apos;.apple&apos;)</span><br><span class="line">// 使用parent()</span><br><span class="line">$(&apos;.apple&apos;).parent()</span><br></pre></td></tr></table></figure>
+<p>step3: 获得和修改相应的属性     </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(&apos;.apple&apos;, &apos;#fruits&apos;).val([value])</span><br><span class="line">$(&apos;#fruits .apple&apos;).text([textString])</span><br><span class="line">$(&apos;#fruits .apple&apos;).attr(name,value)</span><br><span class="line">$(&apos;#fruits .apple&apos;).addClass(&apos;.red&apos;)</span><br></pre></td></tr></table></figure>
+<h2 id="Step3：多页面爬虫"><a href="#Step3：多页面爬虫" class="headerlink" title="Step3：多页面爬虫"></a>Step3：多页面爬虫</h2><p>在Step2中，我们已经可以爬取最终所需要的数据，不过，现在爬取的数据仅仅是第一页的数据，我们还需要爬取其他页的数据。</p>
+<p>现在，为了获取其他页面的数据，我们需要获取其他页面的url。</p>
+<p>为此，我们可以分析页面：<br><img src="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture4.png?raw=true" alt=""></p>
+<p>观察页面可得，我们可以通过拼接url，获取每个页面的url。</p>
+<p>具体程序如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">// app03.js</span><br><span class="line">var http = require(&apos;http&apos;)</span><br><span class="line">var cheerio = require(&apos;cheerio&apos;)</span><br><span class="line">var url = &apos;http://xgfe.github.io/&apos;</span><br><span class="line"></span><br><span class="line">var urlArr = url.split(&apos;&apos;)</span><br><span class="line">urlArr.splice(-1)</span><br><span class="line">var rootUrl = urlArr.join(&apos;&apos;)</span><br><span class="line"></span><br><span class="line">// 获取分页的url</span><br><span class="line">function fetchPageUrl(html) &#123;</span><br><span class="line"></span><br><span class="line">    var $ = cheerio.load(html)</span><br><span class="line">    var blogPageTotal = $(&apos;#content .pagination .page-number&apos;).eq(2)</span><br><span class="line">    var blogPageHref = blogPageTotal.attr(&apos;href&apos;).split(&apos;&apos;)</span><br><span class="line">    blogPageHref.splice(-2)</span><br><span class="line">    var blogPageTotalNumber = parseInt(blogPageTotal.text()) </span><br><span class="line">    var pageUrl =  [url]</span><br><span class="line"></span><br><span class="line">    for(var i=2; i &lt;= blogPageTotalNumber; i++)&#123;</span><br><span class="line">        pageUrl.push(rootUrl + blogPageHref.join(&apos;&apos;)+i+&apos;/&apos;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return pageUrl</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 打印数据</span><br><span class="line">function printPageUrl(pageUrl) &#123;</span><br><span class="line"></span><br><span class="line">    pageUrl.forEach(function (item, index) &#123;</span><br><span class="line">        console.log(item)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取页面源代码</span><br><span class="line">http.get(url,function(res)&#123;</span><br><span class="line">    var html = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">    res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">        html+=data;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">        var data = fetchPageUrl(html)</span><br><span class="line">        printPageUrl(data)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">    console.log(&apos;获取数据出错&apos;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>运行结果：<br><img src="https://github.com/hardhpp/Node/blob/master/crawler/picture/picture5.png?raw=true" alt=""></p>
+<p>所以，在获取到所有的url之后，可以按照Step2进行获取数据。<br>此时，<strong>出现一个问题！</strong></p>
+<p>我们需要访问完一个页面之后，再去访问另外一个，此时，需要用到回调，具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">// 第一层：获取所有页面的url</span><br><span class="line">http.get(url1,function(res)&#123;</span><br><span class="line">    var html = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">    res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">        html+=data;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">        var data1 = filterPageUrl(html)</span><br><span class="line">        printPageUrl(data1)</span><br><span class="line">        </span><br><span class="line">        // 第二层： 获取第一个页面的源代码并处理</span><br><span class="line">        http.get(url2,function(res)&#123;</span><br><span class="line">            var html = &apos;&apos;;</span><br><span class="line">        </span><br><span class="line">            res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">                html+=data;</span><br><span class="line">            &#125;)</span><br><span class="line">            </span><br><span class="line">            res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">                var data2 = filterBlogInfo(html)</span><br><span class="line">                printBlogInfo(data2)</span><br><span class="line">                // 第三层： 获取第二个页面的源代码并处理</span><br><span class="line">                http.get(url3,function(res)&#123;</span><br><span class="line">                    var html = &apos;&apos;;</span><br><span class="line">                </span><br><span class="line">                    res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">                        html+=data;</span><br><span class="line">                    &#125;)</span><br><span class="line">                    res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">                        var data3 = filterBlogInfo(html)</span><br><span class="line">                        printBlogInfo(data3)</span><br><span class="line">                        </span><br><span class="line">                        </span><br><span class="line">                        // **** 此处省略了6次回调 ****</span><br><span class="line">                        </span><br><span class="line">                        </span><br><span class="line">                    &#125;)</span><br><span class="line">                &#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">                    console.log(&apos;获取数据出错&apos;);</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">            console.log(&apos;获取数据出错&apos;);</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">    console.log(&apos;获取数据出错&apos;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>问题：</strong> 单纯的使用回调，会形成回调地狱，此时，我们应该采用其他的方式进行优化。</p>
+<p><strong>解决方法：采用promise</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">// app04.js</span><br><span class="line">var http = require(&apos;http&apos;)</span><br><span class="line">var cheerio = require(&apos;cheerio&apos;)</span><br><span class="line">var url = &apos;http://xgfe.github.io/&apos;</span><br><span class="line"></span><br><span class="line">var urlArr = url.split(&apos;&apos;)</span><br><span class="line">urlArr.splice(-1)</span><br><span class="line">var rootUrl = urlArr.join(&apos;&apos;)</span><br><span class="line"></span><br><span class="line">var index = 0</span><br><span class="line"></span><br><span class="line">// 获取分页的url</span><br><span class="line">function fetchPageUrl(html) &#123;</span><br><span class="line">    // 此处省略，与之前示例相同</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取内容</span><br><span class="line">function filterBlogInfo(html) &#123;</span><br><span class="line">    // 此处省略，与之前示例相同</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 打印数据</span><br><span class="line">function printBlogInfo (blogInfo) &#123;</span><br><span class="line">    // 此处省略，与之前示例相同</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getUrlAsync(url) &#123;</span><br><span class="line">    return new Promise(function (resolve, reject)&#123;</span><br><span class="line">        console.log(&apos;正在爬取： &apos; + url)</span><br><span class="line">        http.get(url, function(res)&#123;</span><br><span class="line">            var html = &apos;&apos;</span><br><span class="line">            res.on(&apos;data&apos;,function (data) &#123;</span><br><span class="line">                html += data</span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">            res.on(&apos;end&apos;,function ()&#123;</span><br><span class="line">                resolve(html)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;).on(&apos;error&apos;, function () &#123;</span><br><span class="line">            reject(e)</span><br><span class="line">            console.log(&apos;获取&apos; + url + &apos;页面数据出错!&apos;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取页面源代码</span><br><span class="line">http.get(url,function(res)&#123;</span><br><span class="line">    var html = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">    res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">        html+=data;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">        var URLs = fetchPageUrl(html)</span><br><span class="line">        </span><br><span class="line">        var fetchPageDataArray = []</span><br><span class="line"></span><br><span class="line">        URLs.forEach(function (url) &#123;</span><br><span class="line">            fetchPageDataArray.push(getUrlAsync(url))</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">        // 执行promise </span><br><span class="line">        Promise</span><br><span class="line">            .all(fetchPageDataArray)</span><br><span class="line">            .then(function (pages) &#123;</span><br><span class="line">                pages.forEach( function (pageItem)&#123;</span><br><span class="line">                    printBlogInfo(filterBlogInfo(pageItem))</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">    console.log(&apos;获取数据出错&apos;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>运行结果：与Step2相似，获取了全部的数据。（图略）</p>
+<h3 id="promise简单介绍"><a href="#promise简单介绍" class="headerlink" title="promise简单介绍"></a>promise简单介绍</h3><p>先来回顾一下promise的基本概念：</p>
+<ul>
+<li>promise只有三种状态，未完成，完成(fulfilled)和失败(rejected)。</li>
+<li>promise的状态可以由未完成转换成完成，或者未完成转换成失败。</li>
+<li>promise的状态转换只发生一次</li>
+</ul>
+<p>方法：<br>1.Promise.then 接受3个函数作为参数。前两个函数对应promise的两种状态fulfilled, rejected的回调函数。第三个函数用于处理进度信息。 </p>
+<p>2.Promise.all 接收一个 promise对象的数组作为参数，当这个数组里的所有promise对象全部变为resolve或reject状态的时候，它才会去调用 .then 方法。</p>
+<p>使用promise的好处：</p>
+<ul>
+<li>链式处理，方便之后的代码维护</li>
+<li>在Promise.all中进行并发处理，避免阻塞</li>
+</ul>
+<h2 id="Step4：保存为文件"><a href="#Step4：保存为文件" class="headerlink" title="Step4：保存为文件"></a>Step4：保存为文件</h2><p>在Step3中，运行之后，会输出特别多的信息，这样，不仅不容易观察最终数据，也不利于后期的再处理（例如：哪个作者发表的文章最多、哪个类型的文章发表最多之类的统计）。所以，我们可以将最终输出的结果保存在文件中。</p>
+<p>在node中，fs模块负责文件的操作。</p>
+<p>现在，我们引入fs模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">// app05.js</span><br><span class="line">var http = require(&apos;http&apos;)</span><br><span class="line">var cheerio = require(&apos;cheerio&apos;)</span><br><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line">var url = &apos;http://xgfe.github.io/&apos;</span><br><span class="line"></span><br><span class="line">var urlArr = url.split(&apos;&apos;)</span><br><span class="line">urlArr.splice(-1)</span><br><span class="line">var rootUrl = urlArr.join(&apos;&apos;)</span><br><span class="line"></span><br><span class="line">var index = 0</span><br><span class="line">var dataStr = &quot;&quot;</span><br><span class="line"></span><br><span class="line">// 获取分页的url</span><br><span class="line">function fetchPageUrl(html) &#123;</span><br><span class="line">    // 此处省略，与之前示例相同</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取内容</span><br><span class="line">function filterBlogInfo(html) &#123;</span><br><span class="line">    // 此处省略，与之前示例相同</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 打印数据</span><br><span class="line">function printBlogInfo (blogInfo) &#123;</span><br><span class="line"></span><br><span class="line">    var blogInfoStr = &apos;&apos;</span><br><span class="line">    blogInfo.forEach(function (item) &#123;</span><br><span class="line">        blogInfoStr += (index++) + &apos;\n&apos;</span><br><span class="line">        blogInfoStr += &apos;题目： &apos; + item.blogTitle + &apos;\n&apos;</span><br><span class="line">        blogInfoStr += &apos;链接： &apos; + item.blogHref + &apos;\n&apos;</span><br><span class="line">        blogInfoStr += &apos;时间： &apos; + item.blogTime + &apos;\n&apos;</span><br><span class="line">        blogInfoStr += &apos;作者： &apos; + item.blogAuthor + &apos;\n&apos;</span><br><span class="line">        blogInfoStr += &apos;关键字： &apos;</span><br><span class="line">        item.blogKeywords.forEach( function (tagItem) &#123;</span><br><span class="line">            blogInfoStr += tagItem + &apos; &apos;</span><br><span class="line">        &#125;)</span><br><span class="line">        blogInfoStr += &quot;\n简介：&quot; + item.blogAbstract +&apos;\n\n&apos;</span><br><span class="line">    &#125;)</span><br><span class="line">    return blogInfoStr</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getUrlAsync(url) &#123;</span><br><span class="line">	// 此处省略，与之前示例相同</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取页面源代码</span><br><span class="line">http.get(url,function(res)&#123;</span><br><span class="line">    var html = &apos;&apos;;</span><br><span class="line"></span><br><span class="line">    res.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">        html+=data;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    res.on(&apos;end&apos;,function()&#123;</span><br><span class="line">        var URLs = fetchPageUrl(html)</span><br><span class="line">        </span><br><span class="line">        var fetchPageDataArray = []</span><br><span class="line"></span><br><span class="line">        URLs.forEach(function (url) &#123;</span><br><span class="line">            fetchPageDataArray.push(getUrlAsync(url))</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">        // 执行promise</span><br><span class="line">        Promise</span><br><span class="line">            .all(fetchPageDataArray)</span><br><span class="line">            .then(function (pages) &#123;</span><br><span class="line">                pages.forEach( function (pageItem)&#123;</span><br><span class="line">                    dataStr += printBlogInfo(filterBlogInfo(pageItem))</span><br><span class="line">                &#125;)</span><br><span class="line"></span><br><span class="line">                // 写入文件</span><br><span class="line">                fs.writeFile(&apos;data.txt&apos;, dataStr, function (err) &#123;</span><br><span class="line">                    if (err) console.log(&apos;write error&apos;)</span><br><span class="line">                    console.log(&apos;file saved!&apos;)</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;).on(&apos;error&apos;,function()&#123;</span><br><span class="line">    console.log(&apos;获取数据出错&apos;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="fs模块简单介绍"><a href="#fs模块简单介绍" class="headerlink" title="fs模块简单介绍"></a>fs模块简单介绍</h3><p>fs模块用于对系统文件及目录进行读写操作。</p>
+<p><strong>读文件</strong> </p>
+<p>1.异步读文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">fs.readFile(&apos;simple.txt&apos;, &apos;utf-8&apos;, function (err, data)&#123; </span><br><span class="line">    if (err) &#123;</span><br><span class="line">        // 出错了</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // 处理文件数据</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>异步读取文件时，传入的回调函数接收两个参数。<br>1) 当正常读取时，err参数为null，data参数为读取到的String;<br>2) 当读取发生错误时，err参数代表一个错误对象，data为undefined。<br>当读取二进制文件时，不传入文件编码，回调函数的data参数将返回一个Buffer对象。</p>
+<p><strong>扩展：Buffer对象与String对象转换：</strong><br>Buffer对象 -&gt; String对象: <code>var str = buf.toString(&#39;utf-8&#39;)</code><br>String对象 -&gt; Buffer对象: <code>var buf = Buffer.from(str, &#39;utf-8&#39;)</code></p>
+<p>2.同步读文件 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line">var data = fs.readFileSync(&apos;simple.txt&apos;, &apos;utf-8&apos;)</span><br></pre></td></tr></table></figure>
+<p>同步读文件时，读取到的数据被直接返回,需要使用<strong>try…catch</strong>捕获错误。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    var data = fs.readFileSync(&apos;simple.txt&apos;, &apos;utf-8&apos;)</span><br><span class="line">&#125; catch (err) &#123;</span><br><span class="line">    // 出错了</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>写文件</strong><br>1.异步写文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">var data = &apos;write something.&apos;</span><br><span class="line">fs.writeFile(&apos;output.txt&apos;, data, function (err)&#123;</span><br><span class="line">    if (err) &#123;</span><br><span class="line">        // 出错了</span><br><span class="line">    &#125; else&#123;</span><br><span class="line">        // 写文件成功</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><code>writeFile()</code>的参数依次为文件名、数据和回调函数。<br>如果传入的数据是String,默认按<code>UTF-8</code>编码写入文件；<br>如果传入的参数是Buffer,则写入的是二进制文件。</p>
+<p>2.同步写文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;)  </span><br><span class="line"></span><br><span class="line">var data = &apos;write something again.&apos;  </span><br><span class="line">fs.writeFileSync(&apos;output.txt&apos;, data)</span><br></pre></td></tr></table></figure>
+<p><strong>获取文件信息</strong></p>
+<p>Stats对象：包含文件或目录的详细信息，例如：文件大小、创建时间等信息。<br>Stats对象具有的属性和方法：<br><code>size                        // 文件大小</code><br><code>birthtime                   // 文件的创建时间，Date对象</code><br><code>mtime                       // 文件的修改时间，Date对象</code><br><code>isFile()                    // 如果是文件返回true，否则返回false</code><br><code>isDirectory()               // 如果是目录返回true，否则返回false</code>    </p>
+<p>1.异步获取文件信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">fs.stat(&apos;simple.txt&apos;, function (err, stat) &#123;</span><br><span class="line">    if (err) &#123;</span><br><span class="line">        // 出错了</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // 获取文件信息</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>2.同步获取文件信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">var stat = fs.statSync(&apos;simple.txt&apos;)</span><br></pre></td></tr></table></figure>
+<p><strong>异步or同步</strong><br>绝大部分需要再服务器运行期反复执行业务逻辑的代码，必须使用<strong>异步代码</strong>，避免同步代码在执行期间，服务器停止响应，因为JavaScript只有一个执行线程。<br>服务器启动时如果需要读取配置文件，或结束时需要写入到状态文件时，可以使用<strong>同步代码</strong>，因为这些代码只在启动和结束时执行一次，不影响服务器正常运行时的异步执行。  </p>
+<p><strong>从文件流读取文件</strong><br><strong>关于流</strong><br>在Node.js中，流是一个对象，拥有以下事件：<br>data事件 表示流的数据已经可以读取；<br>end事件 表示这个流已经到末尾，没有数据可以读取；<br>error事件 表示出错了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;</span><br><span class="line"></span><br><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">// 打开一个流</span><br><span class="line">var rs = fs.createReadStream(&apos;sample.txt&apos;, &apos;utf-8&apos;)</span><br><span class="line"></span><br><span class="line">rs.on(&apos;data&apos;,function (chunk) &#123;</span><br><span class="line">    // 数据已经可以读取</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">rs.on(&apos;end&apos;, function () &#123;</span><br><span class="line">    // 数据已经读取到末尾，没有数据可以读取</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">rs.on(&apos;error&apos;, function (err) &#123;</span><br><span class="line">    // 读取数据发生错误</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong>data事件可能会有很多次，每次传递的chunk是流的一部分数据。</p>
+<p><strong>以流的形式写入文件</strong></p>
+<p><strong>注意：</strong>以流的形式写入文件，可以不断调用write()方法，最后以end()结束。</p>
+<ol>
+<li>写入文本数据</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;</span><br><span class="line"></span><br><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">var ws1 = fs.createWriteStream(&apos;output1.txt&apos;, &apos;utf-8&apos;)</span><br><span class="line">ws1.write(&apos;使用Stream写入文本数据...\n&apos;)</span><br><span class="line">ws1.write(&apos;END.&apos;)</span><br><span class="line">ws1.end()</span><br></pre></td></tr></table></figure>
+<ol>
+<li>写入二进制数据</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">‘use strict’</span><br><span class="line"></span><br><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">var ws2 = fs.createWriteStream(&apos;output2.txt&apos;)</span><br><span class="line">ws2.write(new Buffer(&apos;使用Stream写入二进制数据...\n&apos;, &apos;utf-8&apos;))</span><br><span class="line">ws2.write(new Buffer(&apos;END.&apos;, &apos;UTF-8&apos;))</span><br><span class="line">ws2.end()</span><br></pre></td></tr></table></figure>
+<p>所有可以读取数据的流都继承自stream.Readable，所有可以写入的流都继承自stream.Writable。</p>
+<p><strong>复制文件pipe</strong><br>一个Readable流和一个Writable流串起来后，所有的数据自动从Readable流进入Writable流，这种操作叫pipe。<br>在Node.js中，Readable流有一个pipe()方法，pipe()把一个文件流和另一个文件流串起来，这样源文件的所有数据就自动写入到目标文件里了，所以，这实际上是一个复制文件的程序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&apos;use strict&apos;</span><br><span class="line"></span><br><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">var rs = fs.createReadStream(&apos;sample.txt&apos;)</span><br><span class="line">var ws = fs.createWriteStream(&apos;copied.txt&apos;)</span><br><span class="line"></span><br><span class="line">rs.pipe(ws)</span><br></pre></td></tr></table></figure>
+<p>默认情况下，当Readable流的数据读取完毕，end事件触发后，将自动关闭Writable流。如果我们不希望自动关闭Writable流，需要传入参数:<code>readable.pipe(writable, { end: false });</code></p>
+<h2 id="Step5：完整的爬虫程序"><a href="#Step5：完整的爬虫程序" class="headerlink" title="Step5：完整的爬虫程序"></a>Step5：完整的爬虫程序</h2><p><a href="https://github.com/hardhpp/Node/tree/master/crawler" target="_blank" rel="noopener">程序示例</a></p>
+<blockquote>
+<p>相关参考<br><a href="http://www.imooc.com/learn/348" target="_blank" rel="noopener">慕课视频</a><br><a href="http://blog.csdn.net/hard_hpp/article/details/77181681" target="_blank" rel="noopener">Node.js 实现爬虫（1） —— 简单的爬虫程序</a><br><a href="http://blog.csdn.net/hard_hpp/article/details/77247326" target="_blank" rel="noopener">Node.js 实现爬虫（2） —— 多页面的爬虫程序</a><br><a href="http://blog.csdn.net/hard_hpp/article/details/77248298" target="_blank" rel="noopener">Node.js 实现爬虫（3） —— 保存爬取的数据</a><br><a href="http://cnodejs.org/topic/5203a71844e76d216a727d2e" target="_blank" rel="noopener">cheerio API</a></p>
+</blockquote>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/19/lulutia/keep-alive/" rel="prev">移动端基于vue-router的滚动位置记录(keep-alive)</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/04/lwp/Epoxy_RecyclerView_1/" rel="next">Epoxy：构建复杂页面的框架（一）</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Step1：确定要爬取的网页"><span class="nav-number">1.</span> <span class="nav-text">Step1：确定要爬取的网页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#http模块简单介绍"><span class="nav-number">1.1.</span> <span class="nav-text">http模块简单介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step2：分析网页结构，确定数据的结构"><span class="nav-number">2.</span> <span class="nav-text">Step2：分析网页结构，确定数据的结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据格式"><span class="nav-number">2.1.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cheerio模块简单介绍"><span class="nav-number">2.2.</span> <span class="nav-text">cheerio模块简单介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step3：多页面爬虫"><span class="nav-number">3.</span> <span class="nav-text">Step3：多页面爬虫</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#promise简单介绍"><span class="nav-number">3.1.</span> <span class="nav-text">promise简单介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step4：保存为文件"><span class="nav-number">4.</span> <span class="nav-text">Step4：保存为文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fs模块简单介绍"><span class="nav-number">4.1.</span> <span class="nav-text">fs模块简单介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step5：完整的爬虫程序"><span class="nav-number">5.</span> <span class="nav-text">Step5：完整的爬虫程序</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

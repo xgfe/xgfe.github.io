@@ -1,0 +1,859 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Angular,Angular CDK,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要介绍了 Angular CDK 的部分功能，主要包括了三部分：Portal、Overlay、a11y/FocusTrap。">
+<meta name="keywords" content="Angular,Angular CDK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular CDK 部分功能介绍">
+<meta property="og:url" content="http://xgfe.github.io/2019/01/17/luanmingyang/Angular CDK 部分功能介绍/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要介绍了 Angular CDK 的部分功能，主要包括了三部分：Portal、Overlay、a11y/FocusTrap。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/Users/luanmingyang/Desktop/luan/img/portal-cdkportal.png">
+<meta property="og:image" content="http://xgfe.github.io/Users/luanmingyang/Desktop/luan/img/portal-DomPortalOutlet.png">
+<meta property="og:image" content="http://xgfe.github.io/Users/luanmingyang/Desktop/luan/img/overlay-create.png">
+<meta property="og:image" content="http://xgfe.github.io/Users/luanmingyang/Desktop/luan/img/overlay-menu.png">
+<meta property="og:image" content="http://xgfe.github.io/Users/luanmingyang/Desktop/luan/img/overlay-dialog.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.384Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Angular CDK 部分功能介绍">
+<meta name="twitter:description" content="本文主要介绍了 Angular CDK 的部分功能，主要包括了三部分：Portal、Overlay、a11y/FocusTrap。">
+<meta name="twitter:image" content="http://xgfe.github.io/Users/luanmingyang/Desktop/luan/img/portal-cdkportal.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Angular CDK 部分功能介绍 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Angular CDK 部分功能介绍
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-01-17T19:31:00+08:00" content="2019-01-17">
+            2019-01-17
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/luanmingyang/" itemprop="url" rel="index">
+                  <span itemprop="name">luanmingyang</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Angular/" rel="tag"><i class="icon-next-tags"></i>Angular</a>
+            
+              <a href="/tags/Angular-CDK/" rel="tag"><i class="icon-next-tags"></i>Angular CDK</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要介绍了 Angular CDK 的部分功能，主要包括了三部分：Portal、Overlay、a11y/FocusTrap。</p>
+<a id="more"></a>
+<h1 id="Angular-CDK-部分功能介绍"><a href="#Angular-CDK-部分功能介绍" class="headerlink" title="Angular CDK 部分功能介绍"></a>Angular CDK 部分功能介绍</h1><p>Angular CDK(Component Dev Kit) 是一个组件开发工具包，实现了一些公共的交互，同时不关注组件的具体呈现，可以在组件的开发中使用。</p>
+<p>Angular CDK主要分为两大类：</p>
+<ul>
+<li><p>Common Behaviors</p>
+<p>一组包括了常见功能需求的工具，只与组件行为相关，不影响组件的呈现。</p>
+<p>目前主要包括：</p>
+<ul>
+<li><a href="https://material.angular.io/cdk/a11y" target="_blank" rel="noopener">Accessibility</a> 提供了许多改进可访问性的工具</li>
+<li><a href="https://material.angular.io/cdk/bidi" target="_blank" rel="noopener">Bidirectionality</a> 用于获取和响应LTR / RTL布局方向的变化</li>
+<li><a href="https://material.angular.io/cdk/drag-drop" target="_blank" rel="noopener">Drag and Drop</a> 提供了声明式创建拖拽的接口，支持自由拖拽、列表排序等</li>
+<li><a href="https://material.angular.io/cdk/layout" target="_blank" rel="noopener">Layout</a> 用于构建响应屏幕大小改变的响应式UI</li>
+<li><a href="https://material.angular.io/cdk/observers" target="_blank" rel="noopener">Observers</a> 提供了一组 observers 指令</li>
+<li><a href="https://material.angular.io/cdk/overlay" target="_blank" rel="noopener">Overlay</a> 提供了一种在屏幕上打开浮动面板的方法</li>
+<li><a href="https://material.angular.io/cdk/platform" target="_blank" rel="noopener">Platform</a> 用于收集当前平台及其支持的不同功能的信息</li>
+<li><a href="https://material.angular.io/cdk/portal" target="_blank" rel="noopener">Portal</a> 用于将动态内容呈现到应用程序</li>
+<li><a href="https://material.angular.io/cdk/scrolling" target="_blank" rel="noopener">Scrolling</a> 提供了对滚动的处理</li>
+<li><a href="https://material.angular.io/cdk/text-field" target="_blank" rel="noopener">Text field</a> 用于处理文本输入</li>
+</ul>
+</li>
+<li><p>Components</p>
+<p>一组具有实用功能的无样式组件。</p>
+<p>目前主要包括：</p>
+<ul>
+<li><a href="https://material.angular.io/cdk/stepper" target="_blank" rel="noopener">Stepper</a> 步进器</li>
+<li><a href="https://material.angular.io/cdk/table" target="_blank" rel="noopener">Table</a> 可自定义的 data-table</li>
+<li><a href="https://material.angular.io/cdk/tree" target="_blank" rel="noopener">Tree</a> 方便为结构化数据构建树型结构</li>
+</ul>
+</li>
+</ul>
+<p>本文主要包括了三部分的介绍：Portal、Overlay、a11y/FocusTrap</p>
+<h2 id="1-Angular-CDK-之-Portal"><a href="#1-Angular-CDK-之-Portal" class="headerlink" title="1. Angular CDK 之 Portal"></a>1. Angular CDK 之 Portal</h2><h3 id="1-1-概述"><a href="#1-1-概述" class="headerlink" title="1.1 概述"></a>1.1 概述</h3><p>Portal 用于将动态内容呈现到应用程序。</p>
+<p>Portal：动态内容，可以是 <code>Component</code> 或 <code>TemplateRef</code></p>
+<p>PortalOutlet：放置动态内容的地方</p>
+<p><a href="https://material.angular.io/cdk/portal/api#DomPortalOutlet" target="_blank" rel="noopener">Portal API</a></p>
+<h3 id="1-2-指令"><a href="#1-2-指令" class="headerlink" title="1.2 指令"></a>1.2 指令</h3><h4 id="CdkPortal"><a href="#CdkPortal" class="headerlink" title="CdkPortal"></a>CdkPortal</h4><p>指令版本 <code>TemplatePortal</code>，用于从 <code>&lt;ng-template&gt;</code> 获取一个Portal。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ng-template</span> <span class="attr">cdkPortal</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Portal1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ng-template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> *<span class="attr">cdkPortal</span>&gt;</span>Portal2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>组件内部可以使用 <code>@ViewChild</code> 或 <code>@ViewChildren</code> 获取引用。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ViewChildren</span>(CdkPortal) templatPortals: QueryList&lt;CdkPortal&gt;;</span><br></pre></td></tr></table></figure>
+<p><img src="/Users/luanmingyang/Desktop/luan/img/portal-cdkportal.png" width="540"></p>
+<h4 id="CdkPortalOutlet"><a href="#CdkPortalOutlet" class="headerlink" title="CdkPortalOutlet"></a>CdkPortalOutlet</h4><p>用于添加 <code>PortalOutlet</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ng-template</span> [<span class="attr">cdkPortalOutlet</span>]=<span class="string">"curPortal"</span>&gt;</span><span class="tag">&lt;/<span class="name">ng-template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="🌰-动态切换内容"><a href="#🌰-动态切换内容" class="headerlink" title="🌰 动态切换内容"></a>🌰 动态切换内容</h4><p><a href="https://stackblitz.com/edit/angular-hua49e?file=src%2Fapp%2Fportal%2Fportal-demo.component.ts" target="_blank" rel="noopener">传送门</a></p>
+<p>使用时需要先引入对应模块：</p>
+<p><code>import {PortalModule} from &#39;@angular/cdk/portal&#39;;</code></p>
+<p>首先设置一个插槽，用于放置动态内容：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> [<span class="attr">cdkPortalOutlet</span>]=<span class="string">"curPortal"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>需要动态显示的内容：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ng-template</span> <span class="attr">cdkPortal</span>&gt;</span>Portal1<span class="tag">&lt;/<span class="name">ng-template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> *<span class="attr">cdkPortal</span>&gt;</span>Portal2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ng-template</span> #<span class="attr">template</span>&gt;</span>Portal3<span class="tag">&lt;/<span class="name">ng-template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>通过改变 <code>curPortal</code> 切换显示内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">PortalDemoComponent</span> </span>&#123;</span><br><span class="line">  curPortal: Portal&lt;any&gt;;</span><br><span class="line">  <span class="comment">// 获取动态内容引用</span></span><br><span class="line">  @ViewChildren(CdkPortal) templatPortals: QueryList&lt;CdkPortal&gt;;</span><br><span class="line">  @ViewChild(<span class="string">'template'</span>) template: TemplateRef&lt;any&gt;;</span><br><span class="line">  <span class="comment">// 切换</span></span><br><span class="line">  changePortal() &#123;</span><br><span class="line">    <span class="comment">// this.curPortal = xxx;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-常用class"><a href="#1-3-常用class" class="headerlink" title="1.3 常用class"></a>1.3 常用class</h3><h4 id="Portal"><a href="#Portal" class="headerlink" title="Portal"></a>Portal</h4><p>想要渲染在其它位置的内容，可以附加到 <code>PortalOutlet</code>，或从 <code>PortalOutlet</code> 分离。</p>
+<p>可以通过 <code>isAttached</code> 属性判断是否已经被附加到某个 <code>PortalOutlet</code>。</p>
+<h4 id="ComponentPortal"><a href="#ComponentPortal" class="headerlink" title="ComponentPortal"></a>ComponentPortal</h4><p>可以在attach时实例化某些组件</p>
+<p><code>new ComponentPortal&lt;{}&gt;(component: ComponentType&lt;{}&gt;, viewContainerRef?: ViewContainerRef, injector?: Injector, componentFactoryResolver?: ComponentFactoryResolver): ComponentPortal&lt;{}&gt;</code></p>
+<h4 id="TemplatePortal"><a href="#TemplatePortal" class="headerlink" title="TemplatePortal"></a>TemplatePortal</h4><p>表示一些嵌入的模版</p>
+<p><code>new TemplatePortal&lt;{}&gt;(template: TemplateRef&lt;{}&gt;, viewContainerRef: ViewContainerRef, context?: {}): TemplatePortal&lt;{}&gt;</code></p>
+<h4 id="DomPortalOutlet"><a href="#DomPortalOutlet" class="headerlink" title="DomPortalOutlet"></a>DomPortalOutlet</h4><p>用于将 Portal 附加到Angular应用程序上下文之外的任意DOM元素，也就是附加到 <code>&lt;app-root&gt;</code> 之外</p>
+<h5 id="🌰-简单使用示例"><a href="#🌰-简单使用示例" class="headerlink" title="🌰 简单使用示例"></a>🌰 简单使用示例</h5><p><a href="https://stackblitz.com/edit/angular-dxl7fg?file=src%2Fapp%2Fportal%2Fportal-demo.component.ts" target="_blank" rel="noopener">传送门</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">domPortalOutlet: DomPortalOutlet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">constructor</span>(</span><br><span class="line">    private viewContainerRef: ViewContainerRef,</span><br><span class="line">    private injector: Injector,</span><br><span class="line">    private componentFactoryResolver: ComponentFactoryResolver,</span><br><span class="line">    private appRef: ApplicationRef) &#123;&#125;</span><br><span class="line"></span><br><span class="line">createOutletOutApp() &#123;</span><br><span class="line">  <span class="keyword">const</span> elem = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">  elem.innerHTML = <span class="string">'&amp;ltapp-root&amp;gt;外的插槽'</span>;</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(elem);</span><br><span class="line">  <span class="keyword">this</span>.domPortalOutlet = <span class="keyword">new</span> DomPortalOutlet(elem, <span class="keyword">this</span>.componentFactoryResolver, <span class="keyword">this</span>.appRef, <span class="keyword">this</span>.injector);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">attachTemplatePortal() &#123;</span><br><span class="line">  <span class="keyword">this</span>.domPortalOutlet.attachTemplatePortal(<span class="keyword">this</span>.templatPortals.first);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过 <code>new DomPortalOutlet(elem, this.componentFactoryResolver, this.appRef, this.injector);</code> 把elem 变成Angular可管理的插槽。</p>
+<p><img width="360" src="/Users/luanmingyang/Desktop/luan/img/portal-DomPortalOutlet.png"></p>
+<h5 id="DomPortalOutlet-在-Angular-Material-中的使用"><a href="#DomPortalOutlet-在-Angular-Material-中的使用" class="headerlink" title="DomPortalOutlet 在 Angular Material 中的使用"></a>DomPortalOutlet 在 Angular Material 中的使用</h5><p>在 Angular Material CDK Overlay 中，通过使用 DomPortalOutlet 在 <code>&lt;app-root&gt;</code> 之外创建 Overlay container</p>
+<p><a href="https://github.com/angular/material2/blob/master/src/cdk/overlay/overlay.ts#L117" target="_blank" rel="noopener">源码</a> 部分代码实现如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pane = <span class="keyword">this</span>._createPaneElement(host);</span><br><span class="line"><span class="keyword">const</span> portalOutlet = <span class="keyword">this</span>._createPortalOutlet(pane);</span><br><span class="line"></span><br><span class="line">private _createPaneElement(host: HTMLElement): HTMLElement &#123;</span><br><span class="line">    <span class="keyword">const</span> pane = <span class="keyword">this</span>._document.createElement(<span class="string">'div'</span>);</span><br><span class="line"></span><br><span class="line">    pane.id = <span class="string">`cdk-overlay-<span class="subst">$&#123;nextUniqueId++&#125;</span>`</span>;</span><br><span class="line">    pane.classList.add(<span class="string">'cdk-overlay-pane'</span>);</span><br><span class="line">    host.appendChild(pane);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> pane;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private _createPortalOutlet(pane: HTMLElement): DomPortalOutlet &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>._appRef) &#123;</span><br><span class="line">      <span class="keyword">this</span>._appRef = <span class="keyword">this</span>._injector.get&lt;ApplicationRef&gt;(ApplicationRef);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DomPortalOutlet(pane, <span class="keyword">this</span>._componentFactoryResolver, <span class="keyword">this</span>._appRef, <span class="keyword">this</span>._injector);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-Angular-CDK-之-Overlay"><a href="#2-Angular-CDK-之-Overlay" class="headerlink" title="2. Angular CDK 之 Overlay"></a>2. Angular CDK 之 Overlay</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><p>Overlay 提供了一种在屏幕上打开浮动面板的方法，即在 <code>&lt;app-root&gt;</code> 之外创建叠加层，并且该叠加层仍在 Angular 控制范围内。</p>
+<p>主要用于构建公共组件，Modal、Tooltip、Menu、Select等组件的构建过程中都可以选择使用 Overlay。</p>
+<p>使用时需要先引入对应模块：</p>
+<p><code>import {OverlayModule} from &#39;@angular/cdk/overlay&#39;;</code></p>
+<p>通过调用 <code>overlay.create()</code> 创建一个 <code>OverlayRef</code> 实例，<code>OverlayRef</code> 是一个 <code>PortalOutlet</code>，一旦被创建，可以通过附加 <code>Portal</code> 为其添加内容。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> overlayRef = overlay.create();</span><br><span class="line"><span class="keyword">const</span> userProfilePortal = <span class="keyword">new</span> ComponentPortal(UserProfile);</span><br><span class="line">overlayRef.attach(userProfilePortal);</span><br></pre></td></tr></table></figure>
+<p>创建时 <code>OverlayRef</code> 时可以提供可选的配置对象 <code>OverlayConfig</code>。</p>
+<p><a href="https://material.angular.io/cdk/overlay/api#Overlay" target="_blank" rel="noopener">Overlay API</a></p>
+<h3 id="2-2-OverlayRef"><a href="#2-2-OverlayRef" class="headerlink" title="2.2 OverlayRef"></a>2.2 OverlayRef</h3><p>使用服务创建的Overlay引用，用于对其操纵或处理。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OverlayDemoComponent</span> <span class="title">implements</span> <span class="title">OnInit</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  overlayRef: OverlayRef;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(private overlay: Overlay) &#123; &#125;</span><br><span class="line"></span><br><span class="line">  ngOnInit(): <span class="keyword">void</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.overlayRef = <span class="keyword">this</span>.overlay.create();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img width="400" src="/Users/luanmingyang/Desktop/luan/img/overlay-create.png"></p>
+<h3 id="2-3-OverlayConfig"><a href="#2-3-OverlayConfig" class="headerlink" title="2.3 OverlayConfig"></a>2.3 OverlayConfig</h3><p>创建Overlay时使用的配置对象。</p>
+<p>属性：</p>
+<ul>
+<li>hasBackdrop：是否使用遮罩</li>
+<li>backdropClass：遮罩的classname，使得我们可以自定义遮罩的样式</li>
+<li>positionStrategy：PositionStrategy 指定位置策略</li>
+<li>scrollStrategy：ScrollStrategy 指定在打开时处理滚动事件的策略</li>
+<li>direction：文本的方向</li>
+<li>panelClass：指定 Overlay 类名</li>
+<li>disposeOnNavigation：当用户在前进/后退时是否应该丢弃。注意，通常不包括单击链接（除非在使用<code>HashLocationStrategy</code>）。</li>
+<li>width/minWidth/maxWidth：定义宽度。类型为number时，则默认单位为px</li>
+<li>height/minHeight/maxHeight：定义高度。类型为number时，则默认单位为px</li>
+</ul>
+<p>可以通过 OverlayRef 指定 backdrop 的点击事件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.overlayRef.backdropClick().subscribe(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">this</span>.overlayRef.detach();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-两种位置策略"><a href="#2-4-两种位置策略" class="headerlink" title="2.4 两种位置策略"></a>2.4 两种位置策略</h3><ul>
+<li><p>GlobalPositionStrategy</p>
+<p>使用此策略，叠加层被赋予相对于浏览器视口的显式位置，与其他元素无关。</p>
+</li>
+<li><p>ConnectedPositionStrategy（弃用）</p>
+<p>使用此策略，叠加层被赋予相对于某个元素的隐式位置。相对位置是根据Overlay上的点相对原点定义的。例如，下拉列表将原点的左下角连接到叠加层的左上角。</p>
+</li>
+<li><p>FlexibleConnectedPositionStrategy</p>
+<p>使用此策略，叠加层被赋予相对于某个元素的隐式位置。相对位置是根据Overlay上的点相对原点定义的。例如，下拉列表将原点的左下角连接到叠加层的左上角。</p>
+</li>
+</ul>
+<h3 id="2-5-四种滚动策略"><a href="#2-5-四种滚动策略" class="headerlink" title="2.5 四种滚动策略"></a>2.5 四种滚动策略</h3><ul>
+<li><p>NoopScrollStrategy</p>
+<p>默认，什么都不做。</p>
+</li>
+<li><p>CloseScrollStrategy</p>
+<p>滚动时会自动关闭叠加层。</p>
+</li>
+<li><p>BlockScrollStrategy</p>
+<p>将在打开时阻止页面滚动。</p>
+</li>
+<li><p>RepositionScrollStrategy</p>
+<p>滚动时会重新定位覆盖元素，会对滚动产生一些性能影响。</p>
+</li>
+</ul>
+<h3 id="🌰-示例"><a href="#🌰-示例" class="headerlink" title="🌰 示例"></a>🌰 示例</h3><p><a href="https://stackblitz.com/edit/angular-zmcuh9?file=src%2Fapp%2Foverlay%2Foverlay-demo.component.ts" target="_blank" rel="noopener">传送门</a></p>
+<p>使用 Overlay 需要先引入必要的样式</p>
+<p><code>@import &#39;~@angular/cdk/overlay-prebuilt.css&#39;;</code></p>
+<h4 id="1-创建菜单"><a href="#1-创建菜单" class="headerlink" title="1. 创建菜单"></a>1. 创建菜单</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">createMenu() &#123;</span><br><span class="line">  <span class="keyword">const</span> strategy = <span class="keyword">this</span>.overlay.position()</span><br><span class="line">    .flexibleConnectedTo(<span class="keyword">this</span>.createMenuBtn).withPositions([&#123;</span><br><span class="line">      originX: <span class="string">'center'</span>,</span><br><span class="line">      originY: <span class="string">'bottom'</span>,</span><br><span class="line">      overlayX: <span class="string">'center'</span>,</span><br><span class="line">      overlayY: <span class="string">'top'</span></span><br><span class="line">    &#125;]);</span><br><span class="line">  <span class="keyword">this</span>.overlayRef = <span class="keyword">this</span>.overlay.create(&#123;</span><br><span class="line">    positionStrategy: strategy</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">this</span>.overlayRef.attach(<span class="keyword">new</span> TemplatePortal(<span class="keyword">this</span>.menuTpl, <span class="keyword">this</span>.viewContainerRef));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过调用 <code>overlay.position()</code> 方法获取一个 <code>OverlayPositionBuilder</code> ，通过它来配置位置策略。</p>
+<p>通过调用 <code>flexibleConnectedTo(elementRef)</code> 方法创建位置策略 <code>FlexibleConnectedPositionStrategy</code></p>
+<p><img width="100" src="/Users/luanmingyang/Desktop/luan/img/overlay-menu.png"></p>
+<h4 id="2-创建弹出框"><a href="#2-创建弹出框" class="headerlink" title="2. 创建弹出框"></a>2. 创建弹出框</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">createDialog() &#123;</span><br><span class="line">  <span class="keyword">const</span> strategy = <span class="keyword">this</span>.overlay.position().global().centerHorizontally().centerVertically();</span><br><span class="line">  <span class="keyword">const</span> config = <span class="keyword">new</span> OverlayConfig(&#123;</span><br><span class="line">    hasBackdrop: <span class="literal">true</span>, <span class="comment">// 使用backdrop</span></span><br><span class="line">    positionStrategy: strategy</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">this</span>.overlayRef = <span class="keyword">this</span>.overlay.create(config);</span><br><span class="line">  <span class="keyword">this</span>.overlayRef.attach(<span class="keyword">new</span> TemplatePortal(<span class="keyword">this</span>.dialogTpl, <span class="keyword">this</span>.viewContainerRef));</span><br><span class="line">  <span class="comment">// 绑定backdrop点击事件</span></span><br><span class="line">  <span class="keyword">this</span>.overlayRef.backdropClick().subscribe(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.overlayRef.detach();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过调用 <code>global()</code> 方法创建位置策略 <code>GlobalPositionStrategy</code></p>
+<p><img width="400" src="/Users/luanmingyang/Desktop/luan/img/overlay-dialog.png"></p>
+<h2 id="3-Angular-CDK-之-a11y"><a href="#3-Angular-CDK-之-a11y" class="headerlink" title="3. Angular CDK 之 a11y"></a>3. Angular CDK 之 a11y</h2><h3 id="3-1-a11y-概述"><a href="#3-1-a11y-概述" class="headerlink" title="3.1 a11y 概述"></a>3.1 a11y 概述</h3><p>a11y 提供了许多改进可访问性的工具。</p>
+<p>使用时需要先引入对应模块：</p>
+<p><code>import {A11yModule} from &#39;@angular/cdk/a11y&#39;;</code></p>
+<h3 id="3-2-FocusTrap"><a href="#3-2-FocusTrap" class="headerlink" title="3.2 FocusTrap"></a>3.2 FocusTrap</h3><p>旨在用于为对话框等<strong>焦点必须受到约束</strong>的组件创建可访问的体验。</p>
+<h4 id="3-2-1-指令"><a href="#3-2-1-指令" class="headerlink" title="3.2.1 指令"></a>3.2.1 指令</h4><p><code>cdkTrapFocus</code> 在区域内捕获焦点的指令。</p>
+<p>可以显式地声明聚焦的区域：</p>
+<p><code>cdkFocusInitial</code> 指定在初始化区域时将获得焦点的元素。</p>
+<p><code>cdkFocusRegionStart</code> 与 <code>cdkFocusRegionEnd</code> 定义焦点将被捕获的区域。使用Tab键时，焦点将在此区域中移动并在两端环绕。</p>
+<h4 id="3-2-2-FocusTrapFactory"><a href="#3-2-2-FocusTrapFactory" class="headerlink" title="3.2.2 FocusTrapFactory"></a>3.2.2 FocusTrapFactory</h4><p>用于根据给定的元素创建一个焦点捕获区域。</p>
+<p><code>focusTrap = focusTrapFactory.create(element);</code></p>
+<h4 id="3-2-3-FocusTrap"><a href="#3-2-3-FocusTrap" class="headerlink" title="3.2.3 FocusTrap"></a>3.2.3 FocusTrap</h4><p>允许在DOM元素中捕获焦点的类。</p>
+<p>它假定Tab键顺序与DOM顺序相同，但实际上这是不一定的，如 tabIndex &gt; 0 或 指定了 flex order 等情况。</p>
+<ul>
+<li>focusFirstTabbableElement()   聚焦区域内的第一个可捕捉元素</li>
+<li>focusFirstTabbableElementWhenReady()</li>
+<li>focusInitialElement()  </li>
+<li>focusInitialElementWhenReady()</li>
+<li>focusLastTabbableElement()</li>
+<li>focusLastTabbableElementWhenReady()</li>
+</ul>
+<h4 id="3-2-4-实际中的使用"><a href="#3-2-4-实际中的使用" class="headerlink" title="3.2.4 实际中的使用"></a>3.2.4 实际中的使用</h4><p>以公共组件 Dialog 为例，需要在 Dialog 打开时，将焦点约束在 Dialog 区域内部。</p>
+<p>主要分为三步：</p>
+<ol>
+<li>打开 Dialog 时，保存当前获得焦点的元素</li>
+<li>使 Dialog 获得焦点，并将焦点约束在 Dialog 内</li>
+<li>Dialog 关闭时，将焦点恢复到之前聚焦的元素上</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Component, Inject &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; FocusTrap, FocusTrapFactory &#125; <span class="keyword">from</span> <span class="string">'@angular/cdk/a11y'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; DOCUMENT &#125; <span class="keyword">from</span> <span class="string">'@angular/common'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dialog</span> </span>&#123;</span><br><span class="line">    focusTrap: FocusTrap;</span><br><span class="line">    prevFocusedElem: HTMLElement;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span>(</span><br><span class="line">        private elementRef: ElementRef,</span><br><span class="line">        private focusTrapFactory: FocusTrapFactory,</span><br><span class="line">        @Inject(DOCUMENT) private document: any) &#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 保存 Dialog open 之前聚焦的元素</span></span><br><span class="line">    savePrevFocusedElement() &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.document) &#123;</span><br><span class="line">            <span class="keyword">this</span>.prevFocusedElem = <span class="keyword">this</span>.document.activeElement <span class="keyword">as</span> HTMLElement;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.elementRef.nativeElement.focus) &#123;</span><br><span class="line">                <span class="comment">// 元素可能无法立即聚焦</span></span><br><span class="line">                <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                    <span class="keyword">this</span>.elementRef.nativeElement.focus();</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将焦点限制在 Dialog 内部</span></span><br><span class="line">    trapFocus() &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.focusTrap) &#123;</span><br><span class="line">            <span class="keyword">this</span>.focusTrap = <span class="keyword">this</span>.focusTrapFactory.create(<span class="keyword">this</span>.elementRef.nativeElement);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.focusTrap.focusInitialElementWhenReady();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Dialog close 时恢复原来聚焦的元素</span></span><br><span class="line">    restoreFocus() &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.prevFocusedElem &amp;&amp; <span class="keyword">typeof</span> <span class="keyword">this</span>.prevFocusedElem.focus === <span class="string">'function'</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.prevFocusedElem.focus();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.focusTrap) &#123;</span><br><span class="line">            <span class="keyword">this</span>.focusTrap.destroy();</span><br><span class="line">            <span class="keyword">this</span>.focusTrap = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/20/wangqing28/浅谈当Swift中defer和inout同时起作用/" rel="prev">浅谈当Swift中defer和inout同时起作用</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/21/rongweiwei/mysql-protocol/" rel="next">mysql通信协议浅解</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Angular-CDK-部分功能介绍"><span class="nav-number">1.</span> <span class="nav-text">Angular CDK 部分功能介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Angular-CDK-之-Portal"><span class="nav-number">1.1.</span> <span class="nav-text">1. Angular CDK 之 Portal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-概述"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-指令"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CdkPortal"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">CdkPortal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CdkPortalOutlet"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">CdkPortalOutlet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#🌰-动态切换内容"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">🌰 动态切换内容</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-常用class"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 常用class</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Portal"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">Portal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ComponentPortal"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">ComponentPortal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TemplatePortal"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">TemplatePortal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DomPortalOutlet"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">DomPortalOutlet</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#🌰-简单使用示例"><span class="nav-number">1.1.3.4.1.</span> <span class="nav-text">🌰 简单使用示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DomPortalOutlet-在-Angular-Material-中的使用"><span class="nav-number">1.1.3.4.2.</span> <span class="nav-text">DomPortalOutlet 在 Angular Material 中的使用</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Angular-CDK-之-Overlay"><span class="nav-number">1.2.</span> <span class="nav-text">2. Angular CDK 之 Overlay</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-概述"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-OverlayRef"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 OverlayRef</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-OverlayConfig"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 OverlayConfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-两种位置策略"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 两种位置策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-四种滚动策略"><span class="nav-number">1.2.5.</span> <span class="nav-text">2.5 四种滚动策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#🌰-示例"><span class="nav-number">1.2.6.</span> <span class="nav-text">🌰 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-创建菜单"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">1. 创建菜单</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-创建弹出框"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">2. 创建弹出框</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Angular-CDK-之-a11y"><span class="nav-number">1.3.</span> <span class="nav-text">3. Angular CDK 之 a11y</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-a11y-概述"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 a11y 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-FocusTrap"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 FocusTrap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-指令"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">3.2.1 指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-FocusTrapFactory"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">3.2.2 FocusTrapFactory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-FocusTrap"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">3.2.3 FocusTrap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-4-实际中的使用"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">3.2.4 实际中的使用</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

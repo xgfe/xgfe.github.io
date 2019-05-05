@@ -1,0 +1,836 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Vue2.0,Vue-router2.0,Vuex2.0,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="随着Vue2.0的发布，Vue系列生态Vue-router、Vuex等也都升级到了2.0版本，但是关于Vue2.0版本的例子还比较少，而且由于Vue2.0相比Vue1.0版本改动较大，其中也有不少的坑，这里就从零开始利用Vue2.0系列搭建简书网站雏形。">
+<meta name="keywords" content="Vue2.0,Vue-router2.0,Vuex2.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue2.0+Vue-router2.0+Vuex2.0搭建简书">
+<meta property="og:url" content="http://xgfe.github.io/2016/12/22/zhouxiong/Vue2.0+Vue-router2.0+Vuex2.0/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="随着Vue2.0的发布，Vue系列生态Vue-router、Vuex等也都升级到了2.0版本，但是关于Vue2.0版本的例子还比较少，而且由于Vue2.0相比Vue1.0版本改动较大，其中也有不少的坑，这里就从零开始利用Vue2.0系列搭建简书网站雏形。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p0.meituan.net/dpnewvc/7b40c71206391a3e42d499d73cb001fb79952.png">
+<meta property="og:image" content="http://p1.meituan.net/dpnewvc/12b5ff26dd51f7a9cf96941764f856d9171798.png">
+<meta property="og:image" content="http://p1.meituan.net/dpnewvc/fc348abd3192c1d65c812f70f736547b1123026.png">
+<meta property="og:image" content="http://p0.meituan.net/dpnewvc/1532121bd9eda41196deb676f9572e84143104.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.411Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue2.0+Vue-router2.0+Vuex2.0搭建简书">
+<meta name="twitter:description" content="随着Vue2.0的发布，Vue系列生态Vue-router、Vuex等也都升级到了2.0版本，但是关于Vue2.0版本的例子还比较少，而且由于Vue2.0相比Vue1.0版本改动较大，其中也有不少的坑，这里就从零开始利用Vue2.0系列搭建简书网站雏形。">
+<meta name="twitter:image" content="http://p0.meituan.net/dpnewvc/7b40c71206391a3e42d499d73cb001fb79952.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Vue2.0+Vue-router2.0+Vuex2.0搭建简书 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Vue2.0+Vue-router2.0+Vuex2.0搭建简书
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2016-12-22T00:00:00+08:00" content="2016-12-22">
+            2016-12-22
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhouxiong/" itemprop="url" rel="index">
+                  <span itemprop="name">zhouxiong</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Vue2-0/" rel="tag"><i class="icon-next-tags"></i>Vue2.0</a>
+            
+              <a href="/tags/Vue-router2-0/" rel="tag"><i class="icon-next-tags"></i>Vue-router2.0</a>
+            
+              <a href="/tags/Vuex2-0/" rel="tag"><i class="icon-next-tags"></i>Vuex2.0</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>随着Vue2.0的发布，Vue系列生态Vue-router、Vuex等也都升级到了2.0版本，但是关于Vue2.0版本的例子还比较少，而且由于Vue2.0相比Vue1.0版本改动较大，其中也有不少的坑，这里就从零开始利用Vue2.0系列搭建简书网站雏形。</p>
+<a id="more"></a>
+<h2 id="Vue2-0-Vue-router2-0-Vuex2-0搭建简书"><a href="#Vue2-0-Vue-router2-0-Vuex2-0搭建简书" class="headerlink" title="Vue2.0+Vue-router2.0+Vuex2.0搭建简书"></a>Vue2.0+Vue-router2.0+Vuex2.0搭建简书</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>随着Vue2.0的发布，Vue系列生态Vue-router、Vuex等也都升级到了2.0版本，但是关于Vue2.0版本的例子还比较少，而且由于Vue2.0相比Vue1.0版本改动较大，其中也有不少的坑，这里就从零开始利用Vue2.0系列搭建简书网站雏形。</p>
+<p><strong>注意：本篇文章只介绍了比较重要的几个文件的内容，有些文件内容类似就没有拿出来讲解。所以代码并不是全部的，所以按照本文的内容并不能完全搭建起一个网站，想要全部的代码可以从下面的github仓库中获取</strong></p>
+<p>github地址：<a href="https://github.com/zhouxiongking/vue2.0-vuex2.0-demo-jianshu" target="_blank" rel="noopener">https://github.com/zhouxiongking/vue2.0-vuex2.0-demo-jianshu</a></p>
+<h3 id="准备知识"><a href="#准备知识" class="headerlink" title="准备知识"></a>准备知识</h3><ul>
+<li><p>vue2.0</p>
+<p>本文中使用的是.vue文件格式编写组件。Vue.js设计了一个.vue格式的文件，另每一个组件的模板、脚本、样式都集成在一个文件里，每个文件都是一个组件，同时包含了组件之间的依赖关系，整个组件从外观到结构到特性再到依赖性都一览无余</p>
+</li>
+<li><p>vue-router2.0</p>
+<p>vue-router是vue框架提供的用于路由控制的库</p>
+</li>
+<li><p>vuex2.0</p>
+<p>vuex是专门为vue应用提供状态管理的库，它为vue应用的所有组件提供一个数据存储中心（store），所有组件遵循特定的规则通过这个store进行数据交互，让组件的通信变得更容易维护</p>
+</li>
+<li><p>es6</p>
+<p>vue2.0中使用的都是es6的语法，带来了书写上的方便，这就要求对es6语法有最基本的掌握</p>
+</li>
+<li><p>webpack</p>
+<p>webpack主要的作用是把所有浏览器端需要发布的静态资源做相应的准备，比如资源的解析、合并和打包。同时webpack提供了强大的loader和plugin机制，loader机制支持加载各种类型的静态资源文件，例如babel-loader用于支持es6文件，css-loader用于支持css文件。而plugin则可以对整个webpack的流程进行控制。由于webpack提供了vue-loader，所以webpack支持vue的.vue文件格式的编写。</p>
+</li>
+</ul>
+<h3 id="项目目录结构"><a href="#项目目录结构" class="headerlink" title="项目目录结构"></a>项目目录结构</h3><p>本项目使用vue-cli脚手架自动生成，利用vue-cli配合webpack可以很方便的为搭建好项目的目录结构，项目结构如下所示</p>
+<p><img src="http://p0.meituan.net/dpnewvc/7b40c71206391a3e42d499d73cb001fb79952.png" height="450" alt="项目目录结构"></p>
+<ul>
+<li><strong>build</strong>: webpack配置文件，以及开启server的文件，如果不涉及与后端的交互，这个文件夹的内容不用动；如果需要与后端进行交互，则要在里面编写处理请求的方法。</li>
+<li><strong>components</strong>：包含页面所有组件</li>
+<li><strong>App.vue</strong>: 主页面组件</li>
+<li><strong>main.js</strong>: 应用入口，包含根节点</li>
+<li><strong>static</strong>: 项目中存在的静态资源（图片或图标库）</li>
+<li><strong>vuex</strong>：包含vuex相关文件，store.js，getter.js，action.js等</li>
+</ul>
+<h3 id="项目搭建"><a href="#项目搭建" class="headerlink" title="项目搭建"></a>项目搭建</h3><ul>
+<li><p>安装vue-cli</p>
+<p><code>npm install -g vue-cli</code></p>
+</li>
+<li><p>创建webpack项目</p>
+<p><code>vue init webpack vue-demo-jianshu</code></p>
+<p><code>cd vue-demo-jianshu</code></p>
+</li>
+<li><p>安装依赖</p>
+<p><code>npm install</code></p>
+</li>
+<li><p>安装vue-router</p>
+<p><code>npm install vue-router --save-dev</code></p>
+</li>
+<li><p>安装vuex</p>
+<p><code>npm install vuex --save-dev</code></p>
+</li>
+<li><p>运行</p>
+<p><code>npm run dev</code></p>
+</li>
+</ul>
+<p>如果以上步骤全都运行正确，则在浏览器输入<a href="http://localhost:8080，可以访问到如下页面" target="_blank" rel="noopener">http://localhost:8080，可以访问到如下页面</a><br><img src="http://p1.meituan.net/dpnewvc/12b5ff26dd51f7a9cf96941764f856d9171798.png" height="400"></p>
+<h3 id="项目开发"><a href="#项目开发" class="headerlink" title="项目开发"></a>项目开发</h3><p>在搭建完项目后，便可以开始项目代码的编写了，首先我们对页面的结构进行分析<br><img src="http://p1.meituan.net/dpnewvc/fc348abd3192c1d65c812f70f736547b1123026.png" alt="主页面"></p>
+<ul>
+<li>左侧绿色菜单栏框：每个页面都会有，故写在App.vue里</li>
+<li>右侧黄色登录/注册框：多个页面都会有，故写在App.vue里</li>
+<li>紫色展示框：页面主要内容，会随着左侧菜单栏进行变化，故写在Home.vue里</li>
+<li>中间棕色列表框：展示页面列表内容，写在ArticleList.vue里</li>
+</ul>
+<p>在整个系统中会有多个页面组件，下面我们只选取其中几个比较重要的组件，而且它们已经包含了应用程序的主流程：App.vue进入应用程序 –&gt; 根据左侧导航栏动态展示Home.vue中的内容，其中包括文章列表ArticleList.vue –&gt;  在文章列表页面，点击文章标题进入具体文章展示页面Article.vue。</p>
+<h4 id="main-js"><a href="#main-js" class="headerlink" title="main.js"></a>main.js</h4><p>main.js作为应用程序脚本文件的主入口，在main.js中引入vue，vue-router，vuex等，并对vue-router进行配置。<strong>由于代码文件较大，只对代码文件中比较重要的部分贴出来进行讲解，后续的文件也是如此，如果想看全部的代码，自行clone上面的github仓库</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;   //引入vue</span><br><span class="line">import VueRouter from &apos;vue-router&apos;   //引入vue-router</span><br><span class="line">import store from &apos;../vuex/store&apos;    //引入vuex的store</span><br><span class="line"></span><br><span class="line">Vue.use(VueRouter)     //注册vue-router</span><br><span class="line"></span><br><span class="line">//配置路由，部分代码，不同于vue-router1.0，vue-router2.0利用routes参数进行路由配置，</span><br><span class="line">//接收path和component属性组成的对象，子路由采用children参数</span><br><span class="line">const router = new VueRouter(&#123;</span><br><span class="line">    routes: [&#123;</span><br><span class="line">        path: &apos;/home&apos;,</span><br><span class="line">        component: Home,</span><br><span class="line">        children: [&#123;</span><br><span class="line">            path: &apos;article/:type&apos;,</span><br><span class="line">            component: ArticleList</span><br><span class="line">        &#125;]</span><br><span class="line">    &#125;, &#123;</span><br><span class="line">        path: &apos;/topic&apos;,</span><br><span class="line">        component: Topic,</span><br><span class="line">        children: [&#123;</span><br><span class="line">            path: &apos;topic_article/:type&apos;,</span><br><span class="line">            component: topicActicle</span><br><span class="line">        &#125;]</span><br><span class="line">    &#125;]</span><br><span class="line">  ))</span><br><span class="line">  </span><br><span class="line">  var vm = new Vue(&#123;</span><br><span class="line">    el: &apos;#app&apos;,  //vue实例的根元素</span><br><span class="line">    router,    //在vue实例中,引入定义的路由</span><br><span class="line">    store,    //在vue实例中,引入vuex的store</span><br><span class="line">    render: h =&gt; h(App)    //渲染App组件</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="App-vue"><a href="#App-vue" class="headerlink" title="App.vue"></a>App.vue</h4><p>App.vue作为程序入口的主组件，与main.js绑定在一起</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt; </span><br><span class="line">&lt;div class=&quot;container&quot;&gt;</span><br><span class="line">    &lt;!-- 左边菜单栏 --&gt;</span><br><span class="line">    &lt;div class=&quot;sidebar&quot;&gt;</span><br><span class="line">        </span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;!-- 中间主显示框 --&gt;</span><br><span class="line">    &lt;div class=&quot;home&quot;&gt;</span><br><span class="line">        &lt;transition name=&quot;display&quot; node=&quot;out-in&quot;&gt;</span><br><span class="line">            &lt;!--用于展示Home.vue部分的内容 --&gt;</span><br><span class="line">            &lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">        &lt;/transition&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;!-- 右侧登录/注册栏，这个articleFlag参数表示，如果是在文章显示的页面，则会删除掉右边的登录/注册部分 --&gt;</span><br><span class="line">    &lt;div class=&quot;rightbar&quot; v-if=&quot;articleFlag&quot;&gt;  </span><br><span class="line">        &lt;nav&gt;</span><br><span class="line">            &lt;ul class=&quot;nav-ul&quot;&gt;</span><br><span class="line">                &lt;li @click=&quot;changeLoginway(&apos;login&apos;)&quot;&gt;</span><br><span class="line">                    &lt;router-link to=&quot;/login&quot;&gt;</span><br><span class="line">                        &lt;i class=&quot;fa fa-sign-in&quot;&gt;&lt;/i&gt;</span><br><span class="line">                        登录</span><br><span class="line">                    &lt;/router-link&gt;</span><br><span class="line">                &lt;/li&gt;</span><br><span class="line">                &lt;li @click=&quot;changeLoginway(&apos;register&apos;)&quot;&gt;</span><br><span class="line">                    &lt;router-link to=&quot;/login&quot;&gt;</span><br><span class="line">                        &lt;i class=&quot;fa fa-user&quot;&gt;&lt;/i&gt;</span><br><span class="line">                        注册</span><br><span class="line">                    &lt;/router-link&gt;</span><br><span class="line">                &lt;/li&gt;</span><br><span class="line">            &lt;/ul&gt;</span><br><span class="line">        &lt;/nav&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Home-vue"><a href="#Home-vue" class="headerlink" title="Home.vue"></a>Home.vue</h4><p>Home.vue作为中间核心展示组件，会随着左侧菜单栏的变化而变化。在Home.vue中，左侧是一张显示用的图片，可以固定；右侧顶部导航也可以固定，右侧中部的分类导航栏与下面的列表展示是动态变化的，故应该在这里使用路由。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">      &lt;!-- 左侧展示图片区域 --&gt; </span><br><span class="line">      &lt;div class=&quot;showbar&quot;&gt;</span><br><span class="line">          &lt;div class=&quot;cover-image&quot;&gt;&lt;/div&gt;</span><br><span class="line">          &lt;div class=&quot;text&quot;&gt;</span><br><span class="line">              &lt;h1&gt;简书&lt;/h1&gt;</span><br><span class="line">              &lt;h3&gt;交流故事&lt;/h3&gt;</span><br><span class="line">              &lt;p&gt;一个基于内容分享的社区&lt;/p&gt;</span><br><span class="line">              &lt;router-link to=&quot;/write&quot;&gt;</span><br><span class="line">                  &lt;i class=&quot;fa fa-home&quot;&gt;&lt;/i&gt;</span><br><span class="line">                  提笔写文章</span><br><span class="line">              &lt;/router-link&gt;</span><br><span class="line">          &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">      &lt;div class=&quot;article-page&quot;&gt;</span><br><span class="line">          &lt;!-- 右侧顶部导航栏 --&gt;</span><br><span class="line">          &lt;nav&gt;</span><br><span class="line">              &lt;span class=&quot;nav-text fir&quot;&gt;</span><br><span class="line">                  &lt;a href=&quot;#&quot;&gt;发现&lt;/a&gt;</span><br><span class="line">              &lt;/span&gt;</span><br><span class="line">              &lt;span class=&quot;nav-text&quot;&gt;</span><br><span class="line">                  &lt;router-link to=&quot;/bonus&quot;&gt;2016精选&lt;/router-link&gt;</span><br><span class="line">              &lt;/span&gt;</span><br><span class="line">              &lt;span class=&quot;search clearfloat&quot;&gt;</span><br><span class="line">                  &lt;span class=&quot;input&quot;&gt;</span><br><span class="line">                      &lt;input type=&quot;search&quot; placeholder=&quot;搜索&quot;&gt;</span><br><span class="line">                      &lt;span class=&quot;search-icon&quot;&gt;</span><br><span class="line">                          &lt;i class=&quot;fa fa-search&quot;&gt;&lt;/i&gt;</span><br><span class="line">                      &lt;/span&gt;</span><br><span class="line">                  &lt;/span&gt;</span><br><span class="line">              &lt;/span&gt;</span><br><span class="line">          &lt;/nav&gt;</span><br><span class="line">          &lt;div class=&quot;article-list&quot;&gt;</span><br><span class="line">             &lt;!-- 右侧中部分类导航栏 --&gt;</span><br><span class="line">              &lt;ul class=&quot;btn-group&quot;&gt;</span><br><span class="line">                  &lt;li :class=&quot;&#123;active: show === &apos;hot&apos;&#125;&quot; @click=&quot;displayArticles(&apos;hot&apos;)&quot;&gt;</span><br><span class="line">                      &lt;router-link to=&quot;/home/article/hot&quot;&gt;热门&lt;/router-link&gt;</span><br><span class="line">                  &lt;/li&gt;</span><br><span class="line">                  &lt;li :class=&quot;&#123;active: show === &apos;new&apos;&#125;&quot; @click=&quot;displayArticles(&apos;new&apos;)&quot;&gt;</span><br><span class="line">                      &lt;router-link to=&quot;/home/article/new&quot;&gt;新上榜&lt;/router-link&gt;</span><br><span class="line">                  &lt;/li&gt;</span><br><span class="line">              &lt;/ul&gt;</span><br><span class="line">              &lt;!-- 右侧中部分类列表展示 --&gt;</span><br><span class="line">              &lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">          &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="ArticleList-vue"><a href="#ArticleList-vue" class="headerlink" title="ArticleList.vue"></a>ArticleList.vue</h4><p>ArticleList.vue是用于展示文章列表的组件，每种类型的文章都会存在一个文章列表，在Home.vue中点击对应的分类会在ArticleList.vue中进行展示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;ul&gt;</span><br><span class="line">            &lt;li class=&quot;list&quot; v-for=&quot;article in articles&quot;&gt;</span><br><span class="line">                &lt;p class=&quot;list-top&quot;&gt;</span><br><span class="line">                    &lt;a href=&quot;#&quot; class=&quot;author&quot;&gt;</span><br><span class="line">                        &lt;span&gt;&#123;&#123;article.author&#125;&#125;&lt;/span&gt;</span><br><span class="line">                    &lt;/a&gt;</span><br><span class="line">                    &lt;span class=&quot;time&quot;&gt;</span><br><span class="line">                        - &#123;&#123;article.time&#125;&#125;</span><br><span class="line">                    &lt;/span&gt;</span><br><span class="line">                &lt;/p&gt;</span><br><span class="line">                &lt;h2 class=&quot;title&quot;&gt;</span><br><span class="line">                    &lt;!-- 点击文章的标题会进入到文章展示页面，在这里设置路由 --&gt;</span><br><span class="line">                    &lt;router-link to=&quot;/article/123211&quot;&gt;&#123;&#123;article.title&#125;&#125;&lt;/router-link&gt;</span><br><span class="line">                &lt;/h2&gt;</span><br><span class="line">                &lt;span class=&quot;small-text&quot;&gt;阅读 &#123;&#123;article.read&#125;&#125;&lt;/span&gt;</span><br><span class="line">                &lt;span class=&quot;small-text&quot;&gt;评论 &#123;&#123;article.comment&#125;&#125;&lt;/span&gt;</span><br><span class="line">                &lt;span class=&quot;small-text&quot;&gt;喜欢 &#123;&#123;article.like&#125;&#125;&lt;/span&gt;</span><br><span class="line">                &lt;span class=&quot;small-text&quot;&gt;打赏 &#123;&#123;article.pay&#125;&#125;&lt;/span&gt;</span><br><span class="line">                &lt;span class=&quot;image&quot;</span><br><span class="line">                      :style=&quot;&#123; background: article.src, backgroundSize: &apos;100%&apos;, backgroundRepeat: &apos;no-repeat&apos; &#125;&quot;&gt;&lt;/span&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">        &lt;/ul&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Article-vue"><a href="#Article-vue" class="headerlink" title="Article.vue"></a>Article.vue</h4><p> Article.vue是展示具体文章的组件，通过在ArticleList.vue中点击文章标题后进入到具体文章页面。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"> &lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;article-container&quot;&gt;</span><br><span class="line">    &lt;!-- Article activities for width under 768px --&gt;</span><br><span class="line">    &lt;div class=&quot;related-avatar-group activities&quot;&gt;&lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;article&quot;&gt;</span><br><span class="line">      &lt;div class=&quot;preview&quot;&gt;</span><br><span class="line">        &lt;div class=&quot;author-info&quot;&gt;</span><br><span class="line">          &lt;div class=&quot;btn btn-small btn-success follow&quot; id=&quot;follow_user_445173&quot;&gt;</span><br><span class="line">            &lt;a data-type=&quot;json&quot; data-user-slug=&quot;29010e584814&quot; data-remote=&quot;true&quot; rel=&quot;nofollow&quot; data-method=&quot;post&quot; href=&quot;#&quot;&gt;&lt;i class=&quot;fa fa-plus&quot;&gt;&lt;/i&gt;  &lt;span&gt;添加关注&lt;/span&gt;&lt;/a&gt;</span><br><span class="line">          &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">          &lt;a class=&quot;avatar&quot; href=&quot;#&quot;&gt;</span><br><span class="line">            &lt;img src=&quot;http://upload.jianshu.io/users/upload_avatars/445173/693d39ebd6c5.jpg?imageMogr/thumbnail/90x90/quality/100&quot; alt=&quot;100&quot;&gt;</span><br><span class="line">          &lt;/a&gt;            &lt;span class=&quot;label&quot;&gt;</span><br><span class="line">                作者</span><br><span class="line">            &lt;/span&gt;</span><br><span class="line">          &lt;a class=&quot;author-name blue-link&quot; href=&quot;#&quot;&gt;</span><br><span class="line">            &lt;span&gt;东辉在线&lt;/span&gt;</span><br><span class="line">          &lt;/a&gt;</span><br><span class="line">          &lt;span data-toggle=&quot;tooltip&quot; data-original-title=&quot;最后编辑于 2016.12.07 16:29&quot;&gt;2016.12.05 22:16&lt;/span&gt;</span><br><span class="line">          &lt;div&gt;</span><br><span class="line">            &lt;span&gt;写了25144字&lt;/span&gt;，&lt;span&gt;被91人关注&lt;/span&gt;，&lt;span&gt;获得了293个喜欢&lt;/span&gt;</span><br><span class="line">          &lt;/div&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;h1 class=&quot;title&quot;&gt;如何成为一个黑客？&lt;/h1&gt;</span><br><span class="line">        &lt;div class=&quot;meta-top&quot;&gt;</span><br><span class="line">          &lt;span class=&quot;wordage&quot;&gt;字数1878&lt;/span&gt;</span><br><span class="line">          &lt;span class=&quot;views-count&quot;&gt;阅读1378&lt;/span&gt;</span><br><span class="line">          &lt;span class=&quot;comments-count&quot;&gt;评论20&lt;/span&gt;</span><br><span class="line">          &lt;span class=&quot;likes-count&quot;&gt;喜欢49&lt;/span&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- Collection/Bookmark/Share for width under 768px --&gt;</span><br><span class="line">        &lt;div class=&quot;article-share&quot;&gt;&lt;/div&gt;</span><br><span class="line">        &lt;!-- --&gt;</span><br><span class="line"></span><br><span class="line">        &lt;div class=&quot;show-content&quot;&gt;</span><br><span class="line">            &lt;p&gt;&lt;b&gt;很多人要成为高大上的黑客需要学习哪些基本功？&lt;/b&gt;&lt;/p&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h3><p>自我感觉作为Vue系列里最重要的一环Vuex，它的诞生解决了各组件的之间的数据通信问题。它将组件共享的数据状态抽取出来，以一个全局单例模式管理，它所提供的单向数据流使得组件之间的状态变得很容易维护。</p>
+<p><img src="http://p0.meituan.net/dpnewvc/1532121bd9eda41196deb676f9572e84143104.png" alt="vuex单向数据流"></p>
+<p>上面的数据流向图表示：</p>
+<ul>
+<li>整个store中的数据定义在一个state中</li>
+<li>可以通过getters对state中的数据进行读取</li>
+<li>state中的数据只能通过mutations进行更改</li>
+<li>在actions中可以提交mutations，而且在actions中可以完成异步操作</li>
+</ul>
+<h4 id="store-js"><a href="#store-js" class="headerlink" title="store.js"></a>store.js</h4><p>store.js作为vuex的核心文件，从这个文件中export出一个vuex实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;</span><br><span class="line">import Vuex from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">//引入getters与actions</span><br><span class="line">import * as getters from &apos;./getters&apos;</span><br><span class="line">import * as actions from &apos;./actions&apos;</span><br><span class="line">import mutations from &apos;./mutations&apos;</span><br><span class="line"></span><br><span class="line">//注册vuex</span><br><span class="line">Vue.use(Vuex)  </span><br><span class="line"></span><br><span class="line">//定义各组件需要进行通信的数据</span><br><span class="line">const state = &#123;</span><br><span class="line">    show: &apos;hot&apos;,</span><br><span class="line">    loginway: &apos;login&apos;,</span><br><span class="line">    hotArticles: [&#123;</span><br><span class="line">        author: &apos;小熊猫&apos;,</span><br><span class="line">        title: &apos;每天努力多一点点&apos;,</span><br><span class="line">        time: &apos;大约6小时前&apos;,</span><br><span class="line">        read: &apos;7231&apos;,</span><br><span class="line">        comment: &apos;247&apos;,</span><br><span class="line">        like: &apos;2341&apos;,</span><br><span class="line">        pay: &apos;2&apos;,</span><br><span class="line">        src: &apos;url(../../static/images/vue-demo-hot.jpg)&apos;</span><br><span class="line">    &#125;, &#123;</span><br><span class="line">        author: &apos;大熊猫&apos;,</span><br><span class="line">        title: &apos;每天前进一点点&apos;,</span><br><span class="line">        time: &apos;大约6小时前&apos;,</span><br><span class="line">        read: &apos;7231&apos;,</span><br><span class="line">        comment: &apos;247&apos;,</span><br><span class="line">        like: &apos;2341&apos;,</span><br><span class="line">        pay: &apos;2&apos;,</span><br><span class="line">        src: &apos;url(../../static/images/vue-demo-hot.jpg)&apos;</span><br><span class="line">    &#125;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//导出vuex的实例，其中包含state，mutations，getters，actions</span><br><span class="line">export default new Vuex.Store(&#123;</span><br><span class="line">    state,</span><br><span class="line">    mutations,</span><br><span class="line">    getters,</span><br><span class="line">    actions</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="getters-js"><a href="#getters-js" class="headerlink" title="getters.js"></a>getters.js</h4><p>getters.js用来获取state中的数据，可以认为是store中的计算属性，每个方法都会接收一个state对象作为参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">export const getShow = state =&gt; state.show</span><br><span class="line"></span><br><span class="line">export const getArticles = state =&gt; state.articles</span><br><span class="line"></span><br><span class="line">export const getTopicArticles = state =&gt; state.topicArticles</span><br><span class="line"></span><br><span class="line">export const getBonus = state =&gt; state.texts</span><br><span class="line"></span><br><span class="line">export const getLoginway = state =&gt; state.loginway</span><br><span class="line"></span><br><span class="line">export const getArticleFlag = state =&gt; state.articleFlag</span><br></pre></td></tr></table></figure>
+<h4 id="mutations-js"><a href="#mutations-js" class="headerlink" title="mutations.js"></a>mutations.js</h4><p>mutations.js用于修改state中的数据状态，vuex中的mutations类似于事件，每个mutation都有一个字符串的事件类型（type）和一个回调函数（handler）。在其回调函数中接收state作为第一个参数，还可以传入额外的参数，称为载荷（payload）。</p>
+<p>不能直接调用一个mutation的handler，而是应该用commit方法去触发该mutation。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">export default &#123;</span><br><span class="line">    DISPLAY_ARTICLES (state, type) &#123;</span><br><span class="line">        state.show = type</span><br><span class="line">        state.articles = state[type + &apos;Articles&apos;]</span><br><span class="line">    &#125;,</span><br><span class="line">    DISPLAY_TOPIC (state, type) &#123;</span><br><span class="line">        state.show = type</span><br><span class="line">        state.topicArticles = state[type + &apos;TopicArticles&apos;]</span><br><span class="line">    &#125;,</span><br><span class="line">    SORT_CONTENT (state, type) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    CHANGE_LOGINWAY (state, loginway) &#123;</span><br><span class="line">        state.loginway = loginway</span><br><span class="line">    &#125;,</span><br><span class="line">    CHANGE_ARTICLEFLAG (state, flag) &#123;</span><br><span class="line">        state.articleFlag = flag</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="actions-js"><a href="#actions-js" class="headerlink" title="actions.js"></a>actions.js</h4><p>Action提交的是mutation，而不是直接更改数据状态，而且在Action中可以包含任意的异步操作。Action函数接收一个与store实例具有相同方法和属性的context对象，因此可以调用context.commit提交mutation，或者通过context.getters，context.state来获取store的getters和state。</p>
+<p>Action通过store.dispatch方法触发，由于mutation必须同步执行的限制，所以如果需要执行异步操作用Action将会非常方便</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">export const displayArticles = (&#123;commit&#125;, type) =&gt; &#123;</span><br><span class="line">    commit(&apos;DISPLAY_ARTICLES&apos;, type)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export const displayTopic = (&#123;commit&#125;, type) =&gt; &#123;</span><br><span class="line">    commit(&apos;DISPLAY_TOPIC&apos;, type)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export const sortContent = (&#123;commit&#125;, type) =&gt; &#123;</span><br><span class="line">    commit(&apos;SORT_CONTENT&apos;, type)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export const changeLoginway = (&#123;commit&#125;, loginway) =&gt; &#123;</span><br><span class="line">    commit(&apos;CHANGE_LOGINWAY&apos;, loginway)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export const changeArticleFlag = (&#123;commit&#125;, flag) =&gt; &#123;</span><br><span class="line">    commit(&apos;CHANGE_ARTICLEFLAG&apos;, flag)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="vuex在组件中的调用"><a href="#vuex在组件中的调用" class="headerlink" title="vuex在组件中的调用"></a>vuex在组件中的调用</h4><p>上面定义好vuex各个部分，接下来看怎么在各个组价中进行调用。vuex1.0与vuex2.0在组件中的调用也有不同，在vuex1.0中，export default {}可以使用vuex属性，该属性包含getters和actions等参数。vuex1.0版本的.vue文件script标签内容类似于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import &#123; displayArticle&#125; from &apos;../vuex/actions&apos;</span><br><span class="line">export default&#123;</span><br><span class="line">    vuex: &#123;</span><br><span class="line">        getters: &#123;</span><br><span class="line">            show: state =&gt; state.show</span><br><span class="line">        &#125;,</span><br><span class="line">        actions: &#123;</span><br><span class="line">            displayArticle</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在vuex2.0版本中废弃了这种方法，而是采用类似于下面的方法，这里也选取几个比较典型的页面</p>
+<ul>
+<li><p>App.vue</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"> &lt;script&gt;</span><br><span class="line">  //在vuex2.0中提供mapGetters用于获取getters中的内容，接收一个key: value类型的对象</span><br><span class="line">  import &#123; mapGetters &#125; from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">  export default &#123;</span><br><span class="line">      data () &#123;</span><br><span class="line">          return &#123;</span><br><span class="line">              show: &apos;home&apos;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      //mapGetters接收的参数表示，页面上定义的变量articleFlag通过getters的getArticleFlag方法来获取</span><br><span class="line">      computed: mapGetters(&#123;</span><br><span class="line">          articleFlag: &apos;getArticleFlag&apos;</span><br><span class="line">      &#125;),</span><br><span class="line">      methods: &#123;</span><br><span class="line">           //每个组件可以通过this.$store获取vuex的store，然后可以通过dispatch方法来触发一个action，</span><br><span class="line">           //在action中接收一个loginway参数</span><br><span class="line">          changeLoginway (loginway) &#123;</span><br><span class="line">              this.$store.dispatch(&apos;changeLoginway&apos;, loginway)</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>Home.vue</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"> &lt;script&gt;</span><br><span class="line">   import &#123; mapGetters &#125; from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">   export default &#123;</span><br><span class="line">       //mapGetters中接收的参数表示，在页面上定义的show参数通过getters的getShow方法来获取</span><br><span class="line">       computed: mapGetters(&#123;</span><br><span class="line">           show: &apos;getShow&apos;</span><br><span class="line">       &#125;),</span><br><span class="line">       methods: &#123;</span><br><span class="line">           //该方法表示触发store的actions中的displayArticles</span><br><span class="line">           displayArticles (type) &#123;</span><br><span class="line">               this.$store.dispatch(&apos;displayArticles&apos;, type)</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;,</span><br><span class="line">       //页面加载完后，触发store的actions中的displayArticles和changeArticleFlag</span><br><span class="line">       mounted () &#123;</span><br><span class="line">           this.$store.dispatch(&apos;displayArticles&apos;, &apos;hot&apos;)</span><br><span class="line">           this.$store.dispatch(&apos;changeArticleFlag&apos;, true)</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>ArticleList.vue</p>
+<pre><code>&lt;script&gt;
+  import { mapGetters } from &apos;vuex&apos;
+
+  export default {
+      //计算属性articles通过store的getters中的getArticles方法获取
+      computed: mapGetters({
+          articles: &apos;getArticles&apos;
+      }),
+      mounted () {
+          this.$store.dispatch(&apos;changeArticleFlag&apos;, true)
+      }
+  }
+
+&lt;/script&gt;
+</code></pre></li>
+</ul>
+<p>在其他页面中也都采用类似的方式编写，所以就不一一赘述。<br>本文暂且写到这里，后续会对项目继续进行完善，而且接入后端server，打造前后端连通的系统</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li>Vue2.0中文文档：<a href="https://vuefe.cn/v2/guide/" target="_blank" rel="noopener">https://vuefe.cn/v2/guide/</a></li>
+<li>Vue-router2.0中文文档：<a href="https://gongph.gitbooks.io/vue-router-2/content/" target="_blank" rel="noopener">https://gongph.gitbooks.io/vue-router-2/content/</a></li>
+<li>Vuex2.0中文文档：<a href="https://vuex.vuejs.org/zh-cn/" target="_blank" rel="noopener">https://vuex.vuejs.org/zh-cn/</a></li>
+<li>webpack中文文档：<a href="https://chenyiqiao.gitbooks.io/webpack/content/" target="_blank" rel="noopener">https://chenyiqiao.gitbooks.io/webpack/content/</a></li>
+<li>webpack英文文档：<a href="https://webpack.github.io/docs/configuration.html" target="_blank" rel="noopener">https://webpack.github.io/docs/configuration.html</a></li>
+<li>express使用指南：<a href="http://javascript.ruanyifeng.com/nodejs/express.html#toc1" target="_blank" rel="noopener">http://javascript.ruanyifeng.com/nodejs/express.html#toc1</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/13/wangweitao/imageView_Fit/" rel="prev">ImageView的scaleType属性效果</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/21/scliuyang/docker1/" rel="next">初识docker</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue2-0-Vue-router2-0-Vuex2-0搭建简书"><span class="nav-number">1.</span> <span class="nav-text">Vue2.0+Vue-router2.0+Vuex2.0搭建简书</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备知识"><span class="nav-number">1.2.</span> <span class="nav-text">准备知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目目录结构"><span class="nav-number">1.3.</span> <span class="nav-text">项目目录结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目搭建"><span class="nav-number">1.4.</span> <span class="nav-text">项目搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目开发"><span class="nav-number">1.5.</span> <span class="nav-text">项目开发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#main-js"><span class="nav-number">1.5.1.</span> <span class="nav-text">main.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#App-vue"><span class="nav-number">1.5.2.</span> <span class="nav-text">App.vue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Home-vue"><span class="nav-number">1.5.3.</span> <span class="nav-text">Home.vue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ArticleList-vue"><span class="nav-number">1.5.4.</span> <span class="nav-text">ArticleList.vue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Article-vue"><span class="nav-number">1.5.5.</span> <span class="nav-text">Article.vue</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vuex"><span class="nav-number">1.6.</span> <span class="nav-text">Vuex</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#store-js"><span class="nav-number">1.6.1.</span> <span class="nav-text">store.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getters-js"><span class="nav-number">1.6.2.</span> <span class="nav-text">getters.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mutations-js"><span class="nav-number">1.6.3.</span> <span class="nav-text">mutations.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#actions-js"><span class="nav-number">1.6.4.</span> <span class="nav-text">actions.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vuex在组件中的调用"><span class="nav-number">1.6.5.</span> <span class="nav-text">vuex在组件中的调用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">1.7.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

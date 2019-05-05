@@ -1,0 +1,762 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="JavaScript,V8,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文来自Vyacheslav Egorov的Explaining JavaScript VMs in JavaScript - Inline Caches，其中的术语、代码请以原文为准。">
+<meta name="keywords" content="JavaScript,V8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】用JavaScript解释JavaScript虚拟机-内联缓存（inline caches）">
+<meta property="og:url" content="http://xgfe.github.io/2017/05/24/LexHuang/Inline-Caches/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文来自Vyacheslav Egorov的Explaining JavaScript VMs in JavaScript - Inline Caches，其中的术语、代码请以原文为准。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mrale.ph/s3/images/black-box.png">
+<meta property="og:image" content="http://mrale.ph/s3/images/wr2012-assembly.png">
+<meta property="og:image" content="http://mrale.ph/s3/images/wr2012-lookup.png">
+<meta property="og:image" content="http://mrale.ph/s3/images/wr2012-lookup-ic.png">
+<meta property="og:image" content="http://mrale.ph/s3/images/wr2012-hidden-classes.png">
+<meta property="og:image" content="http://mrale.ph/s3/images/wr2012-inline-cache.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.370Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【译】用JavaScript解释JavaScript虚拟机-内联缓存（inline caches）">
+<meta name="twitter:description" content="本文来自Vyacheslav Egorov的Explaining JavaScript VMs in JavaScript - Inline Caches，其中的术语、代码请以原文为准。">
+<meta name="twitter:image" content="http://mrale.ph/s3/images/black-box.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 【译】用JavaScript解释JavaScript虚拟机-内联缓存（inline caches） | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              【译】用JavaScript解释JavaScript虚拟机-内联缓存（inline caches）
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-05-24T11:30:00+08:00" content="2017-05-24">
+            2017-05-24
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/LexHuang/" itemprop="url" rel="index">
+                  <span itemprop="name">LexHuang</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/JavaScript/" rel="tag"><i class="icon-next-tags"></i>JavaScript</a>
+            
+              <a href="/tags/V8/" rel="tag"><i class="icon-next-tags"></i>V8</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文来自Vyacheslav Egorov的<a href="http://mrale.ph/blog/2012/06/03/explaining-js-vms-in-js-inline-caches.html" target="_blank" rel="noopener">Explaining JavaScript VMs in JavaScript - Inline Caches</a>，其中的术语、代码请以原文为准。<br><a id="more"></a></p>
+<p>我知道如何实现用语言（或者语言的子集）来实现运行该语言虚拟机。如果我在学校或者有更多的时间我肯定会用JavaScript实现一个JavaScript虚拟机。实际上这并不会变成一个独一无二的JavaScript项目，因为蒙特利尔大学的人所造的<a href="https://github.com/Tachyon-Team/Tachyon/tree/master/source" target="_blank" rel="noopener">Tachyon</a>已经在某种程度上达到了同样的目的，但是我也有些我自己想要追求的点子。</p>
+<p><img src="http://mrale.ph/s3/images/black-box.png" alt=""><br>我则有另一个和自循环虚拟机紧密相关的梦想。我想要帮助JavaScript开发者理解JS引擎的工作方式。我认为理解你正在使用的工具是我们职业生涯中最重要的。越多人不在把JS VM看作是将JavaScript源码转为0-1神秘的黑盒越好。</p>
+<p><img src="http://mrale.ph/s3/images/wr2012-assembly.png" alt=""><br>我应该说我不是一个人在追求如何解释虚拟机的内部机制并且帮助人们编写性能更好的代码。全世界有许多人正在尝试做同样的事情。但是我认为又一个问题正在阻止知识有效地被开发者所吸收——我们正在用错误的形式来传授我们的知识。我对此深感愧疚：</p>
+<ul>
+<li>有时候我把我对V8的了解包装成了很难消化的“做这个，别做那个”的教条化意见。这样的问题在于它对于解释起不到任何帮助并且很容易随着关注人的减少而消失。</li>
+<li>有时候我们用了错误的抽象层次来解释虚拟机的工作机制。我喜欢一个想法：看见满是汇编代码的ppt演示可能会鼓励人们去学习汇编并且学会之后会去读ppt演示的内容。但我也害怕有时候这些ppt只会被人忽视和遗忘而对于实践毫无用处。</li>
+</ul>
+<p>我一直在思考这些问题很长时间了并且我认为用JavaScript来解释JavaScript虚拟机是一个值得尝试的事情。我在WebRebels 2012发表的演讲“V8 Inside Out”追求的正是这一点[<a href="http://vimeo.com/43334972" target="_blank" rel="noopener">视频</a>][<a href="http://mrale.ph/s3/webrebels2012.pdf" target="_blank" rel="noopener">演示</a>]并且在本文中我像回顾我一直在奥斯陆所谈论的事情但是不同的是不会有任何音频的干扰。（我认为我写作的方式比我演讲的方式更加严肃些 ☺）。</p>
+<h2 id="用JavaScript来实现动态语言"><a href="#用JavaScript来实现动态语言" class="headerlink" title="用JavaScript来实现动态语言"></a>用JavaScript来实现动态语言</h2><p>想象你想要为了一个在语法上非常类似于JavaScript但是有着更简单的对象模型的语言——用表来映射key到任意类型的值来代替JavaScript对象——而来用JavaScript实现其虚拟机。简单起见，让我们想象Lua， 既像JavaScript但作为一个语言又很不一样。我最喜欢的“造出一个充满点的数组然后去计算向量合”的例子看起来大致如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MakePoint</span><span class="params">(x, y)</span></span></span><br><span class="line">  <span class="keyword">local</span> point = &#123;&#125;</span><br><span class="line">  point.x = x</span><br><span class="line">  point.y = y</span><br><span class="line">  <span class="keyword">return</span> point</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MakeArrayOfPoints</span><span class="params">(N)</span></span></span><br><span class="line">  <span class="keyword">local</span> array = &#123;&#125;</span><br><span class="line">  <span class="keyword">local</span> m = <span class="number">-1</span></span><br><span class="line">  <span class="keyword">for</span> i = <span class="number">0</span>, N <span class="keyword">do</span></span><br><span class="line">    m = m * <span class="number">-1</span></span><br><span class="line">    array[i] = MakePoint(m * i, m * -i)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  array.n = N</span><br><span class="line">  <span class="keyword">return</span> array</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SumArrayOfPoints</span><span class="params">(array)</span></span></span><br><span class="line">  <span class="keyword">local</span> sum = MakePoint(<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">  <span class="keyword">for</span> i = <span class="number">0</span>, array.n <span class="keyword">do</span></span><br><span class="line">    sum.x = sum.x + array[i].x</span><br><span class="line">    sum.y = sum.y + array[i].y</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">return</span> sum</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CheckResult</span><span class="params">(sum)</span></span></span><br><span class="line">  <span class="keyword">local</span> x = sum.x</span><br><span class="line">  <span class="keyword">local</span> y = sum.y</span><br><span class="line">  <span class="keyword">if</span> x ~= <span class="number">50000</span> <span class="keyword">or</span> y ~= <span class="number">-50000</span> <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">error</span>(<span class="string">"failed: x = "</span> .. x .. <span class="string">", y = "</span> .. y)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> N = <span class="number">100000</span></span><br><span class="line"><span class="keyword">local</span> array = MakeArrayOfPoints(N)</span><br><span class="line"><span class="keyword">local</span> start_ms = <span class="built_in">os</span>.<span class="built_in">clock</span>() * <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">for</span> i = <span class="number">0</span>, <span class="number">5</span> <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">local</span> sum = SumArrayOfPoints(array)</span><br><span class="line">  CheckResult(sum)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">local</span> end_ms = <span class="built_in">os</span>.<span class="built_in">clock</span>() * <span class="number">1000</span>;</span><br><span class="line"><span class="built_in">print</span>(end_ms - start_ms)</span><br></pre></td></tr></table></figure>
+<p>注意我有一个至少检查某些最终结果的微型基准测试的习惯。这有助于当有人发现我的革命性的jsperf测试用例只不过是我自己的bug时，让我不会太尴尬。</p>
+<p>如果你拿上面的例子放入一个Lua编译器你会得到类似于下面的东西：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">∮ lua points.lua</span><br><span class="line">150.2</span><br></pre></td></tr></table></figure>
+<p>很好，但是对于了解虚拟机的工作过程起不到任何帮助。所以让我们想想如果我们有用JavaScript编写的类Lua虚拟机会长什么样。“类”是因为我不想实现完全类似于Lua的语法，我更喜欢只关注于用表来实现对象这一点上。原生编译器应该会将我们的代码编译成下面的JavaScript：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MakePoint</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> point = <span class="keyword">new</span> Table();</span><br><span class="line">  STORE(point, <span class="string">'x'</span>, x);</span><br><span class="line">  STORE(point, <span class="string">'y'</span>, y);</span><br><span class="line">  <span class="keyword">return</span> point;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MakeArrayOfPoints</span>(<span class="params">N</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> array = <span class="keyword">new</span> Table();</span><br><span class="line">  <span class="keyword">var</span> m = <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;= N; i++) &#123;</span><br><span class="line">    m = m * <span class="number">-1</span>;</span><br><span class="line">    STORE(array, i, MakePoint(m * i, m * -i));</span><br><span class="line">  &#125;</span><br><span class="line">  STORE(array, <span class="string">'n'</span>, N);</span><br><span class="line">  <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SumArrayOfPoints</span>(<span class="params">array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sum = MakePoint(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;= LOAD(array, <span class="string">'n'</span>); i++) &#123;</span><br><span class="line">    STORE(sum, <span class="string">'x'</span>, LOAD(sum, <span class="string">'x'</span>) + LOAD(LOAD(array, i), <span class="string">'x'</span>));</span><br><span class="line">    STORE(sum, <span class="string">'y'</span>, LOAD(sum, <span class="string">'y'</span>) + LOAD(LOAD(array, i), <span class="string">'y'</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CheckResult</span>(<span class="params">sum</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> x = LOAD(sum, <span class="string">'x'</span>);</span><br><span class="line">  <span class="keyword">var</span> y = LOAD(sum, <span class="string">'y'</span>);</span><br><span class="line">  <span class="keyword">if</span> (x !== <span class="number">50000</span> || y !== <span class="number">-50000</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"failed: x = "</span> + x + <span class="string">", y = "</span> + y);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> N = <span class="number">100000</span>;</span><br><span class="line"><span class="keyword">var</span> array = MakeArrayOfPoints(N);</span><br><span class="line"><span class="keyword">var</span> start = LOAD(os, <span class="string">'clock'</span>)() * <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">var</span> sum = SumArrayOfPoints(array);</span><br><span class="line">  CheckResult(sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> end = LOAD(os, <span class="string">'clock'</span>)() * <span class="number">1000</span>;</span><br><span class="line">print(end - start);</span><br></pre></td></tr></table></figure>
+<p>但是如果你尝试用d8（V8的独立shell）去运行编译后的代码，它会很礼貌的拒绝：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">∮ d8 points.js</span><br><span class="line">points.js:9: ReferenceError: Table is not defined</span><br><span class="line">  var array = new Table();</span><br><span class="line">                  ^</span><br><span class="line">ReferenceError: Table is not defined</span><br><span class="line">    at MakeArrayOfPoints (points.js:9:19)</span><br><span class="line">    at points.js:37:13</span><br></pre></td></tr></table></figure>
+<p>失败的原因很简单：我们还缺少负责实现对象模型和存取语法的运行时系统代码。这可能看起来很明显，但是我想要强调的是：虚拟机从外面看起来像是黑盒，在内部实际上是一系列盒子为了得到出最佳性能的相互协作。这些盒子是：编译器、运行时例程、对象模型、垃圾回收等。幸运的是我们的语言和例子非常简单所以我们的运行时系统仅仅多了几行代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Table</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Map from ES Harmony is a simple dictionary-style collection.</span></span><br><span class="line">  <span class="keyword">this</span>.map = <span class="keyword">new</span> <span class="built_in">Map</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Table.prototype = &#123;</span><br><span class="line">  load: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>.map.get(key); &#125;,</span><br><span class="line">  store: <span class="function"><span class="keyword">function</span> (<span class="params">key, value</span>) </span>&#123; <span class="keyword">this</span>.map.set(key, value); &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CHECK_TABLE</span>(<span class="params">t</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!(t <span class="keyword">instanceof</span> Table)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"table expected"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">LOAD</span>(<span class="params">t, k</span>) </span>&#123;</span><br><span class="line">  CHECK_TABLE(t);</span><br><span class="line">  <span class="keyword">return</span> t.load(k);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">STORE</span>(<span class="params">t, k, v</span>) </span>&#123;</span><br><span class="line">  CHECK_TABLE(t);</span><br><span class="line">  t.store(k, v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> os = <span class="keyword">new</span> Table();</span><br><span class="line"></span><br><span class="line">STORE(os, <span class="string">'clock'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Date</span>.now() / <span class="number">1000</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>注意到我用了<a href="http://wiki.ecmascript.org/doku.php?id=harmony:simple_maps_and_sets" target="_blank" rel="noopener">ES6的Map</a>而不是一般的JavaScript对象因为潜在的表可以使用任何键，而不仅是字符串形式的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">∮ d8 --harmony quasi-lua-runtime.js points.js</span><br><span class="line">737</span><br></pre></td></tr></table></figure>
+<p><img src="http://mrale.ph/s3/images/wr2012-lookup.png" alt=""><br>现在我们编译后的代码可以执行但是却慢地令人失望，因为每一次读和写不得不跨越所有这些抽象层级后才能拿到值。让我们通过所有JavaScript虚拟机都有的最基本的优化inline caching来尝试减少这些开销。即使是用Java实现的JS虚拟机最终也会使用它因为动态调用的本质是被暴露在字节码层面的结构化的內联缓存。Inline caching（在V8资源里通常简写为IC）实际上是一门近30年的非常古老的技术，最初用在Smalltalk虚拟机上。</p>
+<h2 id="好鸭子总是叫得一模一样"><a href="#好鸭子总是叫得一模一样" class="headerlink" title="好鸭子总是叫得一模一样"></a>好鸭子总是叫得一模一样</h2><p>内联缓存（Inline caching）背后的思想非常简单：创建一个高速路来绕过运行时系统来读取对象的属性:对传入的对象及其属性作出某种假设，然后通过一个低成本的方式验证这个假设是否正确，如果正确就读取上次缓存的结果。在充满了动态类型和晚绑定以及其他古怪行为——比如eval——的语言里对一个对象作出合理的假设是非常困难的，所以我们退而求其次，让我们的读／写操作能够有学习能力：一旦它们看见某个对象它们就可以以某种方式来自适应，使得之后的读取操作在遇到类似结构的对象时能够更快地进行。在某种意义上，我们将要在读／写操作上缓存关于之前见过的对象的布局的相关知识——这也是内联缓存这个名字的由来。内联缓存可以被用在几乎所有需要动态行为的操作上，只要你可以找到正确的高速路：算数操作、调用自由函数、方法调用等等。有些内联缓存还能缓存不止一条快速通道，这些内联缓存就变成了多态的。<br><img src="http://mrale.ph/s3/images/wr2012-lookup-ic.png" alt=""></p>
+<p>如果我们开始思考如何应用内联缓存到上面编译后的代码，答案就变得显而易见了：我们需要改变我们的对象模型。我们不可能从一个map中进行快速读取，因为我们总是要调用get方法。[如果我们能够窥探map后的纯哈希表，我们就可以通过缓存桶索引来让内联缓存替我们工作而不需要相处一个新的对象布局。]</p>
+<h2 id="探索隐藏结构"><a href="#探索隐藏结构" class="headerlink" title="探索隐藏结构"></a>探索隐藏结构</h2><p><img src="http://mrale.ph/s3/images/wr2012-hidden-classes.png" alt=""><br>出于效率角度考虑，用作数据结构的表应该更类似于C结构：带有固定偏移量的命名字段序列。这样表就和数组类似：我们希望数字形式的属性的存储类似于数组。但是很显然并不是所有表的键都是数字：键可以被设计成非字符串非数字或者包含太多字符串命名的属性，并且随着表的修改键也会随之修改。不幸的是，我们不能做任何昂贵的类型推断。取而代之我们必须找在程序运行期间的每一个表背后的结构，并且随着程序的运行可以创建和修改它们。幸运的是，有一个众所周知的技术 ☺：隐藏类（hidden classes）。</p>
+<p>隐藏类背后的思想可以归结为以下两点：</p>
+<ol>
+<li>对于每个javascript对象，运行时系统都会将其合一个hidden class关联起来。就像Java VM会关联一个java.lang.Class的实例给每个对象一样。</li>
+<li>如果对象的布局改变了，则运行时就会 找到一个hidden class或者创建一个新的hidden class来匹配这个新对象布局并且连接到该对象上。</li>
+</ol>
+<p>隐藏类有个非常重要的特性：它们运行虚拟机通过简单比对缓存过的隐藏类来检查关于某个对象布局的假设。这正是我们的内联缓存功能所需要的。让我们为我们的类-Lua运行时来实现一些简单的隐藏类系统。每个隐藏类本质上是属性描述符的集合，每个描述符要么是一个真正的属性，要么是一个过渡（transition）：从一个没有该属性的类指向一个有该属性的类。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Transition</span>(<span class="params">klass</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.klass = klass;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Property</span>(<span class="params">index</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.index = index;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Klass</span>(<span class="params">kind</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Classes are "fast" if they are C-struct like and "slow" is they are Map-like.</span></span><br><span class="line">  <span class="keyword">this</span>.kind = kind;</span><br><span class="line">  <span class="keyword">this</span>.descriptors = <span class="keyword">new</span> <span class="built_in">Map</span>;</span><br><span class="line">  <span class="keyword">this</span>.keys = [];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>过渡之所以存在是为了让多个对象之间能共享隐藏类：如果你有两个对象共享了隐藏类并且你为它们同时增加了某些属性，你不希望得到不同的隐藏类。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">Klass.prototype = &#123;</span><br><span class="line">  <span class="comment">// Create hidden class with a new property that does not exist on</span></span><br><span class="line">  <span class="comment">// the current hidden class.</span></span><br><span class="line">  addProperty: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> klass = <span class="keyword">this</span>.clone();</span><br><span class="line">    klass.append(key);</span><br><span class="line">    <span class="comment">// Connect hidden classes with transition to enable sharing:</span></span><br><span class="line">    <span class="comment">//           this == add property key ==&gt; klass</span></span><br><span class="line">    <span class="keyword">this</span>.descriptors.set(key, <span class="keyword">new</span> Transition(klass));</span><br><span class="line">    <span class="keyword">return</span> klass;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  hasProperty: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.descriptors.has(key);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  getDescriptor: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.descriptors.get(key);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  getIndex: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.getDescriptor(key).index;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Create clone of this hidden class that has same properties</span></span><br><span class="line">  <span class="comment">// at same offsets (but does not have any transitions).</span></span><br><span class="line">  clone: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> klass = <span class="keyword">new</span> Klass(<span class="keyword">this</span>.kind);</span><br><span class="line">    klass.keys = <span class="keyword">this</span>.keys.slice(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.keys.length; i++) &#123;</span><br><span class="line">      <span class="keyword">var</span> key = <span class="keyword">this</span>.keys[i];</span><br><span class="line">      klass.descriptors.set(key, <span class="keyword">this</span>.descriptors.get(key));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> klass;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Add real property to descriptors.</span></span><br><span class="line">  append: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.keys.push(key);</span><br><span class="line">    <span class="keyword">this</span>.descriptors.set(key, <span class="keyword">new</span> Property(<span class="keyword">this</span>.keys.length - <span class="number">1</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>现在我们可以让我们的表变得更加灵活并且能允许它们适应其的构造过程</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ROOT_KLASS = <span class="keyword">new</span> Klass(<span class="string">"fast"</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Table</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// All tables start from the fast empty root hidden class and form </span></span><br><span class="line">  <span class="comment">// a single tree. In V8 hidden classes actually form a forest - </span></span><br><span class="line">  <span class="comment">// there are multiple root classes, e.g. one for each constructor. </span></span><br><span class="line">  <span class="comment">// This is partially due to the fact that hidden classes in V8 </span></span><br><span class="line">  <span class="comment">// encapsulate constructor specific information, e.g. prototype </span></span><br><span class="line">  <span class="comment">// poiinter is actually stored in the hidden class and not in the </span></span><br><span class="line">  <span class="comment">// object itself so classes with different prototypes must have </span></span><br><span class="line">  <span class="comment">// different hidden classes even if they have the same structure.</span></span><br><span class="line">  <span class="comment">// However having multiple root classes also allows to evolve these</span></span><br><span class="line">  <span class="comment">// trees separately capturing class specific evolution independently.</span></span><br><span class="line">  <span class="keyword">this</span>.klass = ROOT_KLASS;</span><br><span class="line">  <span class="keyword">this</span>.properties = [];  <span class="comment">// Array of named properties: 'x','y',...</span></span><br><span class="line">  <span class="keyword">this</span>.elements = [];  <span class="comment">// Array of indexed properties: 0, 1, ...</span></span><br><span class="line">  <span class="comment">// We will actually cheat a little bit and allow any int32 to go here,</span></span><br><span class="line">  <span class="comment">// we will also allow V8 to select appropriate representation for</span></span><br><span class="line">  <span class="comment">// the array's backing store. There are too many details to cover in</span></span><br><span class="line">  <span class="comment">// a single blog post :-)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Table.prototype = &#123;</span><br><span class="line">  load: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.klass.kind === <span class="string">"slow"</span>) &#123;</span><br><span class="line">      <span class="comment">// Slow class =&gt; properties are represented as Map.</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.properties.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This is fast table with indexed and named properties only.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">"number"</span> &amp;&amp; (key | <span class="number">0</span>) === key) &#123;  <span class="comment">// Indexed property.</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.elements[key];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">"string"</span>) &#123;  <span class="comment">// Named property.</span></span><br><span class="line">      <span class="keyword">var</span> idx = <span class="keyword">this</span>.findPropertyForRead(key);</span><br><span class="line">      <span class="keyword">return</span> (idx &gt;= <span class="number">0</span>) ? <span class="keyword">this</span>.properties[idx] : <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// There can be only string&amp;number keys on fast table.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  store: <span class="function"><span class="keyword">function</span> (<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.klass.kind === <span class="string">"slow"</span>) &#123;</span><br><span class="line">      <span class="comment">// Slow class =&gt; properties are represented as Map.</span></span><br><span class="line">      <span class="keyword">this</span>.properties.set(key, value);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This is fast table with indexed and named properties only.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">"number"</span> &amp;&amp; (key | <span class="number">0</span>) === key) &#123;  <span class="comment">// Indexed property.</span></span><br><span class="line">      <span class="keyword">this</span>.elements[key] = value;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">"string"</span>) &#123;  <span class="comment">// Named property.</span></span><br><span class="line">      <span class="keyword">var</span> index = <span class="keyword">this</span>.findPropertyForWrite(key);</span><br><span class="line">      <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.properties[index] = value;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.convertToSlow();</span><br><span class="line">    <span class="keyword">this</span>.store(key, value);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Find property or add one if possible, returns property index</span></span><br><span class="line">  <span class="comment">// or -1 if we have too many properties and should switch to slow.</span></span><br><span class="line">  findPropertyForWrite: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.klass.hasProperty(key)) &#123;  <span class="comment">// Try adding property if it does not exist.</span></span><br><span class="line">      <span class="comment">// To many properties! Achtung! Fast case kaput.</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.klass.keys.length &gt; <span class="number">20</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Switch class to the one that has this property.</span></span><br><span class="line">      <span class="keyword">this</span>.klass = <span class="keyword">this</span>.klass.addProperty(key);</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.klass.getIndex(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> desc = <span class="keyword">this</span>.klass.getDescriptor(key);</span><br><span class="line">    <span class="keyword">if</span> (desc <span class="keyword">instanceof</span> Transition) &#123;</span><br><span class="line">      <span class="comment">// Property does not exist yet but we have a transition to the class that has it.</span></span><br><span class="line">      <span class="keyword">this</span>.klass = desc.klass;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.klass.getIndex(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get index of existing property.</span></span><br><span class="line">    <span class="keyword">return</span> desc.index;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Find property index if property exists, return -1 otherwise.</span></span><br><span class="line">  findPropertyForRead: <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.klass.hasProperty(key)) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">var</span> desc = <span class="keyword">this</span>.klass.getDescriptor(key);</span><br><span class="line">    <span class="keyword">if</span> (!(desc <span class="keyword">instanceof</span> Property)) <span class="keyword">return</span> <span class="number">-1</span>;  <span class="comment">// Here we are not interested in transitions.</span></span><br><span class="line">    <span class="keyword">return</span> desc.index;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Copy all properties into the Map and switch to slow class.</span></span><br><span class="line">  convertToSlow: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.klass.keys.length; i++) &#123;</span><br><span class="line">      <span class="keyword">var</span> key = <span class="keyword">this</span>.klass.keys[i];</span><br><span class="line">      <span class="keyword">var</span> val = <span class="keyword">this</span>.properties[i];</span><br><span class="line">      map.set(key, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Object</span>.keys(<span class="keyword">this</span>.elements).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> val = <span class="keyword">this</span>.elements[key];</span><br><span class="line">      map.set(key | <span class="number">0</span>, val);  <span class="comment">// Funky JS, force key back to int32.</span></span><br><span class="line">    &#125;, <span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.properties = map;</span><br><span class="line">    <span class="keyword">this</span>.elements = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>.klass = <span class="keyword">new</span> Klass(<span class="string">"slow"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我不打算一行一行地解释上面的代码，因为它已经是用JavaScript书写的了；而不是C++ 或者 汇编…这正是使用JavaScript的意义所在。然而你可以通过评论或者邮件来询问任何不理解的地方。</p>
+</blockquote>
+<p>既然我们已经在运行时系统里加入了隐藏类，使得我们能够快速检查对象的结构并且通过它们的索引来快速读取属性，我们只差实现内联缓存了。这需要在编译器和运行时系统增加一些新的功能（还记得我谈论过虚拟机内不同成员之间的协作么？）。</p>
+<h2 id="打包生成后代码"><a href="#打包生成后代码" class="headerlink" title="打包生成后代码"></a>打包生成后代码</h2><p>实现内联缓存的途径之一是将其分割成两个部分：生成代码里的可变调用点和可以被调用点调用的一系列存根（stubs，一小片生成的本地代码）。非常重要的一点是：存根本身必须能从调用它们的调用点（或者运行时系统）中找到：存根只存放特定假设下的编译后的快速路径，如果这些假设对存根遇到的对象不适用，则存根可以初始化调用该存根的调用点的变动（打包，patching），使得该调用点能够适应新的情况。我们的纯JavaScript仍然包含两个部分：</p>
+<ol>
+<li>一个全局变量，每个ic都会使用一个全局变量来模拟可变调用指令;</li>
+<li>并使用闭包来代替存根。<br><img src="http://mrale.ph/s3/images/wr2012-inline-cache.png" alt=""></li>
+</ol>
+<p>在本地代码里， V8通过在栈上监听返回地址来找到要打包的内联缓存点。我们不能通过纯JavaScript来达到这一点（arguments.caller的粒度不够细）。所以我们将只会显式地传递内联缓存的id到内联缓存的存根。通过内联缓存优化后的代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Initially all ICs are in uninitialized state.</span></span><br><span class="line"><span class="comment">// They are not hitting the cache and always missing into runtime system.</span></span><br><span class="line"><span class="keyword">var</span> STORE$<span class="number">0</span> = NAMED_STORE_MISS;</span><br><span class="line"><span class="keyword">var</span> STORE$<span class="number">1</span> = NAMED_STORE_MISS;</span><br><span class="line"><span class="keyword">var</span> KEYED_STORE$<span class="number">2</span> = KEYED_STORE_MISS;</span><br><span class="line"><span class="keyword">var</span> STORE$<span class="number">3</span> = NAMED_STORE_MISS;</span><br><span class="line"><span class="keyword">var</span> LOAD$<span class="number">4</span> = NAMED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> STORE$<span class="number">5</span> = NAMED_STORE_MISS;</span><br><span class="line"><span class="keyword">var</span> LOAD$<span class="number">6</span> = NAMED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> LOAD$<span class="number">7</span> = NAMED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> KEYED_LOAD$<span class="number">8</span> = KEYED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> STORE$<span class="number">9</span> = NAMED_STORE_MISS;</span><br><span class="line"><span class="keyword">var</span> LOAD$<span class="number">10</span> = NAMED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> LOAD$<span class="number">11</span> = NAMED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> KEYED_LOAD$<span class="number">12</span> = KEYED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> LOAD$<span class="number">13</span> = NAMED_LOAD_MISS;</span><br><span class="line"><span class="keyword">var</span> LOAD$<span class="number">14</span> = NAMED_LOAD_MISS;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MakePoint</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> point = <span class="keyword">new</span> Table();</span><br><span class="line">  STORE$<span class="number">0</span>(point, <span class="string">'x'</span>, x, <span class="number">0</span>);  <span class="comment">// The last number is IC's id: STORE$0 &amp;rArr; id is 0</span></span><br><span class="line">  STORE$<span class="number">1</span>(point, <span class="string">'y'</span>, y, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> point;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MakeArrayOfPoints</span>(<span class="params">N</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> array = <span class="keyword">new</span> Table();</span><br><span class="line">  <span class="keyword">var</span> m = <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;= N; i++) &#123;</span><br><span class="line">    m = m * <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">// Now we are also distinguishing between expressions x[p] and x.p.</span></span><br><span class="line">    <span class="comment">// The fist one is called keyed load/store and the second one is called</span></span><br><span class="line">    <span class="comment">// named load/store.</span></span><br><span class="line">    <span class="comment">// The main difference is that named load/stores use a fixed known</span></span><br><span class="line">    <span class="comment">// constant string key and thus can be specialized for a fixed property</span></span><br><span class="line">    <span class="comment">// offset.</span></span><br><span class="line">    KEYED_STORE$<span class="number">2</span>(array, i, MakePoint(m * i, m * -i), <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  STORE$<span class="number">3</span>(array, <span class="string">'n'</span>, N, <span class="number">3</span>);</span><br><span class="line">  <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SumArrayOfPoints</span>(<span class="params">array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sum = MakePoint(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;= LOAD$<span class="number">4</span>(array, <span class="string">'n'</span>, <span class="number">4</span>); i++) &#123;</span><br><span class="line">    STORE$<span class="number">5</span>(sum, <span class="string">'x'</span>, LOAD$<span class="number">6</span>(sum, <span class="string">'x'</span>, <span class="number">6</span>) + LOAD$<span class="number">7</span>(KEYED_LOAD$<span class="number">8</span>(array, i, <span class="number">8</span>), <span class="string">'x'</span>, <span class="number">7</span>), <span class="number">5</span>);</span><br><span class="line">    STORE$<span class="number">9</span>(sum, <span class="string">'y'</span>, LOAD$<span class="number">10</span>(sum, <span class="string">'y'</span>, <span class="number">10</span>) + LOAD$<span class="number">11</span>(KEYED_LOAD$<span class="number">12</span>(array, i, <span class="number">12</span>), <span class="string">'y'</span>, <span class="number">11</span>), <span class="number">9</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CheckResults</span>(<span class="params">sum</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> x = LOAD$<span class="number">13</span>(sum, <span class="string">'x'</span>, <span class="number">13</span>);</span><br><span class="line">  <span class="keyword">var</span> y = LOAD$<span class="number">14</span>(sum, <span class="string">'y'</span>, <span class="number">14</span>);</span><br><span class="line">  <span class="keyword">if</span> (x !== <span class="number">50000</span> || y !== <span class="number">-50000</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"failed x: "</span> + x + <span class="string">", y:"</span> + y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述的改变依旧是不言自明的：每一个属性的读/写点都有属于它们自己的、带有id的内联缓存。距离最终完成还剩一小步：实现未命中（MISS）存根和可以生存特定存根的“存根编译器”：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">NAMED_LOAD_MISS</span>(<span class="params">t, k, ic</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> v = LOAD(t, k);</span><br><span class="line">  <span class="keyword">if</span> (t.klass.kind === <span class="string">"fast"</span>) &#123;</span><br><span class="line">    <span class="comment">// Create a load stub that is specialized for a fixed class and key k and</span></span><br><span class="line">    <span class="comment">// loads property from a fixed offset.</span></span><br><span class="line">    <span class="keyword">var</span> stub = CompileNamedLoadFastProperty(t.klass, k);</span><br><span class="line">    PatchIC(<span class="string">"LOAD"</span>, ic, stub);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">NAMED_STORE_MISS</span>(<span class="params">t, k, v, ic</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> klass_before = t.klass;</span><br><span class="line">  STORE(t, k, v);</span><br><span class="line">  <span class="keyword">var</span> klass_after = t.klass;</span><br><span class="line">  <span class="keyword">if</span> (klass_before.kind === <span class="string">"fast"</span> &amp;&amp;</span><br><span class="line">      klass_after.kind === <span class="string">"fast"</span>) &#123;</span><br><span class="line">    <span class="comment">// Create a store stub that is specialized for a fixed transition between classes</span></span><br><span class="line">    <span class="comment">// and a fixed key k that stores property into a fixed offset and replaces</span></span><br><span class="line">    <span class="comment">// object's hidden class if necessary.</span></span><br><span class="line">    <span class="keyword">var</span> stub = CompileNamedStoreFastProperty(klass_before, klass_after, k);</span><br><span class="line">    PatchIC(<span class="string">"STORE"</span>, ic, stub);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">KEYED_LOAD_MISS</span>(<span class="params">t, k, ic</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> v = LOAD(t, k);</span><br><span class="line">  <span class="keyword">if</span> (t.klass.kind === <span class="string">"fast"</span> &amp;&amp; (<span class="keyword">typeof</span> k === <span class="string">'number'</span> &amp;&amp; (k | <span class="number">0</span>) === k)) &#123;</span><br><span class="line">    <span class="comment">// Create a stub for the fast load from the elements array.</span></span><br><span class="line">    <span class="comment">// Does not actually depend on the class but could if we had more complicated</span></span><br><span class="line">    <span class="comment">// storage system.</span></span><br><span class="line">    <span class="keyword">var</span> stub = CompileKeyedLoadFastElement();</span><br><span class="line">    PatchIC(<span class="string">"KEYED_LOAD"</span>, ic, stub);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">KEYED_STORE_MISS</span>(<span class="params">t, k, v, ic</span>) </span>&#123;</span><br><span class="line">  STORE(t, k, v);</span><br><span class="line">  <span class="keyword">if</span> (t.klass.kind === <span class="string">"fast"</span> &amp;&amp; (<span class="keyword">typeof</span> k === <span class="string">'number'</span> &amp;&amp; (k | <span class="number">0</span>) === k)) &#123;</span><br><span class="line">    <span class="comment">// Create a stub for the fast store into the elements array.</span></span><br><span class="line">    <span class="comment">// Does not actually depend on the class but could if we had more complicated</span></span><br><span class="line">    <span class="comment">// storage system.</span></span><br><span class="line">    <span class="keyword">var</span> stub = CompileKeyedStoreFastElement();</span><br><span class="line">    PatchIC(<span class="string">"KEYED_STORE"</span>, ic, stub);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">PatchIC</span>(<span class="params">kind, id, stub</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>[kind + <span class="string">"$"</span> + id] = stub;  <span class="comment">// non-strict JS funkiness: this is global object.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CompileNamedLoadFastProperty</span>(<span class="params">klass, key</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Key is known to be constant (named load). Specialize index.</span></span><br><span class="line">  <span class="keyword">var</span> index = klass.getIndex(key);</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">KeyedLoadFastProperty</span>(<span class="params">t, k, ic</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t.klass !== klass) &#123;</span><br><span class="line">      <span class="comment">// Expected klass does not match. Can't use cached index.</span></span><br><span class="line">      <span class="comment">// Fall through to the runtime system.</span></span><br><span class="line">      <span class="keyword">return</span> NAMED_LOAD_MISS(t, k, ic);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> t.properties[index];  <span class="comment">// Veni. Vidi. Vici.</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> KeyedLoadFastProperty;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CompileNamedStoreFastProperty</span>(<span class="params">klass_before, klass_after, key</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Key is known to be constant (named load). Specialize index.</span></span><br><span class="line">  <span class="keyword">var</span> index = klass_after.getIndex(key);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (klass_before !== klass_after) &#123;</span><br><span class="line">    <span class="comment">// Transition happens during the store.</span></span><br><span class="line">    <span class="comment">// Compile stub that updates hidden class.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">t, k, v, ic</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (t.klass !== klass_before) &#123;</span><br><span class="line">        <span class="comment">// Expected klass does not match. Can't use cached index.</span></span><br><span class="line">        <span class="comment">// Fall through to the runtime system.</span></span><br><span class="line">        <span class="keyword">return</span> NAMED_STORE_MISS(t, k, v, ic);</span><br><span class="line">      &#125;</span><br><span class="line">      t.properties[index] = v;  <span class="comment">// Fast store.</span></span><br><span class="line">      t.klass = klass_after;  <span class="comment">// T-t-t-transition!</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Write to an existing property. No transition.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">t, k, v, ic</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (t.klass !== klass_before) &#123;</span><br><span class="line">        <span class="comment">// Expected klass does not match. Can't use cached index.</span></span><br><span class="line">        <span class="comment">// Fall through to the runtime system.</span></span><br><span class="line">        <span class="keyword">return</span> NAMED_STORE_MISS(t, k, v, ic);</span><br><span class="line">      &#125;</span><br><span class="line">      t.properties[index] = v;  <span class="comment">// Fast store.</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CompileKeyedLoadFastElement</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">KeyedLoadFastElement</span>(<span class="params">t, k, ic</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t.klass.kind !== <span class="string">"fast"</span> || !(<span class="keyword">typeof</span> k === <span class="string">'number'</span> &amp;&amp; (k | <span class="number">0</span>) === k)) &#123;</span><br><span class="line">      <span class="comment">// If table is slow or key is not a number we can't use fast-path.</span></span><br><span class="line">      <span class="comment">// Fall through to the runtime system, it can handle everything.</span></span><br><span class="line">      <span class="keyword">return</span> KEYED_LOAD_MISS(t, k, ic);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> t.elements[k];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> KeyedLoadFastElement;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CompileKeyedStoreFastElement</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">KeyedStoreFastElement</span>(<span class="params">t, k, v, ic</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t.klass.kind !== <span class="string">"fast"</span> || !(<span class="keyword">typeof</span> k === <span class="string">'number'</span> &amp;&amp; (k | <span class="number">0</span>) === k)) &#123;</span><br><span class="line">      <span class="comment">// If table is slow or key is not a number we can't use fast-path.</span></span><br><span class="line">      <span class="comment">// Fall through to the runtime system, it can handle everything.</span></span><br><span class="line">      <span class="keyword">return</span> KEYED_STORE_MISS(t, k, v, ic);</span><br><span class="line">    &#125;</span><br><span class="line">    t.elements[k] = v;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> KeyedStoreFastElement;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码很长（以及注释），但是配合上面所有解释应该不难理解：内联缓存负责观察而存根编译器／工程负责生产自适应和特化后的存根[有心的读者可能注意到了我本可以初始化所有键控的存储内联缓存（keyed store ICs），用一开始的快速读取或者当它进入快速状态后就一直保持住]。</p>
+<p>如果我们不管上面所有代码而回到我们的“基准测试”,我们会得到非常令人满意的结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">∮ d8 --harmony quasi-lua-runtime-ic.js points-ic.js</span><br><span class="line">117</span><br></pre></td></tr></table></figure>
+<p>这要比我们一开始的天真尝试提升了6倍! </p>
+<h2 id="关于JavaScript虚拟机优化永远也不会有结论"><a href="#关于JavaScript虚拟机优化永远也不会有结论" class="headerlink" title="关于JavaScript虚拟机优化永远也不会有结论"></a>关于JavaScript虚拟机优化永远也不会有结论</h2><p>希望你在阅读这一部分的时候已经看完了之前所有内容…我尝试从不同的角度，JavaScript开发者的角度，来看某些驱动当今JavaScript引擎的点子。所写的代码越长，我越有一种盲人摸象的感觉。下面的事实只是为了给你一种望向深渊的感觉：V8有10种描述符，5种元素类型（+9外部元素类型），ic.cc里包含了几乎所有内联缓存状态选择的逻辑多达2500行，并且V8的内联缓存的状态不止2个（它们是uninitialized, premonomorphic, monomorphic, polymorphic, generic states，更别提用于键控读／写的内联缓存的特殊的状态或者是算数内敛缓存的完全不同的状态层级），ia32-specific手写的内联缓存存根多达5000行代码，等等。这些数字只会随着时间的流逝和V8为了识别和适应越来越多的对象布局的学习而增长。而且我甚至都还没谈到对象模型本身（objects.cc 13k行代码），或者垃圾回收，或者优化编译器。</p>
+<p>话虽如此，在可预见的未来內，我确信基础将不会改变，如果变了肯定会引发一场你一定会注意到的巨大的爆炸！因此我认为这次尝试用JavaScript去理解基础的练习是非常非常非常重要的。</p>
+<p>我希望明天或者几周之后你会停下来并且大喊“我找到了！”并且告诉你的为什么特定情况下在一个地方为一个对象增加属性会影响其余很远的接触这些对象的热回路的性能。你知道的，因为隐藏类变了！</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/27/shsoul/SDWebImage源码解读/" rel="prev">SDWebImage源码解读</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/15/jakii/cocos2d-x introduction/" rel="next">cocos2d-Js 基础入门</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用JavaScript来实现动态语言"><span class="nav-number">1.</span> <span class="nav-text">用JavaScript来实现动态语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#好鸭子总是叫得一模一样"><span class="nav-number">2.</span> <span class="nav-text">好鸭子总是叫得一模一样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#探索隐藏结构"><span class="nav-number">3.</span> <span class="nav-text">探索隐藏结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打包生成后代码"><span class="nav-number">4.</span> <span class="nav-text">打包生成后代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于JavaScript虚拟机优化永远也不会有结论"><span class="nav-number">5.</span> <span class="nav-text">关于JavaScript虚拟机优化永远也不会有结论</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

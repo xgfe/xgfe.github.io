@@ -1,0 +1,1008 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="angularjs,directive,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="当在coding的过程中，会遇到一些功能被重复使用的情况，这时候为了更好的实现代码复用，我们需要编写自己的Angular指令。本文主要从Why、How和What三个方面对Angular指令基础定义进行讲解。 下面进行详细介绍。">
+<meta name="keywords" content="angularjs,directive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AngularJs 指令基础">
+<meta property="og:url" content="http://xgfe.github.io/2015/12/22/penglu/Angular-Directive-01/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="当在coding的过程中，会遇到一些功能被重复使用的情况，这时候为了更好的实现代码复用，我们需要编写自己的Angular指令。本文主要从Why、How和What三个方面对Angular指令基础定义进行讲解。 下面进行详细介绍。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.390Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AngularJs 指令基础">
+<meta name="twitter:description" content="当在coding的过程中，会遇到一些功能被重复使用的情况，这时候为了更好的实现代码复用，我们需要编写自己的Angular指令。本文主要从Why、How和What三个方面对Angular指令基础定义进行讲解。 下面进行详细介绍。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> AngularJs 指令基础 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              AngularJs 指令基础
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-12-22T16:00:00+08:00" content="2015-12-22">
+            2015-12-22
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/penglu/" itemprop="url" rel="index">
+                  <span itemprop="name">penglu</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/angularjs/" rel="tag"><i class="icon-next-tags"></i>angularjs</a>
+            
+              <a href="/tags/directive/" rel="tag"><i class="icon-next-tags"></i>directive</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>当在coding的过程中，会遇到一些功能被重复使用的情况，这时候为了更好的实现代码复用，我们需要编写自己的Angular指令。本文主要从Why、How和What三个方面对Angular指令基础定义进行讲解。</p>
+<p>下面进行详细介绍。</p>
+<a id="more"></a>
+<h2 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h2><ol>
+<li>直接操作DOM；</li>
+<li>通过移除重复代码来重构你应用的某些部分；</li>
+<li>创建一个新HTML标签共享使用。</li>
+</ol>
+<h2 id="What"><a href="#What" class="headerlink" title="What"></a>What</h2><ol>
+<li>定义:连接应用的逻辑和HTML DOM对象.</li>
+<li>具体作用<ol>
+<li>扩展HTML标签。</li>
+<li>修改DOM结构,绑定scope与DOM。</li>
+</ol>
+</li>
+<li>使用方式<ol>
+<li>元素:<code>&lt;my-directive&gt;&lt;/my-directive&gt;</code></li>
+<li>属性:<code>&lt;input my-directive&gt;</code></li>
+<li>注释:<code>&lt;!-- directive: my-directive--&gt;</code></li>
+<li>css类:<code>&lt;input class=&quot;my-directive&quot;&gt;</code></li>
+</ol>
+</li>
+</ol>
+<h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2><h3 id="如何定义"><a href="#如何定义" class="headerlink" title="如何定义"></a>如何定义</h3><h4 id="directive"><a href="#directive" class="headerlink" title="directive()"></a>directive()</h4><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">angular.module(&apos;app&apos;, []);</span><br><span class="line">angular.module(&apos;app&apos;).directive(&apos;myDir&apos;, function()&#123;</span><br><span class="line">	    return myDirectiveDefinition;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</code></pre><ol>
+<li>备注:<ul>
+<li>每个指令必须注册一个模块.</li>
+<li>驼峰命名(xY)<ul>
+<li>使用: x-y | x:y | data-x-y | x-x-y  </li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="指令定义字段"><a href="#指令定义字段" class="headerlink" title="指令定义字段"></a>指令定义字段</h4><ol>
+<li><p>restrict  </p>
+<ol>
+<li>定义：描述指令声明风格.</li>
+<li>取值：一种或几种混合<ul>
+<li>E:元素</li>
+<li>A:属性(默认)</li>
+<li>C:样式类</li>
+<li>M:注释类</li>
+</ul>
+</li>
+<li><p>Demo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  &lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;, []);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;myDirective&apos;,function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            template:&apos;&lt;div&gt;I am my directive&lt;/div&gt;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;my-directive&gt;&lt;/my-directive&gt;  &lt;!-- E:元素 --&gt;</span><br><span class="line">&lt;div my-directive&gt;&lt;/div&gt;   &lt;!-- A:属性 --&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>priority</p>
+<ol>
+<li>定义：指定指令生效顺序.</li>
+<li>取值：整数(默认为0).<ul>
+<li>数值越高会越优先运行.</li>
+</ul>
+</li>
+<li>Demo</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">  &lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;, []);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;priorityHigh&apos;,function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            priority: 100,</span><br><span class="line">            template:&apos;&lt;div&gt;I am my directive,priority equals to 100&lt;/div&gt;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;priorityLow&apos;,function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            priority: 101,</span><br><span class="line">            template:&apos;&lt;div&gt;I am my directive&lt;/div&gt;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;div priority-high priority-low&gt;&lt;/div&gt;</span><br><span class="line">&lt;!-- 结果显示:I am my directive --&gt;</span><br></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">  &lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;, []);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;priorityHigh&apos;,function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            priority: 100,</span><br><span class="line">            template:&apos;&lt;div&gt;I am my directive,priority equals to 100&lt;/div&gt;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;priorityLow&apos;,function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            template:&apos;&lt;div&gt;I am my directive&lt;/div&gt;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;div priority-high priority-low&gt;&lt;/div&gt;</span><br><span class="line">&lt;!-- 结果显示:I am my directive,priority equals to 100 --&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>template &amp; templateUrl</p>
+<ol>
+<li>相同:定义模版包裹或替换元素中内容.通过template或templateUrl指定DOM元素.</li>
+<li>不同<ul>
+<li>template:通过字符串描述模板内容。</li>
+<li>url:可以从服务器加载模版文件。</li>
+</ul>
+</li>
+<li>备注<ol>
+<li>如果同时定义template和templateUrl,会报错,并且templateUrl定义失效. </li>
+<li>使用script定义模版,会将根据定义的id,将模版缓存到’$templateCache’中,然后templateUrl中使用id就可以获取到模版内容.</li>
+</ol>
+</li>
+<li><p>Demo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/ng-template&quot; id=&quot;myTemplate.html&quot;&gt;</span><br><span class="line">    &lt;div&gt;hello,templateUrl.&lt;/div&gt;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;, []);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;templateDirective&apos;,function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            template:&apos;&lt;div&gt;hello,template&lt;/div&gt;&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;urlDirective&apos;,[&apos;$templateCache&apos;,function($templateCache)&#123;</span><br><span class="line">        console.log($templateCache.get(&apos;myTemplate.html&apos;));</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            templateUrl:&apos;myTemplate.html&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;template-directive&gt;&lt;/template-directive&gt;</span><br><span class="line">&lt;url-directive&gt;&lt;/url-directive&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>replace</p>
+<ol>
+<li>定义：是否替换元素.</li>
+<li>取值：true ｜ false<ul>
+<li>true:使用模版来替换元素.如果存在template,则被替换标签上的属性会被绑定到template的根元素上。</li>
+<li>false:模版添加到元素内部(默认)</li>
+</ul>
+</li>
+<li><p>Demo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">       angular.module(&apos;app&apos;, []);</span><br><span class="line">       angular.module(&apos;app&apos;).directive(&apos;templateDirective&apos;,function()&#123;</span><br><span class="line">           return &#123;</span><br><span class="line">               restrict:&apos;AE&apos;,</span><br><span class="line">               replace:true,</span><br><span class="line">               template:&apos;&lt;div&gt;hello,template&lt;/div&gt;&apos;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">   &lt;/script&gt;</span><br><span class="line">   &lt;div template-directive name=&quot;111&quot;&gt;</span><br><span class="line">       template-directive</span><br><span class="line">   &lt;/div&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>transclude</p>
+<ol>
+<li>定义：元素内容是否插入新模版 。</li>
+<li>取值：true｜false<ul>
+<li>true:模版中使用ng-transclude重新插入</li>
+</ul>
+</li>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"> angular.module(&apos;app&apos;, []);</span><br><span class="line"> angular.module(&apos;app&apos;).directive(&apos;myDirective&apos;,function()&#123;</span><br><span class="line">     return &#123;</span><br><span class="line">         restrict:&apos;AE&apos;,</span><br><span class="line">         replace:true,</span><br><span class="line">         transclude: true,</span><br><span class="line">         template:&apos;&lt;div&gt;hello,template&lt;span ng-transclude style=&quot;color:red;&quot;&gt;&lt;/span&gt;&lt;/div&gt;&apos;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;div my-directive&gt;</span><br><span class="line">    the content of transclude.</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>scope</p>
+<ol>
+<li>定义：指令可访问scope对象.</li>
+<li><p>取值：true｜false｜ { }</p>
+<ul>
+<li><p>true:新scope</p>
+<ul>
+<li>创建新scope,继承外层控制器scope。</li>
+<li>Demo    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        angular.module(&apos;app&apos;, []);</span><br><span class="line">        angular.module(&apos;app&apos;).directive(&apos;myDirective&apos;,function()&#123;</span><br><span class="line">            return &#123;</span><br><span class="line">                restrict:&apos;AE&apos;,</span><br><span class="line">                scope: true,</span><br><span class="line">                template:&apos;&lt;div&gt;hello,&#123;&#123;userName&#125;&#125;,my scope id is &#123;&#123;scopeId&#125;&#125;,my parent id is &#123;&#123;parentId&#125;&#125;&lt;/div&gt;&apos;,</span><br><span class="line">                controller: function($scope)&#123;</span><br><span class="line">                    $scope.scopeId = $scope.$id;</span><br><span class="line">                    $scope.parentId = $scope.$parent.$id;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">            $scope.userName = &apos;penglu&apos;;</span><br><span class="line">            $scope.scopeId = $scope.$id;</span><br><span class="line">        &#125;])</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    &lt;div&gt;&#123;&#123;scopeId&#125;&#125;&lt;/div&gt;</span><br><span class="line">    &lt;div my-directive&gt;&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>false:现有scope</p>
+<ul>
+<li>指令对应Dom元素上存在的对象。 </li>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        angular.module(&apos;app&apos;, []);</span><br><span class="line">        angular.module(&apos;app&apos;).directive(&apos;myDirective&apos;,function()&#123;</span><br><span class="line">            return &#123;</span><br><span class="line">                restrict:&apos;AE&apos;,</span><br><span class="line">                template:&apos;&lt;div&gt;hello,&#123;&#123;userName&#125;&#125;&lt;/div&gt;&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">            $scope.userName = &apos;penglu&apos;;</span><br><span class="line">        &#125;])</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    &lt;div my-directive&gt;&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>{}:独立scope</p>
+<ul>
+<li>创建新scope,不会从父对象继承模型的任何属性。</li>
+<li>默认情况下不可访问父scope模型中的任何东西。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>独立scope:可以通过传递属性名映射的方式把父scope中指定的属性传递给这个独立的scope.(绑定策略:三种在scope和父scope之间传递数据的方式)</p>
+<ul>
+<li><p>共同点</p>
+<ul>
+<li>通过标签属性(xx-yy)传递(注意如果通过data-xx的方式传递，则scope中接收要忽略data-.即直接接收xx)</li>
+<li>在scope中通过驼峰(xxYy)的方式接收,如果外层scope传递变量在独立scope中不改变名称，则可以直接使用scope:{xxYy : ‘=|@|&amp;’}的方式接收，但是如果要使用不同的变量名则可以使用scope:{yyXx: ‘=|@|&amp;xxYy’}的方式接收.</li>
+</ul>
+<ul>
+<li> @: 当前属性作为字符串传递.通过在属性中插入{{}}来绑定来自外层scope的值。
+<ul>
+<li>通过这种方式，只能单向传递数据，独立scope可以看做复制了一份外层scope的变量。在独立scope中修改变量不会引起外层scope值的变化.</li>
+<li>通过这种方式,在独立scope中接收到的字符串,如果传递的是对象或者数组,则会变转换成json字符串,如果在独立$scope中需要使用,则需要使用$scope.$eval()函数或者$parse服务进行解析，<strong>注意:解析后的数据必须使用新变量来接受，否则scope域值改变，但是dom绑定的数值仍未变化</strong></li>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">   	&#123;% raw %&#125;</span><br><span class="line">&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">   &lt;script&gt;</span><br><span class="line">       angular.module(&apos;app&apos;, []);</span><br><span class="line">       angular.module(&apos;app&apos;).directive(&apos;myDirective&apos;,[&apos;$parse&apos;, function($parse)&#123;</span><br><span class="line">           return &#123;</span><br><span class="line">               restrict:&apos;AE&apos;,</span><br><span class="line">               scope: &#123;</span><br><span class="line">                   subUser: &quot;@user&quot;,</span><br><span class="line">                   subFamily: &quot;@family&quot;</span><br><span class="line">               &#125;,</span><br><span class="line">               template:&apos;&lt;div&gt;&#123;&#123;user.name&#125;&#125;,My family:&lt;span ng-repeat=&quot;item in family track by $index&quot;&gt;&#123;&#123;item&#125;&#125;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&#123;&#123;subUser.name&#125;&#125;,My family:&lt;span ng-repeat=&quot;item in subFamily track by $index&quot;&gt;&#123;&#123;item&#125;&#125;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&apos;,</span><br><span class="line">               link: function(scope)&#123;</span><br><span class="line">                   scope.title = &apos;独立scope&apos;;</span><br><span class="line">                   scope.user = scope.$eval(scope.subUser);  // 使用$scope的$eval方法解析,结果重新赋值</span><br><span class="line">                   scope.subUser = scope.$eval(scope.subUser);  // 使用$scope的$eval方法解析</span><br><span class="line">                   scope.family = $parse(scope.subFamily)(); // 使用$parse服务解析,结果重新赋值</span><br><span class="line">                   scope.subFamily= $parse(scope.subFamily)(); // 使用$parse服务解析</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;]);</span><br><span class="line">       angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">           $scope.user =  &#123;</span><br><span class="line">               name : &apos;penglu&apos;</span><br><span class="line">           &#125;;</span><br><span class="line">           $scope.family = [&apos;father&apos;, &apos;mother&apos;, &apos;grandMother&apos;];</span><br><span class="line">       &#125;])</span><br><span class="line">   &lt;/script&gt;</span><br><span class="line">   &lt;div my-directive user=&quot;&#123;&#123;user&#125;&#125;&quot; family=&quot;&#123;&#123;family&#125;&#125;&quot; &gt;&lt;/div&gt;</span><br><span class="line">   &lt;/body&gt;</span><br><span class="line"> 	&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>=: 双向数据绑定</p>
+<ul>
+<li>通过这种方式，可以实现双向数据绑定，可以看成是独立scope拿到一个指向外层scope的指针。内外层数据的修改都是同步进行的。</li>
+<li>通过这种方式可以传递对象、数组。即数据按照原格式进行传递.</li>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">	&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">	    &lt;script&gt;</span><br><span class="line">	        angular.module(&apos;app&apos;, []);</span><br><span class="line">	        angular.module(&apos;app&apos;).directive(&apos;myDirective&apos;,[&apos;$parse&apos;, function($parse)&#123;</span><br><span class="line">	            return &#123;</span><br><span class="line">	                restrict:&apos;AE&apos;,</span><br><span class="line">	                scope: &#123;</span><br><span class="line">	                    user: &quot;=&quot;,</span><br><span class="line">	                    family: &quot;=&quot;</span><br><span class="line">	                &#125;,</span><br><span class="line">	                template:&apos;&lt;div&gt;&#123;&#123;user.name&#125;&#125;,My family:&lt;span ng-repeat=&quot;item in family track by $index&quot;&gt;&#123;&#123;item&#125;&#125;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;button ng-click=&quot;changeUser()&quot;&gt;修改user&lt;/button&gt;&lt;button ng-click=&quot;changeFamily()&quot;&gt;修改family&lt;/button&gt;&apos;,</span><br><span class="line">	                controller: function($scope)&#123;</span><br><span class="line">	                    $scope.changeUser = function()&#123;</span><br><span class="line">	                        $scope.user.name = &apos;彭璐 - 独立scope&apos;;</span><br><span class="line">	                    &#125;;</span><br><span class="line">	                    $scope.changeFamily = function()&#123;</span><br><span class="line">	                        $scope.family.push(&apos;独立scope&apos;);</span><br><span class="line">	                    &#125;;</span><br><span class="line">	                &#125;</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;]);</span><br><span class="line">	        angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">	            $scope.user =  &#123;</span><br><span class="line">	                name : &apos;penglu&apos;</span><br><span class="line">	            &#125;;</span><br><span class="line">	            $scope.family = [&apos;father&apos;, &apos;mother&apos;, &apos;grandMother&apos;];</span><br><span class="line">	        &#125;])</span><br><span class="line">	    &lt;/script&gt;</span><br><span class="line">	    &lt;div&gt;外层controller:&#123;&#123;user.name&#125;&#125;,My family:&lt;span ng-repeat=&quot;item in family track by $index&quot;&gt;&#123;&#123;item&#125;&#125;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;</span><br><span class="line">	    &lt;div my-directive user=&quot;user&quot; family=&quot;family&quot; style=&quot;color: red;&quot;&gt;&lt;/div&gt;</span><br><span class="line">	&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>&amp;: 传递一个来自父scope的函数.</p>
+<ul>
+<li><p>Demo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;, []);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;myDirective&apos;,[&apos;$parse&apos;, function($parse)&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;AE&apos;,</span><br><span class="line">            scope: &#123;</span><br><span class="line">                setName: &quot;&amp;&quot;,</span><br><span class="line">                userName: &apos;@&apos;</span><br><span class="line">            &#125;,</span><br><span class="line">            template:&apos;&lt;input ng-model=&quot;userName&quot;&gt;&lt;button ng-click=&quot;changeName(userName)&quot;&gt;input中输入待修改名字&lt;/button&gt;&apos;,</span><br><span class="line">            link: function(scope)&#123;</span><br><span class="line">                // 通过&amp;接收到的函数使用必包的方式又包裹了一层，因此需要调用才能获取真正传递的函数</span><br><span class="line">                scope.changeName = scope.setName();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;]);</span><br><span class="line">    angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">       $scope.user = &#123;</span><br><span class="line">           name: &apos;penglu&apos;</span><br><span class="line">       &#125;;</span><br><span class="line">       $scope.setName = function(name)&#123;</span><br><span class="line">           $scope.user.name = name;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;div&gt;&#123;&#123;user.name&#125;&#125;&lt;/div&gt;</span><br><span class="line">&lt;div my-directive user-name=&quot;&#123;&#123;user.name&#125;&#125;&quot; set-name=&quot;setName&quot; &gt;&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>$eval与$parse </p>
+<ul>
+<li><p>$eval:scope域上的一个函数,在当前scope域上执行传入的表达式</p>
+<ul>
+<li><p>$eval([expression], [locals]); </p>
+<ul>
+<li>第一个参数为表达式(可以是一个字符串，也可以是一个传入scope的匿名函数) ，如果是一个字符串，则根据表达式定义规则进行计算和转换。如果是一个函数，则根据传入的scope对函数内的表达式进行计算.</li>
+<li><p>Demo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;, []);</span><br><span class="line">    angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, &apos;$rootScope&apos;, function($scope, $rootScope)&#123;</span><br><span class="line">        var scope = $rootScope.$new();</span><br><span class="line">        scope.a = 1;</span><br><span class="line">        scope.b = 2;</span><br><span class="line">        console.log(scope.$eval(&apos;a+b&apos;));  // 3</span><br><span class="line">        console.log(scope.$eval(&apos;a+b&apos;,&#123;a:3,b:4&#125;));  // 7</span><br><span class="line">        console.log(scope.$eval(function(scope)&#123;return scope.a + scope.b;&#125;));  //3</span><br><span class="line">    &#125;])</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>$eval():可以将json字符串转换为对象或者数组</p>
+<ul>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">	&lt;script&gt;</span><br><span class="line">	    angular.module(&apos;app&apos;,[]);</span><br><span class="line">	    angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">	        $scope.familyStr= &apos;[&quot;father&quot;,&quot;mother&quot;,&quot;grandMother&quot;]&apos;;</span><br><span class="line">	        $scope.userStr = &apos;&#123;&quot;name&quot;:&quot;penglu&quot;&#125;&apos;;</span><br><span class="line">	        $scope.family = $scope.$eval($scope.familyStr);</span><br><span class="line">	        $scope.user = $scope.$eval($scope.userStr);</span><br><span class="line">	    &#125;]);</span><br><span class="line">	&lt;/script&gt;</span><br><span class="line">	&lt;div&gt;&lt;span&gt;&#123;&#123;userStr&#125;&#125; --&gt;&lt;/span&gt;&#123;&#123;user.name&#125;&#125;&lt;/div&gt;</span><br><span class="line">	&lt;p&gt;&#123;&#123;familyStr&#125;&#125;&lt;/p&gt;</span><br><span class="line">	&lt;ul&gt;</span><br><span class="line">	    &lt;li ng-repeat=&quot;item in family&quot;&gt;&#123;&#123;item&#125;&#125;&lt;/li&gt;</span><br><span class="line">	&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>$parse:将表达式转换为一个函数</p>
+<ul>
+<li>备注<ul>
+<li>一个服务，使用之前必须进行注入。</li>
+<li>返回一个函数<ul>
+<li>function(context, locals)<ul>
+<li>context:对象，一般是一个scope对象，指定表达式所在的作用域</li>
+<li>locals:对象，可以用来覆盖context指定的对象<ul>
+<li>assign:如果表达式解析的是一个变量，那么返回的函数具有assign属性，可以通过assign属性得到一个setter函数，用来设置表达式对应变量的值     </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;,[]);</span><br><span class="line">    angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;, &apos;$parse&apos;, function($scope, $parse)&#123;</span><br><span class="line">        var getter_user = $parse(&apos;user.name&apos;);</span><br><span class="line">        var getter_family = $parse(&apos;family&apos;);</span><br><span class="line">        var setter_user = getter_user.assign;</span><br><span class="line">        var context = &#123;user:&#123;name:&apos;angular&apos;&#125;,family:[&apos;dad&apos;, &apos;mother&apos;, &apos;sister&apos;]&#125;;</span><br><span class="line">        var locals = &#123;user:&#123;name:&apos;local&apos;&#125;&#125;;</span><br><span class="line">        console.log(getter_family(context));  // [&apos;dad&apos;, &apos;mother&apos;, &apos;sister&apos;]</span><br><span class="line">        console.log(getter_user(locals));  // local</span><br><span class="line">        console.log(getter_user(context));  // angular</span><br><span class="line">        console.log(setter_user(context,&apos;pl&apos;));  // 修改context对象中的user.name = &apos;pl&apos;</span><br><span class="line">    &#125;]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>$parse:用于解析json字符串</p>
+<ul>
+<li>备注:解析字符串的时候，没有assign属性  </li>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;body ng-controller=&quot;myController&quot;&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;,[]);</span><br><span class="line">    angular.module(&apos;app&apos;).controller(&apos;myController&apos;, [&apos;$scope&apos;,&apos;$parse&apos;, function($scope, $parse)&#123;</span><br><span class="line">        $scope.familyStr= &apos;[&quot;father&quot;,&quot;mother&quot;,&quot;grandMother&quot;]&apos;;</span><br><span class="line">        $scope.userStr = &apos;&#123;&quot;name&quot;:&quot;penglu&quot;&#125;&apos;;</span><br><span class="line">        var getterUser = $parse($scope.userStr);</span><br><span class="line">        var getterFamily = $parse($scope.familyStr);</span><br><span class="line">        $scope.family = getterFamily($scope);</span><br><span class="line">        $scope.user = getterUser($scope);</span><br><span class="line">    &#125;]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;div&gt;&lt;span&gt;&#123;&#123;userStr&#125;&#125; --&gt;&lt;/span&gt;&#123;&#123;user.name&#125;&#125;&lt;/div&gt;</span><br><span class="line">&lt;p&gt;&#123;&#123;familyStr&#125;&#125;&lt;/p&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">    &lt;li ng-repeat=&quot;item in family&quot;&gt;&#123;&#123;item&#125;&#125;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>$eval和$parse对比</p>
+<ul>
+<li>如果只需要通过解析表达式获得变量则使用$eval(单向),如果需要对获得的变量做修改则使用$parse(双向) </li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>controller&amp;require</p>
+<ol>
+<li>controller:实现需要彼此通信的嵌套指令.(配合require)</li>
+<li>require: 指定需要依赖指令。<ul>
+<li>^: 需要同时遍历Dom树去查找指令,被依赖的指令在DOM树中需要在指令的上层(父节点)</li>
+<li>?: 控制器可选(如果获取不到该指令的控制器不会报错)</li>
+</ul>
+</li>
+<li>备注<ul>
+<li>如果依赖多个指令，需要注入多个控制，则require接收数组；同时在link函数的第四个参数也是所依赖指令controller的数组。</li>
+<li>依赖指令的controller需要在link函数中注入.</li>
+</ul>
+</li>
+<li>Demo <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">	&lt;body&gt;</span><br><span class="line">	&lt;script&gt;</span><br><span class="line">    angular.module(&apos;app&apos;,[]).directive(&apos;requireDir&apos;, function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;EA&apos;,</span><br><span class="line">            replace: true,</span><br><span class="line">            transclude: true,</span><br><span class="line">            scope:true,</span><br><span class="line">            template:&apos;&lt;div&gt;&#123;&#123;title&#125;&#125;&lt;div ng-transclude&gt;&lt;/div&gt;&lt;/div&gt;&apos;,</span><br><span class="line">            controller: function($scope)&#123;</span><br><span class="line">                $scope.title = &apos;被依赖的指令&apos;;</span><br><span class="line">                this.setTitle = function(title)&#123;</span><br><span class="line">                    $scope.title = title;</span><br><span class="line">                &#125;;</span><br><span class="line">                this.getTitle = function()&#123;</span><br><span class="line">                    return $scope.title;</span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    angular.module(&apos;app&apos;).directive(&apos;myDir&apos;,function()&#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            restrict:&apos;EA&apos;,</span><br><span class="line">            require: &apos;^?requireDir&apos;,</span><br><span class="line">            link: function($scope, ele, attrs, requireCtrl)&#123;</span><br><span class="line">                // 调用依赖控制器中方法</span><br><span class="line">                requireCtrl.setTitle(attrs[&apos;title&apos;]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">	&lt;/script&gt;</span><br><span class="line">   &lt;require-dir&gt;&lt;/require-dir&gt;</span><br><span class="line">   &lt;require-dir&gt;</span><br><span class="line">       &lt;my-dir title=&quot;penglu&quot;&gt;&lt;/my-dir&gt;</span><br><span class="line">   &lt;/require-dir&gt;</span><br><span class="line">	&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>link &amp; compile</p>
+<ol>
+<li>Angular初始化<ul>
+<li>加载脚本:加载库、ng-app</li>
+<li>编译阶段:转换模版(遍历Dom,标识指令,根据定义指令规则,转换Dom结构.)</li>
+<li>连接阶段:修改视图中数据<ul>
+<li>每条指令运行一个link函数</li>
+<li>创建监听器(Dom｜模型) </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>compile与link的不同点<ul>
+<li>compile:模版自身进行；link: 模型和视图之间进行动态关联。</li>
+<li>compile:编译阶段运行一次;link:对于指令的每个实例,都会执行一次.</li>
+</ul>
+</li>
+<li>compile: function(ele, attrs, transclude)<ul>
+<li>ele:指令元素或者指令所在标签元素</li>
+<li>attrs:指令元素上的属性集合或者指令所在标签元素的属性集合</li>
+<li>transclude: 链接函数</li>
+<li>compile函数执行完返回一个link函数。</li>
+</ul>
+</li>
+<li>link: function(scope, ele, attrs, controller)<ul>
+<li>scope:指令作用域</li>
+<li>ele:指令元素或者指令所在标签元素</li>
+<li>attrs:指令元素上的属性集合或者指令所在标签元素的属性集合</li>
+<li>controller:指令依赖其他指令的控制器数组集合</li>
+</ul>
+</li>
+<li>备注<ul>
+<li>如果同时设置compile和link，则link函数失效，因为compile会反回一个link函数</li>
+<li>一般只使用compile，然后再返回函数中绑定scope，或者只使用link函数。</li>
+<li>可以在compile或者link函数中操作dom，绑定一些事件</li>
+</ul>
+</li>
+<li>Demo<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">  	&#123;% raw %&#125;</span><br><span class="line">  	&lt;body ng-controller=&quot;MainCtrl&quot;&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        angular.module(&apos;app&apos;,[]);</span><br><span class="line">        angular.module(&apos;app&apos;).controller(&apos;MainCtrl&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">            $scope.num = 5;</span><br><span class="line">        &#125;]);</span><br><span class="line">        angular.module(&apos;app&apos;).directive(&apos;rabbitRepeater&apos;, function($document)&#123;</span><br><span class="line">            return &#123;</span><br><span class="line">                restrict: &apos;A&apos;,</span><br><span class="line">                compile: function(ele, attrs)&#123;</span><br><span class="line">                    console.log(&apos;compile&apos;);</span><br><span class="line">                    // 数据绑定发生在link中，因此如果需要动态绑定model的，都需要使用link设置</span><br><span class="line">                    // 可以在compile函数中返回link函数,则return的函数会执行</span><br><span class="line">                    return function(scope, ele, attrs, controller)&#123;</span><br><span class="line">                        console.log(&apos;compile &amp; link&apos;);</span><br><span class="line">                        // compile与link不能同时设置,如果同时设置则link函数无效。</span><br><span class="line">                        var template = $(ele).children().clone();</span><br><span class="line">                        for(var i=0; i&lt;attrs.rabbitRepeater - 1; i++)&#123;</span><br><span class="line">                            $(ele).append(template.clone());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                link: function(scope, ele, attrs)&#123;</span><br><span class="line">                    console.log(&apos;link&apos;);</span><br><span class="line">                    // compile与link不能同时设置,如果同时设置则link函数无效。</span><br><span class="line">                    var template = $(ele).children().clone();</span><br><span class="line">                    for(var i=0; i&lt;attrs.rabbitRepeater - 1; i++)&#123;</span><br><span class="line">                        $(ele).append(template.clone());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">    &lt;ul rabbit-repeater=&quot;&#123;&#123;num&#125;&#125;&quot;&gt;</span><br><span class="line">        &lt;li &gt;哈哈哈&lt;/li&gt;</span><br><span class="line">    &lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="一起来定义指令"><a href="#一起来定义指令" class="headerlink" title="一起来定义指令"></a>一起来定义指令</h2><ol>
+<li><p>指令使用:定义一个pagination指令，用于翻页等功能.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;pagination page-num=&apos;&#123;&#123;pageNum&#125;&#125;&apos; current-page= &apos;&#123;&#123;currentPage&#125;&#125;&apos;&gt;&lt;/pagination&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>功能分析</p>
+<ul>
+<li>根据pageNum动态生成Dom结构.<ul>
+<li>如果变化也会重新生成Dom</li>
+</ul>
+</li>
+<li>当前选中页为激活状态.</li>
+<li>如果当前页为末｜首页，则’下｜上一页’设置为不可用.</li>
+<li>页面点击切换当前页.</li>
+<li>点击’上｜下一页’进行切换，如果当前页为’首｜末页’则不切换</li>
+</ul>
+</li>
+<li>代码实现:class使用bootstrap  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html ng-app=&quot;app&quot;&gt;</span><br><span class="line">&lt;head lang=&quot;en&quot;&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;restrict&lt;/title&gt;</span><br><span class="line">    &lt;!-- 文件引入 --&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;../css/bootstrap.css&quot;&gt;</span><br><span class="line">    &lt;script src=&quot;../lib/jquery/dist/jquery.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script src=&quot;../lib/angular/angular.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script src=&quot;../lib/angular-animate/angular-animate.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script src=&quot;../lib/angular-bootstrap/ui-bootstrap-tpls.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        angular.module(&apos;app&apos;, []).controller(&apos;paginationCtrl&apos;, [&apos;$scope&apos;, function($scope)&#123;</span><br><span class="line">            $scope.pageNum = 5;</span><br><span class="line">            $scope.currentPage = 1;</span><br><span class="line">        &#125;]);</span><br><span class="line">        angular.module(&apos;app&apos;).directive(&apos;pagination&apos;, function()&#123;</span><br><span class="line">            return &#123;</span><br><span class="line">                restrict: &apos;EA&apos;,</span><br><span class="line">                scope:&#123;</span><br><span class="line">                    pageNum: &apos;@&apos;,</span><br><span class="line">                    currentPage: &apos;@&apos;</span><br><span class="line">                &#125;,</span><br><span class="line">                templateUrl:&apos;pagination.html&apos;,</span><br><span class="line">                link: function(scope, ele, attrs)&#123;</span><br><span class="line">                    scope.pages = [];</span><br><span class="line"></span><br><span class="line">                    // 根据pageNum生成页码数组</span><br><span class="line">                    scope.$watch(&apos;pageNum&apos;, function(val)&#123;</span><br><span class="line">                        scope.pages.length = val;</span><br><span class="line">                        for(var i=0; i&lt;val; i++)&#123;</span><br><span class="line">                            scope.pages[i] = i+1;</span><br><span class="line">                        &#125;</span><br><span class="line">                        if(scope.currentPage &gt; val)&#123;</span><br><span class="line">                            scope.selectPage(val);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">                    /**</span><br><span class="line">                     * 判断当前激活页是不是第一页,如果是,则返回true</span><br><span class="line">                     * @returns &#123;boolean&#125;</span><br><span class="line">                     */</span><br><span class="line">                    scope.noPrevious = function()&#123;</span><br><span class="line">                        return scope.currentPage == 1;</span><br><span class="line">                    &#125;;</span><br><span class="line"></span><br><span class="line">                    /**</span><br><span class="line">                     * 判断当前激活页是不是最后一页,如果是,则返回true</span><br><span class="line">                     * @returns &#123;boolean&#125;</span><br><span class="line">                     */</span><br><span class="line">                    scope.noNext = function()&#123;</span><br><span class="line">                        return !(scope.currentPage &lt; this.pages.length);</span><br><span class="line">                    &#125;;</span><br><span class="line"></span><br><span class="line">                    /**</span><br><span class="line">                     * 判断当前页是不是激活页,如果是,则返回true</span><br><span class="line">                     * @param &#123;num&#125; page 当前页</span><br><span class="line">                     * @returns &#123;boolean&#125;</span><br><span class="line">                     */</span><br><span class="line">                    scope.isActive = function(page)&#123;</span><br><span class="line">                        return page == scope.currentPage;</span><br><span class="line">                    &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                    /**</span><br><span class="line">                     * 根据传入页码选择当前页,如果当前页是激活状态则不选中，否则选中</span><br><span class="line">                     * @param &#123;num&#125; page 选择页</span><br><span class="line">                     */</span><br><span class="line">                    scope.selectPage = function(page)&#123;</span><br><span class="line">                        if(!scope.isActive(page))&#123;</span><br><span class="line">                            scope.currentPage = page;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line"></span><br><span class="line">                    /**</span><br><span class="line">                     * 选中前一页</span><br><span class="line">                     */</span><br><span class="line">                    scope.selectPrevious = function()&#123;</span><br><span class="line">                        if(!scope.noPrevious())&#123;</span><br><span class="line">                            scope.selectPage(--scope.currentPage);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line"></span><br><span class="line">                    /**</span><br><span class="line">                     * 选中后一页</span><br><span class="line">                     */</span><br><span class="line">                    scope.selectNext = function()&#123;</span><br><span class="line">                        if(!scope.noNext())&#123;</span><br><span class="line">                            scope.selectPage(++scope.currentPage);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body ng-controller=&quot;paginationCtrl&quot;&gt;</span><br><span class="line">    &lt;pagination page-num = &quot;&#123;&#123;pageNum&#125;&#125;&quot;   current-page=&quot;&#123;&#123;currentPage&#125;&#125;&quot;&gt;&lt;/pagination&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h1><ol>
+<li>文中使用raw和endraw标签是为了能够解析双括号问题,<a href="https://hexo.io/docs/troubleshooting.html#Escape_Contents" target="_blank" rel="noopener">参考内容</a>。</li>
+<li>文章涉及很多知识都只是一些基础，后续会有继续对某些重点内容进行补充介绍。</li>
+</ol>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a href="http://download.csdn.net/detail/yaoyiya/8016037" target="_blank" rel="noopener">用AngularJs开发下一代Web应用</a></li>
+<li><a href="http://pan.baidu.com/share/link?shareid=2576375993&amp;uk=2214641459&amp;adapt=pc&amp;fr=ftw" target="_blank" rel="noopener">Mastering Web Application Development with AngularJS</a></li>
+<li><a href="https://docs.angularjs.org/guide" target="_blank" rel="noopener">AngularJS develop</a></li>
+</ol>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/22/penglu/link-controller/" rel="prev">指令编译过程中link与controller函数执行顺序</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/21/felix/react-first-kiss/" rel="next">React入门</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why"><span class="nav-number">1.</span> <span class="nav-text">Why</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What"><span class="nav-number">2.</span> <span class="nav-text">What</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How"><span class="nav-number">3.</span> <span class="nav-text">How</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何定义"><span class="nav-number">3.1.</span> <span class="nav-text">如何定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#directive"><span class="nav-number">3.1.1.</span> <span class="nav-text">directive()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指令定义字段"><span class="nav-number">3.1.2.</span> <span class="nav-text">指令定义字段</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一起来定义指令"><span class="nav-number">4.</span> <span class="nav-text">一起来定义指令</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#备注"><span class="nav-number"></span> <span class="nav-text">备注</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number"></span> <span class="nav-text">参考资料</span></a></li></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

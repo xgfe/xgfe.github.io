@@ -1,0 +1,818 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="数据可视化,svg,D3.js,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="&amp;emsp;&amp;emsp;数据可视化一直是前端领域中不容忽略的一块领域。简而言之，数据可视化就是借助图形化的手段把生硬的数据生动化，以此来展示出数据想要表达的信息。而图表是大家最最最通常的一种数据可视化手段，可全靠自己纯手动编写各种图表实在是让人头疼，各种计算各种烦。没事儿，现在就为大家打开一道新世界的大门——用D3.js来实现柱状图。">
+<meta name="keywords" content="数据可视化,svg,D3.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于D3.js的柱状图的实现">
+<meta property="og:url" content="http://xgfe.github.io/2015/11/23/chenwubai/d3-basicCharts-bar/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;数据可视化一直是前端领域中不容忽略的一块领域。简而言之，数据可视化就是借助图形化的手段把生硬的数据生动化，以此来展示出数据想要表达的信息。而图表是大家最最最通常的一种数据可视化手段，可全靠自己纯手动编写各种图表实在是让人头疼，各种计算各种烦。没事儿，现在就为大家打开一道新世界的大门——用D3.js来实现柱状图。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-bar/ordinalAndLinear.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-bar/ordinal.range.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-bar/axis-bar.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-bar/bar.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.374Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于D3.js的柱状图的实现">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;数据可视化一直是前端领域中不容忽略的一块领域。简而言之，数据可视化就是借助图形化的手段把生硬的数据生动化，以此来展示出数据想要表达的信息。而图表是大家最最最通常的一种数据可视化手段，可全靠自己纯手动编写各种图表实在是让人头疼，各种计算各种烦。没事儿，现在就为大家打开一道新世界的大门——用D3.js来实现柱状图。">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/chenwubai/d3-basicCharts-bar/ordinalAndLinear.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 基于D3.js的柱状图的实现 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              基于D3.js的柱状图的实现
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-11-23T00:00:00+08:00" content="2015-11-23">
+            2015-11-23
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/chenwubai/" itemprop="url" rel="index">
+                  <span itemprop="name">chenwubai</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/数据可视化/" rel="tag"><i class="icon-next-tags"></i>数据可视化</a>
+            
+              <a href="/tags/svg/" rel="tag"><i class="icon-next-tags"></i>svg</a>
+            
+              <a href="/tags/D3-js/" rel="tag"><i class="icon-next-tags"></i>D3.js</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>&emsp;&emsp;数据可视化一直是前端领域中不容忽略的一块领域。简而言之，数据可视化就是借助图形化的手段把生硬的数据生动化，以此来展示出数据想要表达的信息。而图表是大家最最最通常的一种数据可视化手段，可全靠自己纯手动编写各种图表实在是让人头疼，各种计算各种烦。没事儿，现在就为大家打开一道新世界的大门——用D3.js来实现柱状图。<br><a id="more"></a>  </p>
+<h2 id="D3-js是什么？"><a href="#D3-js是什么？" class="headerlink" title="D3.js是什么？"></a><a href="http://d3js.org/" target="_blank" rel="noopener">D3.js</a>是什么？</h2><p>&emsp;&emsp;首先，我们来看一下D3.js是什么，官方首页的介绍是这样的。  </p>
+<blockquote>
+<p>D3.js is a JavaScript library for manipulating documents based on data. D3 helps you bring data to life using HTML, SVG, and CSS. D3’s emphasis on web standards gives you the full capabilities of modern browsers without tying yourself to a proprietary framework, combining powerful visualization components and a data-driven approach to DOM manipulation.  </p>
+</blockquote>
+<p>&emsp;&emsp;由此可见(英文不好？怪我咯~)，D3.js是一个帮助开发者操纵基于数据的文档的JavaScript类库。这里也可以看到它是用SVG来呈现图表的，所以使用D3.js是需要一定的SVG基础的。    </p>
+<h2 id="如何实现？"><a href="#如何实现？" class="headerlink" title="如何实现？"></a>如何实现？</h2><p>&emsp;&emsp;柱状图里面有坐标轴和柱子。然而我们还需要SVG画布来画这些东西。先把大概的画图框架搭起来，代码如下（请注意此时我在body标签里添加了D3.js的script标签。这样我们后面才能使用D3的方法）：  </p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot;&gt;
+        &lt;title&gt;柱状图&lt;/title&gt;
+        &lt;style&gt;
+            .container {
+                margin: 30px auto;
+                width: 600px;
+                height: 300px;
+                border: 1px solid #000;
+            }
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            &lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;script src=&quot;http://d3js.org/d3.v3.min.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+        &lt;script&gt;
+        &lt;script&gt;
+            window.onload = function() {
+                var width = 600, height = 300;
+                // SVG画布边缘与图表内容的距离
+                var padding = { top: 50, right: 50, bottom: 50, left: 50 };
+                // 创建一个分组用来组合要画的图表元素
+                var main = d3.select(&apos;.container svg&apos;).append(&apos;g&apos;)
+                    // 给这个分组加上main类
+                    .classed(&apos;main&apos;)
+                    // 设置该分组的transform属性
+                    .attr(&apos;transform&apos;, &quot;translate(&quot; + padding.top + &apos;,&apos; + padding.left + &apos;)&apos;);
+            };
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h3 id="坐标轴的实现"><a href="#坐标轴的实现" class="headerlink" title="坐标轴的实现"></a>坐标轴的实现</h3><p>&emsp;&emsp;为了把真实的数据与SVG画布上的坐标轴上的坐标联系起来，我们需要定义比例尺来描述这样的对应关系。D3中常用的比例尺有线性比例尺和序数比例尺，它们的区别如图所示：<br><img src="/uploads/chenwubai/d3-basicCharts-bar/ordinalAndLinear.png" width="720" height="120"><br>&emsp;&emsp;从图上可以看出，线性比例尺的对应关系是连续的，而序数比例尺的对应关系是离散的。分析柱状图的展现意义可以得出x轴应该选用序数比例尺，而y轴选用线性比例尺。   </p>
+<pre><code>// 模拟数据
+var dataset = {
+    x: [&quot;赵&quot;,&quot;钱&quot;,&quot;孙&quot;,&quot;李&quot;,&quot;周&quot;,&quot;吴&quot;,&quot;郑&quot;,&quot;王&quot;],
+    y: [40, 30, 50, 70, 90, 20, 10, 40]
+};
+// 定义x轴的比例尺(序数比例尺)
+var xScale = d3.scale.ordinal()
+        .domain(dataset.x)
+        .rangeRoundBands([0, width - padding.left - padding.right],0,0);
+// 定义y轴的比例尺(线性比例尺)
+var yScale = d3.scale.linear()
+        .domain([0, d3.max(dataset.y)])
+        .range([height - padding.top - padding.bottom, 0]);
+// 定义x轴和y轴
+var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient(&apos;bottom&apos;);
+var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient(&apos;left&apos;);
+// 添加坐标轴元素
+main.append(&apos;g&apos;)
+        .attr(&apos;class&apos;, &apos;axis&apos;)
+        .attr(&apos;transform&apos;, &apos;translate(0,&apos; + (height - padding.bottom - padding.top) + &apos;)&apos;)
+        .call(xAxis);
+main.append(&apos;g&apos;)
+        .attr(&apos;class&apos;, &apos;axis&apos;)
+        .call(yAxis);  
+</code></pre><p>&emsp;&emsp;我们模拟了一些数据，每个姓氏对应了一个数值（从这里也可以看出序数比例尺的定义域上的值不一定是连续关系）。<a href="https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal" target="_blank" rel="noopener">d3.scale.ordinal()</a>创建了一个序数比例尺，而<a href="https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_domain" target="_blank" rel="noopener">ordinal.domain()</a>设置了该比例尺的定义域，<a href="https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeRoundBands" target="_blank" rel="noopener">ordinal.rangRoundBands()</a>设置了值域。同理，<a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear" target="_blank" rel="noopener">d3.scale.linear()</a>创建了一个线性比例尺，<a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear_domain" target="_blank" rel="noopener">linear.domain()</a>定义定义域，<a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear_range" target="_blank" rel="noopener">linear.range()</a>定义值域。接着，我们用<a href="https://github.com/mbostock/d3/wiki/SVG-Axes#axis" target="_blank" rel="noopener">d3.svg.axis()</a>创建了两个坐标轴，把比例尺应用到它们上面，并且用<a href="https://github.com/mbostock/d3/wiki/SVG-Axes#orient" target="_blank" rel="noopener">axis.orient()</a>设置了坐标轴的刻度尺的方向。最后，添加SVG元素，用<a href="https://github.com/mbostock/d3/wiki/Selections#call" target="_blank" rel="noopener">call()</a>把定义好的坐标轴与SVG元素联系起来。通过设置它们的transform属性来移动元素，使它们看起来像是一个坐标系。  </p>
+<p>这里需要注意以下几点：  </p>
+<ul>
+<li>ordinal.domain的参数是一个表示一系列值的数组，而linear.domain的参数是一个表示范围的数组。  </li>
+<li>比例尺的本质是一个函数，它接收定义域上的值来得出对应的值域上的值。  </li>
+</ul>
+<p>&emsp;&emsp;应用序数比例尺的坐标轴与线性比例尺的有很大不同，这里大概说明一下。<br><img src="/uploads/chenwubai/d3-basicCharts-bar/ordinal.range.png" width="660" height="260"><br>&emsp;&emsp;rangeRoundBands(interval, padding, outerPadding)中的padding和outerPadding都是可选的，默认为0。如上图所示的比例尺的代码是这样的。  </p>
+<pre><code>var o = d3.scale.ordinal()
+    .domain([0, 1, 2])
+    .rangeRoundBands([0, 100], 0.4, 0.1);
+</code></pre><p>&emsp;&emsp;domain的参数数组有多少个元素，就会有多少个rangeBand，rangeBand之间的间隔为padding*step（padding取值范围为0到1），它与rangeBand的关系是均分一个step，比如padding为0.4，则rangeBand的长度为0.6*step。根据上述代码可得最终坐标轴的长度等于(0.1 + 2 + 0.6 + 0.1) * step，由此算出step的长度，再推出外间距、rangeBand、内间距的长度。而定义域上的取值刻度定位在每个rangeBand的中间。于是得到了示意图中的坐标轴（红色标注）。  </p>
+<p>&emsp;&emsp;我们接着来画柱状图，给坐标轴设置一下样式：  </p>
+<pre><code>.axis path,
+.axis line {
+    stroke: #000;
+    fill: none;
+}
+</code></pre><p>&emsp;&emsp;最终得到的柱状图的坐标轴如下图所示：<br><img src="/uploads/chenwubai/d3-basicCharts-bar/axis-bar.png" width="320" height="160"></p>
+<h3 id="柱子的实现"><a href="#柱子的实现" class="headerlink" title="柱子的实现"></a>柱子的实现</h3><p>&emsp;&emsp;柱子无非就是一个个矩形，在SVG中可以使用rect元素来画。先选择到main下所有bar类的元素（此时选择到的是一个空的集合），把dataset.y绑定到这个集合上，用<a href="https://github.com/mbostock/d3/wiki/Selections#enter" target="_blank" rel="noopener">enter()</a>对比绑定的数组元素个数与集合中的SVG元素个数，与<a href="https://github.com/mbostock/d3/wiki/Selections#append" target="_blank" rel="noopener">append()</a>搭配使用，会自动补齐至两边个数相等。每一次的append都对应dataset.y中的一个数组元素。利用前面创建的比例尺函数计算出值并赋给举行元素的x、y属性。具体的代码如下：</p>
+<pre><code>// 矩形之间的间距
+var rectMargin = 10;
+// 添加矩形
+main.selectAll(&apos;.bar&apos;)
+        .data(dataset.y)
+        .enter()
+        .append(&apos;rect&apos;)
+        .attr(&apos;class&apos;, &apos;bar&apos;)
+        .attr(&apos;x&apos;, function(d, i) {
+            return xScale(dataset.x[i]) + rectMargin;
+        })
+        .attr(&apos;y&apos;, function(d, i) {
+            return yScale(d);
+        })
+        .attr(&apos;width&apos;, xScale.rangeBand() - 2*rectMargin)
+        .attr(&apos;height&apos;, function(d, i) {
+            return height - padding.top - padding.bottom - yScale(d);
+        })
+        .attr(&apos;fill&apos;, function(d, i) {
+            return getColor(i);
+        });
+</code></pre><p>&emsp;&emsp;至此，得到了如下图所示的柱状图。<br><img src="/uploads/chenwubai/d3-basicCharts-bar/bar.png" width="320" height="160"></p>
+<p>&emsp;&emsp;完整的代码和例子展示请移步<a href="/uploads/chenwubai/d3-basicCharts-bar/bar.html">bar.html</a>。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/23/chenwubai/d3-basicCharts-line/" rel="prev">基于D3.js的折线图的实现</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/17/scliuyang/svg-advanced/" rel="next">SVG进阶教程</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#D3-js是什么？"><span class="nav-number">1.</span> <span class="nav-text">D3.js是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何实现？"><span class="nav-number">2.</span> <span class="nav-text">如何实现？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#坐标轴的实现"><span class="nav-number">2.1.</span> <span class="nav-text">坐标轴的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#柱子的实现"><span class="nav-number">2.2.</span> <span class="nav-text">柱子的实现</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

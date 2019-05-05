@@ -1,0 +1,944 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="nodejs,Eggjs,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要介绍了 Egg.js 在项目中的使用以及框架的扩展。">
+<meta name="keywords" content="nodejs,Eggjs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Egg.js 体验">
+<meta property="og:url" content="http://xgfe.github.io/2018/05/26/guanxiaofeng/Eggjs/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要介绍了 Egg.js 在项目中的使用以及框架的扩展。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.379Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Egg.js 体验">
+<meta name="twitter:description" content="本文主要介绍了 Egg.js 在项目中的使用以及框架的扩展。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Egg.js 体验 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Egg.js 体验
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-05-26T15:00:00+08:00" content="2018-05-26">
+            2018-05-26
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/guanxiaofeng/" itemprop="url" rel="index">
+                  <span itemprop="name">guanxiaofeng</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/nodejs/" rel="tag"><i class="icon-next-tags"></i>nodejs</a>
+            
+              <a href="/tags/Eggjs/" rel="tag"><i class="icon-next-tags"></i>Eggjs</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要介绍了 Egg.js 在项目中的使用以及框架的扩展。<br><a id="more"></a></p>
+<h2 id="Egg-js-是什么"><a href="#Egg-js-是什么" class="headerlink" title="Egg.js 是什么?"></a>Egg.js 是什么?</h2><p>﻿Egg.js 是一个强约束的 Node 框架，这也是和 Express / Koa 最大的不同，后者对开发者相对宽松，主要体现在目录结构、编写方式等均可以自定义，标准的 mvc 模式有千奇百怪的写法。</p>
+<p> Egg.js 奉行『约定优于配置』，他规定一定的约定，让开发者都按照统一的约定去开发，降低团队协作成本，减少差异，求同存异，提升项目阅读和维护性。但约定不等于扩展性差，相反 Egg.js 有很高的扩展性。</p>
+<h3 id="特性"><a href="#特性" class="headerlink" title="﻿特性"></a>﻿特性</h3><pre><code>* 提供基于 Egg 定制上层框架的能力
+* 高度可扩展的插件机制
+* 内置多进程管理
+* 基于 Koa 开发，性能优异
+* 框架稳定，测试覆盖率高
+* 渐进式开发
+</code></pre><h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><p>官方推荐使用脚手架快速生成项目：</p>
+<pre><code>$ npm install egg-init -g
+$ egg-init egg-test --type=simple
+$ cd egg-test
+$ npm install
+$ npm run dev
+$ open localhost:7001
+</code></pre><p>Egg.js 给我们规定的目录结构如下图：</p>
+<pre><code>﻿egg-project
+├── package.json
+├── app.js (可选)
+├── agent.js (可选)
+├── app
+|   ├── router.js
+│   ├── controller
+│   |   └── home.js
+│   ├── service (可选)
+│   |   └── user.js
+│   ├── middleware (可选)
+│   |   └── response_time.js
+│   ├── schedule (可选)
+│   |   └── my_task.js
+│   ├── public (可选)
+│   |   └── reset.css
+│   ├── view (可选)
+│   |   └── home.tpl
+│   └── extend (可选)
+│       ├── helper.js (可选)
+│       ├── request.js (可选)
+│       ├── response.js (可选)
+│       ├── context.js (可选)
+│       ├── application.js (可选)
+│       └── agent.js (可选)
+├── config
+|   ├── plugin.js
+|   ├── config.default.js
+│   ├── config.prod.js
+|   ├── config.test.js (可选)
+|   ├── config.local.js (可选)
+|   └── config.unittest.js (可选)
+└── test
+    ├── middleware
+    |   └── response_time.test.js
+    └── controller
+        └── home.test.js
+</code></pre><p>﻿其中包括 controller、router 、config 等等，然后我们需要先添加一个渲染模版；Eggjs 提供了很多 view 模版，这里选择 Egg-view-ejs 为例，安装完插件后需要在 config 里面开启插件，同时需要在 app 文件夹下新建 view 文件夹，放置页面文件。<br> 配置需要用的插件，在 config / plugin.js 中添加</p>
+<pre><code>﻿exports.ejs = {
+    enable: true,
+    package: &apos;egg-view-ejs&apos;
+};
+// 使用 mysql 插件
+exports.mysql = {
+    enable: true,
+    package: &apos;egg-mysql&apos;,
+};
+</code></pre><p>开启插件，config.default.js 中增加</p>
+<pre><code>﻿config.view = {
+    defaultViewEngine: &apos;ejs&apos;,
+    mapping: {
+        &apos;.html&apos;: &apos;ejs&apos;,
+    }，
+};
+// 设置 mysql
+config.mysql = {
+    clients: {
+        // clientId, 获取 client 实例，需要通过 app.mysql.get(&apos;clientId&apos;) 获取
+        db: {
+            ...
+        }
+    },
+    // 是否加载到 app 上，默认开启
+    app: true,
+};
+</code></pre><p>﻿其中 defaultViewEngine 表示使用的模版，当然也可以使多种模版。mapping 设置的属性名表示 view 中文件的扩展名，属性值表示对应的模板；接下来就可以编写 controller 和 router 了。<br> 定义 controller，﻿在 controller 文件夹下的 home.js 中：</p>
+<pre><code>﻿const Controller = require(&apos;egg&apos;).Controller;
+
+// eggjs 推荐使用类形式来定义
+class HomeController extends Controller {
+  async index() {
+      await this.ctx.render(&apos;site/home.html&apos;);
+  }
+}
+module.exports = HomeController;
+</code></pre><p>定义路 router，在 router.js 文件中：</p>
+<pre><code>﻿module.exports = app =&gt; {
+    const { router, controller } = app;
+
+    router.get(&apos;/&apos;, controller.home.index);
+    router.get(&apos;/login&apos;, controller.login.index);
+};
+</code></pre><p>﻿Context 对象上提供了 3 个渲染模版的接口，返回值均为 Promise:</p>
+<pre><code>﻿// render ：渲染模版文件，data 为传入模版的数据，并赋值给 ctx.body
+await ctx.render(&apos;home/index.tpl&apos;, data);
+// renderView ：渲染模版文件，data 为传入模版的数据，需要主动赋值
+ctx.body = await ctx.renderView(&apos;path/to/file.tpl&apos;, data);
+// renderString ：渲染模版字符串，data 为传入模版的数据，需要主动赋值
+ctx.body = await ctx.renderString(&apos;hi, {{ name }}&apos;, data, {
+    // 需要指定模板引擎
+    viewEngine: &apos;nunjucks&apos;,
+});
+</code></pre><h2 id="内置基础对象扩展"><a href="#内置基础对象扩展" class="headerlink" title="内置基础对象扩展"></a>内置基础对象扩展</h2><p>框架包括从 Koa 继承而来的 4 个对象（ Application、Context、Request、Response )以及框架扩展的一些对象（ Controller、Service、Helper、Config、Logger ）。</p>
+<h3 id="Application-扩展"><a href="#Application-扩展" class="headerlink" title="Application 扩展"></a>Application 扩展</h3><p>app 对象指的是 Koa 的全局应用对象，全局只有一个，在应用启动时被创建。在 Controller、Middleware、Helper、Service 中都可以通过<br>this.app 访问到 Application 对象。框架会把 app/extend/application.js 中定义的对象与 Koa Application 的 prototype 对象进行合并，在应用启动时会基于扩展后的 prototype 生成 app 对象。这样能在其他地方使用 Application 中扩展的方法。</p>
+<pre><code>﻿// app/extend/application.js
+module.exports = {
+  foo(params) {
+    // this 就是 app 对象，在其中可以调用 app 上的其他方法，或访问属性
+  },
+};
+</code></pre><h3 id="Context-扩展"><a href="#Context-扩展" class="headerlink" title="﻿Context 扩展"></a>﻿Context 扩展</h3><p>Context 指的是 Koa 的请求上下文，这是请求级别的对象，每次请求生成一个 Context 实例，通常我们也简写成 ctx。在所有的文档中，Context 和 ctx 都是指 Koa 的上下文对象。如下做的是对数据返回的扩展：</p>
+<pre><code>﻿// app/extend/context.js
+module.exports = {
+  returnJson(code,data,msg) {
+    // this 就是 ctx 对象，在其中可以调用 ctx 上的其他方法，或访问属性
+    this.body={code,data,msg};
+    return
+  }
+};
+在 controller 中就可以直接使用这个方法了
+async info() {
+    const userId = this.ctx.query.id;
+    const res = await this.ctx.service.getInfo(userId);
+    this.ctx.returnJson(0, res, &quot;请求成功&quot;);
+}
+</code></pre><h3 id="Request-和-Response-扩展"><a href="#Request-和-Response-扩展" class="headerlink" title="﻿Request 和 Response 扩展"></a>﻿Request 和 Response 扩展</h3><p> ﻿ctx 上的很多属性和方法都被代理到 request 和 response 对象上，对于这些属性和方法使用 ctx 和使用 request 去访问它们是等价的，例如 ctx.url === ctx.request.url、ctx.status === ctx.response.status 。<br> 框架会把 app/extend/request.js 中定义的对象与内置 request 的 prototype 对象进行合并，在处理请求时会基于扩展后的 prototype 生成 request 对象；Response 的扩展和 Request 相同。</p>
+<pre><code>﻿// app/extend/request.js
+module.exports = {
+  get foo() {
+    return this.get(&apos;request-foo&apos;);
+  },
+};
+// app/extend/response.js
+module.exports = {
+  set bar(value) {
+    this.set(&apos;response-bar&apos;, value);
+  },
+};
+</code></pre><h3 id="Helper-扩展"><a href="#Helper-扩展" class="headerlink" title="﻿Helper 扩展"></a>﻿Helper 扩展</h3><p>﻿Helper 函数用来提供一些常用的方法或自定义的方法，可以将项目中用的多的函数封装在成对的函数，并且 Helper 对象可以在 ctx 对象里面访问到。</p>
+<pre><code>﻿// app/extend/helper.js
+module.exports = {
+  foo(param) {
+    // this 是 helper 对象，在其中可以调用其他 helper 方法
+    // this.ctx =&gt; context 对象
+    // this.app =&gt; application 对象
+  },
+};
+</code></pre><h2 id="service-服务层"><a href="#service-服务层" class="headerlink" title="﻿service 服务层"></a>﻿service 服务层</h2><p>﻿service 就是在复杂业务场景下用于做业务逻辑封装的一个抽象层，比如要展现的信息需要从数据库获取，还要经过一定的规则计算，才能返回用户显示。可以将数据逻辑的处理都放在 service 中</p>
+<pre><code>﻿const Service = require(&apos;egg&apos;).Service;
+
+class UserService extends Service {
+  async find(uid) {
+    const user = await app.mysql.get(&apos;db&apos;).query(`select * from user where uid = ${uid}`);
+    return user;
+  }
+}
+module.exports = UserService;
+</code></pre><h2 id="Middleware-中间件"><a href="#Middleware-中间件" class="headerlink" title="﻿Middleware 中间件"></a>﻿Middleware 中间件</h2><p>﻿Egg 的中间件形式和 Koa 的中间件形式是一样的，都是基于洋葱圈模型。约定中间件是一个放置在 app/middleware 目录下的单独文件，它需要 exports 一个普通的 function，接受两个参数：</p>
+<pre><code>options: 中间件的配置项，框架会将 app.config[${middlewareName}] 传递进来。
+app: 当前应用 Application 的实例。
+</code></pre><p>﻿定义一个中间件：</p>
+<pre><code>﻿module.exports = (options,app) =&gt; {
+    return async function checkLogin() {
+        if(!(this.session &amp;&amp; this.session.userid)){
+            this.redirect(&apos;/login&apos;);
+            return;
+        };
+        // 刷新 session 时间
+        this.session.save();
+    };
+}
+</code></pre><p>﻿在应用中，我们可以完全通过配置来加载自定义的中间件，并决定它们的顺序。配置最终将在启动时合并到 app.config.appMiddleware 中。在 config.default.js 中配置如下：</p>
+<pre><code>﻿// 配置需要的中间件，数组顺序即为中间件的加载顺序
+config.middleware= [&apos;checkLogin&apos;];
+
+// 配置 checkLogin 中间件的配置
+config.checkLogin= {
+    // 设置需要忽略检查的路径
+    ignore: &apos;/login&apos;
+};
+</code></pre><p> ﻿利用上述定义的中间件，如下是做的一个简单的登录</p>
+<pre><code>﻿// router.js
+module.exports = app =&gt; {
+    const { router, controller } = app;
+
+    router.get(&apos;/login&apos;, controller.login.index);
+    router.post(&apos;/login/vaild&apos;, controller.login.valid);
+    // 登陆后获取用户名
+    router.get(&apos;/user/admin&apos;, controller.login.userinfo);
+    // 退出登录
+    router.get(&apos;/logout&apos;, controller.login.logout);
+}
+// app/controller/login.js
+module.exports = app =&gt; {
+    class LoginController extends app.Controller {
+
+        async index() {
+                await this.ctx.render(&apos;site/login.html&apos;);
+        }
+
+        async valid() {
+            const name = this.ctx.request.body.username;
+            const pwd = this.ctx.request.body.password;
+            if (!name || !pwd) {
+                // 1表示没有填写
+                this.ctx.returnJson(1,&apos;&apos;,&quot;请填写帐号和密码。&quot;)
+                return;
+            }
+            const user = await app.mysql.get(&apos;db&apos;).query(`select id,username  from user WHERE username= &apos;${name}&apos; AND password =&apos;${pwd}&apos;`);
+            if (user.length != 0) {
+                // 登录成功，下发 session
+                this.ctx.session.username = user[0].username;
+                this.ctx.session.userid = user[0].id;
+                // 设置过期时间为3小时
+                this.ctx.session.maxAge = 3 * 3600 * 1000;
+                // 调用 rotateCsrfSecret 刷新用户的 CSRF token
+                this.ctx.rotateCsrfSecret();
+                this.ctx.returnJson(0, &apos;&apos;, &quot;登录成功&quot;);
+            } else {
+                this.ctx.returnJson(2,&apos;&apos;,&quot;帐号或密码错误&quot;);
+            };
+        }
+
+        async userinfo() {
+            const uid = this.ctx.query.uid;
+            let user = await this.ctx.service.UserService.find(uid)
+            this.ctx.returnJson(0,user ,&quot;操作成功&quot;);
+        }
+
+        async logout() {
+            this.ctx.session = null;
+            this.ctx.redirect(&apos;/login&apos;);
+        }
+    }
+    return LoginController;
+};
+</code></pre><p>在这里面遇到一个坑就是通过 get 请求和 post 请求时，获取参数的方式不一样。</p>
+<pre><code>* 在 get 请求中要通过 this.ctx.query 去获取参数；在 post 请求中是通过 this.ctx.request.body 去获取参数。
+</code></pre><p>﻿这些只是 Eggjs 的一小部分内容，框架还有很多扩展，插件，进程管理等等，接下来会通过自己的学习慢慢总结，有不对的地方还希望各位前辈指出。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/30/zhaojun/hybrid/" rel="prev">移动前端开发中的伪装术</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/07/zhangjihu/浅谈web缓存/" rel="next">浅谈 WEB 缓存</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Egg-js-是什么"><span class="nav-number">1.</span> <span class="nav-text">Egg.js 是什么?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特性"><span class="nav-number">1.1.</span> <span class="nav-text">﻿特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速开始"><span class="nav-number">2.</span> <span class="nav-text">快速开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内置基础对象扩展"><span class="nav-number">3.</span> <span class="nav-text">内置基础对象扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Application-扩展"><span class="nav-number">3.1.</span> <span class="nav-text">Application 扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context-扩展"><span class="nav-number">3.2.</span> <span class="nav-text">﻿Context 扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Request-和-Response-扩展"><span class="nav-number">3.3.</span> <span class="nav-text">﻿Request 和 Response 扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helper-扩展"><span class="nav-number">3.4.</span> <span class="nav-text">﻿Helper 扩展</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service-服务层"><span class="nav-number">4.</span> <span class="nav-text">﻿service 服务层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Middleware-中间件"><span class="nav-number">5.</span> <span class="nav-text">﻿Middleware 中间件</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

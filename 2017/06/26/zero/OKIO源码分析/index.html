@@ -1,0 +1,726 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="java,IO,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要分析了OKIO源码中用到的Timeout，Buffer和设计模式。">
+<meta name="keywords" content="java,IO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OKIO源码分析">
+<meta property="og:url" content="http://xgfe.github.io/2017/06/26/zero/OKIO源码分析/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要分析了OKIO源码中用到的Timeout，Buffer和设计模式。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/zero21ke/pic/master/blog/okio/TimeOut.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zero21ke/pic/master/blog/okio/buffer.jpg">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.403Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OKIO源码分析">
+<meta name="twitter:description" content="本文主要分析了OKIO源码中用到的Timeout，Buffer和设计模式。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zero21ke/pic/master/blog/okio/TimeOut.jpg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> OKIO源码分析 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              OKIO源码分析
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-06-26T00:00:00+08:00" content="2017-06-26">
+            2017-06-26
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zero/" itemprop="url" rel="index">
+                  <span itemprop="name">zero</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/java/" rel="tag"><i class="icon-next-tags"></i>java</a>
+            
+              <a href="/tags/IO/" rel="tag"><i class="icon-next-tags"></i>IO</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要分析了OKIO源码中用到的Timeout，Buffer和设计模式。</p>
+<a id="more"></a>
+<h1 id="AsyncTimeout"><a href="#AsyncTimeout" class="headerlink" title="AsyncTimeout"></a>AsyncTimeout</h1><h2 id="AsyncTimeout源码"><a href="#AsyncTimeout源码" class="headerlink" title="AsyncTimeout源码"></a>AsyncTimeout源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Timeout</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">waitUntilNotified</span><span class="params">(Object monitor)</span> <span class="keyword">throws</span> InterruptedIOException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">boolean</span> hasDeadline = hasDeadline();</span><br><span class="line">      <span class="keyword">long</span> timeoutNanos = timeoutNanos();</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (!hasDeadline &amp;&amp; timeoutNanos == <span class="number">0L</span>) &#123;</span><br><span class="line">        monitor.wait(); <span class="comment">// There is no timeout: wait forever.</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Compute how long we'll wait.</span></span><br><span class="line">      <span class="keyword">long</span> waitNanos;</span><br><span class="line">      <span class="keyword">long</span> start = System.nanoTime();</span><br><span class="line">      <span class="keyword">if</span> (hasDeadline &amp;&amp; timeoutNanos != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">long</span> deadlineNanos = deadlineNanoTime() - start;</span><br><span class="line">        waitNanos = Math.min(timeoutNanos, deadlineNanos);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (hasDeadline) &#123;</span><br><span class="line">        waitNanos = deadlineNanoTime() - start;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        waitNanos = timeoutNanos;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Attempt to wait that long. This will break out early if the monitor is notified.</span></span><br><span class="line">      <span class="keyword">long</span> elapsedNanos = <span class="number">0L</span>;</span><br><span class="line">      <span class="keyword">if</span> (waitNanos &gt; <span class="number">0L</span>) &#123;</span><br><span class="line">        <span class="keyword">long</span> waitMillis = waitNanos / <span class="number">1000000L</span>;</span><br><span class="line">        monitor.wait(waitMillis, (<span class="keyword">int</span>) (waitNanos - waitMillis * <span class="number">1000000L</span>));</span><br><span class="line">        elapsedNanos = System.nanoTime() - start;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Throw if the timeout elapsed before the monitor was notified.</span></span><br><span class="line">      <span class="keyword">if</span> (elapsedNanos &gt;= waitNanos) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InterruptedIOException(<span class="string">"timeout"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> InterruptedIOException(<span class="string">"interrupted"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AsyncTimeout extends Timeout</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> AsyncTimeout head</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> inQueue;<span class="comment">//True if this node is currently in the queue</span></span><br><span class="line"><span class="keyword">private</span> AsyncTimeout next;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">long</span> timeoutAt;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">enter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (inQueue) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unbalanced enter/exit"</span>);</span><br><span class="line">    <span class="keyword">long</span> timeoutNanos = timeoutNanos();</span><br><span class="line">    <span class="keyword">boolean</span> hasDeadline = hasDeadline();</span><br><span class="line">    <span class="keyword">if</span> (timeoutNanos == <span class="number">0</span> &amp;&amp; !hasDeadline) &#123;</span><br><span class="line">      <span class="keyword">return</span>; <span class="comment">// No timeout and no deadline? Don't bother with the queue.</span></span><br><span class="line">    &#125;</span><br><span class="line">    inQueue = <span class="keyword">true</span>;</span><br><span class="line">    scheduleTimeout(<span class="keyword">this</span>, timeoutNanos, hasDeadline);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">scheduleTimeout</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      AsyncTimeout node, <span class="keyword">long</span> timeoutNanos, <span class="keyword">boolean</span> hasDeadline)</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">exit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!inQueue) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    inQueue = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> cancelScheduledTimeout(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>waitUntilNotified：等待Object monitor Timeout时间或者提前被唤醒。</p>
+<h2 id="AsyncTimeout流程图"><a href="#AsyncTimeout流程图" class="headerlink" title="AsyncTimeout流程图"></a>AsyncTimeout流程图</h2><p><img src="https://raw.githubusercontent.com/zero21ke/pic/master/blog/okio/TimeOut.jpg" alt="AsyncTimeout流程图"></p>
+<h1 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h1><h2 id="Segment和SegmentPool"><a href="#Segment和SegmentPool" class="headerlink" title="Segment和SegmentPool"></a>Segment和SegmentPool</h2><h3 id="Segment源码"><a href="#Segment源码" class="headerlink" title="Segment源码"></a>Segment源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Segment</span> </span>&#123;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SIZE = <span class="number">8192</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SHARE_MINIMUM = <span class="number">1024</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">byte</span>[] data;</span><br><span class="line"><span class="keyword">int</span> pos;</span><br><span class="line"><span class="keyword">int</span> limit;</span><br><span class="line"><span class="keyword">boolean</span> shared;</span><br><span class="line"><span class="keyword">boolean</span> owner;</span><br><span class="line">Segment next;</span><br><span class="line">Segment prev;</span><br><span class="line">Segment(Segment shareFrom) &#123;</span><br><span class="line">    <span class="keyword">this</span>(shareFrom.data, shareFrom.pos, shareFrom.limit);</span><br><span class="line">    shareFrom.shared = <span class="keyword">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Segment <span class="title">split</span><span class="params">(<span class="keyword">int</span> byteCount)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (byteCount &lt;= <span class="number">0</span> || byteCount &gt; limit - pos) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    Segment prefix;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// We have two competing performance goals:</span></span><br><span class="line">    <span class="comment">//  - Avoid copying data. We accomplish this by sharing segments.</span></span><br><span class="line">    <span class="comment">//  - Avoid short shared segments. These are bad for performance because they are readonly and</span></span><br><span class="line">    <span class="comment">//    may lead to long chains of short segments.</span></span><br><span class="line">    <span class="comment">// To balance these goals we only share segments when the copy will be large.</span></span><br><span class="line">    <span class="keyword">if</span> (byteCount &gt;= SHARE_MINIMUM) &#123;</span><br><span class="line">      prefix = <span class="keyword">new</span> Segment(<span class="keyword">this</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      prefix = SegmentPool.take();</span><br><span class="line">      System.arraycopy(data, pos, prefix.data, <span class="number">0</span>, byteCount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    prefix.limit = prefix.pos + byteCount;</span><br><span class="line">    pos += byteCount;</span><br><span class="line">    prev.push(prefix);</span><br><span class="line">    <span class="keyword">return</span> prefix;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>Segment是一个双向链表，pos是读操作指针，limit是写操作指针，data是内存array，shared代表data是否与其他Segment共享，owner代表data是否归属于Segment。<br>split：分裂成两个Segment，一个是pos-pos+byteCount另一个是pos+byteCount-limit，分裂时如果byteCount &gt;= SHARE_MINIMUM即分裂生成的Segment的数据量比较大则共享被分裂Segment的data（prefix = new Segment(this)），prefix的limit等于被分裂Segment的pos+byteCount，被分裂Segment的pos=pos+byteCount，分裂生成的Segment插入被分裂Segment的前面。如果byteCount &lt; SHARE_MINIMUM即分裂生成的Segment的数据量比较小则内存copy的代价比较小，从pool中取一个Segment从被分裂Segment copy byteCount到此Segment中。</p>
+<h3 id="SegmentPool源码"><a href="#SegmentPool源码" class="headerlink" title="SegmentPool源码"></a>SegmentPool源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SegmentPool</span> </span>&#123;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> MAX_SIZE = <span class="number">64</span> * <span class="number">1024</span>; <span class="comment">// 64 KiB.</span></span><br><span class="line"><span class="keyword">static</span> Segment next;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">long</span> byteCount;</span><br><span class="line"><span class="function"><span class="keyword">static</span> Segment <span class="title">take</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (SegmentPool.class) &#123;</span><br><span class="line">      <span class="keyword">if</span> (next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Segment result = next;</span><br><span class="line">        next = result.next;</span><br><span class="line">        result.next = <span class="keyword">null</span>;</span><br><span class="line">        byteCount -= Segment.SIZE;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Segment(); <span class="comment">// Pool is empty. Don't zero-fill while holding a lock.</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">recycle</span><span class="params">(Segment segment)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (segment.next != <span class="keyword">null</span> || segment.prev != <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    <span class="keyword">if</span> (segment.shared) <span class="keyword">return</span>; <span class="comment">// This segment cannot be recycled.</span></span><br><span class="line">    <span class="keyword">synchronized</span> (SegmentPool.class) &#123;</span><br><span class="line">      <span class="keyword">if</span> (byteCount + Segment.SIZE &gt; MAX_SIZE) <span class="keyword">return</span>; <span class="comment">// Pool is full.</span></span><br><span class="line">      byteCount += Segment.SIZE;</span><br><span class="line">      segment.next = next;</span><br><span class="line">      segment.pos = segment.limit = <span class="number">0</span>;</span><br><span class="line">      next = segment;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>take从SegmentPool取Segment，recycle回收Segment到pool中，只有未被share过的（即shared == false）才可以被回收。<br>Segment A 被share后，Segment A的shared被赋值true，则即使与Segment A 共享data的Segment都被回收了，在Segment A被回收时，Segment A是不可以放到pool中的，可推断只有owner=true 且 shared=false时才可以放到pool中。   </p>
+<h3 id="Buffer源码"><a href="#Buffer源码" class="headerlink" title="Buffer源码"></a>Buffer源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Buffer</span> <span class="keyword">implements</span> <span class="title">BufferedSource</span>, <span class="title">BufferedSink</span>, <span class="title">Cloneable</span> </span>&#123;  </span><br><span class="line">Segment head; </span><br><span class="line"><span class="keyword">long</span> size;</span><br><span class="line"><span class="function">Segment <span class="title">writableSegment</span><span class="params">(<span class="keyword">int</span> minimumCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (minimumCapacity &lt; <span class="number">1</span> || minimumCapacity &gt; Segment.SIZE) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</span><br><span class="line">      head = SegmentPool.take(); <span class="comment">// Acquire a first segment.</span></span><br><span class="line">      <span class="keyword">return</span> head.next = head.prev = head;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Segment tail = head.prev;</span><br><span class="line">    <span class="keyword">if</span> (tail.limit + minimumCapacity &gt; Segment.SIZE || !tail.owner) &#123;</span><br><span class="line">      tail = tail.push(SegmentPool.take()); <span class="comment">// Append a new empty segment to fill up.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tail;</span><br><span class="line">  &#125;</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">byte</span> <span class="title">readByte</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"size == 0"</span>);</span><br><span class="line"></span><br><span class="line">    Segment segment = head;</span><br><span class="line">    <span class="keyword">int</span> pos = segment.pos;</span><br><span class="line">    <span class="keyword">int</span> limit = segment.limit;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] data = segment.data;</span><br><span class="line">    <span class="keyword">byte</span> b = data[pos++];</span><br><span class="line">    size -= <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pos == limit) &#123;</span><br><span class="line">      head = segment.pop();</span><br><span class="line">      SegmentPool.recycle(segment);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      segment.pos = pos;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">completeSegmentByteCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> result = size;</span><br><span class="line">    <span class="keyword">if</span> (result == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Omit the tail if it's still writable.</span></span><br><span class="line">    Segment tail = head.prev;</span><br><span class="line">    <span class="keyword">if</span> (tail.limit &lt; Segment.SIZE &amp;&amp; tail.owner) &#123;</span><br><span class="line">      result -= tail.limit - tail.pos;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">skip</span><span class="params">(<span class="keyword">long</span> byteCount)</span> <span class="keyword">throws</span> EOFException </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (byteCount &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (head == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> EOFException();</span><br><span class="line"></span><br><span class="line">      <span class="keyword">int</span> toSkip = (<span class="keyword">int</span>) Math.min(byteCount, head.limit - head.pos);</span><br><span class="line">      size -= toSkip;</span><br><span class="line">      byteCount -= toSkip;</span><br><span class="line">      head.pos += toSkip;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (head.pos == head.limit) &#123;</span><br><span class="line">        Segment toRecycle = head;</span><br><span class="line">        head = toRecycle.pop();</span><br><span class="line">        SegmentPool.recycle(toRecycle);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(Buffer source, <span class="keyword">long</span> byteCount)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (source == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"source == null"</span>);</span><br><span class="line">    <span class="keyword">if</span> (source == <span class="keyword">this</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"source == this"</span>);</span><br><span class="line">    checkOffsetAndCount(source.size, <span class="number">0</span>, byteCount);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (byteCount &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (byteCount &lt; (source.head.limit - source.head.pos)) &#123;</span><br><span class="line">        Segment tail = head != <span class="keyword">null</span> ? head.prev : <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (tail != <span class="keyword">null</span> &amp;&amp; tail.owner</span><br><span class="line">            &amp;&amp; (byteCount + tail.limit - (tail.shared ? <span class="number">0</span> : tail.pos) &lt;= Segment.SIZE)) &#123;</span><br><span class="line">          <span class="comment">// Our existing segments are sufficient. Move bytes from source's head to our tail.</span></span><br><span class="line">          source.head.writeTo(tail, (<span class="keyword">int</span>) byteCount);</span><br><span class="line">          source.size -= byteCount;</span><br><span class="line">          size += byteCount;</span><br><span class="line">          <span class="keyword">return</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// We're going to need another segment. Split the source's head</span></span><br><span class="line">          <span class="comment">// segment in two, then move the first of those two to this buffer.</span></span><br><span class="line">          source.head = source.head.split((<span class="keyword">int</span>) byteCount);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Remove the source's head segment and append it to our tail.</span></span><br><span class="line">      Segment segmentToMove = source.head;</span><br><span class="line">      <span class="keyword">long</span> movedByteCount = segmentToMove.limit - segmentToMove.pos;</span><br><span class="line">      source.head = segmentToMove.pop();</span><br><span class="line">      <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</span><br><span class="line">        head = segmentToMove;</span><br><span class="line">        head.next = head.prev = head;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        Segment tail = head.prev;</span><br><span class="line">        tail = tail.push(segmentToMove);</span><br><span class="line">        tail.compact();</span><br><span class="line">      &#125;</span><br><span class="line">      source.size -= movedByteCount;</span><br><span class="line">      size += movedByteCount;</span><br><span class="line">      byteCount -= movedByteCount;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Buffer内存共享结构图"><a href="#Buffer内存共享结构图" class="headerlink" title="Buffer内存共享结构图"></a>Buffer内存共享结构图</h3><p><img src="https://raw.githubusercontent.com/zero21ke/pic/master/blog/okio/buffer.jpg" alt="Buffer内存共享结构图"></p>
+<p>图中方框代表共享的内存byte[] data,不同的Segment共享可以共享data，但是每个Segment维护自己的pos和limit，buffer写操作时会先调用writableSegment。<br>writableSegment内部实现是，取队尾tail看剩余空间是否满足minimumCapacity：</p>
+<ol>
+<li>如果tail剩余空间不满足minimumCapacity，从SegmentPool take Segment插入tail之后</li>
+<li>如果tail剩余空间满足minimumCapacity但是Segment底层的data不归Segment所有（tail.owner==false），从SegmentPool take Segment插入tail之后</li>
+<li>如果tail剩余空间满足minimumCapacity且Segment底层的data归Segment所有（tail.owner==ture），直接写入tail剩余空间</li>
+</ol>
+<p>读操作时从head的pos读起，如果head被读取完了回收head。<br>completeSegmentByteCount:当前已complete的byte数，如果taile的data归taile所属，则很可能还会继续对tail进行写操作所以tail处于未 complete状态，tail前的Segment处于complete状态。<br>skip：从head开始跳过n个字节，跳过的Segment放到pool中。<br>write(Buffer source, long byteCount):从source的head摘取Segment连接到taile之后，当待写入的剩余字节小于source的head且taile不可写（owner==false）时，head做split操作。  </p>
+<h3 id="RealBufferedSink"><a href="#RealBufferedSink" class="headerlink" title="RealBufferedSink"></a>RealBufferedSink</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">RealBufferedSink</span> <span class="keyword">implements</span> <span class="title">BufferedSink</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> Buffer buffer = <span class="keyword">new</span> Buffer();</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> Sink sink;</span><br><span class="line">  <span class="keyword">boolean</span> closed;</span><br><span class="line"><span class="function"><span class="keyword">public</span> BufferedSink <span class="title">emitCompleteSegments</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (closed) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"closed"</span>);</span><br><span class="line">    <span class="keyword">long</span> byteCount = buffer.completeSegmentByteCount();</span><br><span class="line">    <span class="keyword">if</span> (byteCount &gt; <span class="number">0</span>) sink.write(buffer, byteCount);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> BufferedSink <span class="title">writeByte</span><span class="params">(<span class="keyword">int</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (closed) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"closed"</span>);</span><br><span class="line">    buffer.writeByte(b);</span><br><span class="line">    <span class="keyword">return</span> emitCompleteSegments();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>每个写操作都是先写入Buffer中，之后都调用emitCompleteSegments把Buffer中complete Segment写入Sink。</p>
+<h3 id="Pipe"><a href="#Pipe" class="headerlink" title="Pipe"></a>Pipe</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Pipe</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="keyword">long</span> maxBufferSize;</span><br><span class="line">  <span class="keyword">final</span> Buffer buffer = <span class="keyword">new</span> Buffer();</span><br><span class="line">  <span class="keyword">boolean</span> sinkClosed;</span><br><span class="line">  <span class="keyword">boolean</span> sourceClosed;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Sink sink = <span class="keyword">new</span> PipeSink();</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Source source = <span class="keyword">new</span> PipeSource();</span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">PipeSink</span> <span class="keyword">implements</span> <span class="title">Sink</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(Buffer source, <span class="keyword">long</span> byteCount)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (buffer) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sinkClosed) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"closed"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (byteCount &gt; <span class="number">0</span>) &#123;</span><br><span class="line">          <span class="keyword">if</span> (sourceClosed) <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"source is closed"</span>);</span><br><span class="line"></span><br><span class="line">          <span class="keyword">long</span> bufferSpaceAvailable = maxBufferSize - buffer.size();</span><br><span class="line">          <span class="keyword">if</span> (bufferSpaceAvailable == <span class="number">0</span>) &#123;</span><br><span class="line">            timeout.waitUntilNotified(buffer); <span class="comment">// Wait until the source drains the buffer.</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">long</span> bytesToWrite = Math.min(bufferSpaceAvailable, byteCount);</span><br><span class="line">          buffer.write(source, bytesToWrite);</span><br><span class="line">          byteCount -= bytesToWrite;</span><br><span class="line">          buffer.notifyAll(); <span class="comment">// Notify the source that it can resume reading.</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">PipeSource</span> <span class="keyword">implements</span> <span class="title">Source</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">read</span><span class="params">(Buffer sink, <span class="keyword">long</span> byteCount)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (buffer) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sourceClosed) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"closed"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (buffer.size() == <span class="number">0</span>) &#123;</span><br><span class="line">          <span class="keyword">if</span> (sinkClosed) <span class="keyword">return</span> -<span class="number">1L</span>;</span><br><span class="line">          timeout.waitUntilNotified(buffer); <span class="comment">// Wait until the sink fills the buffer.</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> result = buffer.read(sink, byteCount);</span><br><span class="line">        buffer.notifyAll(); <span class="comment">// Notify the sink that it can resume writing.</span></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>PipeSink负责向Buffer写，PipeSource负责从Buffer读，读写操作需要用synchronized (buffer)进行同步，Pipe满时调用timeout.waitUntilNotified(buffer)，PipeSink写线程会等待buffer对象timeout设置的时间，如果timeout到时抛出InterruptedIOException，Pipe空时PipeSource读线程会调用timeout.waitUntilNotified(buffer)，读线程会等待buffer对象timeout设置的时间，如果timeout到时抛出InterruptedIOException。</p>
+<h1 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h1><h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2><p>为Sink增加压缩功能的DeflaterSink<br>为Sink增加Gzip压缩功能的GzipSink<br>为Sink增加hash计算功能的HashingSink<br>为Sink增加buffer功能的RealBufferedSink</p>
+<h2 id="对象适配器模式"><a href="#对象适配器模式" class="headerlink" title="对象适配器模式"></a>对象适配器模式</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">RealBufferedSink</span> <span class="keyword">implements</span> <span class="title">BufferedSink</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> OutputStream <span class="title">outputStream</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> OutputStream() &#123;</span><br><span class="line">      <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (closed) <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"closed"</span>);</span><br><span class="line">        buffer.writeByte((<span class="keyword">byte</span>) b);</span><br><span class="line">        emitCompleteSegments();</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<p>把RealBufferedSink对象适配成OutputStream</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/26/zero/Looper和Handler和HandlerThread/" rel="prev">Looper和Handler和HandlerThread</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/22/lulutia/reactnative01/" rel="next">React Native 学习系列一</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AsyncTimeout"><span class="nav-number">1.</span> <span class="nav-text">AsyncTimeout</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTimeout源码"><span class="nav-number">1.1.</span> <span class="nav-text">AsyncTimeout源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTimeout流程图"><span class="nav-number">1.2.</span> <span class="nav-text">AsyncTimeout流程图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Buffer"><span class="nav-number">2.</span> <span class="nav-text">Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Segment和SegmentPool"><span class="nav-number">2.1.</span> <span class="nav-text">Segment和SegmentPool</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Segment源码"><span class="nav-number">2.1.1.</span> <span class="nav-text">Segment源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SegmentPool源码"><span class="nav-number">2.1.2.</span> <span class="nav-text">SegmentPool源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer源码"><span class="nav-number">2.1.3.</span> <span class="nav-text">Buffer源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer内存共享结构图"><span class="nav-number">2.1.4.</span> <span class="nav-text">Buffer内存共享结构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RealBufferedSink"><span class="nav-number">2.1.5.</span> <span class="nav-text">RealBufferedSink</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipe"><span class="nav-number">2.1.6.</span> <span class="nav-text">Pipe</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设计模式"><span class="nav-number">3.</span> <span class="nav-text">设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰器模式"><span class="nav-number">3.1.</span> <span class="nav-text">装饰器模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象适配器模式"><span class="nav-number">3.2.</span> <span class="nav-text">对象适配器模式</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

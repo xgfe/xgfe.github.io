@@ -1,0 +1,899 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="React Native,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文是React Native学习系列的第一篇，主要介绍了React Native产生的背景、环境搭建、文件结构及如何使用Flex布局进行样式搭建。">
+<meta name="keywords" content="React Native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native 学习系列一">
+<meta property="og:url" content="http://xgfe.github.io/2017/06/22/lulutia/reactnative01/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文是React Native学习系列的第一篇，主要介绍了React Native产生的背景、环境搭建、文件结构及如何使用Flex布局进行样式搭建。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/structure.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/code.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/flex.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/flexdirection.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/wrap.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/justifyContent.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/alignItems.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/cover.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/contain.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/stretch.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/repeat.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/center.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/text.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.386Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native 学习系列一">
+<meta name="twitter:description" content="本文是React Native学习系列的第一篇，主要介绍了React Native产生的背景、环境搭建、文件结构及如何使用Flex布局进行样式搭建。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/structure.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> React Native 学习系列一 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              React Native 学习系列一
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-06-22T21:12:00+08:00" content="2017-06-22">
+            2017-06-22
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lulutia/" itemprop="url" rel="index">
+                  <span itemprop="name">lulutia</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/React-Native/" rel="tag"><i class="icon-next-tags"></i>React Native</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文是React Native学习系列的第一篇，主要介绍了React Native产生的背景、环境搭建、文件结构及如何使用Flex布局进行样式搭建。</p>
+<a id="more"></a>
+<h4 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h4><ul>
+<li>创造者: Facebook</li>
+<li>时间: React.js Conf 2015 上发布，9月推出Android版本</li>
+<li>使用范围: 用于开发<strong>iOS和Android</strong>原生应用</li>
+<li>设计理念: 既拥有Native的<strong>用户体验</strong>、又保留React的<strong>开发效率</strong></li>
+<li>产生原因:<ul>
+<li>Native的原生控件有更好的体验，有更好的手势识别，有更合适的线程模型，能实现更精细的动画</li>
+<li>Native开发成本高</li>
+</ul>
+</li>
+<li>发展趋势: 开源不到1周github上star破万</li>
+<li>基本特点:<ul>
+<li>Learn once, write anywhere<ul>
+<li>用React.js抽象操作系统的原生UI组件，继而代替DOM元素来渲染</li>
+</ul>
+</li>
+<li>具备流畅和反应灵敏的优势<ul>
+<li>在后台，React Native运行在主线程之外，而在另一个专门的后台线程里运行JavaScript引擎，两个线程之间通过异步消息协议来通信。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对应技术栈<ul>
+<li>JSX vs HTML</li>
+<li>CSS-layout vs css</li>
+<li>ECMAScript 6 vs ECMAScript 5</li>
+<li>React Native View vs DOM</li>
+</ul>
+</li>
+</ul>
+<h4 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h4><ul>
+<li>按照React Native官方文档搭建环境<ul>
+<li><a href="http://facebook.github.io/react-native/docs/getting-started.html" target="_blank" rel="noopener">英文版</a>搭建流程</li>
+<li><a href="http://reactnative.cn/docs/0.46/getting-started.html" target="_blank" rel="noopener">中文版</a>搭建流程</li>
+<li>模拟器推荐使用<a href="https://www.genymotion.com/" target="_blank" rel="noopener">Genymotion</a>。</li>
+</ul>
+</li>
+<li>安装过程中可能出现的问题<ul>
+<li>$ANDROIDNDK 和 $ANDROIDHOME 没有正确设置: <ul>
+<li>解决办法：vi .bashrc和.bash_profile 加上 /usr/local/opt/android-ndk和/usr/local/opt/android-sdk,并且source一下这两个文件，然后eoch下上述两个变量是否已经存在。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="http://reactnative.cn/docs/0.41/running-on-device-android.html#content" target="_blank" rel="noopener">真机调试</a><ul>
+<li>注意iOS系统真机调试需要有开发者账号</li>
+<li>可能有些机型无法用这种方式进行(比如小米4C)，可以手动安装</li>
+</ul>
+</li>
+</ul>
+<h4 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h4><ul>
+<li>文件结构</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/structure.png" alt="文件结构"></p>
+<ul>
+<li>代码结构<ul>
+<li>7-13: 引入需要用到的模块</li>
+<li>15-32: 本组件的渲染逻辑</li>
+<li>34-51: 样式定义</li>
+<li>53: AppRegistry是JS运行所有React Native应用的入口，应用的根组件应当通过AppRegistry.registerComponent方法注册自己，然后原生系统才可以加载应用的代码包并且在启动完成之后通过调用AppRegistry.runApplication来真正运行应用</li>
+<li>样式定义可以单独提出作为一个模块，甚至组件的具体实现也可以和应用注册分离开来</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/code.png" alt="代码结构"></p>
+<h4 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h4><ul>
+<li>React Native中用JS来写样式</li>
+<li>所有的核心组件都接受名为style的属性。这些样式名基本上是遵循了web上的CSS的命名，只是按照JS的语法要求使用了驼峰命名法</li>
+<li>style属性可以是一个普通的JavaScript对象，也可以是一个数组，在数组中位置居后的样式对象比居前的优先级更高</li>
+<li><a href="http://reactnative.cn/docs/0.41/text.html#style" target="_blank" rel="noopener">Text样式</a></li>
+<li><a href="http://reactnative.cn/docs/0.41/view.html#style" target="_blank" rel="noopener">View样式</a></li>
+<li>最简单的调试方法: 当错误的书写了样式属性时，应用会抛出一个warning，在这个warning里面会列出当前元素所有可使用的样式</li>
+<li>实际开发中组件的样式会越来越复杂，官方建议使用StyleSheet.create来集中定义组件的样式。StyleSheet提供了一种类似CSS样式表的抽象，相比于plain object，其主要有以下优势<ul>
+<li>代码质量:<ul>
+<li>移除了render里面的具体样式内容，使代码组织更加合理</li>
+<li>给样式命名可以对render函数中的原始组件进行一种作用标记</li>
+</ul>
+</li>
+<li>性能角度:<ul>
+<li>创建一个样式表，就可以使得我们后续更容易通过ID来引用样式，而不是每次都创建一个新的对象</li>
+<li>它还使得样式只会在JavaScript和原生之间传递一次，随后的过程都可以只传递一个ID(现在还没实现)</li>
+</ul>
+</li>
+<li>因此，如果我们直接打印styles.xxx，我们只会得到一个number，要使用StyleSheet.flatten(styles.xxx)才能得到具体内容</li>
+</ul>
+</li>
+</ul>
+<h4 id="Flex布局"><a href="#Flex布局" class="headerlink" title="Flex布局"></a>Flex布局</h4><ul>
+<li>在React Native中布局采用的是FleBox(弹性框)进行布局</li>
+<li>Flex布局主要思想是让容器有能力让其子项目能够改变其宽度、高度(甚至顺序)，以最佳方式填充可用空间(主要是为了适应所有类型的显示设备和屏幕大小)</li>
+</ul>
+<p>像素无关</p>
+<ul>
+<li><p>React Native中的尺寸都是无单位的，表示的是与设备像素密度无关的逻辑像素点</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;View style=&#123; &#123;<span class="attr">width</span>:<span class="number">100</span>,<span class="attr">height</span>:<span class="number">100</span>,<span class="attr">margin</span>:<span class="number">40</span>,<span class="attr">backgroundColor</span>:<span class="string">'gray'</span>&#125;&#125;&gt;</span><br><span class="line">      &lt;Text style=&#123; &#123;<span class="attr">fontSize</span>:<span class="number">16</span>,<span class="attr">margin</span>:<span class="number">20</span>&#125;&#125;&gt;尺寸&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>View&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上面的例子，运行在Android上时，View的长和宽被解释成100dp 其单位是dp，字体被解释成16sp 其单位是sp，运行在iOS上时尺寸单位被解释称了pt，这些单位确保了布局在任何不同dpi的手机屏幕上显示不会发生改变。如果希望获取实际的像素尺寸，则需要使用尺寸 * pixelRatio。<a href="https://facebook.github.io/react-native/docs/pixelratio.html" target="_blank" rel="noopener">pixelRatio使用</a></p>
+</li>
+</ul>
+<p>React Native中的FlexBox 和Web CSS中的FlexBox不全相同</p>
+<ul>
+<li>flexDirection: React Native中默认为flexDirection:’column’，在Web CSS中默认为flex-direction:’row’</li>
+<li>alignItems: React Native中默认为alignItems:’stretch’，在Web CSS中默认align-items:’flex-start’</li>
+<li>flexWrap: React Native中没有wrap-reverse，在Web CSS中有</li>
+<li>flex: 相比Web CSS的flex接受多参数，如:flex: 2 2 10%;，但在 React Native中flex只接受一个参数</li>
+<li>不支持属性：align-content，flex-flow等</li>
+</ul>
+<p>Flex基本知识[基于RN]<br>  <img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/flex.png" alt="flex基本概念"></p>
+<ul>
+<li><p>父容器属性</p>
+<ul>
+<li>flexDirection属性定义了父视图中的子元素沿横轴或侧轴方片的排列方式，默认为column: ‘row’, ‘column’,’row-reverse’,’column-reverse’</li>
+</ul>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/flexdirection.png" alt="flexDirection"></p>
+<ul>
+<li>flexWrap属性定义了子元素在父视图内是否允许多行排列，默认为nowrap: ‘wrap’, ‘nowrap’</li>
+</ul>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/wrap.png" alt="flexWrap"></p>
+<ul>
+<li>justifyContent属性定义了浏览器如何分配顺着父容器主轴的弹性（flex）元素之间及其周围的空间，默认为flex-start: ‘flex-start’, ‘flex-end’, ‘center’, ‘space-between’, ‘space-around’</li>
+</ul>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/justifyContent.png" alt="justifyContent"></p>
+<ul>
+<li>alignItems属性以与justify-content相同的方式在侧轴方向上将当前行上的弹性元素对齐，默认为stretch: ‘flex-start’, ‘flex-end’, ‘center’, ‘stretch’。这里需要注意，当选择stretch时，侧轴上的元素不能有固定的size，否则无效</li>
+</ul>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/alignItems.png" alt="alignItems"></p>
+</li>
+<li><p>子容器属性</p>
+<ul>
+<li>alignSelf决定了元素在父元素的次轴方向的排列方式（此样式设置在子元素上），其值会覆盖父元素的alignItems的值，默认auto: ‘auto’, ‘flex-start’, ‘flex-end’, ‘center’, ‘stretch’</li>
+</ul>
+</li>
+<li>flex 属性定义了一个可伸缩元素的能力，默认为0</li>
+<li>视图边框: border[Bottom/Top/Left/Right]Width，borderColor等</li>
+<li>尺寸: width，height</li>
+<li>外边距: margin[Bottom/Top/Left/Right/Horizontal/Vertical]等</li>
+<li>内边距: padding[Bottom/Top/Left/Right/Horizontal/Vertical]等</li>
+<li>边缘: left，right，top，bottom等</li>
+<li>定位: absolute，relative</li>
+<li><a href="https://reactnative.cn/docs/0.39/layout-props.html" target="_blank" rel="noopener">更多参考</a></li>
+</ul>
+<p>图片布局</p>
+<ul>
+<li><p>图片有一个stretchMode. 通过Image.resizeMode访问，其主要有以下几种模式(默认采用cover模式):</p>
+<ul>
+<li><p>cover: 在保持图片宽高比的前提下缩放图片，直到宽度和高度都大于等于容器视图的尺寸（如果容器有padding内衬的话，则相应减去）。这样图片完全覆盖甚至超出容器，容器中不留任何空白<br><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/cover.png" alt="cover"></p>
+</li>
+<li><p>contain: 在保持图片宽高比的前提下缩放图片，直到宽度和高度都小于等于容器视图的尺寸（如果容器有padding内衬的话，则相应减去）。这样图片完全被包裹在容器中，容器中可能留有空白</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/contain.png" alt="contain"></p>
+<ul>
+<li>stretch: 拉伸图片且不维持宽高比，直到宽高都刚好填满容器</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/stretch.png" alt="stretch"></p>
+<ul>
+<li>repeat: 重复平铺图片直到填满容器。图片会维持原始尺寸。仅iOS可用，android使用会报错</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/repeat.png" alt="repeat"></p>
+<ul>
+<li>center: 居中不拉伸</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/center.png" alt="center"></p>
+</li>
+</ul>
+<p>文本元素  </p>
+<ul>
+<li>文本可嵌套</li>
+<li><p><text>元素在布局上不同于其它组件：在Text内部的元素不再使用flexbox布局，而是采用文本布局。这意味着<text>内部的元素不再是一个个矩形，而可能会在行末进行折叠</text></text></p>
+<p><img src="https://raw.githubusercontent.com/lulutia/images/master/ReactNative/one/text.png" alt="文本布局">  </p>
+</li>
+<li>你必须把你的文本节点放在<text>组件内。你不能直接在<view>下放置一段文本</view></text></li>
+<li>不能直接设置一整颗子树的默认样式。使用一个一致的文本和尺寸的推荐方式是创建一个包含相关样式的组件MyAppText，然后在你的App中反复使用它</li>
+<li>文本标签的子树还是可以继承的，继承父元素的样式</li>
+<li>通过numberOfLines={}可以实现文字截断效果</li>
+<li>注意ios和android的默认文字样式是不一样的，主要是fontSize和color的不同。</li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
+<li><a href="https://code.facebook.com/posts/1014532261909640/react-native-bringing-modern-web-techniques-to-mobile/" target="_blank" rel="noopener">React Native: Bringing modern web techniques to mobile</a></li>
+<li><a href="http://www.jianshu.com/p/1e990aac7836" target="_blank" rel="noopener">基于Facebook Buck改造Android构建系统之初体验</a></li>
+<li><a href="https://github.com/amfe/article/issues/32" target="_blank" rel="noopener">flow——A static type checker for javascript</a></li>
+<li><a href="https://git-scm.com/book/zh/v1/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git%E5%B1%9E%E6%80%A7" target="_blank" rel="noopener">自定义 Git - Git属性</a></li>
+<li><a href="http://reactnative.cn/docs/0.36/appregistry.html" target="_blank" rel="noopener">AppRegistry</a></li>
+<li><a href="https://github.com/crazycodeboy/RNStudyNotes/blob/master/React%20Native%E5%B8%83%E5%B1%80/React%20Native%E5%B8%83%E5%B1%80%E8%AF%A6%E7%BB%86%E6%8C%87%E5%8D%97/React%20Native%E5%B8%83%E5%B1%80%E8%AF%A6%E7%BB%86%E6%8C%87%E5%8D%97.md" target="_blank" rel="noopener">React Native布局详细指南</a></li>
+<li><a href="http://weibo.com/1712131295/CoRnElNkZ?ref=collection&amp;type=comment#_rnd1486356368337" target="_blank" rel="noopener">flex布局示意图</a></li>
+<li><a href="https://segmentfault.com/a/1190000002658374" target="_blank" rel="noopener">react-native 之布局篇</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/26/zero/OKIO源码分析/" rel="prev">OKIO源码分析</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/27/shsoul/SDWebImage源码解读/" rel="next">SDWebImage源码解读</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#环境配置"><span class="nav-number">2.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构"><span class="nav-number">3.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#样式"><span class="nav-number">4.</span> <span class="nav-text">样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Flex布局"><span class="nav-number">5.</span> <span class="nav-text">Flex布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

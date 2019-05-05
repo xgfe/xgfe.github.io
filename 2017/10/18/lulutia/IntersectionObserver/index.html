@@ -1,0 +1,763 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="data,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要介绍了IntersectionObserver API，并且就如何将其用于数据埋点给出了尝试。">
+<meta name="keywords" content="data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于IntersectionObserver的曝光统计测试">
+<meta property="og:url" content="http://xgfe.github.io/2017/10/18/lulutia/IntersectionObserver/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要介绍了IntersectionObserver API，并且就如何将其用于数据埋点给出了尝试。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/IntersectionObserver.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/intersectionObject.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/dataResult.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.384Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于IntersectionObserver的曝光统计测试">
+<meta name="twitter:description" content="本文主要介绍了IntersectionObserver API，并且就如何将其用于数据埋点给出了尝试。">
+<meta name="twitter:image" content="http://okzzg7ifm.bkt.clouddn.com/IntersectionObserver.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 基于IntersectionObserver的曝光统计测试 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              基于IntersectionObserver的曝光统计测试
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-10-18T17:23:00+08:00" content="2017-10-18">
+            2017-10-18
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lulutia/" itemprop="url" rel="index">
+                  <span itemprop="name">lulutia</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/data/" rel="tag"><i class="icon-next-tags"></i>data</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要介绍了IntersectionObserver API，并且就如何将其用于数据埋点给出了尝试。</p>
+<a id="more"></a>
+<h4 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h4><p>  作为一款产品，往往希望能得到用户的反馈，从而通过对用户行为的分析进行功能、交互等方方面面的改进。然而直接的一对一的用户交流是低效且困难的，因此最普遍的做法便是通过数据埋点来反推用户的行为。那么数据埋点中很重要的一环便是：曝光。<br>  所谓曝光，便是页面被展示的时候进行打点。举个简单的例子：用户进入分类页面，商品以行为单位从上而下进行排列。当用户滚动页面时，之前不在视窗范围内的商品就会出现，此时，这部分商品就算曝光了。需要进行一次记录。<br>  那么为了实现上面功能，最普遍的做法有两个。其一：跟踪滚动事件，然后计算某个商品与视窗的相对位置，从而判断是否可见。其二：维持一个timer，然后以固定的时间为间隔计算某个商品与视窗的相对位置。<br>  上面两种做法在某种程度上能够实现我们的目的，但是会有一些问题，比如最明显的：慢。因为计算相对位置时会调用getBoundingClientRect()，这个操作会导致浏览器进行全页面的重新布局，不用我说，大家都知道这个性能开销是很大的，特别是在频繁进行时。除此之外，如果页面是作为一个iframe包裹的也会产生问题，因为同源策略和浏览器不会允许你获取包裹iframe的页面的数据。然而在现有情况下，很多广告都是通过iframe的形式镶嵌在网页内的。<br>  基于以上的情况，我们急需一种性能良好且iframe友好的方式来实现曝光的功能，因此IntersectionObserver API进入了我们的视野。</p>
+<h4 id="IntersectionObserver-API介绍"><a href="#IntersectionObserver-API介绍" class="headerlink" title="IntersectionObserver API介绍"></a>IntersectionObserver API介绍</h4><p>关于IntersectionObserver API的官方文档<a href="https://w3c.github.io/IntersectionObserver/" target="_blank" rel="noopener">见此</a>。截止本文为止，其兼容性如下图所示:<br><img src="http://okzzg7ifm.bkt.clouddn.com/IntersectionObserver.png" alt="API 兼容性">简单的说IntersectionObserver让你知道什么时候observe的元素进入或者存在在root区域里了。下面我们来看下这个API的具体内容:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用构造函数生成观察者实例，回调函数是必须的，后面的配置对象是可选的</span></span><br><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> IntersectionObserver(<span class="function"><span class="params">changes</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> change <span class="keyword">of</span> changes) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(change.time);               <span class="comment">// 相交发生时经过的时间</span></span><br><span class="line">    <span class="built_in">console</span>.log(change.rootBounds);         <span class="comment">// 表示发生相交时根元素可见区域的矩形信息，是一个对象值</span></span><br><span class="line">    <span class="built_in">console</span>.log(change.boundingClientRect); <span class="comment">// target.boundingClientRect()发生相交时目标元素的矩形信息，也是个对象值</span></span><br><span class="line">    <span class="built_in">console</span>.log(change.intersectionRect);   <span class="comment">// 根元素与目标元素相交时的矩形信息</span></span><br><span class="line">    <span class="built_in">console</span>.log(change.intersectionRatio);  <span class="comment">// 表示相交区域占目标区域的百分比，是一个0到1的值</span></span><br><span class="line">    <span class="built_in">console</span>.log(change.target);             <span class="comment">// 相交发生时的目标元素</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123;</span><br><span class="line">	root: <span class="literal">null</span>,</span><br><span class="line">  	threshold: [<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>],</span><br><span class="line">  	rootMargin: <span class="string">"50px"</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实例属性</span></span><br><span class="line">observer.root</span><br><span class="line"></span><br><span class="line">observer.rootMargin</span><br><span class="line"></span><br><span class="line">observer.thresholds</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实例方法</span></span><br><span class="line">observer.observe(target); <span class="comment">// 观察针对某个特定元素的相交事件</span></span><br><span class="line"></span><br><span class="line">observer.unobserve(target); <span class="comment">// 停止对某个特定元素的相交事件的观察</span></span><br><span class="line"></span><br><span class="line">observer.disconnect(); <span class="comment">// 停止对所有目标元素的阈值事件的观察，简单的说就是停用整个IntersectionObserver</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 除了上面三个实例方法，还有一个takeRecords()的方法，之后会详细介绍</span></span><br></pre></td></tr></table></figure>
+<p>IntersectionObserver API允许开发人员了解目标dom元素相对于intersection root的可见性。这个root可以通过实例属性获取。默认情况下它为null，此时它不是真正意义上的元素，它指视窗范围，因此只要视窗范围内的目标元素(当然是后代元素)滚入视窗时，就会触发回调函数[如果root元素不存在了，则执行其任何的observe都会出错]。下面举个栗子:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			#target &#123;</span></span><br><span class="line"><span class="string">			   position: relative;</span></span><br><span class="line"><span class="string">			   top: calc(100vh + 500px);</span></span><br><span class="line"><span class="string">			   width: 100px;</span></span><br><span class="line"><span class="string">			   height: 100px;</span></span><br><span class="line"><span class="string">			   background: red;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>target<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  		console.log(entries);</span></span><br><span class="line"><span class="string">			  &#125;</span></span><br><span class="line"><span class="string">			);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">			ele.observe(target);</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面的栗子中，当红色的块滚入滚出视窗，都会触发回调函数，回调函数在调用时会传入一个由IntersectionObserverEntry 对象组成的数组。每个IntersectionObserverEntry 对象包含对应的observed元素的更新信息，大概数据结构如下，其具体意思在第一段代码里有详细说明:<br><img src="http://okzzg7ifm.bkt.clouddn.com/intersectionObject.png" alt=""><br>我们可以在配置对象中将root改为具体的元素，此时当目标元素出现在root元素中时会触发回调，注意，在这种情况下相交可能发生在视窗下面。具体代码在下，感兴趣的孩子可以试一下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			#root &#123;</span></span><br><span class="line"><span class="string">				position: relative;</span></span><br><span class="line"><span class="string">				width: 400px;</span></span><br><span class="line"><span class="string">				height: calc(100vh + 200px);</span></span><br><span class="line"><span class="string">				background: lightblue;</span></span><br><span class="line"><span class="string">				overflow: scroll;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">			#target &#123;</span></span><br><span class="line"><span class="string">			   position: absolute;</span></span><br><span class="line"><span class="string">			   top: calc(100vh + 800px);</span></span><br><span class="line"><span class="string">			   width: 100px;</span></span><br><span class="line"><span class="string">			   height: 100px;</span></span><br><span class="line"><span class="string">			   background: red;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>root<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			&lt;div id="</span>target<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  		console.log(entries);</span></span><br><span class="line"><span class="string">			  &#125;, &#123;</span></span><br><span class="line"><span class="string">			  	root: root</span></span><br><span class="line"><span class="string">			  &#125;</span></span><br><span class="line"><span class="string">			);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">			ele.observe(target);</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在上面一条中，回调函数打印出来的对象中有一个intersectionRatio值，这个值其实涉及到了整个API的核心功能：当目标元素和根元素相交的面积占目标元素面积的百分比到达或跨过某些指定的临界值时就会触发回调函数。因此相对的在配置对象里有一个threshold来对这个百分比进行配置，默认情况下这个值是[0]，注意里面的值不能在0-1之外，否则会报错。我们举个栗子如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">let</span> ele = <span class="keyword">new</span> IntersectionObserver(</span><br><span class="line">	(entries) =&gt; &#123;</span><br><span class="line">  		<span class="built_in">console</span>.log(entries);</span><br><span class="line">  &#125;, &#123;</span><br><span class="line">  	threshold: [<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1.0</span>]</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">ele.observe(target);</span><br></pre></td></tr></table></figure>
+<p>在上面这个栗子中，我们设定了0，0.5，1.0这三个值，因此当交叉区域跨越0，0.5，1.0时都会触发回调函数。注意我这边的用词是跨越，而不是到达。因为会存在以下两种情况导致回调打印出来的intersectionRatio不为0，0.5和1.0.<br>其一： 浏览器对相交的检测是有时间间隔的。浏览器的渲染工作都是以帧为单位的，而IntersectionObserver是发生在帧里面的。因此假如你设定了[0,0.1,0.2,0.3,0.4,0.5]这个threshold，但是你的滚动过程特别快，导致所有的绘制在一帧里面结束了，此时回调只会挑最近的临界值触发一次。<br>其二： IntersectionObserver是异步的。在浏览器内部，当一个观察者实例观察到众多的相交行为时，它不会立即执行。关于IntersectionObserver的草案里面写明了其实现是基于requestIdleCallback()来异步的执行我们的回调函数的，并且规定了最大的延迟时间是100ms。关于这部分涉及到前面第一段代码里的一个实例方法takeRecords()。如果你很迫切的希望马上知道是否有相交，你不希望等待可能的100ms，此时你就能调用takeRecords()，此后你能马上获得包含IntersectionObserverEntry 对象的数组，里面有相交信息，如果没有任何相交行为发生，则返回一个空数组。但这个方法与正常的异步回调是互斥的，如果它先执行了则正常回调里面就没信息了，反之亦然。<br>除开上面的问题，如果目标元素的面积为0会产生什么情况呢？因为与0计算相交率是没有意义的，实际我们举个栗子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			#target &#123;</span></span><br><span class="line"><span class="string">			   position: relative;</span></span><br><span class="line"><span class="string">			   top: calc(100vh + 500px);</span></span><br><span class="line"><span class="string">			   width: 100px;</span></span><br><span class="line"><span class="string">			   height: 100px;</span></span><br><span class="line"><span class="string">			   background: red;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>target<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>img<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  		console.log(entries);</span></span><br><span class="line"><span class="string">			  &#125;, &#123;</span></span><br><span class="line"><span class="string">			  	threshold: [0, 0.5, 1.0]</span></span><br><span class="line"><span class="string">			  &#125;</span></span><br><span class="line"><span class="string">			);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">			ele.observe(img);</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们会看到，虽然我们设定了0.5这个阈值，但实际回调只会在0与1.0时触发。这是一种特殊的处理方式。</p>
+<p>上面我们讨论了整个API的核心功能，实际其内部遵循的逻辑如下: 每个观察者实例为所有的目标元素都维护着上次的相交率(previousThreshold)，在新执行Observe的时候会将previousThreshold置为0，之后每次检测到满足threshold的相交率，并且与previousThreshold不同，那么就会触发回调并将previousThreshold重置为这个新值。那么这里可能会有下面几个问题：<br>其一：既然初始值是0，如果阈值设置为0，且刚刚满足滚动到0的位置，回调还会触发吗？实际是会的，这是一种特例，与目标元素在根元素内部(此时相交率为1)滚动到刚刚要超出的位置依然会触发回调函数一样。但是这种情况可能导致一个问题，我们无法直接用intersectionRatio&gt;0来判断目标是否滚入了根元素，因为在慢速滚动下，当目标元素的上边与根元素的下边相交时，此时intersectionRatio=0并且触发了回调，之后当intersectionRatio&gt;0时并不会触发回调了(这里排除还有其他自定义阈值的情况)。这种情况下，可以自定义一个变量值来存展示状态，或者也可以定义一个无限接近0的threshold.<br>其二：如果一个元素初始化就在根元素内部了，然后再执行observe，依然会触发回调吗？会的，因为初始值默认为0，在下一次检测时更新为了实际的相交值。</p>
+<p>这里需要强调一点的是，我们的目标元素在Observe的时候可以不存在的[注意这里的不存在是指没有插入dom结构，但是元素本身是需要存在的]，只需要在相交发生时存在就行了，我们来举个栗子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			#target &#123;</span></span><br><span class="line"><span class="string">			   position: relative;</span></span><br><span class="line"><span class="string">			   top: calc(100vh + 500px);</span></span><br><span class="line"><span class="string">			   width: 100px;</span></span><br><span class="line"><span class="string">			   height: 100px;</span></span><br><span class="line"><span class="string">			   background: red;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>target<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  		console.log(entries);</span></span><br><span class="line"><span class="string">			  &#125;, &#123;</span></span><br><span class="line"><span class="string">			  	threshold: [0, 0.5, 1.0]</span></span><br><span class="line"><span class="string">			  &#125;</span></span><br><span class="line"><span class="string">			);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">			let img = document.createElement('div');</span></span><br><span class="line"><span class="string">			ele.observe(img);</span></span><br><span class="line"><span class="string">			setTimeout(() =&gt; &#123;</span></span><br><span class="line"><span class="string">				document.body.appendChild(img);</span></span><br><span class="line"><span class="string">			&#125;, 5000);</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>同理，如果目标元素与根元素处于相交状态，但是在一段时间后目标元素不存在了(比如remove，或者display:none)了，那么此时依然会触发一次回调。但是如果本身就不处于相交状态，然后消失掉了，因为0-&gt;0没有变化，所以不会触发回调，具体如下面的栗子所示：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			#target &#123;</span></span><br><span class="line"><span class="string">			   position: relative;</span></span><br><span class="line"><span class="string">			   top: calc(100vh + 500px);</span></span><br><span class="line"><span class="string">			   width: 100px;</span></span><br><span class="line"><span class="string">			   height: 100px;</span></span><br><span class="line"><span class="string">			   background: red;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>target<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  		console.log(entries);</span></span><br><span class="line"><span class="string">			  &#125;</span></span><br><span class="line"><span class="string">			);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">			ele.observe(target);</span></span><br><span class="line"><span class="string">			setTimeout(() =&gt; &#123;</span></span><br><span class="line"><span class="string">				document.body.removeChild(target);</span></span><br><span class="line"><span class="string">			&#125;, 5000);</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="IntersectionObserver-API与iframe"><a href="#IntersectionObserver-API与iframe" class="headerlink" title="IntersectionObserver API与iframe"></a>IntersectionObserver API与iframe</h4><p>互联网上的很多小广告都是通过iframe嵌入的，而上面我们也说了现有的情况下很难获取iframe在顶层视窗内的曝光，但是使用IntersectionObserver API我们却可以做到这点。下面举个栗子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			#root &#123;</span></span><br><span class="line"><span class="string">			   position: relative;</span></span><br><span class="line"><span class="string">			   top: calc(100vh + 800px);</span></span><br><span class="line"><span class="string">			   width: 100px;</span></span><br><span class="line"><span class="string">			   height: 100px;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">			#iframe &#123;</span></span><br><span class="line"><span class="string">				width: 600px;</span></span><br><span class="line"><span class="string">				height: 600px;</span></span><br><span class="line"><span class="string">				margin-bottom: 300px;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>root<span class="string">"&gt;</span></span><br><span class="line"><span class="string">  			&lt;iframe id="</span>iframe<span class="string">"&gt;&lt;/iframe&gt;</span></span><br><span class="line"><span class="string">		&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script&gt;</span></span><br><span class="line"><span class="string">		  let iframeTemplate = `</span></span><br><span class="line"><span class="string">		    &lt;div id="</span>target<span class="string">"&gt;&lt;p&gt;i am iframe&lt;/p&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		    &lt;style&gt;</span></span><br><span class="line"><span class="string">		      #target &#123;</span></span><br><span class="line"><span class="string">		        width: 500px;</span></span><br><span class="line"><span class="string">		        height: 500px;</span></span><br><span class="line"><span class="string">		        background: red;</span></span><br><span class="line"><span class="string">		      &#125;</span></span><br><span class="line"><span class="string">		      #target p &#123;</span></span><br><span class="line"><span class="string">		      	font-size: 90px;</span></span><br><span class="line"><span class="string">		      &#125;</span></span><br><span class="line"><span class="string">		    &lt;/style&gt;</span></span><br><span class="line"><span class="string">		    &lt;script&gt;</span></span><br><span class="line"><span class="string">		      let observer = new IntersectionObserver((entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">		        console.log(entries)</span></span><br><span class="line"><span class="string">		      &#125;, &#123;</span></span><br><span class="line"><span class="string">		      	threshold: [0,0.5,1.0]</span></span><br><span class="line"><span class="string">		      &#125;)</span></span><br><span class="line"><span class="string">		      observer.observe(target)</span></span><br><span class="line"><span class="string">		    &lt;\/script&gt;`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">		  iframe.src = URL.createObjectURL(new Blob([iframeTemplate], &#123;"</span>type<span class="string">": "</span>text/html<span class="string">"&#125;))</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>从上面的栗子可以看出，使用此API不仅能够使iframe在视窗内出现时触发回调，而且threshold值同样能够起作用。这样一来，大大简化了此类情况下获取曝光的难度。</p>
+<h4 id="延迟加载与无限滚动"><a href="#延迟加载与无限滚动" class="headerlink" title="延迟加载与无限滚动"></a>延迟加载与无限滚动</h4><p>上面我们关于配置参数已经提到了root和threshold，实际上还有一个值：rootMargin。这个值实际就是给根元素添加了一个假想的margin值。其使用场景最普遍的是用于延迟加载。因为如果真的等目标元素与根元素相交的时候再进行加载图片等功能就已经晚了，所以有一个rootMargin值，这样等于根元素延伸开去了，目标元素只要与延伸部分相交就会触发回调，下面我们来继续举个栗子:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			#root &#123;</span></span><br><span class="line"><span class="string">				width: 500px;</span></span><br><span class="line"><span class="string">				height: 800px;</span></span><br><span class="line"><span class="string">				overflow: scroll;</span></span><br><span class="line"><span class="string">				background-color: pink;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">			#target &#123;</span></span><br><span class="line"><span class="string">			   position: relative;</span></span><br><span class="line"><span class="string">			   top: calc(100vh + 500px);</span></span><br><span class="line"><span class="string">			   width: 100px;</span></span><br><span class="line"><span class="string">			   height: 100px;</span></span><br><span class="line"><span class="string">			   background: red;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>root<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			&lt;div id="</span>target<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  		console.log(entries);</span></span><br><span class="line"><span class="string">			  &#125;, &#123;</span></span><br><span class="line"><span class="string">			  	rootMargin: '100px',</span></span><br><span class="line"><span class="string">			  	root: root</span></span><br><span class="line"><span class="string">			  &#125;</span></span><br><span class="line"><span class="string">			);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">			ele.observe(target);</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>很明显，在上面的栗子中，目标元素并没有出现在根元素的视窗里的时候就已经触发回调了。</p>
+<p>整个API可以用来实现无限滚动和延迟加载，下面就分别举出两个简单的栗子来启发思路，更完善健壮的功能就交给看官自己去尝试了哦：<br>延迟加载的栗子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			.img &#123;</span></span><br><span class="line"><span class="string">				height: 1000px;</span></span><br><span class="line"><span class="string">				overflow-y: hidden;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;ul&gt;</span></span><br><span class="line"><span class="string">			&lt;li class="</span>img<span class="string">"&gt;</span></span><br><span class="line"><span class="string">				&lt;img src="</span><span class="string">" class="</span>img-item<span class="string">" data-src="</span>http:<span class="comment">//okzzg7ifm.bkt.clouddn.com/cat.png"/&gt;</span></span><br><span class="line">			&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">			&lt;li class="img"&gt;</span></span><br><span class="line"><span class="regexp">				&lt;img src="" class="img-item" data-src="http:/</span><span class="regexp">/okzzg7ifm.bkt.clouddn.com/</span><span class="number">01.</span>png<span class="string">"/&gt;</span></span><br><span class="line"><span class="string">			&lt;/li&gt;</span></span><br><span class="line"><span class="string">			&lt;li class="</span>img<span class="string">"&gt;</span></span><br><span class="line"><span class="string">				&lt;img src="</span><span class="string">" class="</span>img-item<span class="string">" data-src="</span>http:<span class="comment">//okzzg7ifm.bkt.clouddn.com/virtualdom.png"/&gt;</span></span><br><span class="line">			&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">			&lt;li class="img"&gt;</span></span><br><span class="line"><span class="regexp">				&lt;img src="" class="img-item" data-src="http:/</span><span class="regexp">/okzzg7ifm.bkt.clouddn.com/</span>reactlife.png<span class="string">"/&gt;</span></span><br><span class="line"><span class="string">			&lt;/li&gt;</span></span><br><span class="line"><span class="string">		&lt;/ul&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  		entries.forEach((entry) =&gt; &#123;</span></span><br><span class="line"><span class="string">			  			if (entry.intersectionRatio &gt; 0) &#123;</span></span><br><span class="line"><span class="string">			  				entry.target.src = entry.target.dataset.src;</span></span><br><span class="line"><span class="string">			  			&#125;</span></span><br><span class="line"><span class="string">			  		&#125;)</span></span><br><span class="line"><span class="string">			  &#125;, &#123;</span></span><br><span class="line"><span class="string">			  	rootMargin: '100px',</span></span><br><span class="line"><span class="string">			  	threshold: [0.000001]</span></span><br><span class="line"><span class="string">			  &#125;</span></span><br><span class="line"><span class="string">			);</span></span><br><span class="line"><span class="string">			let eleArray = Array.from(document.getElementsByClassName('img-item'));</span></span><br><span class="line"><span class="string">			eleArray.forEach((item) =&gt; &#123;</span></span><br><span class="line"><span class="string">				ele.observe(item);</span></span><br><span class="line"><span class="string">			&#125;)</span></span><br><span class="line"><span class="string">		&lt;/script&gt;</span></span><br><span class="line"><span class="string">	&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>无限滚动的栗子:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;meta charset=<span class="string">"utf-8"</span> /&gt;</span><br><span class="line">		&lt;title&gt;intersectionObserve&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">		&lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			.img &#123;</span></span><br><span class="line"><span class="string">				height: 1200px;</span></span><br><span class="line"><span class="string">				overflow: hidden;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">			#flag &#123;</span></span><br><span class="line"><span class="string">				height: 20px;</span></span><br><span class="line"><span class="string">				background-color: pink;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">		&lt;/style&gt;</span></span><br><span class="line"><span class="string">	&lt;/head&gt;</span></span><br><span class="line"><span class="string">	&lt;body&gt;</span></span><br><span class="line"><span class="string">		&lt;ul id="</span>imgContainer<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			&lt;li class="</span>img<span class="string">"&gt;</span></span><br><span class="line"><span class="string">				&lt;img src="</span>http:<span class="comment">//okzzg7ifm.bkt.clouddn.com/cat.png"/&gt;</span></span><br><span class="line">			&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">			&lt;li class="img"&gt;</span></span><br><span class="line"><span class="regexp">				&lt;img src="http:/</span><span class="regexp">/okzzg7ifm.bkt.clouddn.com/</span><span class="number">01.</span>png<span class="string">"/&gt;</span></span><br><span class="line"><span class="string">			&lt;/li&gt;</span></span><br><span class="line"><span class="string">			&lt;li class="</span>img<span class="string">"&gt;</span></span><br><span class="line"><span class="string">				&lt;img src="</span>http:<span class="comment">//okzzg7ifm.bkt.clouddn.com/virtualdom.png"/&gt;</span></span><br><span class="line">			&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">			&lt;li class="img"&gt;</span></span><br><span class="line"><span class="regexp">				&lt;img src="http:/</span><span class="regexp">/okzzg7ifm.bkt.clouddn.com/</span>reactlife.png<span class="string">"/&gt;</span></span><br><span class="line"><span class="string">			&lt;/li&gt;</span></span><br><span class="line"><span class="string">		&lt;/ul&gt;</span></span><br><span class="line"><span class="string">		&lt;div id="</span>flag<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">		&lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">			let imgList = [</span></span><br><span class="line"><span class="string">				'http://okzzg7ifm.bkt.clouddn.com/immutable-coperation.png',</span></span><br><span class="line"><span class="string">				'http://okzzg7ifm.bkt.clouddn.com/flexdirection.png',</span></span><br><span class="line"><span class="string">				'http://okzzg7ifm.bkt.clouddn.com/immutable-exampleLayout.png'</span></span><br><span class="line"><span class="string">			]</span></span><br><span class="line"><span class="string">			let ele = new IntersectionObserver(</span></span><br><span class="line"><span class="string">				(entries) =&gt; &#123;</span></span><br><span class="line"><span class="string">					if (entries[0].intersectionRatio &gt; 0) &#123;</span></span><br><span class="line"><span class="string">						if (imgList.length) &#123;</span></span><br><span class="line"><span class="string">							let newImgli = document.createElement('li');</span></span><br><span class="line">							newImgli.setAttribute("class", "img");</span><br><span class="line">							<span class="keyword">let</span> newImg = <span class="built_in">document</span>.createElement(<span class="string">'img'</span>);</span><br><span class="line">							newImg.setAttribute(<span class="string">"src"</span>, imgList[<span class="number">0</span>]);</span><br><span class="line">							newImgli.appendChild(newImg);</span><br><span class="line">							<span class="built_in">document</span>.getElementById(<span class="string">'imgContainer'</span>).appendChild(newImgli);</span><br><span class="line">							imgList.shift();</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">			  &#125;, &#123;</span><br><span class="line">			  	rootMargin: <span class="string">'100px'</span>,</span><br><span class="line">			  	threshold: [<span class="number">0.000001</span>]</span><br><span class="line">			  &#125;</span><br><span class="line">			);</span><br><span class="line">			ele.observe(flag);</span><br><span class="line">		&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">	&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>通篇看下来大家是不是感觉这个API还是很好玩的，然而因为其兼容性，所以使用区域还是受限的。基于此，规范制订者在github上发布了其<a href="https://github.com/w3c/IntersectionObserver" target="_blank" rel="noopener">Polyfill</a>，不过因为是Polyfill，所以在实现性能上肯定是比不上原生的。而且就其github来看，待解决的issue数量还是比较多的。</p>
+<h4 id="具体集成到项目中【项目本身基于vue】"><a href="#具体集成到项目中【项目本身基于vue】" class="headerlink" title="具体集成到项目中【项目本身基于vue】"></a>具体集成到项目中【项目本身基于vue】</h4><p>实际项目里面可能需要使用到曝光的地方相当的多，这里我们就首页进行了尝试，主要有以下几个问题需要解决：</p>
+<ul>
+<li>实例的创建时间</li>
+<li>observe()调用的时机</li>
+<li>dom元素与埋点数据的关联</li>
+</ul>
+<p>针对实例的创建时间，因为首页上需要划分区域进行曝光报告，因此我选择在整个页面的初始化的时候就进行实例的创建。同时，因为希望整个埋点的处理逻辑一致，在实例的回调里面进行了统一处理。具体如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">   <span class="keyword">this</span>.ele = <span class="keyword">new</span> IntersectionObserver(<span class="function">(<span class="params">entries</span>) =&gt;</span> &#123;</span><br><span class="line">          entries.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (item.intersectionRatio &gt; <span class="number">0</span>) &#123;</span><br><span class="line">              <span class="keyword">let</span> node = item.target.querySelector(<span class="string">'.need-data'</span>);</span><br><span class="line">              <span class="built_in">console</span>.log(node.attributes[<span class="string">'code'</span>].value);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;, &#123;</span><br><span class="line">          threshold: [<span class="number">0.000001</span>]</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<p>observe()调用的时机，因为页面采用组件化的方式，在最初进行实例化的时候，需要的dom结构都是没有的。之后通过与后端进行数据，采用数据驱动进行页面渲染。因此在数据获取后在下一次DOM循环更新之后才进行observe()的调用。此时所需的dom结构都有了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> newArray = <span class="built_in">Array</span>.from(<span class="built_in">document</span>.getElementsByClassName(<span class="string">'need-data'</span>));</span><br><span class="line">            newArray.forEach(<span class="function">(<span class="params">newItem</span>) =&gt;</span> &#123;</span><br><span class="line">              <span class="keyword">this</span>.ele.observe(newItem);</span><br><span class="line">            &#125;)</span><br><span class="line">          &#125;)</span><br></pre></td></tr></table></figure>
+<p>dom元素与埋点数据的关联，因为之前的逻辑中我们的dom与业务数据耦合度不大，因此获取单纯的dom后无法获取需要上报的数据。同时我们希望这一块对于大部分的曝光需求能够进行逻辑统一。因此我们采取了最简单的方法，将需要上报的数据直接放在dom的一个属性中。因为这部分dom是组件化生成的一部分，所以逻辑上也是一致的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"item-content clearfix"</span> :<span class="class"><span class="keyword">class</span></span>=<span class="string">"'item-wrapper-type'+type"</span> :code=<span class="string">"needData.code"</span>&gt;</span><br><span class="line">....</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
+<p>基本进行这三个地方的改动后就能满足我们的大部分类型的需求了。其最后的结果如下:<br><img src="http://okzzg7ifm.bkt.clouddn.com/dataResult.png" alt="结果图"></p>
+<h4 id="利弊介绍"><a href="#利弊介绍" class="headerlink" title="利弊介绍"></a>利弊介绍</h4><ul>
+<li>优<ul>
+<li>性能比直接的监听scroll事件或者设置timer都好</li>
+<li>使用简单</li>
+<li>利用它的功能组合可以实现很多其他效果，比如无限滚动等</li>
+<li>对iframe的支持好</li>
+</ul>
+</li>
+<li>缺<ul>
+<li>兼容性不好</li>
+<li>它不是完美像素与无延迟的，毕竟根本上是异步的。因此不适合做滚动动画</li>
+</ul>
+</li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
+<li><a href="http://www.cnblogs.com/ziyunfei/p/5558712.html" target="_blank" rel="noopener">IntersectionObserver API</a>: 强烈推荐这篇文章，干货满满</li>
+<li><a href="https://w3c.github.io/IntersectionObserver/#intersection-observer-processing-model" target="_blank" rel="noopener">Intersection Observer</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API" target="_blank" rel="noopener">Intersection Observer API</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API/Timing_element_visibility" target="_blank" rel="noopener">Timing element visibility with the Intersection Observer API</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/18/liuhongyu/filter/" rel="prev">用CSS实现各种图片滤镜效果演示</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/22/Sudaxi/attributeStr1/" rel="next">关于富文本AttributedString的使用总结</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IntersectionObserver-API介绍"><span class="nav-number">2.</span> <span class="nav-text">IntersectionObserver API介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IntersectionObserver-API与iframe"><span class="nav-number">3.</span> <span class="nav-text">IntersectionObserver API与iframe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#延迟加载与无限滚动"><span class="nav-number">4.</span> <span class="nav-text">延迟加载与无限滚动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体集成到项目中【项目本身基于vue】"><span class="nav-number">5.</span> <span class="nav-text">具体集成到项目中【项目本身基于vue】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利弊介绍"><span class="nav-number">6.</span> <span class="nav-text">利弊介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

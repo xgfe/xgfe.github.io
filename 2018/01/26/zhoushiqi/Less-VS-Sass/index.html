@@ -1,0 +1,879 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="CSS,Less,Sass,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="通过一些对Less 和 Sass 的研究和学习，逐渐发现了它们一些共同特征（混入、参数混入、嵌套规则、运算、颜色功能、名字空间、作用域、JavaScript 赋值）和 不同之处，这里主要总结一些 Less 和 Sass 用法不同之处。">
+<meta name="keywords" content="CSS,Less,Sass">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Less Vs Sass">
+<meta property="og:url" content="http://xgfe.github.io/2018/01/26/zhoushiqi/Less-VS-Sass/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="通过一些对Less 和 Sass 的研究和学习，逐渐发现了它们一些共同特征（混入、参数混入、嵌套规则、运算、颜色功能、名字空间、作用域、JavaScript 赋值）和 不同之处，这里主要总结一些 Less 和 Sass 用法不同之处。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwpg061yj30nw0cwq62.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwo1ksgcj30p80cugo9.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwzi2wicj30pm0f4whn.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwzh8h1zj30ps0fgq67.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9d44q4j30pi0bcacy.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9br31dj30p40iqdjj.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsyxnt0j30fi0qqacf.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsw1rouj30fg0qodi7.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxaheqwoj30n00kin0g.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxak5ku1j30my0ketcd.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz0u3aj30ng0dwq55.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz7mboj30nm0e0wgz.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxsqoiopj30p60kmn0e.jpg">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.409Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Less Vs Sass">
+<meta name="twitter:description" content="通过一些对Less 和 Sass 的研究和学习，逐渐发现了它们一些共同特征（混入、参数混入、嵌套规则、运算、颜色功能、名字空间、作用域、JavaScript 赋值）和 不同之处，这里主要总结一些 Less 和 Sass 用法不同之处。">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwpg061yj30nw0cwq62.jpg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Less Vs Sass | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Less Vs Sass
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-01-26T00:00:00+08:00" content="2018-01-26">
+            2018-01-26
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhoushiqi/" itemprop="url" rel="index">
+                  <span itemprop="name">zhoushiqi</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/CSS/" rel="tag"><i class="icon-next-tags"></i>CSS</a>
+            
+              <a href="/tags/Less/" rel="tag"><i class="icon-next-tags"></i>Less</a>
+            
+              <a href="/tags/Sass/" rel="tag"><i class="icon-next-tags"></i>Sass</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>通过一些对Less 和 Sass 的研究和学习，逐渐发现了它们一些共同特征（混入、参数混入、嵌套规则、运算、颜色功能、名字空间、作用域、JavaScript 赋值）和 不同之处，这里主要总结一些 Less 和 Sass <strong>用法不同之处</strong>。</p>
+<a id="more"></a>
+<h2 id="CSS-预处理器"><a href="#CSS-预处理器" class="headerlink" title="CSS 预处理器"></a>CSS 预处理器</h2><p>CSS 预处理器：用一种专门的编程语言，为 CSS 增加了一些编程的特性，将 CSS 作为目标生成文件，开发者只需使用这种语言就可进行编码工作。</p>
+<h2 id="简述-Less-amp-Sass"><a href="#简述-Less-amp-Sass" class="headerlink" title="简述 Less &amp; Sass"></a>简述 Less &amp; Sass</h2><table><tr><td>Less</td><td>Sass</td></tr><tr><td>Less 是一门 CSS 预处理语言，它扩充了 CSS 语言，增加了诸如变量、混合（mixin）、函数等功能，让 CSS 更易维护、方便制作主题、扩充。</td><td> Sass 是一门高于 CSS 的元语言，也是一门 CSS 预处理语言，它能用来清晰地、结构化地描述文件样式，有着比普通 CSS 更加强大的功能。Sass 能够提供更简洁、更优雅的语法，同时提供多种功能来创建可维护和管理的样式表。 </td></tr></table>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><blockquote>
+<ul>
+<li>Less ： npm install -g less</li>
+<li>Sass ： gem install sass</li>
+</ul>
+</blockquote>
+<h2 id="Sass-amp-Less"><a href="#Sass-amp-Less" class="headerlink" title="Sass &amp; Less"></a>Sass &amp; Less</h2><h3 id="编译环境"><a href="#编译环境" class="headerlink" title="编译环境"></a>编译环境</h3><ul>
+<li>Sass 的安装需要 Ruby 环境，是在服务端处理的。</li>
+<li>Less 是需要引入 less.js 来处理 Less 代码输出 CSS 到浏览器，也可以在开发环节使用Less，然后编译成 CSS 文件，直接放到项目中，也有 Less.app、SimpleLess、CodeKit.app这样的工具，也有在线编译的。</li>
+</ul>
+<h3 id="引用-import"><a href="#引用-import" class="headerlink" title="引用 @import"></a>引用 @import</h3><ul>
+<li><p>Less 可以根据文件扩展名不同而用不同的方式处理</p>
+<ul>
+<li>如果文件是.css的扩展名，将处理为 CSS 和 @import 语句保持原样。</li>
+<li>如果为其他的扩展名将处理为 less 导入。</li>
+<li>如果没有较少的扩展，那么它将被附加并包含为导入的较少文件。</li>
+<li>如果没有扩展名，将会为他添加 .less 扩展名，作为 less 导入。</li>
+<li>多个关键字 @import 是允许的，你必须使用逗号分隔关键字：example：@import (optional， reference) “foo.less”。</li>
+</ul>
+</li>
+<li><p>Sass 的@import规则在生成 CSS 文件时就把相关文件导入进来。Sass 允许 @import 命令写在CSS规则内。这种导入方式下，生成对应的 CSS 文件时，局部文件会被直接插入到CSS规则内导入它的地方。被导入的局部文件中定义的所有变量和混合器，也会在这个规则范围内生效。这些变量和混合器不会全局有效。另外，所有在被导入文件中定义的变量和混合器均可在导入文件中使用。但是，在少数几种情况下，它会被编译成 CSS 的 @import 规则：</p>
+<ul>
+<li>如果文件的扩展名是 .css。</li>
+<li>如果文件名以 http:// 开头。</li>
+<li>如果文件名是 url()。</li>
+<li><p>如果@import包含了任何媒体查询（media queries）。</p>
+<p>Scss/Sass 引用的外部文件命名必须以下划线 <em> 开头，文件名如果以下划线 </em> 开头的话，Sass 会认为该文件是一个引用文件，这将告诉 Sass 不要把它编译成 CSS 文件。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h3><ul>
+<li>Less<ul>
+<li>内层选择器前面的 &amp; 符号就表示对父选择器的引用。在一个内层选择器的前面，如果没有 &amp; 符号，则它被解析为父选择器的后代；如果有 &amp; 符号，它就被解析为父元素自身或父元素的伪类。</li>
+</ul>
+</li>
+<li>Sass<ul>
+<li>1.选择器嵌套中，可以使用 &amp; 表示父元素选择器 </li>
+<li>2.Sass 中还提供属性嵌套，所谓属性嵌套指的是有些属性拥有同一个开始单词，如border-width，border-color 都是以 border 开头。CSS 有一些属性前缀相同，只是后缀不一样 </li>
+<li>3.其实伪类嵌套和属性嵌套非常类似，只不过他需要借助<code>&amp;</code>符号一起配合使用</li>
+</ul>
+</li>
+</ul>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><ul>
+<li>Less的变量声明和调用 ：用@ </li>
+<li>Sass的变量声明和调用 ：用$</li>
+</ul>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width="300px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwpg061yj30nw0cwq62.jpg"></td><td><img width="300px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwo1ksgcj30p80cugo9.jpg"></td></tr></table>
+
+<h3 id="局部变量和全局变量"><a href="#局部变量和全局变量" class="headerlink" title="局部变量和全局变量"></a>局部变量和全局变量</h3><p>Both ： 定义全局变量（在选择器、函数、选择宏…的外面定义的变量为全局变量）</p>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width="300px" height="150px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwzi2wicj30pm0f4whn.jpg"></td><td><img width="300px" height="150px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwzh8h1zj30ps0fgq67.jpg"></td></tr></table>
+
+<h3 id="工具库"><a href="#工具库" class="headerlink" title="工具库"></a>工具库</h3><ul>
+<li>Sass工具库<ul>
+<li><strong>Compass</strong>。<ul>
+<li>特点 <ul>
+<li>1、减少重复工作，加快开发进度 </li>
+<li>2、使用变量，便于记忆，变量使用$符号开头 </li>
+<li>3、自动转换 RGBA 颜色值 </li>
+<li>4、Compass 带有大量混合宏，可以忘记浏览器前缀，节省大量时间</li>
+<li>5、嵌套规则，使用嵌套，减少代码量 </li>
+<li>6、设备查询，media queries，一样是使用混合宏，减少代码量，节省开发时间 </li>
+<li>7、自动压缩 CSS 代码，再次节省开发时间，提高效益</li>
+</ul>
+</li>
+<li>只要先import “compass/<em><strong>CSS3</strong></em>”， 之後就可以使用所有 CSS3 的內容，如border-radius、box-shadow、gradient…等，使用方式是 @include ，其实是 compass 帮你写好了 @mixin ，你只要会用就好，而compass厉害的就是会同时帮你产生各個浏览器相对应的CSS。</li>
+<li>在 compass 新建的项目目录下，新建 images 文件夹。 在 images 文件夹中新建一个文件夹用于放置要合成的图片。 在项目的 Sass 文件夹下新建一个文件。就能看到在 images 文件夹中生成了一个<em><strong>雪碧图</strong></em>。</li>
+</ul>
+</li>
+<li><strong>SCUT</strong>。SCUT 是提供给前端开发者的 Sass 工具集，能帮助提高对一般样式代码模式的执行（implementations of common style-code patterns）。Scut 工具集可以帮助用户避免重复写代码，扩大代码的可重用性。Scut 工具集可以处理模式（patterns）遇到的下列问题：pattern 是不直观的。pattern 需要简写 pattern 涉及到一些重要的最佳实践 pattern 是极为常见的，（至少）有点讨厌。Scut 工具集的目标是实现可重用性的最大化（maximizies reusabilit）。</li>
+<li><strong>Koala</strong>。Sass 和 Less 不一样，需要在本地编译成 CSS 才能看到效果，所以有一个很强大的<em><strong>编译工具</strong></em>才是重中之重。如果你不会安装 ruby ，更是没听过它;如果你安装了 Ruby，但是不会用它，那么就果断用 Koala 吧。<ul>
+<li>特点：<ul>
+<li>1、多语言支持     </li>
+<li>2、实时编译　</li>
+<li>3、编译选项　</li>
+<li>4、强大的文件右键功能　</li>
+<li>5、错误提示 </li>
+<li>6、跨平台　</li>
+<li>7、免费且负责</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Less工具库<ul>
+<li>有UI组件库<strong>Bootstrap</strong>，Bootstrap 是 web前端开发中一个比较有名的前端UI组件库，Bootstrap的样式文件部分源码就是采用 Less 语法编写。</li>
+<li>Less工具库<strong>EST</strong>。 EST（EFE Styling Toolkit）是一个基于Less的样式工具库，帮助您更轻松地书写 Less 代码。EST 提供了一系列方便快捷的 mixin，只在调用时才输出代码。该项目由 EFE 团队开发而来，项目托管在 <a href="https：//github.com/ecomfe/est/">GitHub</a> 上。EST不希望提供直接给HTML调用的类名，用「样式类」污染HTML代码的语义。当然您也可以根据自己的项目需求基于 EST 搭建样式类库，提供类名接口来进行快速开发。</li>
+</ul>
+</li>
+</ul>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><p>1.在 Less 里你可以用递归函数通过数值来循环：</p>
+<pre><code>.looper (@i) when (@i &gt; 0) {
+  .image-class-@{i} {
+    background： url(“../img/@{i}.png”) no-repeat;
+  }
+  .looper(@i – 1);
+}
+.looper(0);
+.looper(3);
+</code></pre><p>2.在 Sass 里你可以通过任何数据来迭代：</p>
+<pre><code>@each $beer in stout， pilsner， lager {
+  .#{$beer}-background {
+    background： url(“../img/beers/#{$beer}.png”) no-repeat;
+  }
+}
+</code></pre><h3 id="条件语句-Less中称作引导"><a href="#条件语句-Less中称作引导" class="headerlink" title="条件语句(Less中称作引导)"></a>条件语句(Less中称作引导)</h3><ul>
+<li>Less ： 可以通过 when 语句判断条件</li>
+<li>Sass ： 通过 @if 和 @else 的方式进行条件判断</li>
+</ul>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td rowspan="2"><img width="400px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9d44q4j30pi0bcacy.jpg"></td><td><img width="300px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fnty9br31dj30p40iqdjj.jpg"></td></tr></table>
+
+<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><ul>
+<li>Less 的作用域是按照代码的从上至下的顺序进行的</li>
+<li>Sass 的作用域是按照最后一次定义影响全局的</li>
+</ul>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width="150px" height="300px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsyxnt0j30fi0qqacf.jpg"></td><td><img width="150px" height="300px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntwsw1rouj30fg0qodi7.jpg"></td></tr></table>
+
+<h3 id="输出格式"><a href="#输出格式" class="headerlink" title="输出格式"></a>输出格式</h3><ul>
+<li>Less ：并没有输出设置</li>
+<li>Sass ：提供4种输出选项：nested，compact，compressed 和 expanded</li>
+</ul>
+<h3 id="Mixins-混合宏"><a href="#Mixins-混合宏" class="headerlink" title="Mixins (混合宏)"></a>Mixins (混合宏)</h3><ul>
+<li>Less ：支持带参数的混合以及有默认参数值的混合</li>
+<li>Sass ：有明确的定义： @Mixin + 宏 调用 ： @include + 宏</li>
+</ul>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width="300px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxaheqwoj30n00kin0g.jpg"></td><td><img width="300px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxak5ku1j30my0ketcd.jpg"></td></tr></table>
+
+<h3 id="Parametric-Mixins-参数混入"><a href="#Parametric-Mixins-参数混入" class="headerlink" title="Parametric-Mixins (参数混入)"></a>Parametric-Mixins (参数混入)</h3><p>混合宏使用中参数使用：</p>
+<ul>
+<li>Less ： @</li>
+<li>Sass ： $ + @mixin + @include</li>
+</ul>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td><img width="300px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz0u3aj30ng0dwq55.jpg"></td><td><img width="300px" height="100px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxcz7mboj30nm0e0wgz.jpg"></td></tr></table>
+
+<h3 id="Placeholder-占位符"><a href="#Placeholder-占位符" class="headerlink" title="Placeholder (占位符)"></a>Placeholder (占位符)</h3><ul>
+<li>Less ： Null</li>
+<li>Sass ： 可以使用 <strong>%</strong> 作为占位符</li>
+</ul>
+<h3 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h3><p>Sass 在数字上比 Less 更专业。它已经可以换算单位了。Sass 可以处理无法识别的度量单位并将其输出。这个特性很明显是一个对未来的尝试——证明W3C作出的一些改变。</p>
+<ul>
+<li>Sass ： 2in + 3cm + 2pc = 3.514in </li>
+<li>Less ： 2in + 3cm + 2pc = Error</li>
+</ul>
+<h3 id="选择器继承"><a href="#选择器继承" class="headerlink" title="选择器继承"></a>选择器继承</h3><ul>
+<li>Sass 定义的选择器可以通过继承的方式使用</li>
+<li>Less 没有这个功能</li>
+</ul>
+<table><tr><td>Less</td><td>Sass</td></tr><tr><td>Null</td><td><img width="300px" height="150px" src="https://ws1.sinaimg.cn/large/0073X7Nbly1fntxsqoiopj30p60kmn0e.jpg"></td></tr></table>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="开发中如何选择使用Less还是Sass"><a href="#开发中如何选择使用Less还是Sass" class="headerlink" title="开发中如何选择使用Less还是Sass?"></a>开发中如何选择使用Less还是Sass?</h3><ul>
+<li><strong>相同点</strong>：两者都是 CSS 预处理器，都具有相同的功能，可以帮助我们快速编译代码，帮助我们更好的维护我们的样式代码或者说维护项目吧。</li>
+<li><strong>不同点</strong>：Less 相对清晰明了，易于上手，对编译环境要求比较宽松。Sass 的功能比 Less 强大，是下一个层次的选择，适合稍微有经验的前端开发者。</li>
+<li>根据业务线需求、组内成员情况，进行约定。</li>
+<li>按需使用，随习惯所为！</li>
+</ul>
+<h3 id="相关参考"><a href="#相关参考" class="headerlink" title="相关参考"></a>相关参考</h3><blockquote>
+<p><a href="http://lessCSS.cn/" target="_blank" rel="noopener">http://lessCSS.cn/</a> </p>
+<p><a href="https://www.sass.hk/" target="_blank" rel="noopener">https://www.sass.hk/</a></p>
+</blockquote>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/09/caominkang/ListView源码分析/" rel="prev">ListView源码分析</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/26/zhoushiqi/Web端屏幕适配方案/" rel="next">Web 端屏幕适配方案</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CSS-预处理器"><span class="nav-number">1.</span> <span class="nav-text">CSS 预处理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简述-Less-amp-Sass"><span class="nav-number">2.</span> <span class="nav-text">简述 Less &amp; Sass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sass-amp-Less"><span class="nav-number">4.</span> <span class="nav-text">Sass &amp; Less</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译环境"><span class="nav-number">4.1.</span> <span class="nav-text">编译环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用-import"><span class="nav-number">4.2.</span> <span class="nav-text">引用 @import</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#嵌套"><span class="nav-number">4.3.</span> <span class="nav-text">嵌套</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量"><span class="nav-number">4.4.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局部变量和全局变量"><span class="nav-number">4.5.</span> <span class="nav-text">局部变量和全局变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具库"><span class="nav-number">4.6.</span> <span class="nav-text">工具库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环"><span class="nav-number">4.7.</span> <span class="nav-text">循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件语句-Less中称作引导"><span class="nav-number">4.8.</span> <span class="nav-text">条件语句(Less中称作引导)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作用域"><span class="nav-number">4.9.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出格式"><span class="nav-number">4.10.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mixins-混合宏"><span class="nav-number">4.11.</span> <span class="nav-text">Mixins (混合宏)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parametric-Mixins-参数混入"><span class="nav-number">4.12.</span> <span class="nav-text">Parametric-Mixins (参数混入)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Placeholder-占位符"><span class="nav-number">4.13.</span> <span class="nav-text">Placeholder (占位符)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运算"><span class="nav-number">4.14.</span> <span class="nav-text">运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择器继承"><span class="nav-number">4.15.</span> <span class="nav-text">选择器继承</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开发中如何选择使用Less还是Sass"><span class="nav-number">5.1.</span> <span class="nav-text">开发中如何选择使用Less还是Sass?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关参考"><span class="nav-number">5.2.</span> <span class="nav-text">相关参考</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

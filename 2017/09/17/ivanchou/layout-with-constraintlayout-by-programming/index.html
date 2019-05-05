@@ -1,0 +1,881 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Android,布局,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="关于 ConstraintLayout 的 xml 方式布局的介绍有很多，但是你知道 ConstraintSet 吗？本文对于 ConstraintLayout 采用代码进行布局的方式进行了介绍。">
+<meta name="keywords" content="Android,布局">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ConstraintLayout 采用代码方式布局用法简介">
+<meta property="og:url" content="http://xgfe.github.io/2017/09/17/ivanchou/layout-with-constraintlayout-by-programming/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="关于 ConstraintLayout 的 xml 方式布局的介绍有很多，但是你知道 ConstraintSet 吗？本文对于 ConstraintLayout 采用代码进行布局的方式进行了介绍。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.380Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ConstraintLayout 采用代码方式布局用法简介">
+<meta name="twitter:description" content="关于 ConstraintLayout 的 xml 方式布局的介绍有很多，但是你知道 ConstraintSet 吗？本文对于 ConstraintLayout 采用代码进行布局的方式进行了介绍。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> ConstraintLayout 采用代码方式布局用法简介 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              ConstraintLayout 采用代码方式布局用法简介
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-09-17T00:00:00+08:00" content="2017-09-17">
+            2017-09-17
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/ivanchou/" itemprop="url" rel="index">
+                  <span itemprop="name">ivanchou</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Android/" rel="tag"><i class="icon-next-tags"></i>Android</a>
+            
+              <a href="/tags/布局/" rel="tag"><i class="icon-next-tags"></i>布局</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>关于 ConstraintLayout 的 xml 方式布局的介绍有很多，但是你知道 ConstraintSet 吗？<br>本文对于 ConstraintLayout 采用代码进行布局的方式进行了介绍。</p>
+<a id="more"></a>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>我们知道，Android 界面的布局按照传统方式是通过编写 xml 代码去实现的。虽然 Android Studio 提供可视化的方式去编写界面，但是并没有编写 xml 代码好用。为了解决这一问题 ConstraintLayout 诞生了，这是 Google 在 I/O 2016 推出的用可视化的方式编写界面的布局。（注：从 Android Studio 2.2 开始提供支持）</p>
+<p>ConstraintLayout 的优点在于使用扁平的层次结构创建出复杂的布局，类似于 RelativeLayout 通过定义自身与其他 View 或者 Parent 之间的关系实现布局，ConstraintLayout 比 RelativeLayout 更加灵活。同时，在 Android Studio 中可以且推荐使用可视化的方式去编写界面。</p>
+<ul>
+<li><p>在 xml 中使用</p>
+<p>  关于 xml 方式进行布局的资料有很多，就不再赘述了。</p>
+</li>
+<li><p>通过编程的方式布局</p>
+<p>  android.support.constraint 包下有四个类，分别是 ConstraintLayout、ConstraintLayout.LayoutParams、ConstraintSet 与 Guideline。官方文档对它们的说明如下表，</p>
+</li>
+</ul>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ConstraintLayout</td>
+<td>A ConstraintLayout is a ViewGroup which allows you to position and size widgets in a flexible way.</td>
+</tr>
+<tr>
+<td>ConstraintLayout.LayoutParams</td>
+<td>This class contains the different attributes specifying how a view want to be laid out inside a ConstraintLayout.</td>
+</tr>
+<tr>
+<td>ConstraintSet</td>
+<td>This class allows you to define programmatically a set of constraints to be used with ConstraintLayout.</td>
+</tr>
+<tr>
+<td>Guideline</td>
+<td>Utility class representing a Guideline helper object for ConstraintLayout.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>   对于 ConstraintSet 的描述是可以通过编程的方式定义一系列约束，本文的主题就是围绕着 ConstraintSet 来进行的。</p>
+<h2 id="编程实现约束布局"><a href="#编程实现约束布局" class="headerlink" title="编程实现约束布局"></a>编程实现约束布局</h2><p>要通过编程的方式实现约束布局，分为以下几个步骤：</p>
+<ul>
+<li><p>添加 View 到 Activity 中</p>
+<p>  在 onCreate() 方法中创建 ConstraintLayout，并添加两个按钮到布局上，通过 setContentView() 设置 Activity 的布局。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Button mOkBtn;</span><br><span class="line">    Button mCancelBtn;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line"></span><br><span class="line">        ConstraintLayout cl = <span class="keyword">new</span> ConstraintLayout(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">        mOkBtn = <span class="keyword">new</span> Button(<span class="keyword">this</span>);</span><br><span class="line">        mOkBtn.setText(<span class="string">"OK"</span>);</span><br><span class="line">        cl.addView(mOkBtn);</span><br><span class="line"></span><br><span class="line">        mCancelBtn = <span class="keyword">new</span> Button(<span class="keyword">this</span>);</span><br><span class="line">        mCancelBtn.setText(<span class="string">"Cancel"</span>);</span><br><span class="line">        cl.addView(mCancelBtn);</span><br><span class="line"></span><br><span class="line">        setContentView(cl);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>给 View 设置 id</p>
+<p>  通常在 xml 中添加 View 时，Android SDK 会自动帮我们生成资源文件的 id，存储在 R.java 中。但是通过代码的方式并不会触发生成 id，所以需要进行手动绑定。</p>
+<p>  首先，在 res/values 目录中新建一个资源文件 ids.xml，</p>
+  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"btnCancel"</span> <span class="attr">type</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"btnOk"</span> <span class="attr">type</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>  然后在代码中进行绑定，</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mOkBtn.setId(R.id.btnOk);</span><br><span class="line">mCancelBtn.setId(R.id.btnCancel);</span><br></pre></td></tr></table></figure>
+<p>  这时候之后设置的相关约束才会真正生效。</p>
+</li>
+<li><p>设置 View 的属性</p>
+<p>  必须设置的属性除了 view id 还有宽高，宽高属性是通过 ConstraintSet 来设置的，通过指定 view id 及可选的有水平方向的依赖以及垂直方向的依赖。</p>
+<p>  我们知道采用 xml 进行布局的时候对于宽高的设置有三种选项，分别是 wrap_content、match constraints(0dp) 以及 fixed ，而通过代码的方式只有前面两种，没有 fiexd 这个选项。</p>
+</li>
+</ul>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">常量值</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ConstraintSet.WRAP_CONTENT</td>
+<td style="text-align:center">WRAP_CONTENT</td>
+</tr>
+<tr>
+<td style="text-align:left">ConstraintSet.MATCH_CONSTRAINT</td>
+<td style="text-align:center">0 dp</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>设置 view 宽高的方法如下，</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>xml 属性</th>
+<th>对应方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>android:layout_height</td>
+<td>ConstraintSet.constrainHeight(int viewId, int height)</td>
+</tr>
+<tr>
+<td>android:layout_width</td>
+<td>ConstraintSet.constrainWidth(int viewId, int width)</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<ul>
+<li><p>配置依赖关系 ConstraintSet</p>
+<p>  官方推荐使用 ConstraintSet 来进行约束配置，这里很奇怪为什么不能通过 LayoutParams 来配置依赖关系。ConstraintSet 可以用来通过编程的方式定义一系列用在 ConstraintLayout 上的约束，可以用来创建、保存约束，并且可以将其应用在已有的 ConstraintLayout 上，可以通过以下 3 种方式来获取 ConstraintSet。</p>
+<ol>
+<li><p>手动</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c = <span class="keyword">new</span> ConstraintSet(); c.connect(....);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>读取 xml 文件中的约束</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.clone(context, R.layout.layout1);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从其他 ConstraintLayout 复制</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.clone(clayout);</span><br></pre></td></tr></table></figure>
+<p>第2、3两种方法具体使用参见官方文档说明，这篇文章主要介绍手动编码的方式，我们重点来看 connect 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> startID, <span class="keyword">int</span> startSide, <span class="keyword">int</span> endID, <span class="keyword">int</span> endSide, <span class="keyword">int</span> margin)</span></span></span><br></pre></td></tr></table></figure>
+<p>connect 方法需要四个参数，可以理解为连线的起始 view 的边与终止 view 的边，描述一个 view 的边需要通过 view id 与 side 来确定，对应到 xml 中则是 layout_constraint{$startSide}_to{$endSide}Of = “endID” 属性。这里的 view id 非常重要，在没有设置 view id 的情况下会导致无法找到正确的 view，也就无法正确应用约束设置。</p>
+<p>尝试在代码中打印出 view id 的值，可以发现通过 new 方式得到的 view 的 id 默认为 -1，也正是因为这个原因，你会发现没有设置 view id 的情况下布局并没有生效。ConstraintSet 中用来描述约束特征的常量有如下几种，</p>
+</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>常量值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ConstraintSet.LEFT</td>
+<td>View 的左边界</td>
+</tr>
+<tr>
+<td>ConstraintSet.RIGHT</td>
+<td>View 的右边界</td>
+</tr>
+<tr>
+<td>ConstraintSet.TOP</td>
+<td>View 的顶部</td>
+</tr>
+<tr>
+<td>ConstraintSet.BOTTOM</td>
+<td>View 的底部</td>
+</tr>
+<tr>
+<td>ConstraintSet.BASELINE</td>
+<td>View 中 text 的基线</td>
+</tr>
+<tr>
+<td>ConstraintSet.PARENT_ID</td>
+<td>父控件的 id，通常情况下为 ConstraintLayout</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<ul>
+<li><p>dpTopx</p>
+<p>  通常我们在 xml 中可以直接输入具体的 dp 值，但是在代码中具体的数值代表的是 px，所以需要根据屏幕具体的分辨率进行转换。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dpToPx</span><span class="params">(<span class="keyword">int</span> dp)</span> </span>&#123;</span><br><span class="line">    DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();</span><br><span class="line">    <span class="keyword">return</span> Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>接下来我们通过一个简单的 demo 来了解一下 ConstraintSet 的用法。编写一个只包含确定、取消按钮的界面，采用 xml 的方式配置的代码如下，</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/btnCancel"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_marginBottom</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_marginLeft</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:text</span>=<span class="string">"Cancel"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:layout_constraintBottom_toBottomOf</span>=<span class="string">"parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:layout_constraintLeft_toLeftOf</span>=<span class="string">"parent"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/btnOK"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_marginBottom</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_marginRight</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:text</span>=<span class="string">"OK"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:layout_constraintBottom_toBottomOf</span>=<span class="string">"parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:layout_constraintRight_toRightOf</span>=<span class="string">"parent"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>将其转换成对应的 Java code，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Button mOkBtn;</span><br><span class="line">    Button mCancelBtn;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line"></span><br><span class="line">        ConstraintLayout cl = <span class="keyword">new</span> ConstraintLayout(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">        mOkBtn = <span class="keyword">new</span> Button(<span class="keyword">this</span>);</span><br><span class="line">        mOkBtn.setText(<span class="string">"OK"</span>);</span><br><span class="line">        cl.addView(mOkBtn);</span><br><span class="line"></span><br><span class="line">        mCancelBtn = <span class="keyword">new</span> Button(<span class="keyword">this</span>);</span><br><span class="line">        mCancelBtn.setText(<span class="string">"Cancel"</span>);</span><br><span class="line">        cl.addView(mCancelBtn);</span><br><span class="line"></span><br><span class="line">        ConstraintSet set = <span class="keyword">new</span> ConstraintSet();</span><br><span class="line"></span><br><span class="line">        set.connect(mCancelBtn.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, dpTopx(<span class="number">8</span>));</span><br><span class="line">        set.connect(mCancelBtn.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, dpTopx(<span class="number">8</span>));</span><br><span class="line">        set.constrainHeight(mCancelBtn.getId(), ConstraintSet.WRAP_CONTENT);</span><br><span class="line">        set.constrainWidth(mCancelBtn.getId(), ConstraintSet.WRAP_CONTENT);</span><br><span class="line">        </span><br><span class="line">        set.connect(mOkBtn.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, dpTopx(<span class="number">8</span>));</span><br><span class="line">        set.connect(mOkBtn.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, dpTopx(<span class="number">8</span>));</span><br><span class="line">        set.constrainHeight(mOkBtn.getId(), ConstraintSet.WRAP_CONTENT);</span><br><span class="line">        set.constrainWidth(mOkBtn.getId(), ConstraintSet.WRAP_CONTENT);</span><br><span class="line">        </span><br><span class="line">        set.applyTo(cl);</span><br><span class="line">        setContentView(cl);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到相比于 xml 代码，Java 代码既繁琐又长，更何况 ConstraintLayout 的出现本来就不推荐手写 xml，在 Android Stuidio 中以直接拖动的方式进行布局操作最少只需要 3 步：</p>
+<ul>
+<li>拖动控件到界面上</li>
+<li>设置 id（可省略）</li>
+<li>选中控件，将控件左边界连接到父空间的左边</li>
+<li>选中控件，将控件下边界连接到父空间的底部</li>
+</ul>
+<p>所以采用代码的方式进行布局，效率反而进一步降低了。除非必要，这并不是一种值的推荐的方式。</p>
+<h2 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h2><p>在进行代码布局的过程中，发现对 view 设置的与父控件的左／右间隔并没有生效，不知道是不是一个已知的 bug，有待进一步深入。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>初次接触到 ConstraintLayout 时被这种快速便捷的操作方式吸引，意味着可以不用为了实现复杂的布局而进行多层嵌套。顺理成章，当我在自定义控件时第一时刻便想到了它，也就有了这篇简介。其实后来仔细一想这种需求还是比较奇怪，本身 ConstraintLayout 的出现是为了解决 Android 开发中可视化编辑界面的不便，然而偏要选择写 xml 的方式去布局，甚至是 Java code，那就是自找麻烦了。这可能也是为什么官方没有在 Tutorial 中提及而只是在 API Doc 中一笔带过的原因吧。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a href="https://developer.android.com/training/constraint-layout/index.html" target="_blank" rel="noopener">Build a Responsive UI with ConstraintLayout | Android Developers</a></li>
+<li><a href="http://blog.csdn.net/guolin_blog/article/details/53122387" target="_blank" rel="noopener">Android新特性介绍，ConstraintLayout完全解析</a></li>
+<li><a href="https://developer.android.com/reference/android/support/constraint/package-summary.html" target="_blank" rel="noopener">ConstraintLayout | Android Developers</a></li>
+<li><a href="http://www.techotopia.com/index.php/An_Android_ConstraintSet_Tutorial" target="_blank" rel="noopener">An Android ConstraintSet Tutorial</a></li>
+</ol>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/20/Young/DOM-size/" rel="prev">由一个表格需求引发的blog-DOM中的尺寸属性</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/07/felix/html-parsing-and-resources-load/" rel="next">HTML解析和资源加载</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编程实现约束布局"><span class="nav-number">2.</span> <span class="nav-text">编程实现约束布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例"><span class="nav-number">3.</span> <span class="nav-text">案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存在的问题"><span class="nav-number">4.</span> <span class="nav-text">存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

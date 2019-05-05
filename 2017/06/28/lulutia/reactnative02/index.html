@@ -1,0 +1,920 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="React Native,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文是React Native学习系列的第二篇，主要介绍了JSX、生命周期、以ScrollView为例讲解了官方组件、以BackHandler为例讲解了官方API。">
+<meta name="keywords" content="React Native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native 学习系列二">
+<meta property="og:url" content="http://xgfe.github.io/2017/06/28/lulutia/reactnative02/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文是React Native学习系列的第二篇，主要介绍了JSX、生命周期、以ScrollView为例讲解了官方组件、以BackHandler为例讲解了官方API。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/reactlife.png">
+<meta property="og:image" content="http://okzzg7ifm.bkt.clouddn.com/contentSizechange.png">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.386Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native 学习系列二">
+<meta name="twitter:description" content="本文是React Native学习系列的第二篇，主要介绍了JSX、生命周期、以ScrollView为例讲解了官方组件、以BackHandler为例讲解了官方API。">
+<meta name="twitter:image" content="http://okzzg7ifm.bkt.clouddn.com/reactlife.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> React Native 学习系列二 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              React Native 学习系列二
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-06-28T22:03:12+08:00" content="2017-06-28">
+            2017-06-28
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/lulutia/" itemprop="url" rel="index">
+                  <span itemprop="name">lulutia</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/React-Native/" rel="tag"><i class="icon-next-tags"></i>React Native</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文是React Native学习系列的第二篇，主要介绍了JSX、生命周期、以ScrollView为例讲解了官方组件、以BackHandler为例讲解了官方API。</p>
+<a id="more"></a>
+<h3 id="JSX"><a href="#JSX" class="headerlink" title="JSX"></a>JSX</h3><ul>
+<li><p>什么是JSX</p>
+<blockquote>
+<p>It is called JSX, and it is a syntax extension to JavaScript. We recommend using it with React to describe what the UI should look like. JSX may remind you of a template language, but it comes with the full power of JavaScript.JSX produces React “elements”.</p>
+</blockquote>
+<ul>
+<li>我们可以看见两个关键点：<ol>
+<li>它是JS的语法扩展(我们可以理解我为它就是一个比较高级的语法糖)</li>
+<li>与模板语言不一样，它能利用JS自带的语法和特性。因此基本会写JS就能写JSX，学习成本低，并且能利用JS本身的语法</li>
+<li>React基于Virtual DOM创造的JSX，JSX创造的是React element，它不是真正的DOM，因此也意味着在没有真正DOM的情况下，它也能模拟DOM的行为(React-Native中实际也没有真正的DOM)</li>
+</ol>
+</li>
+<li><p>具体行为</p>
+<ul>
+<li><p>以react举例下面两段代码完全一致：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p1 = React.createElement(<span class="string">'p'</span>, <span class="literal">null</span>, <span class="string">'my test'</span>)</span><br><span class="line"><span class="keyword">var</span> root = React.createElement(<span class="string">'div'</span>, &#123; <span class="attr">className</span>: <span class="string">'root-div'</span> &#125;, p1);</span><br></pre></td></tr></table></figure>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> root = (</span><br><span class="line">	&lt;div className=<span class="string">'root-div'</span>&gt;</span><br><span class="line">		&lt;p&gt;my test&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">	&lt;/</span>div&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSX之后会被专门的解释器解释为JS(在打包阶段就完成了，因此不会有性能上的问题)再执行</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>JSX语法</p>
+<ul>
+<li><p>在JSX中你可以使用{}来包裹JS表达式，下面以RN来举例</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;refundDetailData.return.returnPics &amp;&amp; <span class="xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;[Style.basicLayout,</span> <span class="attr">Style.image</span>]&#125;&gt;</span></span></span><br><span class="line"><span class="xml">   	<span class="tag">&lt;<span class="name">Text</span> <span class="attr">style</span>=<span class="string">&#123;[Style.textColor,</span> <span class="attr">Style.navTitle</span>]&#125;&gt;</span>图片信息:<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line">   	&lt;ImageShow picUrls=&#123;refundDetailData.return.returnPics&#125;/&gt;</span><br><span class="line"><span class="xml"> 	<span class="tag">&lt;/<span class="name">View</span>&gt;</span>&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSX本身也是一种表达式，因此可以在if语句，for循环等各种场合中使用</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dataList.map(<span class="function">(<span class="params">item, index</span>) =&gt;</span> (</span><br><span class="line">  &lt;TouchableHighlight key=&#123;index&#125;&gt;</span><br><span class="line">    &lt;View&gt;</span><br><span class="line">      &lt;Text&gt;&#123;item.contactName&#125;&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">      &lt;Text&gt;&#123;item.contactTel&#125;&lt;/</span>Text&gt;</span><br><span class="line">    &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>TouchableHighlight&gt;</span><br><span class="line">));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSX可以定义属性，一般每个组件都会接受一组属性(props)</p>
+<ul>
+<li>属性的名字可以自定义</li>
+<li>属性的值能够是变量，当属性值是变量时需要通过{}包裹起来，此时注意如果在这个大括号外层用双引号包裹，则此时整条语句会作为字符串进行解析，而不是变量了</li>
+<li>虽然JSX与HTML有很多类似处，但是其最后还是编译为JS的，因此，在React DOM中的属性名是遵循驼峰命名法的</li>
+<li><p>当忽略属性的值时，JSX会按照true来对待它。而不使用属性时，其对应的值与组件实现内部默认值有关</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="comment">/*下面两条代码实现的效果一样*/</span>&#125;</span><br><span class="line">&lt;Input type=<span class="string">"button"</span> disabled /&gt;;</span><br><span class="line">&lt;Input type=<span class="string">"button"</span> disabled=&#123;<span class="literal">true</span>&#125; /&gt;;</span><br><span class="line"></span><br><span class="line">&#123;<span class="comment">/*下面两条代码实现的效果一样*/</span>&#125;</span><br><span class="line">&lt;Input type=<span class="string">"button"</span> /&gt;;</span><br><span class="line">&lt;Input type=<span class="string">"button"</span> disabled=&#123;<span class="literal">false</span>&#125; /&gt;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>JSX标签能够包含子元素就如HTML一样，而且其子元素也可以运用JS的语法进行构建</p>
+</li>
+<li><p>JSX中的注释就如JS类似，但是需要注意当在子元素中进行注释时，需要用{}将注释包裹起来</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;Nav&gt;</span><br><span class="line">   &#123;<span class="comment">/* child comment, put &#123;&#125; around */</span>&#125;</span><br><span class="line">   &lt;Person</span><br><span class="line">     <span class="comment">/* multi</span></span><br><span class="line"><span class="comment">        line</span></span><br><span class="line"><span class="comment">        comment */</span></span><br><span class="line">     name=&#123;<span class="built_in">window</span>.isLoggedIn ? <span class="built_in">window</span>.name : <span class="string">''</span>&#125; <span class="comment">// end of line comment</span></span><br><span class="line">   /&gt;</span><br><span class="line"> &lt;<span class="regexp">/Nav&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSX中的事件处理是直接绑定在组件上的，下面以RN为例</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;TouchableHighlight style=&#123;Style.tabBtn&#125; underlayColor=&#123;Colors.yellowLighten&#125;onPress=&#123;<span class="keyword">this</span>.goToReturnList&#125;&gt;</span><br><span class="line">  &lt;Text style=&#123;Style.tabBtnText&#125;&gt;退货单&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>TouchableHighlight&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>相比于使用下面这种方式，界面元素和业务逻辑的耦合会更加明显</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#my-button'</span>).on(<span class="string">'click'</span>, <span class="keyword">this</span>.checkAndSubmit.bind(<span class="keyword">this</span>));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在JSX中，需要注意事件名依然按照驼峰命名法来进行，而大括号中就是事件触发时返回的事件处理函数。JSX中绑定的事件自动进行了解绑处理，当对应的DOM不存在时，其绑定的事件就自动解绑了。</p>
+</li>
+<li>React有一个模拟事件系统。它并不会将事件绑定到真正的节点上，当React启动时，他开始在顶层用一个单独的事件监听器来监听所有的事件。当一个组件加载或者移除时，它绑定的事件将在一个内置的映射上被添加或者移除。当事件真正触发时，React知道如何运用这个映射来dispatch这个事件。</li>
+<li>虽然整个事件系统由React来管理了，但是其API和使用方法与原生事件一致。因此做到了浏览器的兼容。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ul>
+<li>在React中，组件只是一种状态机，整个UI的渲染可以算做是状态驱动的。你更新一个组件的状态，然后根据新的状态渲染UI，React会以一种最效率的方式来更新DOM</li>
+<li>大多数组件只需要根据传入的props里面的数据进行渲染，属性是在组件初始化之后就从父级组件带入到组件内部。我们无法在使用的过程中对组件的属性进行修改。但是当需要对用户输入，时间的流逝，服务端请求作出反应时，需要用state来进行状态记录，state是实际上组件中使用的数据，它可以被修改</li>
+<li>在React中，通过调用setState(data, callback)来告诉它数据变动了，这个方法将data合并进this.state，之后告诉组件状态变动了需要进行重新渲染，callback会在重新渲染完毕后被调用。注意setState()这个方法是异步的，同步的多个setState方法只会触发一次实际render</li>
+<li><p>组件在实例化之后就开始了它的生命周期过程。它的整个生命周期主要由以下几个部分组成:</p>
+<ul>
+<li><p>getDefaultProps():在组件类创建的时候调用<strong>一次</strong>，然后返回值被缓存下来, 它返回的任何复杂对象用于设置默认的props, 并且这些将会在实例间共享，而不是每个实例拥有一份拷贝，具体使用见<a href="https://facebook.github.io/react/docs/react-without-es6.html#declaring-prop-types-and-default-props" target="_blank" rel="noopener">这里</a>。注意只能在子组件或组件树上调用setProps<a href="https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#new-deprecations-introduced-with-a-warning" target="_blank" rel="noopener">已经deprecated了</a>。别调用this.setProps或者直接修改this.props。可以通propTypes对props的类型进行验证</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> propTypes = &#123;</span><br><span class="line">   data: PropTypes.object,</span><br><span class="line">   pickerNameStyle: Text.propTypes.style</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>getInitialState():在组件挂载之前调用<strong>一次</strong>。返回值将会作为 this.state的初始值。这个方法执行时已经可以访问组件的props。注意state是每个组件自带的，而props是所有实例共享的</p>
+</li>
+<li>componentWillMount():在初始化渲染执行之前立刻调用，且只调用一次，这是渲染前最后修改state的机会</li>
+<li>render():render方法返回的结果并不是真正的DOM元素，而是一个虚拟的表现，类似于一个DOM tree的结构的对象。它是唯一一个必须的方法。在这个方法中，会检测this.props和this.state，返回一个单子级组件,当然也可以返回null或者false。render函数不应该修改state,操作DOM或者与浏览器交互</li>
+<li><p>componentDidMount():在初始化渲染执行之后立刻调用一次,在生命周期中的这个时间点，组件拥有一个DOM展现[即虚拟DOM构建完毕]，你可以通过this.getDOMNode()来获取相应DOM节点。当需要从组件获取真实DOM的节点，可以使用ref属性。注意在RN中，是先调用子组件的componentDidMount()，然后调用父组件的函数。这个函数之后，就进入了稳定运行状态，等待事件触发</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">ref</span>=<span class="string">'mainCanvas'</span>&gt;</span></span></span><br><span class="line"><span class="xml">......</span></span><br><span class="line"><span class="xml">componentDidMount: function()&#123;</span></span><br><span class="line"><span class="xml">    var canvas = this.refs.mainCanvas.getDOMNode();</span></span><br><span class="line"><span class="xml">    //可以访问到 Canvas 节点</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>componentWillReceiveProps():用此函数可以作为react在props传入之后，render()渲染之前更新state的机会,新的props是传入的,老的props可以通过this.props来获取。注意在该函数中调用this.setState()将不会引起二次渲染</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">componentWillReceiveProps: <span class="function"><span class="keyword">function</span>(<span class="params">nextProps</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.setState(&#123;</span><br><span class="line">	    likesIncreasing: nextProps.likeCount &gt; <span class="keyword">this</span>.props.likeCount</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>shouldComponentUpdate():在接收到新的props或者state,将要渲染之前调用。如果shouldComponentUpdate返回false,则render()将不会执行,直到下一次state改变。(通过此函数可以提高性能)</p>
+</li>
+<li>componentWillUpdate():和componentWillMount类似,在组件接收到了新的props或者state即将进行重新渲染前调用,注意你不能在该方法中使用this.setState()。如果需要更新state来响应某个prop的改变,请使用componentWillReceiveProps。紧接着这个函数，就会调用render()来更新界面了</li>
+<li>componentDidUpdate():和componentDidMount类似,使用该方法可以在组件更新之后操作DOM元素</li>
+<li><p>componentWillUnmount():当组件从DOM中移除的时候立刻调用来完成所有的清理和销毁工作,在conponentDidMount中添加的任务都需要再该方法中撤销,如创建的定时器或事件监听器</p>
+<p><img src="http://okzzg7ifm.bkt.clouddn.com/reactlife.png" alt="lifeCycle"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="运行组件UI-example"><a href="#运行组件UI-example" class="headerlink" title="运行组件UI example"></a>运行组件UI example</h3><ul>
+<li>运行官方案例(即在虚拟机上查看RN各个组件的实际效果)<ul>
+<li><a href="https://github.com/facebook/react-native#examples" target="_blank" rel="noopener">运行方法</a></li>
+<li>运行过程中可能出现的问题<ul>
+<li>What went wrong: Execution failed for task ‘:ReactAndroid:buildReactNdkLib’. <ul>
+<li><a href="http://stackoverflow.com/questions/36209774/unable-to-run-react-native-uiexplorer-example-project" target="_blank" rel="noopener">解决办法</a></li>
+</ul>
+</li>
+<li>安卓新项目起不来<ul>
+<li>解决办法: 注意下是不是老项目的shell还在运行，需要重新编译链接一次</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="官方组件举例"><a href="#官方组件举例" class="headerlink" title="官方组件举例"></a>官方组件举例</h3><ul>
+<li><p>ScrollView</p>
+<ul>
+<li>ScrollView是一个普通的可滚动容器，它能包含多个组件和View。</li>
+<li>ScrollView能纵向滚动也能横向滚动</li>
+<li>ScrollView一般用来展示限制尺寸的少量东西。因为所有ScrollView里面的元素和组件都会被渲染，不管它当前是否展示在屏幕上。</li>
+<li>ScrollView必须有一个确定的高度才能正常工作，因为滚动的本质就是将一系列不确定高度的子组件装进一个确定高度的容器</li>
+<li><p>属性</p>
+<ul>
+<li>contentContainerStyle：传入的样式属性，其作为样式会应用在包裹所有子元素的内容元素容器上</li>
+<li><p>horizontal：确定横向还是纵向滚动，默认为false，即默认纵向滚动</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;ScrollView style=&#123;styles.listTab&#125; horizontal&gt; </span><br><span class="line">      &#123;<span class="keyword">this</span>.level.map(<span class="function">(<span class="params">item, index</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">          &lt;View style=&#123;styles.tabTextContainer&#125; key=&#123;index&#125;&gt;</span><br><span class="line">            &lt;Text&gt;&#123;item&#125;&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">          &lt;/</span>View&gt;</span><br><span class="line">          )</span><br><span class="line">      &#125;)&#125;         </span><br><span class="line">     &lt;<span class="regexp">/ScrollView&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>keyboardDismissMode：决定当拖拽时，键盘是否消失</p>
+<ul>
+<li>none：默认，拖拽不会让键盘消失</li>
+<li>on-drag：当拖拽开始时，键盘消失</li>
+<li>interactive：安卓上不支持，键盘伴随拖拽操作同步地消失，并且如果往上滑动会恢复键盘</li>
+</ul>
+</li>
+<li>keyboardShouldPersistTaps：决定当点击时，键盘是否可见。这个属性特别重要。比如ScrollView里面有很多输入框时，我们希望点击输入框是输入框本身拿到事件，而键盘并不会在切换时进行关闭再打开的操作。<ul>
+<li>never：默认，当点击文本输入框之外时，如果键盘是打开的则关闭键盘。当这个发生时，子元素将不会接收到点击事件</li>
+<li>always：键盘将不会自动关闭，并且scroll view不会捕捉到点击事件，但是子元素能够捕捉到点击事件</li>
+<li>handle：键盘将不会自动关闭当点击是由子元素触发的</li>
+<li>false：用never替代</li>
+<li>true：用always替代</li>
+</ul>
+</li>
+<li><p>onContentSizeChange：当滚动视图的内容尺寸大小发生变化的时候调用</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.level = [<span class="string">'我常买'</span>, <span class="string">'热卖'</span>, <span class="string">'一级类目'</span>, <span class="string">'鸡腿系列'</span>, <span class="string">'海鲜系列'</span>, <span class="string">'鸭制品系列'</span>];</span><br><span class="line">...</span><br><span class="line">&lt;TouchableHighlight onPress=&#123;() =&gt; &#123;<span class="keyword">this</span>.level.pop(); <span class="keyword">this</span>.forceUpdate();&#125;&#125;&gt;</span><br><span class="line">     &lt;View style=&#123;styles.button&#125; &gt;</span><br><span class="line">       &lt;Text style=&#123;styles.add&#125;&gt;+<span class="xml"><span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line">     &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">   &lt;/</span>TouchableHighlight&gt;</span><br><span class="line">   ...</span><br><span class="line">   &lt;ScrollView style=&#123;styles.listTab&#125; horizontal onContentSizeChange=&#123;(contentWidth, contentHeight) =&gt; &#123;<span class="built_in">console</span>.debug(contentWidth, contentHeight);&#125;&#125;&gt; </span><br><span class="line">      &#123;<span class="keyword">this</span>.level.map(<span class="function">(<span class="params">item, index</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">          &lt;View style=&#123;styles.tabTextContainer&#125; key=&#123;index&#125;&gt;</span><br><span class="line">            &lt;Text&gt;&#123;item&#125;&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">          &lt;/</span>View&gt;</span><br><span class="line">          )</span><br><span class="line">      &#125;)&#125;         </span><br><span class="line">      &lt;<span class="regexp">/ScrollView&gt;</span></span><br></pre></td></tr></table></figure>
+<p>  <img src="http://okzzg7ifm.bkt.clouddn.com/contentSizechange.png" alt="life"></p>
+</li>
+<li>onScroll：该方法在滚动的时候每frame(帧)调用一次，调用的频率可以用scrollEventThrottle属性来控制。当滚动到边界后无法触发</li>
+<li>refreshControl：一个refreshControl组件，主要在下拉刷新时使用</li>
+<li>pagingEnabled：默认false，当为true时，scroll view会停留在其尺寸的倍数的位置。这个能够被用在在横向翻页。具体表现就是，超过Scroll View尺寸一点时页面会自动会回退回去，超过很多但是尚未到达其尺寸两倍的位置，则会向前到达其两倍尺寸的位置，之后如此类推</li>
+<li>removeClippedSubviews：默认为true，在ScrollView视图之外的子视图(该视图的overflow属性值必须要为hidden)会被暂时移除，该设置可以提高滚动的性能</li>
+<li>scrollEnabled：默认true，当为false时，内容不会滚动</li>
+<li>showsHorizontalScrollIndicator：默认true，当为true时，横向滚动会展示滑条</li>
+<li>showsVerticalScrollIndicator：默认true，当为true时，纵向滚动会展示滑条</li>
+</ul>
+</li>
+<li>仅Android支持的属性:<ul>
+<li>endFillColor：当滚动内容没填充满Scroll View时设定填充不满的区域</li>
+<li>scrollPerfTag：在Scroll View上记录滚动性能的标签</li>
+</ul>
+</li>
+<li>仅iOS支持的属性:<ul>
+<li>alwaysBounceHorizontal：横向弹簧效果，当horizontal ={true}默认是true，horizontal={false}默认是false</li>
+<li>alwaysBounceVertical：纵向弹簧效果，当horizontal ={true}默认是false，horizontal={false}默认是true</li>
+<li>automaticallyAdjustContentInsets：默认true，自动调节内容内偏移，控制是否自动调节内容内偏移以便于一个navigation bar或者tab bar或者toolbar不挡住Scrollview中的内容</li>
+<li>bounces：默认true，控制水平方向与垂直方向的弹簧效果，优先级比alwaysBounce* 属性高</li>
+<li>bouncesZoom：控制拉近与缩小超过限制时是否有弹性动画，当为true时有</li>
+<li>canCancelContentTouches：默认true，控制ScrollView是否可以拖动，如果为false不能拖动</li>
+<li>centerContent：默认false，为true时如果ScrollView中内容小于ScrollView的边界，则它们自动居中，超过边界时无效</li>
+<li>contentInset：内部内容距离ScrollView边界的内偏移量，默认为{top: 0, left: 0, bottom: 0, right: 0}</li>
+<li>contentOffset：用来手动设置起始滚动偏移量。默认为 {x: 0,y: 0} </li>
+<li>decelerationRate：指定手指抬起减速速率<ul>
+<li>normal: 0.998，为默认</li>
+<li>fast: 0.99</li>
+<li>也可以指定一个浮点数，确定减速快慢</li>
+</ul>
+</li>
+<li>directionalLockEnabled：默认false，为true时控制只有一个方向可以滚动当拖拽</li>
+<li>indicatorStyle：指示器样式，default与black相同，black与白色背景搭配，white与黑色背景搭配</li>
+<li>maximumZoomScale：默认是1.0，放大的最大系数</li>
+<li>minimumZoomScale：默认是1.0，缩小的最大系数</li>
+<li>onScrollAnimationEnd：滚动动画完成后触发</li>
+<li>scrollEventThrottle：控制滚动时滚动事件触发频率</li>
+<li>scrollIndicatorInsets： {top: number, left: number, bottom: number, right: number}，指定指示器内偏移量，应与contentInset值相同，默认{0, 0, 0, 0}</li>
+<li>scrollsToTop：默认true，默认true时，Scroll View滚动到顶部当状态条被点击时</li>
+<li>snapToAlignment：当snapToInterval指定时，这个属性定义这个停驻点相对于Scroll View的关系。<ul>
+<li>start (默认) 会将停驻点对齐在左侧（水平）或顶部（垂直）</li>
+<li>center 会将停驻点对齐到中间</li>
+<li>end 会将停驻点对齐到右侧（水平）或底部（垂直）</li>
+</ul>
+</li>
+<li>snapToInterval：当指定时，会导致Scroll View停留在这个参数的倍数的位置。这个属性一般与snapToAlignment一起用</li>
+<li>stickyHeaderIndices：子元素索引构成的数组，用来指定滚动时这些元素停靠到界面的顶部，比如传递stickyHeaderIndices={[0]}将让第一个子元素固定到Scroll View的顶部。当horizontal={true}时，这个属性不支持</li>
+<li>zoomScale：当前Scroll View内容的缩放比例</li>
+</ul>
+</li>
+<li>方法<ul>
+<li>scrollTo()：例如scrollTo({x: 0; y: 0; animated: true})，滚动到指定的x, y偏移处。第三个参数为是否启用平滑滚动动画</li>
+<li>scrollToEnd()：如果是纵向的滚动，则滚动到底部，如果是横向，则滚动到右部</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="官方API举例"><a href="#官方API举例" class="headerlink" title="官方API举例"></a>官方API举例</h3><ul>
+<li><p>BackHandler</p>
+<ul>
+<li><p>监听硬件的back键操作。如果没有任何监听函数，或者监听函数的返回值不是true，则会调用默认的back键功能来退出应用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.backAndroidListener = BackHandler.addEventListener(<span class="string">'hardwareBackPress'</span>, () =&gt; &#123;</span><br><span class="line">	<span class="keyword">if</span> (navigator.getCurrentRoutes().length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">		navigator.pop();</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">this</span>.onExitApp();</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法：</p>
+<ul>
+<li>exitApp：当你在监听里面无法立刻判断是否要退出，比如你需要获取异步操作执行成功后再调用，此时可以用这个函数来退出</li>
+<li>addEventListener：绑定监听函数</li>
+<li>removeEventListener：移除监听函数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://teropa.info/blog/2015/03/02/change-and-its-detection-in-javascript-frameworks.html" target="_blank" rel="noopener">Change And Its Detection In JavaScript Frameworks</a></li>
+<li><a href="http://www.race604.com/react-native-component-lifecycle/" target="_blank" rel="noopener">React Native 中组件的生命周期</a></li>
+<li><a href="https://davidwalsh.name/event-delegate" target="_blank" rel="noopener">How JavaScript Event Delegation Works</a></li>
+<li><a href="http://www.infoq.com/cn/articles/react-jsx-and-component" target="_blank" rel="noopener">深入浅出React（三）：理解JSX和组件</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/10/lulutia/immutable-RN-Redux/" rel="prev">基于React-Native及Redux的Immutable.js引入</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/26/zero/Looper和Handler和HandlerThread/" rel="next">Looper和Handler和HandlerThread</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSX"><span class="nav-number">1.</span> <span class="nav-text">JSX</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生命周期"><span class="nav-number">2.</span> <span class="nav-text">生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行组件UI-example"><span class="nav-number">3.</span> <span class="nav-text">运行组件UI example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方组件举例"><span class="nav-number">4.</span> <span class="nav-text">官方组件举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官方API举例"><span class="nav-number">5.</span> <span class="nav-text">官方API举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

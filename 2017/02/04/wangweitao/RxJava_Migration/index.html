@@ -1,0 +1,745 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="andorid,rxjava,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="“The Next Step for Reactive Android Programming”一文主要讲述在已有的android项目中将rxjava1升级到rxjava2的一些优缺点和可能遇到的困难。">
+<meta name="keywords" content="andorid,rxjava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Next Step for Reactive Android Programming（译文）">
+<meta property="og:url" content="http://xgfe.github.io/2017/02/04/wangweitao/RxJava_Migration/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="“The Next Step for Reactive Android Programming”一文主要讲述在已有的android项目中将rxjava1升级到rxjava2的一些优缺点和可能遇到的困难。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/c794e0b2f98fbfa363a6d0f381c6ed7f33970.gif">
+<meta property="og:image" content="https://p1.meituan.net/dpnewvc/f24760ea5ba6992b6996cf03ba811357226254.gif">
+<meta property="og:updated_time" content="2019-05-05T02:41:48.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Next Step for Reactive Android Programming（译文）">
+<meta name="twitter:description" content="“The Next Step for Reactive Android Programming”一文主要讲述在已有的android项目中将rxjava1升级到rxjava2的一些优缺点和可能遇到的困难。">
+<meta name="twitter:image" content="https://p1.meituan.net/dpnewvc/c794e0b2f98fbfa363a6d0f381c6ed7f33970.gif">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> The Next Step for Reactive Android Programming（译文） | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              The Next Step for Reactive Android Programming（译文）
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-02-04T00:00:00+08:00" content="2017-02-04">
+            2017-02-04
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/wangweitao/" itemprop="url" rel="index">
+                  <span itemprop="name">wangweitao</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/andorid/" rel="tag"><i class="icon-next-tags"></i>andorid</a>
+            
+              <a href="/tags/rxjava/" rel="tag"><i class="icon-next-tags"></i>rxjava</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>“The Next Step for Reactive Android Programming”一文主要讲述在已有的android项目中将rxjava1升级到rxjava2的一些优缺点和可能遇到的困难。</p>
+<a id="more"></a>
+<p> 原文地址：<a href="http://futurice.com/blog/the-next-step-for-reactive-android-programming" target="_blank" rel="noopener">The Next Step for Reactive Android Programming</a></p>
+<p> RxJava2已经出来了。如果项目还在使用RxJava1,则需要考虑升级版本。在升级之前，要仔细考虑升级的投入回报，需要花费的时间以及短期和长期的收益。</p>
+<h3 id="升级的好处"><a href="#升级的好处" class="headerlink" title="升级的好处"></a>升级的好处</h3><h4 id="支持Reactive-Streams"><a href="#支持Reactive-Streams" class="headerlink" title="支持Reactive Streams"></a>支持Reactive Streams</h4><p> 支持Reactive Streams是rxjava2架构上的一个变动。rxjava2重写了一套代码来支持它。Reactive Streams提供了通俗易懂的api来理解reactive库的工作过程。使我们能方便的使用不同的库。以reactor3库为例，该库与rxjava非常相似。如果你是一个android开发者，那么就不能使用它了。毕竟它是基于java 8及其以上的版本。</p>
+<p> 在两个版本库升级reactive流是一件很容易的事。<img src="https://p1.meituan.net/dpnewvc/c794e0b2f98fbfa363a6d0f381c6ed7f33970.gif" alt=""><br>reactor3的性能比rxjava2提升10%～50%。很遗憾它不能使用在android上。<br>据我所知，rxjava2是目前android中惟一支持reactive streams的库。这表明当下升级rxjava2的回报并不高。</p>
+<h4 id="backpressure-observable-flowable"><a href="#backpressure-observable-flowable" class="headerlink" title="backpressure - observable/flowable"></a>backpressure - observable/flowable</h4><p> rxjava2有一个叫做flowable的新类型.它与rxjava1中的observable非常的相似。它们最大的不同就是在rxjava2中，flowable支持backpressure.</p>
+<p> 先解释一下backpressure的含义。不熟悉rxjava2的人听到“flowable支持backpressure”经常会问“支持backpressure是不是意味着不会收到任何MissBackpressureException”。答案是：不。</p>
+<p> 支持backpressure表示处理事件的消费者没有及时保存事件，那么它有一套策略去处理它们。需要你去指定这个策略。</p>
+<h4 id="flowable"><a href="#flowable" class="headerlink" title="flowable"></a>flowable</h4><p> 在使用flowables时，你需要制定它的一些行为策略，包括：</p>
+<ul>
+<li>缓存：处理线程不能及时处理的事件会被缓存起来，当处理线程空闲时将发送缓存的事件。</li>
+<li>丢弃：当处理线程处理缓慢时，它会忽略所有的时间。一旦处理线程空闲，将会处理最近产生的事件。</li>
+<li><p>错误：处理线程会抛出MissingBackpressureException</p>
+<p>实际上来说，你在app中容易遇到backpressure吗？我对此非常怀疑。因此，我写了一个读取加速度传感器的flowable。把读出的数据打印在屏幕上：<img src="https://p1.meituan.net/dpnewvc/f24760ea5ba6992b6996cf03ba811357226254.gif" alt=""></p>
+<p>android中的加速度计每秒读取50次，将这些数据展示在屏幕上还不足以遇到backpressure问题。实际上，这些取决于reactive流的处理过程。但是它能够表明，backpressure并不是经常发生的问题。</p>
+</li>
+</ul>
+<h4 id="observable"><a href="#observable" class="headerlink" title="observable"></a>observable</h4><p> observable并不支持backpressure.这表明它们从来不会发出MissingBackpressureException。如果消费者线程不能够及时处理这些事件，它们会缓存事件并稍后重新发射。</p>
+<p> 那么什么时候该使用flowable，什么时候该使用observable呢？</p>
+<p> 当能够明确知道backpressure在某些特定的条件下产生，如果不处理该backpressure会出现问题的时候，使用flowable.对于加速度计，如果我们需要使用它的数据而不是简单的打印出来，那么则可能出现backpressure,我也会使用flowable。</p>
+<p> observable则在不太可能出现backpressure的情况下使用。比如用户频繁的点击按钮，那么完全可以让它们缓存着。</p>
+<p> 值得一提的是，如果你使用了observable,并且在短时间内出现了大量的缓存事件，那么整个程序可能会崩溃。</p>
+<p> 我的一般原则是使用observable,对于以下几种类型的事件可以如此处理。</p>
+<ul>
+<li>按钮点击事件：每秒按钮点击事件次数有限，使用observable.</li>
+<li><p>光或者加速度传感器：每秒有数十次事件，使用flowable。</p>
+<p>需要记住的是如果你在按钮的点击事件中花费大量时间，也会导致backpressure。</p>
+</li>
+</ul>
+<h4 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h4><p> rxjava2的性能要比之前版本高。使用高性能的库是一件很棒的事。但是你需要知道项目性能的瓶颈是不是rxjava.很多时候你会看着代码思考是不是flatmap的速度太慢了。在android程序中，计算通常都不是问题。大多数时候瓶颈是在ui渲染上。</p>
+<p> 我们并不是因为太多东西出现在计算线程上而导致掉帧，而是因为太复杂的布局，忘记在后台线程访问数据或者渲染时创建bitmap而导致的掉帧。</p>
+<h3 id="升级的挑战"><a href="#升级的挑战" class="headerlink" title="升级的挑战"></a>升级的挑战</h3><h4 id="再见nulls"><a href="#再见nulls" class="headerlink" title="再见nulls"></a>再见nulls</h4><p> 近几年对nulls的敌意越来越多。即使是null引用的发明者也说这是一个“10亿美元的错误”。在rxjava1中你可以使用null值。但是在最新版本中，则不能使用nulls。null值在steam中被禁止。如果你在项目中使用了null,那么将会有大量的升级工作要做。你可能需要一些null objects pattern或者optionals来表示那些缺失的值。</p>
+<h4 id="dex容量限制"><a href="#dex容量限制" class="headerlink" title="dex容量限制"></a>dex容量限制</h4><p> 你是否尝试过相函数式编程人员解释android中函数数量的限制？你可以尝试一下，它们的反应会很有趣。</p>
+<p> 遗憾的是一个dex中我们能够写65000左右的方法。rxjava1大概含有5500的方法。这已经不小了。现在rxjava2含有超过9200个方法。增加的4000个方法很容易理解，毕竟它添加了很多功能。但是你升级项目很可能需要一步一步的完成，在升级时需要包括两个库。也就是总计15000方法，占dex方法总数的22%。</p>
+<p> 如果你的方法数已经超过限制，那么这不是一个问题。但是如果你的方法快要超过限制，那么这就是升级的另一个问题。</p>
+<h4 id="自定义operators"><a href="#自定义operators" class="headerlink" title="自定义operators"></a>自定义operators</h4><p> rxjava中现有的operators也许不够使用。你可能需要一些自定义的行为。在这种情况下，你会尝试编写自己的operator.</p>
+<p> 这些在rxjava1中是微不足道的一件小事。因为你只需要考虑多线程和backpressure支持即可。</p>
+<p> 但是在rxjava2中就变得严重了。首先，你创建operator的方式变了。在rxjava1中你使用臭名昭著的create方法即可。但是在rxjava2中，你不仅要考虑多线程访问、backpressure、取消以及其他方面，还要考虑第四个特性Operator Fusion。这个会提高operator的性能，同时也会更加复杂。</p>
+<p> 那么，真的值得去写自定义的operator吗？除非你去写rxjava2中已有的库或者其他reactive库中有的operator,否则我建议你去找另一条解决方法。</p>
+<p> 首先，检查现有operator的组合是否能满足需求。其次，可以考虑使用transformer。它们不会像operator那样个性化，但容易编写。此外它们拥有更高的性能。最后一点，在android中瓶颈问题通常都是ui.</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p> 以上都是对升级到rxjava2的分析。最总都取决于你认为升级工作是否值得。</p>
+<p> 就目前而言，使用rxjava1还是不错的。rxjava1目前依旧被支持。如果rxjava1不再被支持，那么升级到下一版本就很有必要。</p>
+<p> 如果你的项目持续超过一年的时间，你需要考虑升级，否则保持在rxjava1会更好。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/07/TinySymphony/React-Native-ART介绍/" rel="prev">React Native ART介绍</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/22/penglu/git-01/" rel="next">Git常用命令和基础简介</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#升级的好处"><span class="nav-number">1.</span> <span class="nav-text">升级的好处</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持Reactive-Streams"><span class="nav-number">1.1.</span> <span class="nav-text">支持Reactive Streams</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#backpressure-observable-flowable"><span class="nav-number">1.2.</span> <span class="nav-text">backpressure - observable/flowable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#flowable"><span class="nav-number">1.3.</span> <span class="nav-text">flowable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#observable"><span class="nav-number">1.4.</span> <span class="nav-text">observable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#性能"><span class="nav-number">1.5.</span> <span class="nav-text">性能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#升级的挑战"><span class="nav-number">2.</span> <span class="nav-text">升级的挑战</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#再见nulls"><span class="nav-number">2.1.</span> <span class="nav-text">再见nulls</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dex容量限制"><span class="nav-number">2.2.</span> <span class="nav-text">dex容量限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义operators"><span class="nav-number">2.3.</span> <span class="nav-text">自定义operators</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">3.</span> <span class="nav-text">结论</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>
