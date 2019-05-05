@@ -6,7 +6,7 @@
   const gitment = new Gitmint({
     id: id,
     owner: 'xgfe',
-    admin: ['lulutia'],
+    admin: ['lulutia', 'Catherine33'],
     repo: 'xgfe.github.io',
     oauth: {
       client_id: '23cc0db4fc1491f8ae2e',
