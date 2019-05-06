@@ -9,6 +9,7 @@
     admin: ['lulutia', 'Catherine33'],
     repo: 'xgfe.github.io',
     oauth: {
+      redirect_protocol: 'https',
       client_id: '23cc0db4fc1491f8ae2e',
       client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
     }
