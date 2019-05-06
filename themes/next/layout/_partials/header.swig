@@ -34,7 +34,7 @@
       {% endfor %}
       <!-- slide-links added by felix -->
       <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
-        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
           <i class="menu-item-icon icon-next-slides"></i> <br>
           Basics
         </a>
