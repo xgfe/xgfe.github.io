@@ -1,0 +1,870 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="算法,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要总结了动态规划的几种经典题型，分别为经典01背包、最少硬币、最大正方形、最大加号标志。">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js实现算法之动态规划">
+<meta property="og:url" content="http://xgfe.github.io/2019/03/25/dengzonghui/ dynamic/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要总结了动态规划的几种经典题型，分别为经典01背包、最少硬币、最大正方形、最大加号标志。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p0.meituan.net/xgfe/62e9135edf9a68df2624aba1d50b9582537777.jpg">
+<meta property="og:updated_time" content="2019-05-06T02:31:07.514Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="js实现算法之动态规划">
+<meta name="twitter:description" content="本文主要总结了动态规划的几种经典题型，分别为经典01背包、最少硬币、最大正方形、最大加号标志。">
+<meta name="twitter:image" content="http://p0.meituan.net/xgfe/62e9135edf9a68df2624aba1d50b9582537777.jpg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> js实现算法之动态规划 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              js实现算法之动态规划
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-03-25T00:00:00+08:00" content="2019-03-25">
+            2019-03-25
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/dengzonghui/" itemprop="url" rel="index">
+                  <span itemprop="name">dengzonghui</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/算法/" rel="tag"><i class="icon-next-tags"></i>算法</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要总结了动态规划的几种经典题型，分别为经典01背包、最少硬币、最大正方形、最大加号标志。</p>
+<a id="more"></a>
+<h2 id="一、经典01背包"><a href="#一、经典01背包" class="headerlink" title="一、经典01背包"></a>一、经典01背包</h2><h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1. 题目"></a>1. 题目</h3><p>背包容量capacity=5，有三个物品(value, weight)，分别是(3,2),(4,3),(5,4)求出其搭配组合，使得背包内总价最大，且最大价值为多少？</p>
+<h3 id="2-思路"><a href="#2-思路" class="headerlink" title="2.思路"></a>2.思路</h3><p>首先理清思路列出表格：<br>如果背包总容量为0，那么很显然地，任何物品都无法装进背包，那么背包内总价值必然是0。所以第一步先填满 j=0 的情况。<br>接下来将从上到下，从左往右地填写这个表格。分析第i行时，它的物品组合仅能是小于等于i的情况。所以现在把注意力定位到 i =0, j = 1 的空格上。<br>i=0 j=1 : 背包总容量为1，但是物品0 的重量为 2，无法装下去，所以这一格应该填 0。<br>i=0 j=2 : 背包总容量为2，刚好可以装下物品0 ，由于物品0 的价值为3，因此这一格填 3。<br>后面同理。<br>i=1 j=1 : 背包总容量为1，但是物品0 的重量为 2，物品1重量为3，背包无法装下任何物品，所以填 0。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>val</th>
+<th>weight</th>
+<th>j=0</th>
+<th>j=1</th>
+<th>j=2</th>
+<th>j=3</th>
+<th>j=4</th>
+<th>j=5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i=0</td>
+<td>3</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>i=1</td>
+<td>4</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>4</td>
+<td>4</td>
+<td>7</td>
+</tr>
+<tr>
+<td>i=2</td>
+<td>5</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<p>伪代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if(j&gt;w[i])&#123;</span><br><span class="line">    T[i][j] = T[i-1][j]</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    T[i][j] = max(T[i-1][j-w[i]]+val[i], T[i-1][j])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-代码"><a href="#3-代码" class="headerlink" title="3.代码"></a>3.代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">function backpack(w,val,capacity,n)&#123;</span><br><span class="line">    var T = []</span><br><span class="line"></span><br><span class="line">    for(let i = 0;i &lt; n;i++)&#123;</span><br><span class="line">        T[i] = [];</span><br><span class="line">        for(let j=0;j &lt;= capacity;j++)&#123;</span><br><span class="line">            if(j === 0)&#123; //容量为0</span><br><span class="line">                T[i][j] = 0;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;	</span><br><span class="line">            if(j &lt; w[i])&#123; //容量小于物品重量，本行hold不住</span><br><span class="line">                if(i === 0)&#123;</span><br><span class="line">                    T[i][j] = 0; // i = 0时，不存在i-1，所以T[i][j]取0</span><br><span class="line"></span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    T[i][j] = T[i-1][j]; //容量小于物品重量，参照上一行</span><br><span class="line">                &#125;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            if(i === 0)&#123;</span><br><span class="line">                T[i][j] = val[i]; //第0行，不存在 i-1, 最多只能放这一行的那一个物品</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                T[i][j] = Math.max(val[i] + T[i-1][j-w[i]],T[i-1][j]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    findValue(w,val,capacity,n,T);</span><br><span class="line">    return T;</span><br><span class="line">&#125;</span><br><span class="line">//找到需要的物品</span><br><span class="line">function findValue(w,val,capacity,n,T)&#123;</span><br><span class="line">    var i = n-1, j = capacity;</span><br><span class="line">    while ( i &gt; 0 &amp;&amp; j &gt; 0 )&#123;</span><br><span class="line">        if(T[i][j] != T[i-1][j])&#123;</span><br><span class="line">            console.log(&apos;选择物品&apos;+i+&apos;,重量：&apos;+ w[i] +&apos;,价值：&apos; + values[i]);</span><br><span class="line">            j = j- w[i];</span><br><span class="line">            i--;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            i--;  //如果相等，那么就到 i-1 行</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if(i == 0 )&#123;</span><br><span class="line">        if(T[i][j] != 0)&#123; //那么第一行的物品也可以取</span><br><span class="line">            console.log(&apos;选择物品&apos;+i+&apos;,重量：&apos;+ w[i] +&apos;,价值：&apos; + values[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var values = [3,4,5],</span><br><span class="line">weights = [2,3,4],</span><br><span class="line">capacity = 5,</span><br><span class="line">n = values.length;</span><br><span class="line"></span><br><span class="line">console.log(backpack(weights,values,capacity,n));</span><br></pre></td></tr></table></figure>
+<h2 id="二、最少硬币"><a href="#二、最少硬币" class="headerlink" title="二、最少硬币"></a>二、最少硬币</h2><h3 id="1-题目-1"><a href="#1-题目-1" class="headerlink" title="1. 题目"></a>1. 题目</h3><p>4种硬币 1分、2分、5分、6分<br>总共需要11分，求最少的硬币数以及组合</p>
+<h3 id="2-思路-1"><a href="#2-思路-1" class="headerlink" title="2.思路"></a>2.思路</h3><p>首先理清思路列出表格：<br>与经典背包相同，填写第i行表示只能用i和比i小的硬币。硬币数组coins[]，需要的钱数j。<br>当我们只能使用面额为1分的硬币时，根据上面的规则，那么很显然，总额为几分，就需要几个硬币。<br>当我们有1分和2分两种面额时，那么组合方式就相对多了点。<br>i=1 j = 1：总额为1时，只能使用1分的面额。即填1。<br>i=1 j = 2：总额为2时，可以使用2个1分的，也可以使用1个2分的。<br>因为我们要求最少硬币，所以使用1个2分的。表格里填1。<br>以此类推：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>j=0</th>
+<th>j=1</th>
+<th>j=2</th>
+<th>j=3</th>
+<th>j=4</th>
+<th>j=5</th>
+<th>j=6</th>
+<th>j=7</th>
+<th>j=8</th>
+<th>j=9</th>
+<th>j=10</th>
+<th>j=11</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i=0 1分</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>i=1 2分</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>i=2 5分</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>i=3 6分</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>伪代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if(j&lt;coins[i])&#123;</span><br><span class="line">    T[i][j] = T[i-1][j]</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    T[i][j] = min(T[i-1][j], T[i][j-coins[i]]+1)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-代码-1"><a href="#3-代码-1" class="headerlink" title="3.代码"></a>3.代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* @param &#123;number[]&#125; coins</span><br><span class="line">* @param &#123;number&#125; amount</span><br><span class="line">* @return &#123;number&#125;</span><br><span class="line">*/</span><br><span class="line">var coinChange = function(coins, amount) &#123;</span><br><span class="line">    coins.sort((a,b)=&gt;(a-b));</span><br><span class="line">    var T = [];</span><br><span class="line">    for(let i=0; i&lt;coins.length; i++)&#123;</span><br><span class="line">        T[i] = [];</span><br><span class="line">        for(let j=0; j&lt;=amount; j++)&#123;</span><br><span class="line">            T[i][j] = 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    for(let i=0; i&lt;T.length; i++)&#123;</span><br><span class="line">        for(let j=0; j&lt;T[i].length; j++)&#123;</span><br><span class="line">            if(j==0)&#123;</span><br><span class="line">                T[i][j] = 0;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            if(i==0)&#123;</span><br><span class="line">                if(Number.isInteger(j/coins[i]))&#123;</span><br><span class="line">                    T[i][j] = j/coins[i];</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    T[i][j] = Infinity;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                if(j&lt;coins[i])&#123;</span><br><span class="line">                    T[i][j] = T[i-1][j];</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    T[i][j] = Math.min(T[i-1][j], T[i][j-coins[i]]+1);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return T[T.length-1][T[0].length-1]===Infinity?-1:T[T.length-1][T[0].length-1];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="三、最大正方形"><a href="#三、最大正方形" class="headerlink" title="三、最大正方形"></a>三、最大正方形</h2><h3 id="1-题目-2"><a href="#1-题目-2" class="headerlink" title="1. 题目"></a>1. 题目</h3><p>在一个由 0 和 1 组成的二维矩阵内，找到只包含 1 的最大正方形，并返回其面积。<br>示例:</p>
+<p>输入: </p>
+<p>1 0 1 0 0<br>1 0 1 1 1<br>1 1 1 1 1<br>1 0 0 1 0</p>
+<p>输出: 4</p>
+<h3 id="2-思路-2"><a href="#2-思路-2" class="headerlink" title="2.思路"></a>2.思路</h3><p>首先用例中不一定会给正方形，也可能是长方形，所以必须分别求长和宽。<br>其次如果此点的值是0，则直接将结果设为0；如果此点的值为1，则它等于它左方、上方、左上方三者的最小值+1。<br>最后是需要一个变量max，在遍历的过程中不断修改自身获取dp中的最大值。</p>
+<p><img src="http://p0.meituan.net/xgfe/62e9135edf9a68df2624aba1d50b9582537777.jpg" alt="最大正方形的获取"></p>
+<h3 id="3-代码-2"><a href="#3-代码-2" class="headerlink" title="3.代码"></a>3.代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @param &#123;character[][]&#125; matrix</span><br><span class="line"> * @return &#123;number&#125;</span><br><span class="line"> */</span><br><span class="line">var maximalSquare = function(matrix) &#123;</span><br><span class="line">    let len1 = matrix.length, len2;</span><br><span class="line">    var dp = new Array(len1);//设置长度</span><br><span class="line">    let max = 0;//记录矩阵中最大值</span><br><span class="line">    for(let i=0; i&lt;len1; i++)&#123;</span><br><span class="line">        len2 = matrix[i].length;</span><br><span class="line">        dp[i] = new Array(len2);</span><br><span class="line">    &#125;</span><br><span class="line">    for(let i=0; i&lt;len1; i++)&#123;</span><br><span class="line">        for(let j=0; j&lt;len2; j++)&#123;</span><br><span class="line">            if(i==0 || j==0)&#123;</span><br><span class="line">                dp[i][j] = matrix[i][j] == &apos;1&apos;?1:0;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                dp[i][j] = matrix[i][j] == &apos;1&apos;? (Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1])+1):0;</span><br><span class="line">            &#125;</span><br><span class="line">            max = Math.max(max, dp[i][j]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return max*max;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="四、最大加号标志"><a href="#四、最大加号标志" class="headerlink" title="四、最大加号标志"></a>四、最大加号标志</h2><h3 id="1-题目-3"><a href="#1-题目-3" class="headerlink" title="1. 题目"></a>1. 题目</h3><p>在一个大小在 (0, 0) 到 (N-1, N-1) 的2D网格 grid 中，除了在 mines 中给出的单元为 0，其他每个单元都是 1。网格中包含 1 的最大的轴对齐加号标志是多少阶？返回加号标志的阶数。如果未找到加号标志，则返回 0。</p>
+<p>一个 k” 阶由 1 组成的“轴对称”加号标志具有中心网格  grid[x][y] = 1 ，以及4个从中心向上、向下、向左、向右延伸，长度为 k-1，由 1 组成的臂。下面给出 k” 阶“轴对称”加号标志的示例。注意，只有加号标志的所有网格要求为 1，别的网格可能为 0 也可能为 1。</p>
+<p>k 阶轴对称加号标志示例:</p>
+<p>阶 1:<br>000<br>010<br>000</p>
+<p>阶 2:<br>00000<br>00100<br>01110<br>00100<br>00000</p>
+<p>阶 3:<br>0000000<br>0001000<br>0001000<br>0111110<br>0001000<br>0001000<br>0000000</p>
+<p>示例 1：</p>
+<p>输入: N = 5, mines = [[4, 2]]<br>输出: 2<br>解释:</p>
+<p>11111<br>11111<br>11111<br>11111<br>11011</p>
+<p>在上面的网格中，最大加号标志的阶只能是2。一个标志已在图中标出。</p>
+<p>示例 2：</p>
+<p>输入: N = 2, mines = []<br>输出: 1<br>解释:</p>
+<p>11<br>11</p>
+<p>没有 2 阶加号标志，有 1 阶加号标志。</p>
+<p>示例 3：</p>
+<p>输入: N = 1, mines = [[0, 0]]<br>输出: 0<br>解释:</p>
+<p>0</p>
+<p>没有加号标志，返回 0 。</p>
+<h3 id="2-思路-3"><a href="#2-思路-3" class="headerlink" title="2.思路"></a>2.思路</h3><p>首先要给所有位置设置最大值即边长N。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let dp = [...Array(N)].map(() =&gt; Array(N).fill(N));</span><br></pre></td></tr></table></figure></p>
+<p>循环遍历所有行，从四个方向更新dp。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">for(let i=0; i&lt;N; i++)&#123;</span><br><span class="line">        for(let l=0, left=0; l&lt;N; l++)&#123;</span><br><span class="line">            dp[i][l] = Math.min(dp[i][l], left = (dp[i][l] == 0 ? 0: left+1));</span><br><span class="line">        &#125;</span><br><span class="line">        for(let r=N-1, right=0; r&gt;=0; r--)&#123;</span><br><span class="line">            dp[i][r] = Math.min(dp[i][r], right = (dp[i][r] == 0 ? 0: right+1));</span><br><span class="line">        &#125;</span><br><span class="line">        for(let u=0, up=0; u&lt;N; u++)&#123;</span><br><span class="line">            dp[u][i] = Math.min(dp[u][i], up = (dp[u][i] == 0 ? 0: up+1));</span><br><span class="line">        &#125;</span><br><span class="line">        for(let d=N-1, down=0; d&gt;=0; d--)&#123;</span><br><span class="line">            dp[d][i] = Math.min(dp[d][i], down = (dp[d][i] == 0 ? 0: down+1));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>left right up down注意每遍历一行都要更新为0。</strong></p>
+<h3 id="3-代码-3"><a href="#3-代码-3" class="headerlink" title="3.代码"></a>3.代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @param &#123;number&#125; N</span><br><span class="line"> * @param &#123;number[][]&#125; mines</span><br><span class="line"> * @return &#123;number&#125;</span><br><span class="line"> */</span><br><span class="line">var orderOfLargestPlusSign = function(N, mines) &#123;</span><br><span class="line">    let dp = [...Array(N)].map(() =&gt; Array(N).fill(N));</span><br><span class="line">    for(let i=0; i&lt;mines.length; i++)&#123;</span><br><span class="line">        dp[mines[i][0]][mines[i][1]] = 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let left, right, up, down;</span><br><span class="line">    for(let i=0; i&lt;N; i++)&#123;</span><br><span class="line">        for(let l=0, left=0; l&lt;N; l++)&#123;</span><br><span class="line">            dp[i][l] = Math.min(dp[i][l], left = (dp[i][l] == 0 ? 0: left+1));</span><br><span class="line">        &#125;</span><br><span class="line">        for(let r=N-1, right=0; r&gt;=0; r--)&#123;</span><br><span class="line">            dp[i][r] = Math.min(dp[i][r], right = (dp[i][r] == 0 ? 0: right+1));</span><br><span class="line">        &#125;</span><br><span class="line">        for(let u=0, up=0; u&lt;N; u++)&#123;</span><br><span class="line">            dp[u][i] = Math.min(dp[u][i], up = (dp[u][i] == 0 ? 0: up+1));</span><br><span class="line">        &#125;</span><br><span class="line">        for(let d=N-1, down=0; d&gt;=0; d--)&#123;</span><br><span class="line">            dp[d][i] = Math.min(dp[d][i], down = (dp[d][i] == 0 ? 0: down+1));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    var max = 0;</span><br><span class="line">    for(let i=0; i&lt;N; i++)&#123;</span><br><span class="line">        for(let j=0; j&lt;N; j++)&#123;</span><br><span class="line">            max = Math.max(max, dp[i][j]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return max;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>总结：<br>本文主要对动态规划几种经典题做了简单介绍，希望对大家对算法方面的学习有所帮助，总结不到位的地方还请大家批评指正。<br>友情参考链接：<br><a href="https://juejin.im/post/5affed3951882567161ad511" target="_blank" rel="noopener">https://juejin.im/post/5affed3951882567161ad511</a><br><a href="https://juejin.im/post/5b0a8e0f51882538b2592963" target="_blank" rel="noopener">https://juejin.im/post/5b0a8e0f51882538b2592963</a><br><a href="https://leetcode-cn.com/problemset/all/" target="_blank" rel="noopener">https://leetcode-cn.com/problemset/all/</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/16/zhangpeng/宏任务和微任务/" rel="prev">宏任务和微任务</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/09/yangfan/debounce&throttle/" rel="next">函数防抖与函数节流</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">109</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">56</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">158</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、经典01背包"><span class="nav-number">1.</span> <span class="nav-text">一、经典01背包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-题目"><span class="nav-number">1.1.</span> <span class="nav-text">1. 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-思路"><span class="nav-number">1.2.</span> <span class="nav-text">2.思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-代码"><span class="nav-number">1.3.</span> <span class="nav-text">3.代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、最少硬币"><span class="nav-number">2.</span> <span class="nav-text">二、最少硬币</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-题目-1"><span class="nav-number">2.1.</span> <span class="nav-text">1. 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-思路-1"><span class="nav-number">2.2.</span> <span class="nav-text">2.思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-代码-1"><span class="nav-number">2.3.</span> <span class="nav-text">3.代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、最大正方形"><span class="nav-number">3.</span> <span class="nav-text">三、最大正方形</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-题目-2"><span class="nav-number">3.1.</span> <span class="nav-text">1. 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-思路-2"><span class="nav-number">3.2.</span> <span class="nav-text">2.思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-代码-2"><span class="nav-number">3.3.</span> <span class="nav-text">3.代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、最大加号标志"><span class="nav-number">4.</span> <span class="nav-text">四、最大加号标志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-题目-3"><span class="nav-number">4.1.</span> <span class="nav-text">1. 题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-思路-3"><span class="nav-number">4.2.</span> <span class="nav-text">2.思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-代码-3"><span class="nav-number">4.3.</span> <span class="nav-text">3.代码</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

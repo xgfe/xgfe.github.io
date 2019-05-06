@@ -36,7 +36,7 @@
 <meta name="keywords" content="xgfe, xg, fe, 鲜果前端, 前端">
 <meta property="og:type" content="website">
 <meta property="og:title" content="xgfe">
-<meta property="og:url" content="http://xgfe.github.io/tags/Angular/index.html">
+<meta property="og:url" content="http://xgfe.github.io/tags/angular/index.html">
 <meta property="og:site_name" content="xgfe">
 <meta property="og:description" content="xgfe&apos;s blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
 <meta property="og:locale" content="zh-Hans">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title> 标签: Angular | xgfe </title>
+  <title> 标签: angular | xgfe </title>
   <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
 </head>
 
@@ -147,7 +147,7 @@
       
       <!-- slide-links added by felix -->
       <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
-        <a href="http://xgfe.github.io/Basics/" target="_blank" rel="section">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
           <i class="menu-item-icon icon-next-slides"></i> <br>
           Basics
         </a>
@@ -187,7 +187,7 @@
   <div id="posts" class="posts-collapse">
     <div class="collection-title">
       <h2>
-        Angular
+        angular
         <small>标签</small>
       </h2>
     </div>
@@ -200,36 +200,14 @@
 
       <h1 class="post-title">
         
-            <a class="post-title-link" href="/2019/01/17/luanmingyang/Angular CDK 部分功能介绍/" itemprop="url">
-              <span itemprop="name">Angular CDK 部分功能介绍</span>
+            <a class="post-title-link" href="/2015/12/17/HeOH/AngularJS的自动化测试/" itemprop="url">
+              <span itemprop="name">Angular的自动化测试</span>
             </a>
         
       </h1>
 
       <div class="post-meta">
-        <time class="post-time" datetime="2019-01-17T11:31:00.000Z" itemprop="dateCreated" content="2019-01-17"> 01-17 </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/08/12/y8n/angular-directive-attributes/" itemprop="url">
-              <span itemprop="name">Angular指令中的属性</span>
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" datetime="2016-08-12T09:18:08.000Z" itemprop="dateCreated" content="2016-08-12"> 08-12 </time>
+        <time class="post-time" datetime="2015-12-16T16:00:00.000Z" itemprop="dateCreated" content="2015-12-16"> 12-17 </time>
       </div>
 
     </header>
@@ -268,21 +246,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-count">109</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">55</span>
+              <span class="site-state-item-count">56</span>
               <span class="site-state-item-name">作者</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">157</span>
+              <span class="site-state-item-count">158</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
@@ -376,6 +354,7 @@
     admin: ['lulutia', 'Catherine33'],
     repo: 'xgfe.github.io',
     oauth: {
+      redirect_protocol: 'https',
       client_id: '23cc0db4fc1491f8ae2e',
       client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
     }
@@ -435,6 +414,24 @@
   <script>
       $('#gg-form').on('submit', function(e) {
         var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>
+    var keyword = $.trim($(this).find('#gg-search-input').val());
         if (keyword) {
           location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
         }

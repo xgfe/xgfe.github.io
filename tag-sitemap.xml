@@ -121,6 +121,13 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/ReactART/</loc>
+        <lastmod>2019-05-05T02:41:48.372Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/DOM/</loc>
         <lastmod>2019-05-05T02:41:48.372Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -129,13 +136,6 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/%E8%B7%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B1%9E%E6%80%A7/</loc>
-        <lastmod>2019-05-05T02:41:48.372Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/ReactART/</loc>
         <lastmod>2019-05-05T02:41:48.372Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -156,6 +156,13 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E9%80%9A%E4%BF%A1/</loc>
+        <lastmod>2019-05-05T02:41:48.373Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/android/</loc>
         <lastmod>2019-05-05T02:41:48.373Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -164,13 +171,6 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/listview/</loc>
-        <lastmod>2019-05-05T02:41:48.373Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E9%80%9A%E4%BF%A1/</loc>
         <lastmod>2019-05-05T02:41:48.373Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -212,14 +212,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/git-hook/</loc>
+        <loc>http://xgfe.github.io/tags/design-pattern/</loc>
         <lastmod>2019-05-05T02:41:48.377Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/design-pattern/</loc>
+        <loc>http://xgfe.github.io/tags/git-hook/</loc>
         <lastmod>2019-05-05T02:41:48.377Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -228,13 +228,6 @@
     <url>
         <loc>http://xgfe.github.io/tags/form/</loc>
         <lastmod>2019-05-05T02:41:48.377Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/CSRF/</loc>
-        <lastmod>2019-05-05T02:41:48.378Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -254,6 +247,20 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/CSRF/</loc>
+        <lastmod>2019-05-05T02:41:48.378Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/Eggjs/</loc>
+        <lastmod>2019-05-05T02:41:48.379Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/Node/</loc>
         <lastmod>2019-05-05T02:41:48.379Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -262,13 +269,6 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/%E7%88%AC%E8%99%AB/</loc>
-        <lastmod>2019-05-05T02:41:48.379Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/Eggjs/</loc>
         <lastmod>2019-05-05T02:41:48.379Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -303,14 +303,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/cocos2d-x/</loc>
+        <loc>http://xgfe.github.io/tags/%E5%9B%BD%E9%99%85%E5%8C%96/</loc>
         <lastmod>2019-05-05T02:41:48.381Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/%E5%9B%BD%E9%99%85%E5%8C%96/</loc>
+        <loc>http://xgfe.github.io/tags/cocos2d-x/</loc>
         <lastmod>2019-05-05T02:41:48.381Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -345,13 +345,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/CSS3/</loc>
-        <lastmod>2019-05-05T02:41:48.383Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/tags/Catogery/</loc>
         <lastmod>2019-05-05T02:41:48.383Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -373,6 +366,13 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/CSS3/</loc>
+        <lastmod>2019-05-05T02:41:48.383Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/Angular-CDK/</loc>
         <lastmod>2019-05-05T02:41:48.384Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -387,6 +387,13 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/optimization/</loc>
+        <lastmod>2019-05-05T02:41:48.385Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/keep-alive/</loc>
         <lastmod>2019-05-05T02:41:48.385Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -395,13 +402,6 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/vue-router/</loc>
-        <lastmod>2019-05-05T02:41:48.385Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/optimization/</loc>
         <lastmod>2019-05-05T02:41:48.385Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -499,6 +499,13 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/docker/</loc>
+        <lastmod>2019-05-05T02:41:48.394Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/%E6%8F%90%E9%97%AE/</loc>
         <lastmod>2019-05-05T02:41:48.394Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -514,13 +521,6 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/postcss/</loc>
-        <lastmod>2019-05-05T02:41:48.394Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/docker/</loc>
         <lastmod>2019-05-05T02:41:48.394Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -548,6 +548,13 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/SDWebImage/</loc>
+        <lastmod>2019-05-05T02:41:48.396Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/router/</loc>
         <lastmod>2019-05-05T02:41:48.396Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -563,13 +570,6 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/UI/</loc>
-        <lastmod>2019-05-05T02:41:48.396Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/SDWebImage/</loc>
         <lastmod>2019-05-05T02:41:48.396Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -723,14 +723,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/html/</loc>
+        <loc>http://xgfe.github.io/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/</loc>
         <lastmod>2019-05-05T02:41:48.401Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/</loc>
+        <loc>http://xgfe.github.io/tags/html/</loc>
         <lastmod>2019-05-05T02:41:48.401Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -912,6 +912,20 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/Thrift/</loc>
+        <lastmod>2019-05-05T02:41:48.410Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/NodeJS/</loc>
+        <lastmod>2019-05-05T02:41:48.410Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/AngularJS/</loc>
         <lastmod>2019-05-05T02:41:48.410Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -933,35 +947,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/Thrift/</loc>
-        <lastmod>2019-05-05T02:41:48.410Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/NodeJS/</loc>
-        <lastmod>2019-05-05T02:41:48.410Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/tags/Vue2-0/</loc>
-        <lastmod>2019-05-05T02:41:48.411Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/Vue-router2-0/</loc>
-        <lastmod>2019-05-05T02:41:48.411Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/Vuex2-0/</loc>
         <lastmod>2019-05-05T02:41:48.411Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -976,6 +962,20 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/Express/</loc>
+        <lastmod>2019-05-05T02:41:48.411Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/Vue-router2-0/</loc>
+        <lastmod>2019-05-05T02:41:48.411Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/Vuex2-0/</loc>
         <lastmod>2019-05-05T02:41:48.411Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -1096,6 +1096,13 @@
     <url>
         <loc>http://xgfe.github.io/tags/Extension/</loc>
         <lastmod>2019-05-05T11:56:54.635Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
+        <lastmod>2019-05-06T02:31:07.514Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
