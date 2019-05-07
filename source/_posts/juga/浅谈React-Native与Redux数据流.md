@@ -2,7 +2,7 @@ title: 浅谈 React-Native 与 Redux 数据流
 date: 2018-11-25
 categories: juga
 tags:
-- React-Native
+- React Native
 - Redux
 
 ---

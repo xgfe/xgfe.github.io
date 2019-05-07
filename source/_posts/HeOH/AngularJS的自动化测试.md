@@ -2,12 +2,8 @@ title: Angular的自动化测试
 date: 2015-12-17
 categories: HeOH
 tags: 
-- angular
-- karma
-- jasmine
+- angularjs
 - 测试
-- 单元测试
-- 端到端测试
 
 ---
 
