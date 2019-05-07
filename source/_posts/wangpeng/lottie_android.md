@@ -3,7 +3,7 @@ date: 2018-04-26 16:26
 categories:
 - w.p
 tags:
-- Android
+- android
 - lottie
 - animation
 

@@ -2,7 +2,7 @@ title: Angular指令中的属性
 date: 2016-08-12 17:18:08
 categories: y8n
 tags:
-- Angular
+- angularjs
 - 指令
 - Directive
 ---
