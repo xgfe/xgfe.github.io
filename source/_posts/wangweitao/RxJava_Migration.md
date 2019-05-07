@@ -2,7 +2,7 @@ title: The Next Step for Reactive Android Programming（译文）
 date: 2017-02-4
 categories: wangweitao
 tags:
-- andorid
+- android
 - rxjava
 ---
 “The Next Step for Reactive Android Programming”一文主要讲述在已有的android项目中将rxjava1升级到rxjava2的一些优缺点和可能遇到的困难。

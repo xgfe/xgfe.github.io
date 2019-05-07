@@ -3,7 +3,7 @@ date: 2018-3-20 10:49:30
 categories:
 - Catherine
 tags:
-- Android
+- android
 - Zxing
 
 ---

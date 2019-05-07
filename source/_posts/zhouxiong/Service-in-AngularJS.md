@@ -2,7 +2,7 @@ title: AngularJS的服务
 date: 2016-09-08 16:00:00
 categories: zhouxiong
 tags:
-- AngularJS
+- angularjs
 - 依赖注入
 - Service
 ---

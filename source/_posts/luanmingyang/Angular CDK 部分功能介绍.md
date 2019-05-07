@@ -3,7 +3,7 @@ date: 2019-01-17 19:31:00
 categories: luanmingyang
 tags: 
 
-- Angular
+- angularjs
 - Angular CDK
 
 ------
