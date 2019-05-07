@@ -2,7 +2,7 @@ title: ActivityRouter
 date: 2017-03-3
 categories: wangweitao
 tags:
-- Andorid
+- android
 - Activity Router
 ---
 ## 简介 

@@ -3,7 +3,7 @@ title: ImageView的scaleType属性效果
 date: 2017-01-13
 categories: wangweitao
 tags:
-- Andorid
+- android
 - ImageView ScaleType
 ---
 android中的imageView在图片大小不完全一致时会进行相应的缩放或者裁剪。scaleType属性决定缩放裁剪的效果，这里总结了下在各种情况下的缩放裁剪效果。
