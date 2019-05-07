@@ -21,13 +21,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/HeOH/</loc>
-        <lastmod>2019-05-05T02:41:48.369Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/categories/LexHuang/</loc>
         <lastmod>2019-05-05T02:41:48.371Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -56,14 +49,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/ANJING/</loc>
+        <loc>http://xgfe.github.io/categories/caominkang/</loc>
         <lastmod>2019-05-05T02:41:48.373Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/caominkang/</loc>
+        <loc>http://xgfe.github.io/categories/ANJING/</loc>
         <lastmod>2019-05-05T02:41:48.373Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -77,14 +70,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/Cocoa/</loc>
+        <loc>http://xgfe.github.io/categories/chenyu/</loc>
         <lastmod>2019-05-05T02:41:48.376Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/chenyu/</loc>
+        <loc>http://xgfe.github.io/categories/Cocoa/</loc>
         <lastmod>2019-05-05T02:41:48.376Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -147,21 +140,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/juga/</loc>
-        <lastmod>2019-05-05T02:41:48.382Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/categories/liuhongyu/</loc>
+        <loc>http://xgfe.github.io/categories/lixiaoqiang/</loc>
         <lastmod>2019-05-05T02:41:48.383Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/lixiaoqiang/</loc>
+        <loc>http://xgfe.github.io/categories/liuhongyu/</loc>
         <lastmod>2019-05-05T02:41:48.383Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -217,13 +203,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/weger/</loc>
-        <lastmod>2019-05-05T02:41:48.400Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/categories/wangyue/</loc>
         <lastmod>2019-05-05T02:41:48.400Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -231,14 +210,21 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/yangxiaotong/</loc>
-        <lastmod>2019-05-05T02:41:48.402Z</lastmod>
+        <loc>http://xgfe.github.io/categories/weger/</loc>
+        <lastmod>2019-05-05T02:41:48.400Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://xgfe.github.io/categories/yangfan/</loc>
+        <lastmod>2019-05-05T02:41:48.402Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/categories/yangxiaotong/</loc>
         <lastmod>2019-05-05T02:41:48.402Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -343,13 +329,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/categories/wangweitao/</loc>
-        <lastmod>2019-05-07T06:08:40.252Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/categories/Catherine/</loc>
         <lastmod>2019-05-07T06:09:09.892Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -394,6 +373,27 @@
     <url>
         <loc>http://xgfe.github.io/categories/y8n/</loc>
         <lastmod>2019-05-07T06:16:33.112Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/categories/wangweitao/</loc>
+        <lastmod>2019-05-07T06:20:57.297Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/categories/HeOH/</loc>
+        <lastmod>2019-05-07T06:22:53.283Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/categories/juga/</loc>
+        <lastmod>2019-05-07T06:23:56.457Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
