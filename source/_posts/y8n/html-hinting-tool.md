@@ -14,7 +14,7 @@ tags:
 <!-- more -->
 ## 制定规则
 
-没有规矩，不成方圆。参照业界其他优秀团队的规范，如[百度FEX团队](https://github.com/fex-team/styleguide/blob/master/html.md)、[BootstrapCodeGuide](http://codeguide.bootcss.com/)、[Google style guide](http://google.github.io/styleguide/htmlcssguide.xml)，结合W3C的标准规范，加上大家的踩坑经验，七嘴八舌地制定了一套适合团队自身的[HTML规范草案(内网访问)](http://wiki.sankuai.com/pages/viewpage.action?pageId=341813735)或者[xg-htmlhint Rules](https://github.com/yangjiyuan/xg-htmlhint/wiki/Rules)。
+没有规矩，不成方圆。参照业界其他优秀团队的规范，如[百度FEX团队](https://github.com/fex-team/styleguide/blob/master/html.md)、[BootstrapCodeGuide](http://codeguide.bootcss.com/)、[Google style guide](http://google.github.io/styleguide/htmlcssguide.xml)，结合W3C的标准规范，加上大家的踩坑经验，七嘴八舌地制定了一套适合团队自身的HTML规范草案。
 
 ## 自动化检查工具的探索和实现
 ### 探索阶段
