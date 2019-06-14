@@ -197,7 +197,7 @@ ARouter.getInstance()
 		<action android:name="android.intent.action.VIEW"/>
 		<category android:name="android.intent.category.DEFAULT"/>
 		<category android:name="android.intent.category.BROWSABLE"/>
-		<data android:host="KMall" android:scheme="sankuai"/>
+		<data android:host="KMall" android:scheme="XXX"/>
 	</intent-filter>
 
 	<intent-filter>
