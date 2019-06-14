@@ -5,11 +5,11 @@ tags:
 - javascript                             
 - redux
 ---
-关于全局单项数据流+视图层computed属性的一个简单实现。
+关于全局单向数据流+视图层computed属性的一个简单实现。
 
 <!--more-->
 # 数据中间层简介
-在上家公司工作时，由于使用自研框架比较陈旧，不支持全局的跨视图的数据复用。又由于当时react的BSD+Patents证书事件，团队决定放弃引入开源……于是就自己造了一个支持单项数据流的轮子，就是本文介绍的数据中间层。在视图数据层面，也实现了类似vue的computed属性来优化开发体验。
+在上家公司工作时，由于使用自研框架比较陈旧，不支持全局的跨视图的数据复用。又由于当时react的BSD+Patents证书事件，团队决定放弃引入开源……于是就自己造了一个支持单向数据流的轮子，就是本文介绍的数据中间层。在视图数据层面，也实现了类似vue的computed属性来优化开发体验。
 
 # 模块结构
 ![](https://github.com/zero-yang/assets/blob/master/data-midware.png?raw=true)
@@ -210,7 +210,14 @@ class ViewModel {
     }
     initComputed() {
         // ...
-    }
+    },
+    set(path, value) {
+    	Updater.set(this.state, path, value);
+    },
+    get(path) {
+    	Updater.get(this.state, path);
+    },
+    dispatch
 }
 ```
 
@@ -325,6 +332,75 @@ function circleDetection(depTree) {
 
     return true;
 }
+```
+
+## 使用
+
+注册业务相关的action：/entity/bidword.js
+
+```javascript
+import Store from 'common/store';
+
+Store.addAction([{
+	name: 'fetchBidword',
+	async method(get, set, assign) {
+		let list;
+		// fetch list
+		
+		set('bidword/list', list);
+	}
+}, {
+	name: 'addBidword',
+	async method() {
+		//...
+	}
+}]);
+
+```
+
+视图viewModel：/bidword/bidword-vm.js
+
+```javascript
+import ViewModel from 'common/view-model';
+
+export default class BidwordVM extends ViewModel {
+	computed = {
+		displayList(get, getFromStore) {
+			const list = getFromStore('bidword/list');
+			const date = get('theDate');
+		
+			list.forEach(item => {
+				item.date = date;
+			})
+			
+			return list;
+		}
+	},
+	async init() {
+		this.set('date', new Date().toDateString());
+		await this.dispatch('fetchBidword');
+		
+		// 初始化结束，页面开始渲染
+	}
+}
+
+```
+
+视图文件view：/bidword/bidword.js
+
+通过一个connect组件绑定视图和viewModel，connect负责维护view和viewModel实例的生命周期，具体细节这里就不赘述了。
+
+```javascript
+import connect from 'common/connect';
+import BidwordVM from './bidword-vm';
+import View from 'common/base-view';
+
+@connect(BidwordVM)
+class Bidword extends View {
+	// ...
+}
+
+export default Bidword;
 ```
 
 # 总结
