@@ -1,0 +1,784 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="node,koa,koa-router,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文通过阅读 koa-router 的源码归纳了 koa-router 涉及到的 router 和 layer 两个对象的关系；以及梳理了 koa-router 处理请求的整体流程。">
+<meta name="keywords" content="node,koa,koa-router">
+<meta property="og:type" content="article">
+<meta property="og:title" content="koa-router 源码解读">
+<meta property="og:url" content="http://xgfe.github.io/2018/09/27/zuopengfei/koa-router/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文通过阅读 koa-router 的源码归纳了 koa-router 涉及到的 router 和 layer 两个对象的关系；以及梳理了 koa-router 处理请求的整体流程。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/88ed43b2f2951c77384f10d7ff4e1a6a172778.png">
+<meta property="og:image" content="http://vfile.meituan.net/xgfe/190cd799e93c05d43fd05b1bda3574ad116451.png">
+<meta property="og:image" content="http://p0.meituan.net/xgfe/b736ea9f7cc83ba0f0aeaf22782185ff20689.png">
+<meta property="og:image" content="https://vfile.meituan.net/xgfe/baf7698bb56fa67e38d3c84ad2121a0725705.png">
+<meta property="og:image" content="https://vfile.meituan.net/xgfe/63d452eb5a23d3fe3e1bf2e0219bceea93599.png">
+<meta property="og:updated_time" content="2019-06-14T07:45:42.234Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="koa-router 源码解读">
+<meta name="twitter:description" content="本文通过阅读 koa-router 的源码归纳了 koa-router 涉及到的 router 和 layer 两个对象的关系；以及梳理了 koa-router 处理请求的整体流程。">
+<meta name="twitter:image" content="http://vfile.meituan.net/xgfe/88ed43b2f2951c77384f10d7ff4e1a6a172778.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> koa-router 源码解读 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              koa-router 源码解读
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2018-09-27T19:18:00+08:00" content="2018-09-27">
+            2018-09-27
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zuopengfei/" itemprop="url" rel="index">
+                  <span itemprop="name">zuopengfei</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/node/" rel="tag"><i class="icon-next-tags"></i>node</a>
+            
+              <a href="/tags/koa/" rel="tag"><i class="icon-next-tags"></i>koa</a>
+            
+              <a href="/tags/koa-router/" rel="tag"><i class="icon-next-tags"></i>koa-router</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文通过阅读 koa-router 的源码归纳了 koa-router 涉及到的 router 和 layer 两个对象的关系；以及梳理了 koa-router 处理请求的整体流程。</p>
+<a id="more"></a>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>如果实现一个简单的路由，可以解析<code>node</code>原生<code>request即IncomingMessage</code>对象的<code>url</code>属性，用 <code>if...else</code>判断路径从而返回不同的结果；当然也可以利用<code>koa</code>的<code>request</code>对象和<code>response</code>对象来处理。下面就是用<code>koa</code>实现的简单路由：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params">page</span>)</span>&#123;</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> pageUrl = <span class="string">`./page/<span class="subst">$&#123;page&#125;</span>`</span>;</span><br><span class="line">        fs.readFile(pageUrl, <span class="string">"binary"</span>, (err,data) =&gt; &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="number">444</span>);</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                resolve(data);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">route</span>(<span class="params">url</span>)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> page = <span class="string">'404.html'</span>;</span><br><span class="line">    <span class="keyword">switch</span>(url)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'/'</span>:</span><br><span class="line">            page =<span class="string">'index.html'</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'/index'</span>:</span><br><span class="line">            page =<span class="string">'index.html'</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'/todo'</span>:</span><br><span class="line">            page = <span class="string">'todo.html'</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'/404'</span>:</span><br><span class="line">            page = <span class="string">'404.html'</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> html = <span class="keyword">await</span> render(page);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">app.use(<span class="keyword">async</span>(ctx)=&gt;&#123;</span><br><span class="line">    <span class="keyword">let</span> url = ctx.request.url;</span><br><span class="line">    <span class="keyword">let</span> html = <span class="keyword">await</span> route(url);</span><br><span class="line">    </span><br><span class="line">    ctx.body = html;</span><br><span class="line">&#125;)</span><br><span class="line">app.listen(<span class="number">3000</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'starting at 3000'</span>);</span><br></pre></td></tr></table></figure>
+<p>缺点</p>
+<ul>
+<li>路由越多消耗的性能也就越大</li>
+<li>不能对特殊路由添加中间件</li>
+<li>也没有处理响应头类型</li>
+</ul>
+<p>更好的方法是使用面向对象的方式，根据请求的<code>path</code>和<code>method</code>执行相应的中间件处理函数；而在实际开发中我们常用的是<code>koa</code>路由库<a href="https://github.com/alexmingoia/koa-router" target="_blank" rel="noopener">koa-router</a>。本文通过解析<code>koa-router</code>的源码来达到深入学习其原理的目的。</p>
+<h2 id="kao-router的简单使用demo"><a href="#kao-router的简单使用demo" class="headerlink" title="kao-router的简单使用demo"></a>kao-router的简单使用demo</h2><p>使用<code>koa-router</code>第一步就是新建一个<code>router</code>实例对象:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> KoaRouter = <span class="built_in">require</span>(<span class="string">'koa-router'</span>);</span><br><span class="line"><span class="keyword">const</span> pagePromptRouter <span class="built_in">require</span>(<span class="string">'./controllers/pagePrompt'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"><span class="comment">// 创建router实例对象</span></span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> KoaRouter();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 嵌套路由</span></span><br><span class="line">router.use(<span class="string">'/admin/prompt'</span>, pagePromptRouter.routes(), pagePrompt.allowedMethods());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加路由中间件</span></span><br><span class="line">app.use(router.routes()); </span><br><span class="line"><span class="comment">// 对请求进行一些限制处理</span></span><br><span class="line">app.use(router.allowedMethods()); </span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>构建应用的时候，我们的首要目标就是创建多个<code>CGI</code>接口以适配不同的业务需求，那么接下来就需要注册对应的路由：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> KoaRouter = <span class="built_in">require</span>(<span class="string">'koa-router'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> router = <span class="keyword">new</span> Router();</span><br><span class="line"></span><br><span class="line">router.get(<span class="string">'/queryPagePromptList'</span>, queryPagePromptList);</span><br><span class="line">router.post(<span class="string">'/deletePagePromptById'</span>, deletePagePromptById);</span><br><span class="line">router.post(<span class="string">'/savePagePrompt'</span>, savePagePrompt);</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">queryPagePromptList</span>(<span class="params">ctx, next</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">let</span> result = <span class="keyword">await</span> getResult();</span><br><span class="line">	ctx.body = &#123;</span><br><span class="line">	    data: result.data,</span><br><span class="line">	    code: <span class="number">200</span></span><br><span class="line">    &#125;;</span><br><span class="line">	<span class="keyword">await</span> next();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后为了让<code>koa</code>实例使用我们配置后的路由模块，需要使用<code>routes()</code>方法将路由(上面的例子中为了代码分层使用了嵌套路由)加入到应用全局的中间件函数中：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app.use(router.routes());  <span class="comment">// 添加路由中间件</span></span><br><span class="line">app.use(router.allowedMethods()); <span class="comment">// 对请求进行一些限制处理</span></span><br></pre></td></tr></table></figure>
+<h2 id="源码结构"><a href="#源码结构" class="headerlink" title="源码结构"></a>源码结构</h2><p><a href="https://github.com/alexmingoia/koa-router/blob/master/lib/router.js" target="_blank" rel="noopener">router.js</a></p>
+<p><img src="http://vfile.meituan.net/xgfe/88ed43b2f2951c77384f10d7ff4e1a6a172778.png" alt="router"></p>
+<p><a href="https://github.com/alexmingoia/koa-router/blob/master/lib/layer.js" target="_blank" rel="noopener">layer.js</a></p>
+<p><img src="http://vfile.meituan.net/xgfe/190cd799e93c05d43fd05b1bda3574ad116451.png" alt="layer"></p>
+<p>router和layer的关系</p>
+<p><img src="http://p0.meituan.net/xgfe/b736ea9f7cc83ba0f0aeaf22782185ff20689.png" alt="router-layer"></p>
+<h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><h3 id="Router-构造函数"><a href="#Router-构造函数" class="headerlink" title="Router 构造函数"></a>Router 构造函数</h3><p><code>Node</code>本身提供了数十个<code>HTTP</code>请求动词，<code>koa-router</code>只是实现了部分常用的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function Router(opts) &#123;</span><br><span class="line">  if (!(this instanceof Router)) &#123;</span><br><span class="line">    return new Router(opts);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  this.opts = opts || &#123;&#125;;</span><br><span class="line">  this.methods = this.opts.methods || [</span><br><span class="line">    &apos;HEAD&apos;,</span><br><span class="line">    &apos;OPTIONS&apos;,</span><br><span class="line">    &apos;GET&apos;,</span><br><span class="line">    &apos;PUT&apos;,</span><br><span class="line">    &apos;PATCH&apos;,</span><br><span class="line">    &apos;POST&apos;,</span><br><span class="line">    &apos;DELETE&apos;</span><br><span class="line">  ];</span><br><span class="line">  //省略</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="router-get-post-delete-all…"><a href="#router-get-post-delete-all…" class="headerlink" title="router.(get|post|delete|all…)()"></a>router.(get|post|delete|all…)()</h3><p>这些请求动词的实现是通过第三方模块<a href="https://github.com/jshttp/methods" target="_blank" rel="noopener">methods</a>支持的，然后<code>koa-router</code>内部进行了注册处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// 这里的methods就是上面的methods模块提供的数组</span><br><span class="line">methods.forEach(function (method) &#123;</span><br><span class="line">  Router.prototype[method] = function (name, path, middleware) &#123;</span><br><span class="line">    var middleware;</span><br><span class="line"></span><br><span class="line">    // 这段代码做了两件事：</span><br><span class="line">    // 1.name 参数是可选的，所以要做一些参数置换的处理</span><br><span class="line">    // 2.将所有路由中间件（因为可以注册多个中间件）合并成一个数组</span><br><span class="line">    if (typeof path === &apos;string&apos; || path instanceof RegExp) &#123;</span><br><span class="line">      middleware = Array.prototype.slice.call(arguments, 2);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      middleware = Array.prototype.slice.call(arguments, 1);</span><br><span class="line">      path = name;</span><br><span class="line">      name = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 调用register方法</span><br><span class="line">    this.register(path, [method], middleware, &#123;</span><br><span class="line">      name: name</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return this;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>上面函数先判断<code>path</code>是否是字符串或者正则表达式，是因为注册路由的时候还可以为路由进行命名(命名空间方便管理)，然后准确地获取回调的函数数组(注册路由可以接收多个回调)， 这样如果匹配到某个路由，回调函数数组中的函数就会依次执行。留意到每个方法都会返回对象本身，也就是说注册路由的时候是可以支持链式调用的。</p>
+<h3 id="register方法"><a href="#register方法" class="headerlink" title="register方法"></a>register方法</h3><p><code>this.register</code>接受请求路径、方法、中间件作为参数，返回已经注册的路由：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">Router.prototype.register = function (path, methods, middleware, opts) &#123;</span><br><span class="line">  opts = opts || &#123;&#125;;</span><br><span class="line">  var router = this;</span><br><span class="line"></span><br><span class="line">  // 全部路由</span><br><span class="line">  var stack = this.stack;</span><br><span class="line"></span><br><span class="line">  // 说明路由的path是支持数组的</span><br><span class="line">  // 如果是数组的话，需要递归调用register来注册路由，因为一个path对应一个路由</span><br><span class="line">  if (Array.isArray(path)) &#123;</span><br><span class="line">    path.forEach(function (p) &#123;</span><br><span class="line">      router.register.call(router, p, methods, middleware, opts);</span><br><span class="line">    &#125;);</span><br><span class="line">    return this;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 创建路由，路由就是Layer的实例</span><br><span class="line">  // methods是路由处理的http方法</span><br><span class="line">  // 最后一个参数对象最终是传给Layer模块中的path-to-regexp模块接口调用的</span><br><span class="line">  var route = new Layer(path, methods, middleware, &#123;</span><br><span class="line">    end: opts.end === false ? opts.end : true,</span><br><span class="line">    name: opts.name,</span><br><span class="line">    sensitive: opts.sensitive || this.opts.sensitive || false,</span><br><span class="line">    strict: opts.strict || this.opts.strict || false,</span><br><span class="line">    prefix: opts.prefix || this.opts.prefix || &quot;&quot;,</span><br><span class="line">    ignoreCaptures: opts.ignoreCaptures</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  // 处理路径前缀</span><br><span class="line">  if (this.opts.prefix) &#123;</span><br><span class="line">    route.setPrefix(this.opts.prefix);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 将全局的路由参数添加到每个路由中</span><br><span class="line">  Object.keys(this.params).forEach(function (param) &#123;</span><br><span class="line">    route.param(param, this.params[param]);</span><br><span class="line">  &#125;, this);</span><br><span class="line"></span><br><span class="line">  // 往路由数组中添加新创建的路由</span><br><span class="line">  stack.push(route);</span><br><span class="line"></span><br><span class="line">  return route;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>根据上面的逻辑我们应该知道</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">router.get(&apos;/test&apos;, async (ctx, next) =&gt; &#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>其实它相当于下面这段代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">router.register(&apos;/test&apos;, [&apos;GET&apos;], [async (ctx, next) =&gt; &#123;&#125;], &#123; name: null &#125;);</span><br></pre></td></tr></table></figure>
+<p><code>register</code>函数将路由作为第一个参数传入，然后方法名放入到方法数组中作为第二个参数， 第三个函数是路由的回调数组；其实每个路由注册的时候，后面都可以添加很多个函数，而这些函数都会被添加到一个数组里面，如果被匹配到，就会利用中间件机制来逐个执行这些函数。最后一个参数是将路由的命名空间传入。</p>
+<p>对于<code>stack</code>数组，则是存储每一个路由，也就是<code>Layer</code>的实例对象，每一个路由都相当于一个<code>Layer</code>实例对象。</p>
+<p>对于<code>Layer</code>类来说, 创建一个实例对象用于管理每个路由:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">function Layer(path, methods, middleware, opts) &#123;</span><br><span class="line">  this.opts = opts || &#123;&#125;;</span><br><span class="line">  // 路由命名</span><br><span class="line">  this.name = this.opts.name || null;</span><br><span class="line">  // 路由对应的方法</span><br><span class="line">  this.methods = [];</span><br><span class="line">  // 路由参数名数组</span><br><span class="line">  this.paramNames = [];</span><br><span class="line">  // 路由处理中间件数组</span><br><span class="line">  this.stack = Array.isArray(middleware) ? middleware : [middleware];</span><br><span class="line">  // 存储路由方法</span><br><span class="line">  methods.forEach(function(method) &#123;</span><br><span class="line">    var l = this.methods.push(method.toUpperCase());</span><br><span class="line">    if (this.methods[l-1] === &apos;GET&apos;) &#123;</span><br><span class="line">      this.methods.unshift(&apos;HEAD&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, this);</span><br><span class="line"></span><br><span class="line">  // 将添加的回调处理中间件函数添加到Layer实例对象的 stack 数组中</span><br><span class="line">  this.stack.forEach(function(fn) &#123;</span><br><span class="line">    var type = (typeof fn);</span><br><span class="line">    if (type !== &apos;function&apos;) &#123;</span><br><span class="line">      throw new Error(</span><br><span class="line">        methods.toString() + &quot; `&quot; + (this.opts.name || path) +&quot;`: `middleware` &quot;</span><br><span class="line">        + &quot;must be a function, not `&quot; + type + &quot;`&quot;</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, this);</span><br><span class="line"></span><br><span class="line">  this.path = path;</span><br><span class="line">  this.regexp = pathToRegExp(path, this.paramNames, this.opts);</span><br><span class="line"></span><br><span class="line">  debug(&apos;defined route %s %s&apos;, this.methods, this.opts.prefix + this.path);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到, 对于<code>Layer</code>的实例对象, 核心的逻辑还是在于将<code>path</code>转化为正则表达式用于匹配请求的路由,  然后将路由的处理中间件添加到<code>Layer</code>的<code>stack</code>数组中。 注意这里的<code>stack</code>和<code>Router</code>里面的<code>stack</code>是不一样的, <code>Router</code>的<code>stack</code>数组是存放每个路由对应的<code>Layer</code>实例对象的, 而 <code>Layer</code>实例对象里面的<code>stack</code>数组是存储每个路由的处理函数中间件的, 换言之, 一个路由可以添加多个处理函数。</p>
+<p>下面的图详细描述了<code>Router</code>和<code>Layer</code>的关系：</p>
+<p><img src="https://vfile.meituan.net/xgfe/baf7698bb56fa67e38d3c84ad2121a0725705.png" alt="Router和Layer的关系"></p>
+<h3 id="router-routes"><a href="#router-routes" class="headerlink" title="router.routes()"></a>router.routes()</h3><p><code>app.use(router.routes())</code>就这样，<code>koa-router</code>就启动了，所以大家也一定会很好奇这个<code>routes</code>函数到底做了什么，但可以肯定的是<code>router.routes()</code>返回了一个中间件函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Router.prototype.routes = Router.prototype.middleware = function () &#123;</span><br><span class="line">  var router = this;</span><br><span class="line">  var dispatch = function dispatch(ctx, next) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">  dispatch.router = this;</span><br><span class="line">  return dispatch;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里形成了一个闭包，在<code>routes</code>函数内部返回了一个<code>dispatch</code>函数作为中间件。 </p>
+<p>接下来看下<code>dispatch</code>函数的实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">var dispatch = function dispatch(ctx, next) &#123;</span><br><span class="line"></span><br><span class="line">    var path = router.opts.routerPath || ctx.routerPath || ctx.path;</span><br><span class="line"></span><br><span class="line">    // router.match函数内部遍历所有路由（this.stack),</span><br><span class="line">    // 根据路径和请求方法找到对应的路由</span><br><span class="line">    // 返回的matched对象为： </span><br><span class="line">    /* </span><br><span class="line">      var matched = &#123;</span><br><span class="line">        path: [], // 保存了path匹配的路由数组</span><br><span class="line">        pathAndMethod: [], // 保存了path和methods都匹配的路由数组</span><br><span class="line">        route: false // 是否有对应的路由</span><br><span class="line">      &#125;;</span><br><span class="line">    */</span><br><span class="line">    var matched = router.match(path, ctx.method);</span><br><span class="line">    var layerChain, layer, i;</span><br><span class="line">    if (ctx.matched) &#123;</span><br><span class="line">      ctx.matched.push.apply(ctx.matched, matched.path);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      ctx.matched = matched.path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 如果没有对应的路由，则直接进入下一个中间件</span><br><span class="line">    if (!matched.route) return next();</span><br><span class="line"></span><br><span class="line">    // 找到正确的路由的path</span><br><span class="line">    var mostSpecificPath = matched.pathAndMethod[matched.pathAndMethod.length - 1].path;</span><br><span class="line">    ctx._matchedRoute = mostSpecificPath;</span><br><span class="line"></span><br><span class="line">    // 使用reduce方法将路由的所有中间件形成一条链</span><br><span class="line">    // 构建路径对应路由的处理中间件函数数组</span><br><span class="line">    // 这里的目的是在每个匹配的路由对应的中间件处理函数数组前添加一个用于处理</span><br><span class="line">    // 对应路由的 captures, params, 以及路由命名的函数</span><br><span class="line">    layerChain = matched.pathAndMethod.reduce(function(memo, layer) &#123;</span><br><span class="line"></span><br><span class="line">      // 在每个路由的中间件执行之前，根据参数不同，设置 ctx.captures 和 ctx.params</span><br><span class="line">      // 这就是为什么我们可以直接在中间件函数中直接使用 ctx.params 来读取路由参数信息了</span><br><span class="line">      memo.push(function(ctx, next) &#123;</span><br><span class="line"></span><br><span class="line">       // captures是存储路由中参数的值的数组</span><br><span class="line">        ctx.captures = layer.captures(path, ctx.captures);</span><br><span class="line"></span><br><span class="line">        // params是一个对象, 键为参数名, 根据参数名可以获取路由中的参数值, 值从captures中拿</span><br><span class="line">        ctx.params = layer.params(path, ctx.captures, ctx.params);</span><br><span class="line"></span><br><span class="line">        // 执行下一个中间件</span><br><span class="line">        return next();</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      // 将上面另外加的中间件和已有的路由中间件合并到一起</span><br><span class="line">      // 所以最终 layerChain 将会是一个中间件的数组</span><br><span class="line">      return memo.concat(layer.stack);</span><br><span class="line">    &#125;, []);</span><br><span class="line"></span><br><span class="line">    // 最后调用上面提到的compose模块提供的方法，返回将layerChain(中间件的数组) </span><br><span class="line">    // 顺序执行所有中间件的执行函数， 并立即执行。</span><br><span class="line">    return compose(layerChain)(ctx, next);</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="router-allowedMethod"><a href="#router-allowedMethod" class="headerlink" title="router.allowedMethod()"></a>router.allowedMethod()</h3><p>对于<code>allowedMethod</code>方法来说, 它的作用就是用于处理请求的错误, 所以它作为路由模块的最后一个函数来执行。同样地, 它也是以一个<code>koa</code>的中间件插件函数的形式出现, 同样在函数内部形成了一个闭包:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Router.prototype.allowedMethods = function (options) &#123;</span><br><span class="line">  options = options || &#123;&#125;;</span><br><span class="line">  var implemented = this.methods;</span><br><span class="line"></span><br><span class="line">  return function allowedMethods(ctx, next) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上面的代码很简单, 就是保存<code>Router</code>配置中允许的<code>HTTP</code>方法数组在闭包内部</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">return function allowedMethods(ctx, next) &#123;</span><br><span class="line">    // 从这里可以看出, allowedMethods函数是用于在中间件机制中处理返回结果的函数</span><br><span class="line">    // 先执行next函数, next函数返回的是一个Promise对象</span><br><span class="line">    return next().then(function() &#123;</span><br><span class="line">      var allowed = &#123;&#125;;</span><br><span class="line">      // allowedMethods函数的逻辑建立在statusCode没有设置或者值为404的时候</span><br><span class="line">      if (!ctx.status || ctx.status === 404) &#123;</span><br><span class="line">        // 这里的matched就是在match函数执行之后返回结果集中的 path 数组</span><br><span class="line">        // 也就是说请求路径与路由正则匹配的 layer 实例对象数组</span><br><span class="line">        ctx.matched.forEach(function (route) &#123;</span><br><span class="line">          // 将这些layer路由的HTTP方法存储起来</span><br><span class="line">          route.methods.forEach(function (method) &#123;</span><br><span class="line">            allowed[method] = method;</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">        // 将上面的allowed整理为数组</span><br><span class="line">        var allowedArr = Object.keys(allowed);</span><br><span class="line">        // implemented就是Router配置中的methods数组, 也就是允许的方法</span><br><span class="line">        // 这里通过~运算判断当前的请求方法是否在配置允许的方法中</span><br><span class="line">        // 如果该方法不被允许</span><br><span class="line">        if (!~implemented.indexOf(ctx.method)) &#123;</span><br><span class="line">          // 如果 Router 配置中配置 throw 为 true</span><br><span class="line">          if (options.throw) &#123;</span><br><span class="line">            var notImplementedThrowable;</span><br><span class="line">            // 如果配置中规定了throw抛出错误的函数, 那么就执行对应的函数</span><br><span class="line">            if (typeof options.notImplemented === &apos;function&apos;) &#123;</span><br><span class="line">              notImplementedThrowable = options.notImplemented(); // set whatever the user returns from their function</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">            // 如果没有则直接抛出HTTP Error</span><br><span class="line">              notImplementedThrowable = new HttpError.NotImplemented();</span><br><span class="line">            &#125;</span><br><span class="line">            // 抛出错误</span><br><span class="line">            throw notImplementedThrowable;</span><br><span class="line">          &#125; else &#123;</span><br><span class="line">            // Router配置throw为false</span><br><span class="line">            // 设置状态码为 501</span><br><span class="line">            ctx.status = 501;</span><br><span class="line">            // 并且设置Allow头部, 值为上面得到的允许的方法数组allowedArr</span><br><span class="line">            ctx.set(&apos;Allow&apos;, allowedArr.join(&apos;, &apos;));</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; else if (allowedArr.length) &#123;</span><br><span class="line">          // 来到这里说明该请求的方法是被允许的, 那么为什么会没有状态码statusCode或者 statusCode为404呢?</span><br><span class="line">          // 原因在于除却特殊情况, 我们一般在业务逻辑里面不会处理OPTIONS请求的</span><br><span class="line">          // 发出这个请求一般常见就是非简单请求, 则会发出预检请求OPTIONS</span><br><span class="line">          // 例如 application/json 格式的POST请求</span><br><span class="line">          </span><br><span class="line">          // 如果是 OPTIONS 请求, 状态码为 200, 然后设置 Allow 头部, 值为允许的方法数组 methods</span><br><span class="line">          if (ctx.method === &apos;OPTIONS&apos;) &#123;</span><br><span class="line">            ctx.status = 200;</span><br><span class="line">            ctx.body = &apos;&apos;;</span><br><span class="line">            ctx.set(&apos;Allow&apos;, allowedArr.join(&apos;, &apos;));</span><br><span class="line">          &#125; else if (!allowed[ctx.method]) &#123;</span><br><span class="line">          // 方法被服务端允许, 但是在路径匹配的路由中没有找到对应本次请求的方法的处理函数</span><br><span class="line">            // 类似上面的逻辑</span><br><span class="line">            if (options.throw) &#123;</span><br><span class="line">              var notAllowedThrowable;</span><br><span class="line">              if (typeof options.methodNotAllowed === &apos;function&apos;) &#123;</span><br><span class="line">                notAllowedThrowable = options.methodNotAllowed(); // set whatever the user returns from their function</span><br><span class="line">              &#125; else &#123;</span><br><span class="line">                notAllowedThrowable = new HttpError.MethodNotAllowed();</span><br><span class="line">              &#125;</span><br><span class="line">              throw notAllowedThrowable;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">              // 这里的状态码为 405</span><br><span class="line">              ctx.status = 405;</span><br><span class="line">              ctx.set(&apos;Allow&apos;, allowedArr.join(&apos;, &apos;));</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>值得注意的是, <code>Router.methods</code>数组里面的方法是服务端需要实现并支持的方法, 如果客户端发送过来的请求方法不被允许, 那么这是一个服务端错误<code>501</code>, 但是如果这个方法被允许, 但是找不到对应这个方法的路由处理函数(比如相同路由的<code>POST</code>路由但是用<code>GET</code>方法来获取数据), 这是一个客户端错误<code>405</code>。</p>
+<h3 id="router-use"><a href="#router-use" class="headerlink" title="router.use()"></a>router.use()</h3><p><code>use</code>函数就是用于添加中间件的, 只不过不同于<code>koa</code>中的<code>use</code>函数, <code>router</code>的<code>use</code>函数添加的中间件函数会在所有路由执行之前执行。此外, 它还可以对某些特定路径的进行中间件函数的绑定执行.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">router.prototype.use = function () &#123;</span><br><span class="line">  var router = this;</span><br><span class="line">  // 中间件函数数组</span><br><span class="line">  var middleware = Array.prototype.slice.call(arguments);</span><br><span class="line">  var path;</span><br><span class="line"></span><br><span class="line">  // 支持同时为多个路由绑定中间件函数: router.use([&apos;/use&apos;, &apos;/admin&apos;], auth());</span><br><span class="line">  if (Array.isArray(middleware[0]) &amp;&amp; typeof middleware[0][0] === &apos;string&apos;) &#123;</span><br><span class="line">    middleware[0].forEach(function (p) &#123;</span><br><span class="line">      // 递归调用</span><br><span class="line">      router.use.apply(router, [p].concat(middleware.slice(1)));</span><br><span class="line">    &#125;);</span><br><span class="line">    // 直接返回, 下面是非数组 path 的逻辑</span><br><span class="line">    return this;</span><br><span class="line">  &#125;</span><br><span class="line">  // 如果第一个参数有传值为字符串, 说明有传路径</span><br><span class="line">  var hasPath = typeof middleware[0] === &apos;string&apos;;</span><br><span class="line">  if (hasPath) &#123;</span><br><span class="line">    path = middleware.shift();</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  middleware.forEach(function (m) &#123;</span><br><span class="line">    // 如果有router属性, 说明这个中间件函数是由 Router.prototype.routes暴露出来的</span><br><span class="line">    // 属于嵌套路由</span><br><span class="line">    if (m.router) &#123;</span><br><span class="line">      // 这里的逻辑很有意思, 如果是嵌套路由, 相当于将需要嵌套路由重新注册到现在的 Router 对象上</span><br><span class="line">      m.router.stack.forEach(function (nestedLayer) &#123;</span><br><span class="line">        // 如果有path, 那么为需要嵌套的路由加上路径前缀</span><br><span class="line">        if (path) nestedLayer.setPrefix(path);</span><br><span class="line">        // 如果本身的router有前缀配置, 也添加上</span><br><span class="line">        if (router.opts.prefix) nestedLayer.setPrefix(router.opts.prefix);</span><br><span class="line">        // 将需要嵌套的路由模块的 stack 中存储的 Layer 加入到本 router 对象上</span><br><span class="line">        router.stack.push(nestedLayer);</span><br><span class="line">      &#125;);</span><br><span class="line">      // 这里与register函数的逻辑类似, 注册的时候检查添加参数校验函数 params</span><br><span class="line">      if (router.params) &#123;</span><br><span class="line">        Object.keys(router.params).forEach(function (key) &#123;</span><br><span class="line">          m.router.param(key, router.params[key]);</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      // 没有router属性则是常规中间件函数, 如果有给定的 path 那么就生成一个 Layer 模块进行管理</span><br><span class="line">      // 如果没有path, 那么就生成通配的路径 (.*) 来生成 Layer 来管理</span><br><span class="line">      router.register(path || &apos;(.*)&apos;, [], m, &#123; end: false, ignoreCaptures: !hasPath &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  return this;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>眼尖的同学可能会看到一些 http code：404, 501, 204, 405 。那这个函数其实就是当所有中间件函数执行完了，并且请求出错了进行相应的处理：</p>
+<ul>
+<li>如果请求的方法<code>koa-router</code>不支持并且没有设置<code>throw</code>选项，则返回<code>501</code>(未实现)</li>
+<li>如果是<code>options</code>请求，则返回 <code>204</code>(无内容)</li>
+<li>如果请求的方法支持但没有设置<code>throw</code>选项，则返回 <code>405</code>(不允许此方法 )</li>
+</ul>
+<h3 id="Router-prototype-match"><a href="#Router-prototype-match" class="headerlink" title="Router.prototype.match"></a>Router.prototype.match</h3><p>我们已经注册好了路由, 但是, 如果请求过来了, 请求是怎么匹配然后进行到相对应的处理函数去的呢? 答案就是利用<code>match</code>函数.先看一下<code>match</code>函数的代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">Router.prototype.match = function (path, method) &#123;</span><br><span class="line">  // 取所有路由 Layer 实例</span><br><span class="line">  var layers = this.stack;</span><br><span class="line">  var layer;</span><br><span class="line">  // 匹配结果</span><br><span class="line">  var matched = &#123;</span><br><span class="line">    path: [],</span><br><span class="line">    pathAndMethod: [],</span><br><span class="line">    route: false</span><br><span class="line">  &#125;;</span><br><span class="line">  // 遍历路由 Router 的 stack 逐个判断</span><br><span class="line">  for (var len = layers.length, i = 0; i &lt; len; i++) &#123;</span><br><span class="line">    layer = layers[i];</span><br><span class="line"></span><br><span class="line">    debug(&apos;test %s %s&apos;, layer.path, layer.regexp);</span><br><span class="line">    // 这里是使用由路由字符串生成的正则表达式判断当前路径是否符合该正则</span><br><span class="line">    if (layer.match(path)) &#123;</span><br><span class="line">      // 将对应的 Layer 实例加入到结果集的 path 数组中</span><br><span class="line">      matched.path.push(layer);</span><br><span class="line">      // 如果对应的 layer 实例中 methods 数组为空或者数组中有找到对应的方法</span><br><span class="line">      if (layer.methods.length === 0 || ~layer.methods.indexOf(method)) &#123;</span><br><span class="line">        // 将 layer 放入到结果集的 pathAndMethod 中</span><br><span class="line">        matched.pathAndMethod.push(layer);</span><br><span class="line">        // 这里是用于判断是否有真正匹配到路由处理函数</span><br><span class="line">        // 因为像 router.use(session()); 这样的中间件也是通过 Layer 来管理的, 它们的 methods 数组为空</span><br><span class="line">        if (layer.methods.length) matched.route = true;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return matched;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>通过上面返回的结果集, 我们知道一个请求来临的时候, 我们可以使用正则来匹配路由是否符合, 然后在<code>path</code>数组或者<code>pathAndMethod</code>数组中找到对应的<code>Layer</code>实例对象.</p>
+<h2 id="router处理请求的流程"><a href="#router处理请求的流程" class="headerlink" title="router处理请求的流程"></a>router处理请求的流程</h2><p><img src="https://vfile.meituan.net/xgfe/63d452eb5a23d3fe3e1bf2e0219bceea93599.png" alt="router处理请求的流程"></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><code>koa-router</code>用到了第三方的<code>node</code>模块</p>
+<ul>
+<li><p><a href="https://github.com/koajs/compose" target="_blank" rel="noopener">koa-compose</a>:<br> 提供给它一个中间件数组， 返回一个顺序执行所有中间件的执行函数。</p>
+</li>
+<li><p><a href="https://github.com/jshttp/methods" target="_blank" rel="noopener">methods</a>：<br> <code>node</code>中支持的<code>http</code>动词，就是<code>http.METHODS</code>，可以在终端输出看看。 </p>
+</li>
+<li><p><a href="https://github.com/pillarjs/path-to-regexp" target="_blank" rel="noopener">path-to-regexp</a>：<br> 将路径字符串转换成强大的正则表达式，还可以输出路径参数。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过分析<code>koa-router</code>的源码，总结了：</p>
+<ul>
+<li><code>koa-router</code>涉及到的<code>router</code>和<code>layer</code>的关系；</li>
+<li><code>koa-router</code>处理请求的整体流程；</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/25/juga/浅谈React-Native与Redux数据流/" rel="prev">浅谈 React-Native 与 Redux 数据流</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/23/objectisundefined/observable/" rel="next">谈谈Observable</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">111</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">152</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kao-router的简单使用demo"><span class="nav-number">2.</span> <span class="nav-text">kao-router的简单使用demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码结构"><span class="nav-number">3.</span> <span class="nav-text">源码结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码解析"><span class="nav-number">4.</span> <span class="nav-text">源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Router-构造函数"><span class="nav-number">4.1.</span> <span class="nav-text">Router 构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#router-get-post-delete-all…"><span class="nav-number">4.2.</span> <span class="nav-text">router.(get|post|delete|all…)()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#register方法"><span class="nav-number">4.3.</span> <span class="nav-text">register方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#router-routes"><span class="nav-number">4.4.</span> <span class="nav-text">router.routes()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#router-allowedMethod"><span class="nav-number">4.5.</span> <span class="nav-text">router.allowedMethod()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#router-use"><span class="nav-number">4.6.</span> <span class="nav-text">router.use()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Router-prototype-match"><span class="nav-number">4.7.</span> <span class="nav-text">Router.prototype.match</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#router处理请求的流程"><span class="nav-number">5.</span> <span class="nav-text">router处理请求的流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">6.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

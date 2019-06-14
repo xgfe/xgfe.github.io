@@ -24,7 +24,7 @@
   <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
 
 
-  <meta name="keywords" content="htmlhint,html,代码规范,">
+  <meta name="keywords" content="htmlhint,代码规范,html,">
 
 
   <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
@@ -33,14 +33,14 @@
   <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
 
 <meta name="description" content="前言作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一">
-<meta name="keywords" content="htmlhint,html,代码规范">
+<meta name="keywords" content="htmlhint,代码规范,html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTML代码检查工具实践">
 <meta property="og:url" content="http://xgfe.github.io/2015/10/08/y8n/html-hinting-tool/index.html">
 <meta property="og:site_name" content="xgfe">
 <meta property="og:description" content="前言作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-05T02:41:48.401Z">
+<meta property="og:updated_time" content="2019-06-14T08:18:21.465Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTML代码检查工具实践">
 <meta name="twitter:description" content="前言作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一">
@@ -239,9 +239,9 @@
             
               <a href="/tags/htmlhint/" rel="tag"><i class="icon-next-tags"></i>htmlhint</a>
             
-              <a href="/tags/html/" rel="tag"><i class="icon-next-tags"></i>html</a>
-            
               <a href="/tags/代码规范/" rel="tag"><i class="icon-next-tags"></i>代码规范</a>
+            
+              <a href="/tags/html/" rel="tag"><i class="icon-next-tags"></i>html</a>
             
           </span>
         
@@ -255,7 +255,7 @@
 
       
         <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一只页面仔，写出一手漂（niu）亮（bi）的代码一直是我们不懈的追求。HTML作为前端开发入门级的语言，把它熟练掌握是基本功，不光如此，还需要在一个团队里保持良好的编码规范，使得代码易被理解和被维护。<br>就现阶段来看，我们还是没有形成统一的代码风格，写出的东西五花八门，等项目做大之后，其中的诸多问题必然会暴露出来。所以，为了能省（shao）时（jia）省（dian）力（ban），我们需要制定一套符合现有团队的规范、更需要检查代码是否符合规范的自动化工具。<br><a id="more"></a></p>
-<h2 id="制定规则"><a href="#制定规则" class="headerlink" title="制定规则"></a>制定规则</h2><p>没有规矩，不成方圆。参照业界其他优秀团队的规范，如<a href="https://github.com/fex-team/styleguide/blob/master/html.md" target="_blank" rel="noopener">百度FEX团队</a>、<a href="http://codeguide.bootcss.com/" target="_blank" rel="noopener">BootstrapCodeGuide</a>、<a href="http://google.github.io/styleguide/htmlcssguide.xml" target="_blank" rel="noopener">Google style guide</a>，结合W3C的标准规范，加上大家的踩坑经验，七嘴八舌地制定了一套适合团队自身的<a href="http://wiki.sankuai.com/pages/viewpage.action?pageId=341813735" target="_blank" rel="noopener">HTML规范草案(内网访问)</a>或者<a href="https://github.com/yangjiyuan/xg-htmlhint/wiki/Rules" target="_blank" rel="noopener">xg-htmlhint Rules</a>。</p>
+<h2 id="制定规则"><a href="#制定规则" class="headerlink" title="制定规则"></a>制定规则</h2><p>没有规矩，不成方圆。参照业界其他优秀团队的规范，如<a href="https://github.com/fex-team/styleguide/blob/master/html.md" target="_blank" rel="noopener">百度FEX团队</a>、<a href="http://codeguide.bootcss.com/" target="_blank" rel="noopener">BootstrapCodeGuide</a>、<a href="http://google.github.io/styleguide/htmlcssguide.xml" target="_blank" rel="noopener">Google style guide</a>，结合W3C的标准规范，加上大家的踩坑经验，七嘴八舌地制定了一套适合团队自身的HTML规范草案。</p>
 <h2 id="自动化检查工具的探索和实现"><a href="#自动化检查工具的探索和实现" class="headerlink" title="自动化检查工具的探索和实现"></a>自动化检查工具的探索和实现</h2><h3 id="探索阶段"><a href="#探索阶段" class="headerlink" title="探索阶段"></a>探索阶段</h3><p>在做自己的代码检查工具之前，我们调研过几个类似的工具，其他团队对此类工具也有调研，参照<a href="http://efe.baidu.com/blog/comparison-of-html-linting-tool/" target="_blank" rel="noopener">HTML代码风格检查工具对比</a>，以此为铺垫，我们对比了<a href="https://github.com/twbs/bootlint" target="_blank" rel="noopener">Bootlint</a>、<a href="https://github.com/globant-ui/arialinter" target="_blank" rel="noopener">AriaLinter</a>、<a href="https://github.com/htmllint/htmllint" target="_blank" rel="noopener">htmllint</a>、<a href="https://github.com/yaniswang/HTMLHint" target="_blank" rel="noopener">HTMLHint</a>、<a href="https://github.com/ecomfe/htmlcs" target="_blank" rel="noopener">htmlcs</a>等多种代码检查工具，各个工具的对比如下：</p>
 <table>
 <thead>
@@ -451,21 +451,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">108</span>
+              <span class="site-state-item-count">111</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">56</span>
+              <span class="site-state-item-count">59</span>
               <span class="site-state-item-name">作者</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">148</span>
+              <span class="site-state-item-count">152</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
