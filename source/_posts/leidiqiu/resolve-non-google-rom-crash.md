@@ -54,9 +54,9 @@ public class Demo {
 
 ## 通用方法
 既然动态方法不行，考虑静态方法，毕竟在手机 ROM 中，必然有对应的文件。
-#### 步骤一
+### 步骤一
 首先，通过 Crash 平台的附加信息，找到手机的型号、版本「型号：OPPO R9tm，版本：5.1」，找一台同型号、同版本的手机「美团有云真机平台，上面的手机种类繁多」，连上 adb。
-#### 步骤二
+### 步骤二
 把 boot.oat 文件从手机 pull 下来，boot.oat 包含启动相关的代码，可理解为里面有优化过的 framework.jar 文件，对应 SDK 的 android.jar 文件，文件较大，有 85M 左右。
 ```bash
 [leidiqiu@leidiqiu: ] ~/Desktop $ adb -s 172.18.92.198:44429 pull /system/framework/arm64/boot.oat .
@@ -64,7 +64,7 @@ public class Demo {
 [leidiqiu@leidiqiu: ] ~/Desktop $ ls -l boot.oat 
 -rw-r--r--  1 leidiqiu  staff  85477748 May  8 16:17 boot.oat
 ```
-#### 步骤三
+### 步骤三
 下载 [oat2dex.jar](https://github.com/testwhat/SmaliEx/releases/download/0.86/oat2dex.jar) 工具，并将 oat 文件转换成 dex 文件，会生成 odex、dex 两个文件夹。
 ```bash
 [leidiqiu@leidiqiu: ] ~/Desktop $ java -jar ~/libs/oat2dex.jar boot boot.oat 
@@ -123,7 +123,7 @@ public class Demo {
 05-08 16:23:41:889 De-optimizing /system/framework/mediatek-telephony-common.jar
 05-08 16:23:41:891 Output to /Users/leidiqiu/Desktop/dex/mediatek-telephony-common.dex
 ```
-#### 步骤四
+### 步骤四
 查看 dex 文件夹，发现有 framework.dex 文件。
 ```bash
 [leidiqiu@leidiqiu: ] ~/Desktop $ cd dex/
@@ -135,7 +135,7 @@ conscrypt.dex                 ims-common.dex                oppo-framework.dex
 core-junit.dex                mediatek-common.dex           telephony-common.dex
 core-libart.dex               mediatek-framework.dex        voip-common.dex
 ```
-#### 步骤五
+### 步骤五
 下载 [dex2jar-2.0.zip](https://sourceforge.net/projects/dex2jar/files/dex2jar-2.0.zip/download) 工具，将 dex 转成 jar，并用 JD-GUI 打开，JD-GUI 下载地址：http://java-decompiler.github.io/。
 ```bash
 [leidiqiu@leidiqiu: ] ~/Desktop/dex $ dex2jar.sh framework.dex 
@@ -144,7 +144,7 @@ Detail Error Information in File ./framework-error.zip
 Please report this file to http://code.google.com/p/dex2jar/issues/entry if possible.
 [leidiqiu@leidiqiu: ] ~/Desktop/dex $ open framework-dex2jar.jar -a JD-GUI.app
 ```
-#### 步骤六
+### 步骤六
 通过 JD-GUI 查看，终于找到了 Message 类，里面确实有 toStringLite() 方法。
 ![](http://s3plus.sankuai.com/v1/mss_7fabbc64efb346df9722fadcafbc20bc/blog/Message.png)
 
