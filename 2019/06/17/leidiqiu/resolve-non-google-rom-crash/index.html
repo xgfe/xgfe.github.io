@@ -1,0 +1,716 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Android,Crash,非原生ROM,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="日常 Crash 治理过程中，经常会遇到一些比较难排查的问题，比如，Crash 堆栈信息中出现了一些本不应该出现的函数，这些函数其实是手机厂商修改了 Google 的原生 ROM，自己添加进去的。本文介绍了一种定位和排查非原生 ROM 的 Crash 问题的通用方法。">
+<meta name="keywords" content="Android,Crash,非原生ROM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="非原生 ROM 的 Crash 问题通用排查方法">
+<meta property="og:url" content="http://xgfe.github.io/2019/06/17/leidiqiu/resolve-non-google-rom-crash/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="日常 Crash 治理过程中，经常会遇到一些比较难排查的问题，比如，Crash 堆栈信息中出现了一些本不应该出现的函数，这些函数其实是手机厂商修改了 Google 的原生 ROM，自己添加进去的。本文介绍了一种定位和排查非原生 ROM 的 Crash 问题的通用方法。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://s3plus.sankuai.com/v1/mss_7fabbc64efb346df9722fadcafbc20bc/blog/Message.png">
+<meta property="og:updated_time" content="2019-06-18T02:46:08.666Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="非原生 ROM 的 Crash 问题通用排查方法">
+<meta name="twitter:description" content="日常 Crash 治理过程中，经常会遇到一些比较难排查的问题，比如，Crash 堆栈信息中出现了一些本不应该出现的函数，这些函数其实是手机厂商修改了 Google 的原生 ROM，自己添加进去的。本文介绍了一种定位和排查非原生 ROM 的 Crash 问题的通用方法。">
+<meta name="twitter:image" content="http://s3plus.sankuai.com/v1/mss_7fabbc64efb346df9722fadcafbc20bc/blog/Message.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 非原生 ROM 的 Crash 问题通用排查方法 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              非原生 ROM 的 Crash 问题通用排查方法
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-06-17T16:28:30+08:00" content="2019-06-17">
+            2019-06-17
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/leidiqiu/" itemprop="url" rel="index">
+                  <span itemprop="name">leidiqiu</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Android/" rel="tag"><i class="icon-next-tags"></i>Android</a>
+            
+              <a href="/tags/Crash/" rel="tag"><i class="icon-next-tags"></i>Crash</a>
+            
+              <a href="/tags/非原生ROM/" rel="tag"><i class="icon-next-tags"></i>非原生ROM</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>日常 Crash 治理过程中，经常会遇到一些比较难排查的问题，比如，Crash 堆栈信息中出现了一些本不应该出现的函数，这些函数其实是手机厂商修改了 Google 的原生 ROM，自己添加进去的。本文介绍了一种定位和排查非原生 ROM 的 Crash 问题的通用方法。</p>
+<a id="more"></a>
+<h2 id="问题的提出"><a href="#问题的提出" class="headerlink" title="问题的提出"></a>问题的提出</h2><p>日常清理 Crash 时，遇到一些空指针异常的问题，每天不多，但是日积月累，数量并不少，堆栈信息如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NullPointerException: Attempt to invoke virtual method <span class="string">'java.lang.Class java.lang.Object.getClass()'</span> on a <span class="keyword">null</span> object reference</span><br><span class="line">	at android.os.Message.toStringLite(Message.java:<span class="number">507</span>)</span><br><span class="line">	at android.os.Looper.loop(Looper.java:<span class="number">221</span>)</span><br><span class="line">	at android.app.ActivityThread.main(ActivityThread.java:<span class="number">5809</span>)</span><br><span class="line">	at java.lang.reflect.Method.invoke(Native Method)</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:<span class="number">372</span>)</span><br><span class="line">	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:<span class="number">1113</span>)</span><br><span class="line">	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:<span class="number">879</span>)</span><br></pre></td></tr></table></figure></p>
+<p>翻看 android.os.Message 的源代码，并没有 toStringLite() 这个函数，显然，这是手机厂商修改了原生 ROM，自己加上的。如何跟进此类适配性问题呢？</p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>此类 ROM 相关问题无法修复，只能从 App 的代码调用端进行适配，类似 H5 页面适配各种浏览器一样。所以，主要问题在于找出非原生 ROM 的执行逻辑，从而想办法避免 Crash。那么，如何发掘里面的执行逻辑呢？</p>
+<h2 id="探索"><a href="#探索" class="headerlink" title="探索"></a>探索</h2><p>初步考虑，通过 ClassLoader 动态导出具体的 class 类，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();</span><br><span class="line">            InputStream inputStream = classLoader.getResourceAsStream(<span class="string">"java/util/List.class"</span>);</span><br><span class="line">            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(<span class="string">"List.class"</span>);</span><br><span class="line">            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">            <span class="keyword">int</span> length;</span><br><span class="line">            <span class="keyword">while</span> ((length = inputStream.read(buffer)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                fileOutputStream.write(buffer, <span class="number">0</span>, length);</span><br><span class="line">            &#125;</span><br><span class="line">            fileOutputStream.close();</span><br><span class="line">            inputStream.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种方法对 Java 是适用的，但是在 Android 中并不适用。</p>
+<h2 id="通用方法"><a href="#通用方法" class="headerlink" title="通用方法"></a>通用方法</h2><p>既然动态方法不行，考虑静态方法，毕竟在手机 ROM 中，必然有对应的文件。</p>
+<h4 id="步骤一"><a href="#步骤一" class="headerlink" title="步骤一"></a>步骤一</h4><p>首先，通过 Crash 平台的附加信息，找到手机的型号、版本「型号：OPPO R9tm，版本：5.1」，找一台同型号、同版本的手机「美团有云真机平台，上面的手机种类繁多」，连上 adb。</p>
+<h4 id="步骤二"><a href="#步骤二" class="headerlink" title="步骤二"></a>步骤二</h4><p>把 boot.oat 文件从手机 pull 下来，boot.oat 包含启动相关的代码，可理解为里面有优化过的 framework.jar 文件，对应 SDK 的 android.jar 文件，文件较大，有 85M 左右。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[leidiqiu@leidiqiu: ] ~/Desktop $ adb -s 172.18.92.198:44429 pull /system/framework/arm64/boot.oat .</span><br><span class="line">/system/framework/arm64/boot.oat: 1 file pulled. 0.4 MB/s (85477748 bytes <span class="keyword">in</span> 229.612s)</span><br><span class="line">[leidiqiu@leidiqiu: ] ~/Desktop $ ls -l boot.oat </span><br><span class="line">-rw-r--r--  1 leidiqiu  staff  85477748 May  8 16:17 boot.oat</span><br></pre></td></tr></table></figure></p>
+<h4 id="步骤三"><a href="#步骤三" class="headerlink" title="步骤三"></a>步骤三</h4><p>下载 <a href="https://github.com/testwhat/SmaliEx/releases/download/0.86/oat2dex.jar" target="_blank" rel="noopener">oat2dex.jar</a> 工具，并将 oat 文件转换成 dex 文件，会生成 odex、dex 两个文件夹。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">[leidiqiu@leidiqiu: ] ~/Desktop $ java -jar ~/libs/oat2dex.jar boot boot.oat </span><br><span class="line">05-08 16:23:27:465 Output raw dex: /Users/leidiqiu/Desktop/odex/core-libart.dex</span><br><span class="line">05-08 16:23:27:466 Output raw dex: /Users/leidiqiu/Desktop/odex/conscrypt.dex</span><br><span class="line">05-08 16:23:27:467 Output raw dex: /Users/leidiqiu/Desktop/odex/okhttp.dex</span><br><span class="line">05-08 16:23:27:467 Output raw dex: /Users/leidiqiu/Desktop/odex/core-junit.dex</span><br><span class="line">05-08 16:23:27:469 Output raw dex: /Users/leidiqiu/Desktop/odex/bouncycastle.dex</span><br><span class="line">05-08 16:23:27:472 Output raw dex: /Users/leidiqiu/Desktop/odex/ext.dex</span><br><span class="line">05-08 16:23:27:488 Output raw dex: /Users/leidiqiu/Desktop/odex/framework.dex</span><br><span class="line">05-08 16:23:27:503 Output raw dex: /Users/leidiqiu/Desktop/odex/framework-classes2.dex</span><br><span class="line">05-08 16:23:27:511 Output raw dex: /Users/leidiqiu/Desktop/odex/telephony-common.dex</span><br><span class="line">05-08 16:23:27:512 Output raw dex: /Users/leidiqiu/Desktop/odex/voip-common.dex</span><br><span class="line">05-08 16:23:27:516 Output raw dex: /Users/leidiqiu/Desktop/odex/ims-common.dex</span><br><span class="line">05-08 16:23:27:516 Output raw dex: /Users/leidiqiu/Desktop/odex/mms-common.dex</span><br><span class="line">05-08 16:23:27:517 Output raw dex: /Users/leidiqiu/Desktop/odex/android.policy.dex</span><br><span class="line">05-08 16:23:27:523 Output raw dex: /Users/leidiqiu/Desktop/odex/apache-xml.dex</span><br><span class="line">05-08 16:23:27:529 Output raw dex: /Users/leidiqiu/Desktop/odex/oppo-framework.dex</span><br><span class="line">05-08 16:23:27:530 Output raw dex: /Users/leidiqiu/Desktop/odex/mediatek-common.dex</span><br><span class="line">05-08 16:23:27:531 Output raw dex: /Users/leidiqiu/Desktop/odex/mediatek-framework.dex</span><br><span class="line">05-08 16:23:27:532 Output raw dex: /Users/leidiqiu/Desktop/odex/mediatek-telephony-common.dex</span><br><span class="line">05-08 16:23:27:786 De-optimizing /system/framework/core-libart.jar</span><br><span class="line">05-08 16:23:30:094 Output to /Users/leidiqiu/Desktop/dex/core-libart.dex</span><br><span class="line">05-08 16:23:30:094 De-optimizing /system/framework/conscrypt.jar</span><br><span class="line">05-08 16:23:30:208 Output to /Users/leidiqiu/Desktop/dex/conscrypt.dex</span><br><span class="line">05-08 16:23:30:208 De-optimizing /system/framework/okhttp.jar</span><br><span class="line">05-08 16:23:30:356 Output to /Users/leidiqiu/Desktop/dex/okhttp.dex</span><br><span class="line">05-08 16:23:30:356 De-optimizing /system/framework/core-junit.jar</span><br><span class="line">05-08 16:23:30:371 Output to /Users/leidiqiu/Desktop/dex/core-junit.dex</span><br><span class="line">05-08 16:23:30:371 De-optimizing /system/framework/bouncycastle.jar</span><br><span class="line">05-08 16:23:30:928 Output to /Users/leidiqiu/Desktop/dex/bouncycastle.dex</span><br><span class="line">05-08 16:23:30:928 De-optimizing /system/framework/ext.jar</span><br><span class="line">05-08 16:23:31:483 Output to /Users/leidiqiu/Desktop/dex/ext.dex</span><br><span class="line">05-08 16:23:31:483 De-optimizing /system/framework/framework.jar</span><br><span class="line">05-08 16:23:36:301 Output to /Users/leidiqiu/Desktop/dex/framework.dex</span><br><span class="line">05-08 16:23:36:301 De-optimizing /system/framework/framework.jar:classes2.dex</span><br><span class="line">05-08 16:23:38:611 Output to /Users/leidiqiu/Desktop/dex/framework-classes2.dex</span><br><span class="line">05-08 16:23:38:611 De-optimizing /system/framework/telephony-common.jar</span><br><span class="line">05-08 16:23:40:395 Output to /Users/leidiqiu/Desktop/dex/telephony-common.dex</span><br><span class="line">05-08 16:23:40:395 De-optimizing /system/framework/voip-common.jar</span><br><span class="line">05-08 16:23:40:440 Output to /Users/leidiqiu/Desktop/dex/voip-common.dex</span><br><span class="line">05-08 16:23:40:440 De-optimizing /system/framework/ims-common.jar</span><br><span class="line">05-08 16:23:40:625 Output to /Users/leidiqiu/Desktop/dex/ims-common.dex</span><br><span class="line">05-08 16:23:40:625 De-optimizing /system/framework/mms-common.jar</span><br><span class="line">05-08 16:23:40:626 Output to /Users/leidiqiu/Desktop/dex/mms-common.dex</span><br><span class="line">05-08 16:23:40:626 De-optimizing /system/framework/android.policy.jar</span><br><span class="line">05-08 16:23:40:764 Output to /Users/leidiqiu/Desktop/dex/android.policy.dex</span><br><span class="line">05-08 16:23:40:764 De-optimizing /system/framework/apache-xml.jar</span><br><span class="line">05-08 16:23:41:178 Output to /Users/leidiqiu/Desktop/dex/apache-xml.dex</span><br><span class="line">05-08 16:23:41:178 De-optimizing /system/framework/oppo-framework.jar</span><br><span class="line">05-08 16:23:41:613 Output to /Users/leidiqiu/Desktop/dex/oppo-framework.dex</span><br><span class="line">05-08 16:23:41:613 De-optimizing /system/framework/mediatek-common.jar</span><br><span class="line">05-08 16:23:41:660 Output to /Users/leidiqiu/Desktop/dex/mediatek-common.dex</span><br><span class="line">05-08 16:23:41:660 De-optimizing /system/framework/mediatek-framework.jar</span><br><span class="line">05-08 16:23:41:889 Output to /Users/leidiqiu/Desktop/dex/mediatek-framework.dex</span><br><span class="line">05-08 16:23:41:889 De-optimizing /system/framework/mediatek-telephony-common.jar</span><br><span class="line">05-08 16:23:41:891 Output to /Users/leidiqiu/Desktop/dex/mediatek-telephony-common.dex</span><br></pre></td></tr></table></figure></p>
+<h4 id="步骤四"><a href="#步骤四" class="headerlink" title="步骤四"></a>步骤四</h4><p>查看 dex 文件夹，发现有 framework.dex 文件。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[leidiqiu@leidiqiu: ] ~/Desktop $ <span class="built_in">cd</span> dex/</span><br><span class="line">[leidiqiu@leidiqiu: ] ~/Desktop/dex $ ls</span><br><span class="line">android.policy.dex            ext.dex                       mediatek-telephony-common.dex</span><br><span class="line">apache-xml.dex                framework-classes2.dex        mms-common.dex</span><br><span class="line">bouncycastle.dex              framework.dex                 okhttp.dex</span><br><span class="line">conscrypt.dex                 ims-common.dex                oppo-framework.dex</span><br><span class="line">core-junit.dex                mediatek-common.dex           telephony-common.dex</span><br><span class="line">core-libart.dex               mediatek-framework.dex        voip-common.dex</span><br></pre></td></tr></table></figure></p>
+<h4 id="步骤五"><a href="#步骤五" class="headerlink" title="步骤五"></a>步骤五</h4><p>下载 <a href="https://sourceforge.net/projects/dex2jar/files/dex2jar-2.0.zip/download" target="_blank" rel="noopener">dex2jar-2.0.zip</a> 工具，将 dex 转成 jar，并用 JD-GUI 打开，JD-GUI 下载地址：<a href="http://java-decompiler.github.io/。" target="_blank" rel="noopener">http://java-decompiler.github.io/。</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[leidiqiu@leidiqiu: ] ~/Desktop/dex $ dex2jar.sh framework.dex </span><br><span class="line">dex2jar framework.dex -&gt; ./framework-dex2jar.jar</span><br><span class="line">Detail Error Information <span class="keyword">in</span> File ./framework-error.zip</span><br><span class="line">Please report this file to http://code.google.com/p/dex2jar/issues/entry <span class="keyword">if</span> possible.</span><br><span class="line">[leidiqiu@leidiqiu: ] ~/Desktop/dex $ open framework-dex2jar.jar -a JD-GUI.app</span><br></pre></td></tr></table></figure></p>
+<h4 id="步骤六"><a href="#步骤六" class="headerlink" title="步骤六"></a>步骤六</h4><p>通过 JD-GUI 查看，终于找到了 Message 类，里面确实有 toStringLite() 方法。<br><img src="http://s3plus.sankuai.com/v1/mss_7fabbc64efb346df9722fadcafbc20bc/blog/Message.png" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>此类方法相对通用，对定位非原生 ROM 的问题很有帮助。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/26/yangziyao/类Redux的数据中间层实现/" rel="next">类Redux的数据中间层的实现</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">112</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">154</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题的提出"><span class="nav-number">1.</span> <span class="nav-text">问题的提出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思考"><span class="nav-number">2.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#探索"><span class="nav-number">3.</span> <span class="nav-text">探索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通用方法"><span class="nav-number">4.</span> <span class="nav-text">通用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤一"><span class="nav-number">4.0.1.</span> <span class="nav-text">步骤一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤二"><span class="nav-number">4.0.2.</span> <span class="nav-text">步骤二</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤三"><span class="nav-number">4.0.3.</span> <span class="nav-text">步骤三</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤四"><span class="nav-number">4.0.4.</span> <span class="nav-text">步骤四</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤五"><span class="nav-number">4.0.5.</span> <span class="nav-text">步骤五</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤六"><span class="nav-number">4.0.6.</span> <span class="nav-text">步骤六</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

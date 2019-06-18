@@ -198,6 +198,133 @@
           
           
             
+              <a class="post-title-link" href="/2015/09/24/felix/blog-instructions/" itemprop="url">
+                使用说明书
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-09-24T00:00:00+08:00" content="2015-09-24">
+            2015-09-24
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/felix/" itemprop="url" rel="index">
+                  <span itemprop="name">felix</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>博客系统基于<a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>搭建，使用主题<a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">next.mist</a>。采用<a href="http://duoshuo.com/" target="_blank" rel="noopener">多说</a>评论系统，站内搜索使用<a href="https://swiftype.com/" target="_blank" rel="noopener">swiftype</a>。</p>
+<h1 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h1><ul>
+<li><p>基本环境</p>
+<ul>
+<li><a href="https://github.com/" target="_blank" rel="noopener">git</a></li>
+<li><a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node&amp;npm</a></li>
+<li><p><a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>获取项目代码</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/xgfe/xgfe.github.io blog</span><br><span class="line">cd blog</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>写博客</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s [-p 5000] // 启动博客本地环境，默认4000端口，供预览使用</span><br></pre></td></tr></table></figure>
+<p>  博文路径</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/source/_posts/&#123;namespace&#125;/&#123;title&#125;.md</span><br></pre></td></tr></table></figure>
+<p>  ，直接复制已有文章md文件，修改头部信息即可。</p>
+</li>
+<li><p>提交代码，通知相关人员审核发布</p>
+</li>
+</ul>
+<h1 id="博客规范"><a href="#博客规范" class="headerlink" title="博客规范"></a>博客规范</h1><p>头部“—”行以前的部分为博文信息定义部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">title: 博客说明书                             // 博文名称</span><br><span class="line">date: 2015-09-24 00:00:00                   // 博文创建时间</span><br><span class="line">updated: 2015-09-25 00:00:00                // 博文修改时间【可选】</span><br><span class="line">categories:                                 // 博文分类，可多级，有层级之分</span><br><span class="line">- felix                                     // 一级分类为&#123;namespace&#125;即它所在文件夹的名称，用为作者</span><br><span class="line">- blog                                      // 二级分类个人管理，供归纳自己文章用【可选】</span><br><span class="line">tags:                                       // 标签，可多个，无层级之分</span><br><span class="line">- blog</span><br><span class="line">- hexo</span><br><span class="line">- node</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><ul>
+<li>每个人得{namespace}理论上只有一个，即所有博文放在一个文件夹下</li>
+<li>富媒体文件不得放在项目内<ul>
+<li>一般图片等资源可放在CDN或者七牛云</li>
+<li>ppt可上传到<a href="https://slides.com/xgfe" target="_blank" rel="noopener">slides</a>，用iframe嵌入</li>
+</ul>
+</li>
+<li>创建时间发布后不可修改，因为所有博客的先后顺序只与创建时间有关，但在第一次发布时可酌情修改</li>
+<li><span style="color:red;">文件名不能出现中文，单词用中横线分割，因为文件名会直接出现再生成博文的url路径中（文件里面配置的title才是blog名）</span></li>
+<li><span style="color:red;">标签统一用小写，为了避免一个标签出现因大小写不同出现多个的情况，或者可以自己先查看标签云再添加，尽量不要添加辨识度低的标签</span></li>
+<li><span style="color:red;">文章不得涉及公司代码和业务</span></li>
+</ul>
+<h1 id="后期规划"><a href="#后期规划" class="headerlink" title="后期规划"></a>后期规划</h1><ul>
+<li>增加githook，做codereview</li>
+<li>推广方案待定</li>
+</ul>
+<h1 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h1><ul>
+<li>积累博文库存</li>
+<li>提高文章质量</li>
+<li>扩大业内影响力</li>
+<li>以能挂广告攒团建费为目标</li>
+</ul>
+<h1 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h1><p>感谢xgfe团队的所有成员的支持和贡献，感谢小伟哥的耐心指导和付出。</p>
+<p>即刻起航，扬帆远行。</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/09/23/hello-world/" itemprop="url">
                 Hello World
               </a>
@@ -294,21 +421,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">111</span>
+              <span class="site-state-item-count">112</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">作者</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">152</span>
+              <span class="site-state-item-count">154</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
