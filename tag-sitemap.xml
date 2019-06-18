@@ -100,28 +100,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/DOM/</loc>
-        <lastmod>2019-06-14T07:08:56.518Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/%E8%B7%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B1%9E%E6%80%A7/</loc>
-        <lastmod>2019-06-14T07:08:56.518Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/listview/</loc>
+        <loc>http://xgfe.github.io/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E9%80%9A%E4%BF%A1/</loc>
         <lastmod>2019-06-14T07:08:56.519Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E9%80%9A%E4%BF%A1/</loc>
+        <loc>http://xgfe.github.io/tags/listview/</loc>
         <lastmod>2019-06-14T07:08:56.519Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -170,13 +156,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/git-hook/</loc>
-        <lastmod>2019-06-14T07:08:56.523Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/tags/design-pattern/</loc>
         <lastmod>2019-06-14T07:08:56.523Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -184,8 +163,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/Eggjs/</loc>
-        <lastmod>2019-06-14T07:08:56.524Z</lastmod>
+        <loc>http://xgfe.github.io/tags/git-hook/</loc>
+        <lastmod>2019-06-14T07:08:56.523Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -206,6 +185,13 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/momentjs/</loc>
+        <lastmod>2019-06-14T07:08:56.524Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/Eggjs/</loc>
         <lastmod>2019-06-14T07:08:56.524Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -247,14 +233,14 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/%E5%B8%83%E5%B1%80/</loc>
+        <loc>http://xgfe.github.io/tags/cocos2d-x/</loc>
         <lastmod>2019-06-14T07:08:56.526Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/cocos2d-x/</loc>
+        <loc>http://xgfe.github.io/tags/%E5%B8%83%E5%B1%80/</loc>
         <lastmod>2019-06-14T07:08:56.526Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -263,13 +249,6 @@
     <url>
         <loc>http://xgfe.github.io/tags/%E5%9B%BD%E9%99%85%E5%8C%96/</loc>
         <lastmod>2019-06-14T07:08:56.527Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/CSS3/</loc>
-        <lastmod>2019-06-14T07:08:56.528Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -296,6 +275,20 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/CSS3/</loc>
+        <lastmod>2019-06-14T07:08:56.528Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/data/</loc>
+        <lastmod>2019-06-14T07:08:56.529Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/objective-c/</loc>
         <lastmod>2019-06-14T07:08:56.529Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -304,13 +297,6 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/hopper/</loc>
-        <lastmod>2019-06-14T07:08:56.529Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/tags/data/</loc>
         <lastmod>2019-06-14T07:08:56.529Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -380,13 +366,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/mysql/</loc>
-        <lastmod>2019-06-14T07:08:56.534Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/tags/link/</loc>
         <lastmod>2019-06-14T07:08:56.534Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -402,6 +381,13 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/%E7%BC%96%E8%AF%91%E9%A1%BA%E5%BA%8F/</loc>
+        <lastmod>2019-06-14T07:08:56.534Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/mysql/</loc>
         <lastmod>2019-06-14T07:08:56.534Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -471,13 +457,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/router/</loc>
-        <lastmod>2019-06-14T07:08:56.536Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/tags/yarn/</loc>
         <lastmod>2019-06-14T07:08:56.536Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -486,6 +465,13 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/SDWebImage/</loc>
+        <lastmod>2019-06-14T07:08:56.536Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/router/</loc>
         <lastmod>2019-06-14T07:08:56.536Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -611,13 +597,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/tags/web%E6%80%A7%E8%83%BD/</loc>
-        <lastmod>2019-06-14T07:08:56.541Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/tags/%E7%BC%93%E5%AD%98/</loc>
         <lastmod>2019-06-14T07:08:56.541Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -633,6 +612,13 @@
 
     <url>
         <loc>http://xgfe.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/</loc>
+        <lastmod>2019-06-14T07:08:56.541Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/web%E6%80%A7%E8%83%BD/</loc>
         <lastmod>2019-06-14T07:08:56.541Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -1059,22 +1045,36 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/tags/DOM/</loc>
+        <lastmod>2019-06-17T11:40:51.542Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/tags/%E8%B7%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B1%9E%E6%80%A7/</loc>
+        <lastmod>2019-06-17T11:40:51.542Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/tags/Android/</loc>
-        <lastmod>2019-06-18T02:46:08.666Z</lastmod>
+        <lastmod>2019-06-18T03:58:43.951Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://xgfe.github.io/tags/Crash/</loc>
-        <lastmod>2019-06-18T02:46:08.666Z</lastmod>
+        <lastmod>2019-06-18T03:58:43.951Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://xgfe.github.io/tags/%E9%9D%9E%E5%8E%9F%E7%94%9FROM/</loc>
-        <lastmod>2019-06-18T02:46:08.666Z</lastmod>
+        <lastmod>2019-06-18T03:58:43.951Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

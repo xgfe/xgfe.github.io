@@ -36,7 +36,7 @@
 <meta name="keywords" content="xgfe, xg, fe, 鲜果前端, 前端">
 <meta property="og:type" content="website">
 <meta property="og:title" content="xgfe">
-<meta property="og:url" content="http://xgfe.github.io/tags/redux/index.html">
+<meta property="og:url" content="http://xgfe.github.io/tags/Redux/index.html">
 <meta property="og:site_name" content="xgfe">
 <meta property="og:description" content="xgfe&apos;s blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
 <meta property="og:locale" content="zh-Hans">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title> 标签: redux | xgfe </title>
+  <title> 标签: Redux | xgfe </title>
   <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
 </head>
 
@@ -187,7 +187,7 @@
   <div id="posts" class="posts-collapse">
     <div class="collection-title">
       <h2>
-        redux
+        Redux
         <small>标签</small>
       </h2>
     </div>
@@ -200,36 +200,14 @@
 
       <h1 class="post-title">
         
-            <a class="post-title-link" href="/2019/05/26/yangziyao/类Redux的数据中间层实现/" itemprop="url">
-              <span itemprop="name">类Redux的数据中间层的实现</span>
+            <a class="post-title-link" href="/2018/11/25/juga/浅谈React-Native与Redux数据流/" itemprop="url">
+              <span itemprop="name">浅谈 React-Native 与 Redux 数据流</span>
             </a>
         
       </h1>
 
       <div class="post-meta">
-        <time class="post-time" datetime="2019-05-26T02:00:00.000Z" itemprop="dateCreated" content="2019-05-26"> 05-26 </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2018/05/01/wangpan/redux-realize/" itemprop="url">
-              <span itemprop="name">redux,react-redux简单实现</span>
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" datetime="2018-04-30T16:00:00.000Z" itemprop="dateCreated" content="2018-04-30"> 05-01 </time>
+        <time class="post-time" datetime="2018-11-24T16:00:00.000Z" itemprop="dateCreated" content="2018-11-24"> 11-25 </time>
       </div>
 
     </header>
@@ -436,6 +414,24 @@
   <script>
       $('#gg-form').on('submit', function(e) {
         var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>
+$(this).find('#gg-search-input').val());
         if (keyword) {
           location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
         }
