@@ -35,14 +35,15 @@ tags:
 # 实现原理：
 ## Paint & ColorFilter
 参考 Android Developer：[ColorFilter](https://developer.android.com/reference/android/graphics/ColorFilter)
-
 颜色过滤器，通过 Paint.setColorFilter 修改渲染某个像素时的颜色值，ColorFilter 有如下一些子类，后续着重介绍一下 PorterDuffColorFilter。
 
 ### BlendModeColorFilter
 混合模式，在 API Level 29 中添加的，类似于 Android 原生的 PorterDuffXferMode，在 Flutter、CSS中都有一些体现。
 
 ### ColorMatrixColorFilter
-通过一个矩阵与颜色 RGBA 进行矩阵乘积，得到目标颜色值，可以调整亮度、饱和度、色调等来实现类似 PS 中的滤镜效果。
+参考 Android Developer：[ColorMatrix](https://developer.android.com/reference/android/graphics/ColorMatrix.html)
+通过一个 4x5 的矩阵与颜色 \[R, G, B, A\] 进行矩阵乘积，得到目标颜色值，可以调整亮度、饱和度、色调等来实现类似 PS 中的滤镜效果：
+![](https://raw.githubusercontent.com/bayoh36/images/master/android-tint/color_matrix.png)
 
 ### LightingColorFilter
 通过颜色的相乘与相加，模拟简单的光照效果。
@@ -52,7 +53,6 @@ tags:
 
 #### PorterDuff.Mode
 参考 Android Developer：[PorterDuff.Mode](https://developer.android.com/reference/android/graphics/PorterDuff.Mode.html)
-
 假设存在两个形状 SRC 和 DST，其中带颜色的区域的像素点 alpha = 1; color = [red|blue]，其它区域像素点 alpha = 0; color = 0，则它们叠加相交得到 ABCD 4个区，如图：
 ![](https://raw.githubusercontent.com/bayoh36/images/master/android-tint/composite.png)
 
@@ -309,24 +309,55 @@ CompoundButton 也可以配置 button tint，所以 CheckBox、RadioButton 等�
 
 如果我们想在自定义 View 中也实现 tint 的一些特性，可以让自定义 View 实现 TintableBackgroundView 接口，然后调用 ViewCompat.setBackgroundTintList 进行设置，这样就能对 API Level 21 之前的版本进行兼容。
 
+以下是 ViewCompat 的相关实现：
 ```java
-public static void setBackgroundTintList(@NonNull View view, ColorStateList tintList) {
-    if (VERSION.SDK_INT >= 21) {
+static final ViewCompatBaseImpl IMPL;
+static {
+    if (Build.VERSION.SDK_INT >= 26) {
+        IMPL = new ViewCompatApi26Impl();
+    } else if (Build.VERSION.SDK_INT >= 24) {
+        IMPL = new ViewCompatApi24Impl();
+    ...
+    } else {
+        IMPL = new ViewCompatBaseImpl();
+    }
+}
+
+public static void setBackgroundTintList(View view, ColorStateList tintList) {
+    IMPL.setBackgroundTintList(view, tintList);
+}
+
+static class ViewCompatApi21Impl extends ViewCompatApi19Impl {
+    ...
+    @Override
+    public void setBackgroundTintList(View view, ColorStateList tintList) {
         view.setBackgroundTintList(tintList);
-        if (VERSION.SDK_INT == 21) {
+
+        if (Build.VERSION.SDK_INT == 21) {
+            // Work around a bug in L that did not update the state of the background
+            // after applying the tint
             Drawable background = view.getBackground();
-            boolean hasTint = view.getBackgroundTintList() != null || view.getBackgroundTintMode() != null;
-            if (background != null && hasTint) {
+            boolean hasTint = (view.getBackgroundTintList() != null)
+                    && (view.getBackgroundTintMode() != null);
+            if ((background != null) && hasTint) {
                 if (background.isStateful()) {
                     background.setState(view.getDrawableState());
                 }
-
                 view.setBackground(background);
             }
         }
-    } else if (view instanceof TintableBackgroundView) {
-        ((TintableBackgroundView)view).setSupportBackgroundTintList(tintList);
     }
+    ...
+}
+
+static class ViewCompatBaseImpl {
+    ...
+    public void setBackgroundTintList(View view, ColorStateList tintList) {
+        if (view instanceof TintableBackgroundView) {
+            ((TintableBackgroundView) view).setSupportBackgroundTintList(tintList);
+        }
+    }
+    ...
 }
 ```
 
@@ -345,12 +376,23 @@ public static void setTintList(@NonNull Drawable drawable, @Nullable ColorStateL
 可以使用 DrawableCompat.wrap 对 drawable 进行包装兼容：
 ```java
 public static Drawable wrap(@NonNull Drawable drawable) {
-    if (VERSION.SDK_INT >= 23) {
+    if (Build.VERSION.SDK_INT >= 23) {
         return drawable;
-    } else if (VERSION.SDK_INT >= 21) {
-        return (Drawable)(!(drawable instanceof TintAwareDrawable) ? new WrappedDrawableApi21(drawable) : drawable);
+    } else if (Build.VERSION.SDK_INT >= 21) {
+        if (!(drawable instanceof TintAwareDrawable)) {
+            return new DrawableWrapperApi21(drawable);
+        }
+        return drawable;
+    } else if (Build.VERSION.SDK_INT >= 19) {
+        if (!(drawable instanceof TintAwareDrawable)) {
+            return new DrawableWrapperApi19(drawable);
+        }
+        return drawable;
     } else {
-        return (Drawable)(!(drawable instanceof TintAwareDrawable) ? new WrappedDrawableApi14(drawable) : drawable);
+        if (!(drawable instanceof TintAwareDrawable)) {
+            return new DrawableWrapperApi14(drawable);
+        }
+        return drawable;
     }
 }
 ```
