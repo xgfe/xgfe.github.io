@@ -1,0 +1,788 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="android,tint,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要总结了 Android 着色器的使用及其原理，在实现同等效果的情况下，减少资源图的使用以减小 apk 包的体积并降低对内存的占用。">
+<meta name="keywords" content="android,tint">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 着色器 tint">
+<meta property="og:url" content="http://xgfe.github.io/2019/07/04/chenluan/tint/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要总结了 Android 着色器的使用及其原理，在实现同等效果的情况下，减少资源图的使用以减小 apk 包的体积并降低对内存的占用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/target.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/icon.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/color_matrix.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/composite.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/effect.png">
+<meta property="og:updated_time" content="2019-07-21T03:09:06.154Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 着色器 tint">
+<meta name="twitter:description" content="本文主要总结了 Android 着色器的使用及其原理，在实现同等效果的情况下，减少资源图的使用以减小 apk 包的体积并降低对内存的占用。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/target.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Android 着色器 tint | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Android 着色器 tint
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-07-04T13:08:30+08:00" content="2019-07-04">
+            2019-07-04
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/chenluan/" itemprop="url" rel="index">
+                  <span itemprop="name">chenluan</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/android/" rel="tag"><i class="icon-next-tags"></i>android</a>
+            
+              <a href="/tags/tint/" rel="tag"><i class="icon-next-tags"></i>tint</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要总结了 Android 着色器的使用及其原理，在实现同等效果的情况下，减少资源图的使用以减小 apk 包的体积并降低对内存的占用。</p>
+<a id="more"></a>
+<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>假设我们想实现一种效果，如下：<br><img src="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/target.png" alt=""></p>
+<p>不怎么友好的做法是让设计师给五张资源图，然后依次排列五个对应的 ImageView。这种做法是存在一些问题的，apk 包体积增加了五张图的大小；程序运行时内存增加了五张图的大小。</p>
+<p>这时，我们就可以考虑使用着色器来简单快捷高效地实现这个效果了。</p>
+<h1 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h1><p>在 drawable 中导入一张资源图，导入的这张图本身的颜色不用太在意，如下：<br><img src="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/icon.png" alt=""></p>
+<p>在布局中配置 ImageView，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"64dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"64dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:src</span>=<span class="string">"@drawable/icon"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:tint</span>=<span class="string">"#FF0000"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>其中关键点即是 <strong>android:tint</strong>，这里配置多个 ImageView，<strong>tint</strong> 配置不同的颜色值，就达到了我们的目的，而且没有前述的弊端。</p>
+<h1 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h1><h2 id="Paint-amp-ColorFilter"><a href="#Paint-amp-ColorFilter" class="headerlink" title="Paint &amp; ColorFilter"></a>Paint &amp; ColorFilter</h2><p>参考 Android Developer：<a href="https://developer.android.com/reference/android/graphics/ColorFilter" target="_blank" rel="noopener">ColorFilter</a><br>颜色过滤器，通过 Paint.setColorFilter 修改渲染某个像素时的颜色值，ColorFilter 有如下一些子类，后续着重介绍一下 PorterDuffColorFilter。</p>
+<h3 id="BlendModeColorFilter"><a href="#BlendModeColorFilter" class="headerlink" title="BlendModeColorFilter"></a>BlendModeColorFilter</h3><p>混合模式，在 API Level 29 中添加的，类似于 Android 原生的 PorterDuffXferMode，在 Flutter、CSS中都有一些体现。</p>
+<h3 id="ColorMatrixColorFilter"><a href="#ColorMatrixColorFilter" class="headerlink" title="ColorMatrixColorFilter"></a>ColorMatrixColorFilter</h3><p>参考 Android Developer：<a href="https://developer.android.com/reference/android/graphics/ColorMatrix.html" target="_blank" rel="noopener">ColorMatrix</a><br>通过一个 4x5 的矩阵与颜色 [R, G, B, A] 进行矩阵乘积，得到目标颜色值，可以调整亮度、饱和度、色调等来实现类似 PS 中的滤镜效果，如下：<br><img src="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/color_matrix.png" alt=""></p>
+<h3 id="LightingColorFilter"><a href="#LightingColorFilter" class="headerlink" title="LightingColorFilter"></a>LightingColorFilter</h3><p>通过颜色的相乘与相加，模拟简单的光照效果。</p>
+<h3 id="PorterDuffColorFilter"><a href="#PorterDuffColorFilter" class="headerlink" title="PorterDuffColorFilter"></a>PorterDuffColorFilter</h3><p>使用一个颜色和 PorterDuff 模式对目标进行染色。</p>
+<h4 id="PorterDuff-Mode"><a href="#PorterDuff-Mode" class="headerlink" title="PorterDuff.Mode"></a>PorterDuff.Mode</h4><p>参考 Android Developer：<a href="https://developer.android.com/reference/android/graphics/PorterDuff.Mode.html" target="_blank" rel="noopener">PorterDuff.Mode</a><br>假设存在两个形状 SRC 和 DST，其中带颜色的区域的像素点 alpha = 1; color = [red|blue]，其它区域像素点 alpha = 0; color = 0，则它们叠加相交得到 ABCD 4个区，如下：<br><img src="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/composite.png" alt=""></p>
+<p>通过对 SRC 和 DST 图中的像素值 ARGB 进行数学运算，得到一些裁剪混合叠加效果，展示其中三个如下：<br><img src="https://raw.githubusercontent.com/bayoh36/images/master/android-tint/effect.png" alt=""></p>
+<p>其中每种模式都有对应的数学公式进行运算，例如 SRC_ATOP 的计算方式，如下：<br>alpha_out = alpha_dst<br>color_out = alpha_dst * color_src + (1 - alpha_src) * color_dst</p>
+<p>对于 AD 区，alpha 的运算结果采用了 DST 的 alpha = 0，所以 AD 区是可不见的，BC 区是可见的，最终结果在形状上表现为 DST 的样子，所以 AD 区的颜色也就没有必要计算了。</p>
+<p>对于 B 区的颜色，如下：<br>color_out = 1 * 0 + (1 - 0) * red = red</p>
+<p>对于 C 区的颜色，如下：<br>color_out = 1 * blue + (1 - 1) * red = blue</p>
+<p>最终分析结果与前述图片表现一致。其它种类模式的公式可以参考 Android Developer。</p>
+<h2 id="BitmapDrawable-setTintList"><a href="#BitmapDrawable-setTintList" class="headerlink" title="BitmapDrawable.setTintList"></a>BitmapDrawable.setTintList</h2><p>参考 Android Developer：<a href="https://developer.android.com/reference/android/graphics/drawable/BitmapDrawable.html" target="_blank" rel="noopener">BitmapDrawable</a></p>
+<p>这个方法是在 API Level 21 中添加的，将一个颜色 ColorStateList 设置给 mTintFilter 变量，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> PorterDuffColorFilter mTintFilter;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTintList</span><span class="params">(ColorStateList tint)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> BitmapState state = mBitmapState;</span><br><span class="line">    <span class="keyword">if</span> (state.mTint != tint) &#123;</span><br><span class="line">        state.mTint = tint;</span><br><span class="line">        mTintFilter = updateTintFilter(mTintFilter, tint, mBitmapState.mTintMode);</span><br><span class="line">        invalidateSelf();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在渲染的时候，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> clearColorFilter;</span><br><span class="line">    <span class="keyword">if</span> (mTintFilter != <span class="keyword">null</span> &amp;&amp; paint.getColorFilter() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        paint.setColorFilter(mTintFilter);</span><br><span class="line">        clearColorFilter = <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        clearColorFilter = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将这个 PorterDuffColorFilter 交给了 Paint 进行处理。</p>
+<h2 id="ImageView-tint"><a href="#ImageView-tint" class="headerlink" title="ImageView_tint"></a>ImageView_tint</h2><p>ImageView 在使用 tint 属性的时候，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">applyImageTint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mDrawable != <span class="keyword">null</span> &amp;&amp; (mHasDrawableTint || mHasDrawableTintMode)) &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> (mHasDrawableTint) &#123;</span><br><span class="line">            mDrawable.setTintList(mDrawableTintList);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (mHasDrawableTintMode) &#123;</span><br><span class="line">            mDrawable.setTintMode(mDrawableTintMode);</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样我们从 ImageView 的 tint 属性到 Paint 的使用，过程如下：</p>
+<ul>
+<li>ImageView 读取到 tint 属性之后，将 tint color 和 tint mode 设置给 Drawable</li>
+<li>Drawable 将 tint color 和 tint mode 组装成 PorterDuffColorFilter</li>
+<li>Drawable 在渲染的时候，将 PorterDuffColorFilter 设置给 Paint</li>
+<li>Paint 将效果应用到画布上</li>
+</ul>
+<h2 id="ImageView-tintMode"><a href="#ImageView-tintMode" class="headerlink" title="ImageView_tintMode"></a>ImageView_tintMode</h2><p>ImageView 在使用 tint 属性的时候，也可以配置 tintMode 属性，如下：</p>
+<ul>
+<li>add</li>
+<li>multiply</li>
+<li>screen</li>
+<li>src_atop</li>
+<li>src_in</li>
+<li>src_over</li>
+</ul>
+<p>Drawable 的默认 tint mode 是 SRC_IN，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Drawable</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> PorterDuff.Mode DEFAULT_TINT_MODE = PorterDuff.Mode.SRC_IN;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ImageView 的默认 tint mode 是 SRC_ATOP，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (a.hasValue(R.styleable.ImageView_tint)) &#123;</span><br><span class="line">    mDrawableTintList = a.getColorStateList(R.styleable.ImageView_tint);</span><br><span class="line">    mHasDrawableTint = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Prior to L, this attribute would always set a color filter with</span></span><br><span class="line">    <span class="comment">// blending mode SRC_ATOP. Preserve that default behavior.</span></span><br><span class="line">    mDrawableTintMode = PorterDuff.Mode.SRC_ATOP;</span><br><span class="line">    mHasDrawableTintMode = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因为 PorterDuff 对应的 SRC 默认是一个铺满 DST 宽高的颜色值，所以 SRC_IN 和 SRC_ATOP 效果上是一样的。<br>布局 xml 中只提供了6中模式，若想使用其它 PorterDuff 模式也可以，需要用 Java 代码去实现。</p>
+<h1 id="使用进阶"><a href="#使用进阶" class="headerlink" title="使用进阶"></a>使用进阶</h1><h2 id="Drawable-setTintList"><a href="#Drawable-setTintList" class="headerlink" title="Drawable.setTintList"></a>Drawable.setTintList</h2><p>tint 不仅仅只是 BitmapDrawable 可以使用，setTintList 在 API Level 21 中被添加到 Drawable 中，所以 Drawable 子类都可以使用，如下：</p>
+<ul>
+<li>BitmapDrawable</li>
+<li>NinePatchDrawable</li>
+<li>LayerDrawable</li>
+<li>StateListDrawable</li>
+<li>LevelListDrawable</li>
+<li>TransitionDrawable</li>
+<li>InsetDrawable</li>
+<li>ClipDrawable</li>
+<li>ScaleDrawable</li>
+<li>ShapeDrawable</li>
+<li>GradientDrawable</li>
+<li>AnimationDrawable</li>
+<li>VectorDrawable</li>
+</ul>
+<p>其中有一些 Drawable 可以在布局 xml 中配置 tint，如下：</p>
+<p>BitmapDrawable<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">bitmap</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:src</span>=<span class="string">"@drawable/icon"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:tint</span>=<span class="string">"#FF0000"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bitmap</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>NinePatchDrawable<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">nine-patch</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:src</span>=<span class="string">"@drawable/icon"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:tint</span>=<span class="string">"#FF0000"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">nine-patch</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>ShapeDrawable<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">shape</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:tint</span>=<span class="string">"#FF0000"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">shape</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>VectorDrawable<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:tint</span>=<span class="string">"#FF0000"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="ColorStateList"><a href="#ColorStateList" class="headerlink" title="ColorStateList"></a>ColorStateList</h2><p>我们可以在 xml 中配置一个 ColorStateList，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">selector</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:color</span>=<span class="string">"#FF0000"</span> <span class="attr">android:state_pressed</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:color</span>=<span class="string">"#00FF00"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">selector</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后将这个 ColorStateList 设置给 ImageView，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"64dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"64dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:src</span>=<span class="string">"@drawable/icon"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:tint</span>=<span class="string">"@color/state_color"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这样当这个 ImageView 被点击的时候，颜色就可以被改变。</p>
+<p>当然还有一种方式可以实现这种效果，使用 xml 配置两个 bitmap，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">bitmap</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:src</span>=<span class="string">"@drawable/icon"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:tint</span>=<span class="string">"#FF0000"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bitmap</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后配置一个 selector，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">selector</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@drawable/icon_pressed"</span> <span class="attr">android:state_pressed</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@drawable/icon_normal"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">selector</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>随后将这个 selector 设置给 ImageView。这种方式占用了更多的内存，因为 BitmapDrawable 在 inflate 的时候直接从输入流读取文件的，没有进行图片重用，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BitmapDrawable</span> <span class="keyword">extends</span> <span class="title">Drawable</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inflate</span><span class="params">(Resources r, XmlPullParser parser, AttributeSet attrs, Theme theme)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> XmlPullParserException, IOException </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.inflate(r, parser, attrs, theme);</span><br><span class="line">        ...</span><br><span class="line">        Bitmap bitmap = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> (InputStream is = r.openRawResource(srcResId, value)) &#123;</span><br><span class="line">            bitmap = BitmapFactory.decodeResourceStream(r, value, is, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// Do nothing and pick up the error below.</span></span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="组合使用"><a href="#组合使用" class="headerlink" title="组合使用"></a>组合使用</h2><p>基于前述几种使用方式，我们就可以将 LevelListDrawable、LayerDrawable、StateListDrawable、BitmapDrawable 组合在一起，这就可以有无限的组合方式了。</p>
+<h2 id="在-View-中配置-tint"><a href="#在-View-中配置-tint" class="headerlink" title="在 View 中配置 tint"></a>在 View 中配置 tint</h2><p>除了前述 ImageView 中可以配置 tint 外，View 也可以对前景和背景配置 tint，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">View</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:backgroundTint</span>=<span class="string">"#FF0000"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:foregroundTint</span>=<span class="string">"#00FF00"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>TextView 也可以配置 drawable tint，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:drawableTint</span>=<span class="string">"#FF0000"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>CompoundButton 也可以配置 button tint，所以 CheckBox、RadioButton 等也可以配置 button tint，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">CheckBox</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:drawableTint</span>=<span class="string">"#FF0000"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:buttonTint</span>=<span class="string">"#FF0000"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Compatible"><a href="#Compatible" class="headerlink" title="Compatible"></a>Compatible</h2><h3 id="ViewCompat"><a href="#ViewCompat" class="headerlink" title="ViewCompat"></a>ViewCompat</h3><p>由于 API Level 21 才开始支持 background tint 在 xml 中配置，可以使用 ViewCompat.setBackgroundTintList 和 ViewCompat.setBackgroundTintMode 进行兼容。</p>
+<p>如果我们想在自定义 View 中也实现 tint 的一些特性，可以让自定义 View 实现 TintableBackgroundView 接口，然后调用 ViewCompat.setBackgroundTintList 进行设置，这样就能对 API Level 21 之前的版本进行兼容。</p>
+<p>ViewCompat 的相关实现，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> ViewCompatBaseImpl IMPL;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">26</span>) &#123;</span><br><span class="line">        IMPL = <span class="keyword">new</span> ViewCompatApi26Impl();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">24</span>) &#123;</span><br><span class="line">        IMPL = <span class="keyword">new</span> ViewCompatApi24Impl();</span><br><span class="line">    ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        IMPL = <span class="keyword">new</span> ViewCompatBaseImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setBackgroundTintList</span><span class="params">(View view, ColorStateList tintList)</span> </span>&#123;</span><br><span class="line">    IMPL.setBackgroundTintList(view, tintList);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewCompatApi21Impl</span> <span class="keyword">extends</span> <span class="title">ViewCompatApi19Impl</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBackgroundTintList</span><span class="params">(View view, ColorStateList tintList)</span> </span>&#123;</span><br><span class="line">        view.setBackgroundTintList(tintList);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT == <span class="number">21</span>) &#123;</span><br><span class="line">            <span class="comment">// Work around a bug in L that did not update the state of the background</span></span><br><span class="line">            <span class="comment">// after applying the tint</span></span><br><span class="line">            Drawable background = view.getBackground();</span><br><span class="line">            <span class="keyword">boolean</span> hasTint = (view.getBackgroundTintList() != <span class="keyword">null</span>)</span><br><span class="line">                    &amp;&amp; (view.getBackgroundTintMode() != <span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">if</span> ((background != <span class="keyword">null</span>) &amp;&amp; hasTint) &#123;</span><br><span class="line">                <span class="keyword">if</span> (background.isStateful()) &#123;</span><br><span class="line">                    background.setState(view.getDrawableState());</span><br><span class="line">                &#125;</span><br><span class="line">                view.setBackground(background);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewCompatBaseImpl</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBackgroundTintList</span><span class="params">(View view, ColorStateList tintList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (view <span class="keyword">instanceof</span> TintableBackgroundView) &#123;</span><br><span class="line">            ((TintableBackgroundView) view).setSupportBackgroundTintList(tintList);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="DrawableCompat"><a href="#DrawableCompat" class="headerlink" title="DrawableCompat"></a>DrawableCompat</h3><p>由于 API Level 21 才开始支持对 drawable 设置 tint，可以使用 DrawableCompat.setTintList，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setTintList</span><span class="params">(@NonNull Drawable drawable, @Nullable ColorStateList tint)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (VERSION.SDK_INT &gt;= <span class="number">21</span>) &#123;</span><br><span class="line">        drawable.setTintList(tint);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (drawable <span class="keyword">instanceof</span> TintAwareDrawable) &#123;</span><br><span class="line">        ((TintAwareDrawable)drawable).setTintList(tint);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以使用 DrawableCompat.wrap 对 drawable 进行包装兼容，如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Drawable <span class="title">wrap</span><span class="params">(@NonNull Drawable drawable)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">23</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> drawable;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">21</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(drawable <span class="keyword">instanceof</span> TintAwareDrawable)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> DrawableWrapperApi21(drawable);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> drawable;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">19</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(drawable <span class="keyword">instanceof</span> TintAwareDrawable)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> DrawableWrapperApi19(drawable);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> drawable;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(drawable <span class="keyword">instanceof</span> TintAwareDrawable)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> DrawableWrapperApi14(drawable);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> drawable;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
+<li>多图并列显示，用颜色来区分类别，图的形状是一样的</li>
+<li>简单的按钮普通、按下、置灰等状态切换</li>
+<li>换肤换主题</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/17/leidiqiu/resolve-non-google-rom-crash/" rel="next">非原生 ROM 的 Crash 问题通用排查方法</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">113</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">61</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">155</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现方式"><span class="nav-number">2.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现原理"><span class="nav-number">3.</span> <span class="nav-text">实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Paint-amp-ColorFilter"><span class="nav-number">3.1.</span> <span class="nav-text">Paint &amp; ColorFilter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BlendModeColorFilter"><span class="nav-number">3.1.1.</span> <span class="nav-text">BlendModeColorFilter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ColorMatrixColorFilter"><span class="nav-number">3.1.2.</span> <span class="nav-text">ColorMatrixColorFilter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LightingColorFilter"><span class="nav-number">3.1.3.</span> <span class="nav-text">LightingColorFilter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PorterDuffColorFilter"><span class="nav-number">3.1.4.</span> <span class="nav-text">PorterDuffColorFilter</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PorterDuff-Mode"><span class="nav-number">3.1.4.1.</span> <span class="nav-text">PorterDuff.Mode</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BitmapDrawable-setTintList"><span class="nav-number">3.2.</span> <span class="nav-text">BitmapDrawable.setTintList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ImageView-tint"><span class="nav-number">3.3.</span> <span class="nav-text">ImageView_tint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ImageView-tintMode"><span class="nav-number">3.4.</span> <span class="nav-text">ImageView_tintMode</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用进阶"><span class="nav-number">4.</span> <span class="nav-text">使用进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Drawable-setTintList"><span class="nav-number">4.1.</span> <span class="nav-text">Drawable.setTintList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ColorStateList"><span class="nav-number">4.2.</span> <span class="nav-text">ColorStateList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合使用"><span class="nav-number">4.3.</span> <span class="nav-text">组合使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在-View-中配置-tint"><span class="nav-number">4.4.</span> <span class="nav-text">在 View 中配置 tint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compatible"><span class="nav-number">4.5.</span> <span class="nav-text">Compatible</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewCompat"><span class="nav-number">4.5.1.</span> <span class="nav-text">ViewCompat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DrawableCompat"><span class="nav-number">4.5.2.</span> <span class="nav-text">DrawableCompat</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.6.</span> <span class="nav-text">使用场景</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

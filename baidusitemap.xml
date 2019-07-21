@@ -3,6 +3,28 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2019/07/04/chenluan/tint/</loc>
+    <lastmod>2019-07-21T03:09:06.154Z</lastmod>
+    <data>
+        <display>
+        <title>Android 着色器 tint</title>
+        <pubTime>2019-07-04T05:08:30.000Z</pubTime>
+        
+        <tag>android </tag>
+         
+        <tag>tint </tag>
+         
+         
+           
+             
+              <breadCrumb title="chenluan" url="http://xgfe.ienav.com/categories/chenluan/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2019/06/17/leidiqiu/resolve-non-google-rom-crash/</loc>
     <lastmod>2019-06-18T03:58:43.951Z</lastmod>
     <data>
@@ -80,34 +102,14 @@
         
         <tag>htmlhint </tag>
          
-        <tag>html </tag>
-         
         <tag>代码规范 </tag>
+         
+        <tag>html </tag>
          
          
            
              
               <breadCrumb title="y8n" url="http://xgfe.ienav.com/categories/y8n/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2018/06/24/matengfei/webpack%E5%85%A5%E9%97%A8/</loc>
-    <lastmod>2019-06-14T07:45:42.234Z</lastmod>
-    <data>
-        <display>
-        <title>webpack 入门</title>
-        <pubTime>2018-06-24T12:31:49.000Z</pubTime>
-        
-        <tag>webpack </tag>
-         
-         
-           
-             
-              <breadCrumb title="matengfei" url="http://xgfe.ienav.com/categories/matengfei/"/>
           
         </display>
     </data>
@@ -132,6 +134,26 @@
            
              
               <breadCrumb title="zuopengfei" url="http://xgfe.ienav.com/categories/zuopengfei/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2018/06/24/matengfei/webpack%E5%85%A5%E9%97%A8/</loc>
+    <lastmod>2019-06-14T07:45:42.234Z</lastmod>
+    <data>
+        <display>
+        <title>webpack 入门</title>
+        <pubTime>2018-06-24T12:31:49.000Z</pubTime>
+        
+        <tag>webpack </tag>
+         
+         
+           
+             
+              <breadCrumb title="matengfei" url="http://xgfe.ienav.com/categories/matengfei/"/>
           
         </display>
     </data>
@@ -249,21 +271,23 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2017/01/13/wangweitao/imageView_Fit/</loc>
+    <loc>http://xgfe.ienav.com/2016/08/12/y8n/angular-directive-attributes/</loc>
     <lastmod>2019-06-14T07:28:14.256Z</lastmod>
     <data>
         <display>
-        <title>ImageView的scaleType属性效果</title>
-        <pubTime>2017-01-12T16:00:00.000Z</pubTime>
+        <title>Angular指令中的属性</title>
+        <pubTime>2016-08-12T09:18:08.000Z</pubTime>
         
-        <tag>android </tag>
+        <tag>angularjs </tag>
          
-        <tag>ImageView ScaleType </tag>
+        <tag>指令 </tag>
+         
+        <tag>Directive </tag>
          
          
            
              
-              <breadCrumb title="wangweitao" url="http://xgfe.ienav.com/categories/wangweitao/"/>
+              <breadCrumb title="y8n" url="http://xgfe.ienav.com/categories/y8n/"/>
           
         </display>
     </data>
@@ -291,23 +315,21 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/08/12/y8n/angular-directive-attributes/</loc>
+    <loc>http://xgfe.ienav.com/2017/01/13/wangweitao/imageView_Fit/</loc>
     <lastmod>2019-06-14T07:28:14.256Z</lastmod>
     <data>
         <display>
-        <title>Angular指令中的属性</title>
-        <pubTime>2016-08-12T09:18:08.000Z</pubTime>
+        <title>ImageView的scaleType属性效果</title>
+        <pubTime>2017-01-12T16:00:00.000Z</pubTime>
         
-        <tag>angularjs </tag>
+        <tag>android </tag>
          
-        <tag>指令 </tag>
-         
-        <tag>Directive </tag>
+        <tag>ImageView ScaleType </tag>
          
          
            
              
-              <breadCrumb title="y8n" url="http://xgfe.ienav.com/categories/y8n/"/>
+              <breadCrumb title="wangweitao" url="http://xgfe.ienav.com/categories/wangweitao/"/>
           
         </display>
     </data>
@@ -315,21 +337,21 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2019/02/20/wangqing28/%E6%B5%85%E8%B0%88%E5%BD%93Swift%E4%B8%ADdefer%E5%92%8Cinout%E5%90%8C%E6%97%B6%E8%B5%B7%E4%BD%9C%E7%94%A8/</loc>
+    <loc>http://xgfe.ienav.com/2017/02/04/wangweitao/RxJava_Migration/</loc>
     <lastmod>2019-06-14T07:28:14.255Z</lastmod>
     <data>
         <display>
-        <title>浅谈当Swift中defer和inout同时起作用</title>
-        <pubTime>2019-02-19T16:00:00.000Z</pubTime>
+        <title>The Next Step for Reactive Android Programming（译文）</title>
+        <pubTime>2017-02-03T16:00:00.000Z</pubTime>
         
-        <tag>iOS </tag>
+        <tag>android </tag>
          
-        <tag>Swift </tag>
+        <tag>rxjava </tag>
          
          
            
              
-              <breadCrumb title="wangqing28" url="http://xgfe.ienav.com/categories/wangqing28/"/>
+              <breadCrumb title="wangweitao" url="http://xgfe.ienav.com/categories/wangweitao/"/>
           
         </display>
     </data>
@@ -361,21 +383,21 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2017/02/04/wangweitao/RxJava_Migration/</loc>
+    <loc>http://xgfe.ienav.com/2019/02/20/wangqing28/%E6%B5%85%E8%B0%88%E5%BD%93Swift%E4%B8%ADdefer%E5%92%8Cinout%E5%90%8C%E6%97%B6%E8%B5%B7%E4%BD%9C%E7%94%A8/</loc>
     <lastmod>2019-06-14T07:28:14.255Z</lastmod>
     <data>
         <display>
-        <title>The Next Step for Reactive Android Programming（译文）</title>
-        <pubTime>2017-02-03T16:00:00.000Z</pubTime>
+        <title>浅谈当Swift中defer和inout同时起作用</title>
+        <pubTime>2019-02-19T16:00:00.000Z</pubTime>
         
-        <tag>android </tag>
+        <tag>iOS </tag>
          
-        <tag>rxjava </tag>
+        <tag>Swift </tag>
          
          
            
              
-              <breadCrumb title="wangweitao" url="http://xgfe.ienav.com/categories/wangweitao/"/>
+              <breadCrumb title="wangqing28" url="http://xgfe.ienav.com/categories/wangqing28/"/>
           
         </display>
     </data>
@@ -478,21 +500,19 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2017/11/30/lwp/AbViewUtil/</loc>
+    <loc>http://xgfe.ienav.com/2019/03/25/dengzonghui/%20dynamic/</loc>
     <lastmod>2019-06-14T07:28:14.252Z</lastmod>
     <data>
         <display>
-        <title>AbViewUtil屏幕适配方法</title>
-        <pubTime>2017-11-30T06:34:30.000Z</pubTime>
+        <title>js实现算法之动态规划</title>
+        <pubTime>2019-03-24T16:00:00.000Z</pubTime>
         
-        <tag>android </tag>
-         
-        <tag>适配 </tag>
+        <tag>算法 </tag>
          
          
            
              
-              <breadCrumb title="lwp" url="http://xgfe.ienav.com/categories/lwp/"/>
+              <breadCrumb title="dengzonghui" url="http://xgfe.ienav.com/categories/dengzonghui/"/>
           
         </display>
     </data>
@@ -522,6 +542,28 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2017/11/30/lwp/AbViewUtil/</loc>
+    <lastmod>2019-06-14T07:28:14.252Z</lastmod>
+    <data>
+        <display>
+        <title>AbViewUtil屏幕适配方法</title>
+        <pubTime>2017-11-30T06:34:30.000Z</pubTime>
+        
+        <tag>android </tag>
+         
+        <tag>适配 </tag>
+         
+         
+           
+             
+              <breadCrumb title="lwp" url="http://xgfe.ienav.com/categories/lwp/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2018/11/25/juga/%E6%B5%85%E8%B0%88React-Native%E4%B8%8ERedux%E6%95%B0%E6%8D%AE%E6%B5%81/</loc>
     <lastmod>2019-06-14T07:28:14.252Z</lastmod>
     <data>
@@ -537,48 +579,6 @@
            
              
               <breadCrumb title="juga" url="http://xgfe.ienav.com/categories/juga/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2019/03/25/dengzonghui/%20dynamic/</loc>
-    <lastmod>2019-06-14T07:28:14.252Z</lastmod>
-    <data>
-        <display>
-        <title>js实现算法之动态规划</title>
-        <pubTime>2019-03-24T16:00:00.000Z</pubTime>
-        
-        <tag>算法 </tag>
-         
-         
-           
-             
-              <breadCrumb title="dengzonghui" url="http://xgfe.ienav.com/categories/dengzonghui/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2015/12/17/HeOH/AngularJS%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2019-06-14T07:28:14.251Z</lastmod>
-    <data>
-        <display>
-        <title>Angular的自动化测试</title>
-        <pubTime>2015-12-16T16:00:00.000Z</pubTime>
-        
-        <tag>angularjs </tag>
-         
-        <tag>测试 </tag>
-         
-         
-           
-             
-              <breadCrumb title="HeOH" url="http://xgfe.ienav.com/categories/HeOH/"/>
           
         </display>
     </data>
@@ -607,8 +607,50 @@
     </url>
 
     
+  <url>
+    <loc>http://xgfe.ienav.com/2015/12/17/HeOH/AngularJS%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/</loc>
+    <lastmod>2019-06-14T07:28:14.251Z</lastmod>
+    <data>
+        <display>
+        <title>Angular的自动化测试</title>
+        <pubTime>2015-12-16T16:00:00.000Z</pubTime>
+        
+        <tag>angularjs </tag>
+         
+        <tag>测试 </tag>
+         
+         
+           
+             
+              <breadCrumb title="HeOH" url="http://xgfe.ienav.com/categories/HeOH/"/>
+          
+        </display>
+    </data>
+    </url>
+
     
     
+    
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2016/11/09/zhouxiong/vue-in-action-vue-basis/</loc>
+    <lastmod>2019-06-14T07:08:56.545Z</lastmod>
+    <data>
+        <display>
+        <title>Vue实战(一) -- Vue基础总结</title>
+        <pubTime>2016-11-09T04:00:00.000Z</pubTime>
+        
+        <tag>Vue.js </tag>
+         
+         
+           
+             
+              <breadCrumb title="zhouxiong" url="http://xgfe.ienav.com/categories/zhouxiong/"/>
+          
+        </display>
+    </data>
+    </url>
+
     
   <url>
     <loc>http://xgfe.ienav.com/2018/03/04/zhouyinian/React-component/</loc>
@@ -633,14 +675,16 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/11/09/zhouxiong/vue-in-action-vue-basis/</loc>
-    <lastmod>2019-06-14T07:08:56.545Z</lastmod>
+    <loc>http://xgfe.ienav.com/2015/12/24/zhouxiong/server-ssh2/</loc>
+    <lastmod>2019-06-14T07:08:56.544Z</lastmod>
     <data>
         <display>
-        <title>Vue实战(一) -- Vue基础总结</title>
-        <pubTime>2016-11-09T04:00:00.000Z</pubTime>
+        <title>后台SSH2框架分享</title>
+        <pubTime>2015-12-24T08:00:00.000Z</pubTime>
         
-        <tag>Vue.js </tag>
+        <tag>java </tag>
+         
+        <tag>SSH2 </tag>
          
          
            
@@ -665,28 +709,6 @@
         <tag>Vue-resource </tag>
          
         <tag>Express </tag>
-         
-         
-           
-             
-              <breadCrumb title="zhouxiong" url="http://xgfe.ienav.com/categories/zhouxiong/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2015/12/24/zhouxiong/server-ssh2/</loc>
-    <lastmod>2019-06-14T07:08:56.544Z</lastmod>
-    <data>
-        <display>
-        <title>后台SSH2框架分享</title>
-        <pubTime>2015-12-24T08:00:00.000Z</pubTime>
-        
-        <tag>java </tag>
-         
-        <tag>SSH2 </tag>
          
          
            
@@ -819,30 +841,6 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2018/05/07/zhangjihu/%E6%B5%85%E8%B0%88web%E7%BC%93%E5%AD%98/</loc>
-    <lastmod>2019-06-14T07:08:56.541Z</lastmod>
-    <data>
-        <display>
-        <title>浅谈 WEB 缓存</title>
-        <pubTime>2018-05-06T16:00:00.000Z</pubTime>
-        
-        <tag>缓存 </tag>
-         
-        <tag>web 缓存 </tag>
-         
-        <tag>浏览器缓存 </tag>
-         
-         
-           
-             
-              <breadCrumb title="zhangjihu" url="http://xgfe.ienav.com/categories/zhangjihu/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2018/04/15/zhangjianfeng/web%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
     <lastmod>2019-06-14T07:08:56.541Z</lastmod>
     <data>
@@ -889,19 +887,23 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2018/08/15/yangxiaotong/angularjs%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A/</loc>
-    <lastmod>2019-06-14T07:08:56.540Z</lastmod>
+    <loc>http://xgfe.ienav.com/2018/05/07/zhangjihu/%E6%B5%85%E8%B0%88web%E7%BC%93%E5%AD%98/</loc>
+    <lastmod>2019-06-14T07:08:56.541Z</lastmod>
     <data>
         <display>
-        <title>angularjs的双向数据绑定</title>
-        <pubTime>2018-08-15T13:00:00.000Z</pubTime>
+        <title>浅谈 WEB 缓存</title>
+        <pubTime>2018-05-06T16:00:00.000Z</pubTime>
         
-        <tag>angularjs </tag>
+        <tag>缓存 </tag>
+         
+        <tag>web 缓存 </tag>
+         
+        <tag>浏览器缓存 </tag>
          
          
            
              
-              <breadCrumb title="yangxiaotong" url="http://xgfe.ienav.com/categories/yangxiaotong/"/>
+              <breadCrumb title="zhangjihu" url="http://xgfe.ienav.com/categories/zhangjihu/"/>
           
         </display>
     </data>
@@ -931,19 +933,19 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/11/08/y8n/vue-in-action-vue-project/</loc>
-    <lastmod>2019-06-14T07:08:56.539Z</lastmod>
+    <loc>http://xgfe.ienav.com/2018/08/15/yangxiaotong/angularjs%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A/</loc>
+    <lastmod>2019-06-14T07:08:56.540Z</lastmod>
     <data>
         <display>
-        <title>Vue实战（二）—— 在项目中的实践</title>
-        <pubTime>2016-11-07T16:00:00.000Z</pubTime>
+        <title>angularjs的双向数据绑定</title>
+        <pubTime>2018-08-15T13:00:00.000Z</pubTime>
         
-        <tag>Vue </tag>
+        <tag>angularjs </tag>
          
          
            
              
-              <breadCrumb title="y8n" url="http://xgfe.ienav.com/categories/y8n/"/>
+              <breadCrumb title="yangxiaotong" url="http://xgfe.ienav.com/categories/yangxiaotong/"/>
           
         </display>
     </data>
@@ -975,21 +977,19 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/10/25/weger/Start-your-own-JavaScript-library-baseon-underscorejs/</loc>
+    <loc>http://xgfe.ienav.com/2016/11/08/y8n/vue-in-action-vue-project/</loc>
     <lastmod>2019-06-14T07:08:56.539Z</lastmod>
     <data>
         <display>
-        <title>跟underscore.js学如何打造前端类库</title>
-        <pubTime>2016-10-25T03:30:00.000Z</pubTime>
+        <title>Vue实战（二）—— 在项目中的实践</title>
+        <pubTime>2016-11-07T16:00:00.000Z</pubTime>
         
-        <tag>library </tag>
-         
-        <tag>underscore.js </tag>
+        <tag>Vue </tag>
          
          
            
              
-              <breadCrumb title="weger" url="http://xgfe.ienav.com/categories/weger/"/>
+              <breadCrumb title="y8n" url="http://xgfe.ienav.com/categories/y8n/"/>
           
         </display>
     </data>
@@ -1012,6 +1012,28 @@
            
              
               <breadCrumb title="y8n" url="http://xgfe.ienav.com/categories/y8n/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2016/10/25/weger/Start-your-own-JavaScript-library-baseon-underscorejs/</loc>
+    <lastmod>2019-06-14T07:08:56.539Z</lastmod>
+    <data>
+        <display>
+        <title>跟underscore.js学如何打造前端类库</title>
+        <pubTime>2016-10-25T03:30:00.000Z</pubTime>
+        
+        <tag>library </tag>
+         
+        <tag>underscore.js </tag>
+         
+         
+           
+             
+              <breadCrumb title="weger" url="http://xgfe.ienav.com/categories/weger/"/>
           
         </display>
     </data>
@@ -1067,48 +1089,6 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/11/30/scliuyang/yarn/</loc>
-    <lastmod>2019-06-14T07:08:56.536Z</lastmod>
-    <data>
-        <display>
-        <title>js新的包管理工具yarn</title>
-        <pubTime>2016-11-30T08:32:00.000Z</pubTime>
-        
-        <tag>yarn </tag>
-         
-         
-           
-             
-              <breadCrumb title="scliuyang" url="http://xgfe.ienav.com/categories/scliuyang/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2017/05/27/shsoul/SDWebImage%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/</loc>
-    <lastmod>2019-06-14T07:08:56.536Z</lastmod>
-    <data>
-        <display>
-        <title>SDWebImage源码解读</title>
-        <pubTime>2017-05-27T11:48:29.000Z</pubTime>
-        
-        <tag>iOS </tag>
-         
-        <tag>SDWebImage </tag>
-         
-         
-           
-             
-              <breadCrumb title="shsoul" url="http://xgfe.ienav.com/categories/shsoul/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2017/04/21/shsoul/router/</loc>
     <lastmod>2019-06-14T07:08:56.536Z</lastmod>
     <data>
@@ -1153,6 +1133,48 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2016/11/30/scliuyang/yarn/</loc>
+    <lastmod>2019-06-14T07:08:56.536Z</lastmod>
+    <data>
+        <display>
+        <title>js新的包管理工具yarn</title>
+        <pubTime>2016-11-30T08:32:00.000Z</pubTime>
+        
+        <tag>yarn </tag>
+         
+         
+           
+             
+              <breadCrumb title="scliuyang" url="http://xgfe.ienav.com/categories/scliuyang/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2017/05/27/shsoul/SDWebImage%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/</loc>
+    <lastmod>2019-06-14T07:08:56.536Z</lastmod>
+    <data>
+        <display>
+        <title>SDWebImage源码解读</title>
+        <pubTime>2017-05-27T11:48:29.000Z</pubTime>
+        
+        <tag>iOS </tag>
+         
+        <tag>SDWebImage </tag>
+         
+         
+           
+             
+              <breadCrumb title="shsoul" url="http://xgfe.ienav.com/categories/shsoul/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2015/11/17/scliuyang/svg-advanced/</loc>
     <lastmod>2019-06-14T07:08:56.535Z</lastmod>
     <data>
@@ -1175,34 +1197,18 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/01/05/scliuyang/postcss-one/</loc>
+    <loc>http://xgfe.ienav.com/2016/05/16/scliuyang/ChromeDevTools4/</loc>
     <lastmod>2019-06-14T07:08:56.535Z</lastmod>
     <data>
         <display>
-        <title>postcss系列-初识postcss</title>
-        <pubTime>2016-01-05T08:32:00.000Z</pubTime>
+        <title>内存泄露分析</title>
+        <pubTime>2016-05-16T08:32:00.000Z</pubTime>
         
-        <tag>postcss </tag>
+        <tag>Chrome Developers Tools </tag>
          
+        <tag>Debug </tag>
          
-           
-             
-              <breadCrumb title="scliuyang" url="http://xgfe.ienav.com/categories/scliuyang/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2016/12/21/scliuyang/docker1/</loc>
-    <lastmod>2019-06-14T07:08:56.535Z</lastmod>
-    <data>
-        <display>
-        <title>初识docker</title>
-        <pubTime>2016-12-21T08:32:00.000Z</pubTime>
-        
-        <tag>docker </tag>
+        <tag>DevTools </tag>
          
          
            
@@ -1263,18 +1269,34 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/05/16/scliuyang/ChromeDevTools4/</loc>
+    <loc>http://xgfe.ienav.com/2016/01/05/scliuyang/postcss-one/</loc>
     <lastmod>2019-06-14T07:08:56.535Z</lastmod>
     <data>
         <display>
-        <title>内存泄露分析</title>
-        <pubTime>2016-05-16T08:32:00.000Z</pubTime>
+        <title>postcss系列-初识postcss</title>
+        <pubTime>2016-01-05T08:32:00.000Z</pubTime>
         
-        <tag>Chrome Developers Tools </tag>
+        <tag>postcss </tag>
          
-        <tag>Debug </tag>
          
-        <tag>DevTools </tag>
+           
+             
+              <breadCrumb title="scliuyang" url="http://xgfe.ienav.com/categories/scliuyang/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2016/12/21/scliuyang/docker1/</loc>
+    <lastmod>2019-06-14T07:08:56.535Z</lastmod>
+    <data>
+        <display>
+        <title>初识docker</title>
+        <pubTime>2016-12-21T08:32:00.000Z</pubTime>
+        
+        <tag>docker </tag>
          
          
            
@@ -1309,32 +1331,6 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2015/12/22/penglu/link-controller/</loc>
-    <lastmod>2019-06-14T07:08:56.534Z</lastmod>
-    <data>
-        <display>
-        <title>指令编译过程中link与controller函数执行顺序</title>
-        <pubTime>2015-12-22T14:30:00.000Z</pubTime>
-        
-        <tag>angularjs </tag>
-         
-        <tag>link </tag>
-         
-        <tag>controller </tag>
-         
-        <tag>编译顺序 </tag>
-         
-         
-           
-             
-              <breadCrumb title="penglu" url="http://xgfe.ienav.com/categories/penglu/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2017/01/22/penglu/git-01/</loc>
     <lastmod>2019-06-14T07:08:56.534Z</lastmod>
     <data>
@@ -1355,21 +1351,25 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2018/12/21/rongweiwei/mysql-protocol/</loc>
+    <loc>http://xgfe.ienav.com/2015/12/22/penglu/link-controller/</loc>
     <lastmod>2019-06-14T07:08:56.534Z</lastmod>
     <data>
         <display>
-        <title>mysql通信协议浅解</title>
-        <pubTime>2018-12-20T16:00:00.000Z</pubTime>
+        <title>指令编译过程中link与controller函数执行顺序</title>
+        <pubTime>2015-12-22T14:30:00.000Z</pubTime>
         
-        <tag>nodejs </tag>
+        <tag>angularjs </tag>
          
-        <tag>mysql </tag>
+        <tag>link </tag>
+         
+        <tag>controller </tag>
+         
+        <tag>编译顺序 </tag>
          
          
            
              
-              <breadCrumb title="rongweiwei" url="http://xgfe.ienav.com/categories/rongweiwei/"/>
+              <breadCrumb title="penglu" url="http://xgfe.ienav.com/categories/penglu/"/>
           
         </display>
     </data>
@@ -1401,6 +1401,28 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2018/12/21/rongweiwei/mysql-protocol/</loc>
+    <lastmod>2019-06-14T07:08:56.534Z</lastmod>
+    <data>
+        <display>
+        <title>mysql通信协议浅解</title>
+        <pubTime>2018-12-20T16:00:00.000Z</pubTime>
+        
+        <tag>nodejs </tag>
+         
+        <tag>mysql </tag>
+         
+         
+           
+             
+              <breadCrumb title="rongweiwei" url="http://xgfe.ienav.com/categories/rongweiwei/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2016/08/11/penglu/effective-javascript/</loc>
     <lastmod>2019-06-14T07:08:56.533Z</lastmod>
     <data>
@@ -1411,28 +1433,6 @@
         <tag>javascript </tag>
          
         <tag>读书笔记 </tag>
-         
-         
-           
-             
-              <breadCrumb title="penglu" url="http://xgfe.ienav.com/categories/penglu/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2015/12/22/penglu/Angular-Directive-01/</loc>
-    <lastmod>2019-06-14T07:08:56.533Z</lastmod>
-    <data>
-        <display>
-        <title>AngularJs 指令基础</title>
-        <pubTime>2015-12-22T08:00:00.000Z</pubTime>
-        
-        <tag>angularjs </tag>
-         
-        <tag>directive </tag>
          
          
            
@@ -1467,6 +1467,28 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2015/12/22/penglu/Angular-Directive-01/</loc>
+    <lastmod>2019-06-14T07:08:56.533Z</lastmod>
+    <data>
+        <display>
+        <title>AngularJs 指令基础</title>
+        <pubTime>2015-12-22T08:00:00.000Z</pubTime>
+        
+        <tag>angularjs </tag>
+         
+        <tag>directive </tag>
+         
+         
+           
+             
+              <breadCrumb title="penglu" url="http://xgfe.ienav.com/categories/penglu/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2017/10/31/lulutia/vue-lifecycle/</loc>
     <lastmod>2019-06-14T07:08:56.531Z</lastmod>
     <data>
@@ -1475,6 +1497,26 @@
         <pubTime>2017-10-31T07:04:00.000Z</pubTime>
         
         <tag>Vue </tag>
+         
+         
+           
+             
+              <breadCrumb title="lulutia" url="http://xgfe.ienav.com/categories/lulutia/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2017/06/28/lulutia/reactnative02/</loc>
+    <lastmod>2019-06-14T07:08:56.530Z</lastmod>
+    <data>
+        <display>
+        <title>React Native 学习系列二</title>
+        <pubTime>2017-06-28T14:03:12.000Z</pubTime>
+        
+        <tag>React Native </tag>
          
          
            
@@ -1511,26 +1553,6 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2017/06/28/lulutia/reactnative02/</loc>
-    <lastmod>2019-06-14T07:08:56.530Z</lastmod>
-    <data>
-        <display>
-        <title>React Native 学习系列二</title>
-        <pubTime>2017-06-28T14:03:12.000Z</pubTime>
-        
-        <tag>React Native </tag>
-         
-         
-           
-             
-              <breadCrumb title="lulutia" url="http://xgfe.ienav.com/categories/lulutia/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2017/06/22/lulutia/reactnative01/</loc>
     <lastmod>2019-06-14T07:08:56.530Z</lastmod>
     <data>
@@ -1551,18 +1573,14 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2017/07/10/lulutia/immutable-RN-Redux/</loc>
+    <loc>http://xgfe.ienav.com/2017/10/18/lulutia/IntersectionObserver/</loc>
     <lastmod>2019-06-14T07:08:56.529Z</lastmod>
     <data>
         <display>
-        <title>基于React-Native及Redux的Immutable.js引入</title>
-        <pubTime>2017-07-10T12:07:00.000Z</pubTime>
+        <title>基于IntersectionObserver的曝光统计测试</title>
+        <pubTime>2017-10-18T09:23:00.000Z</pubTime>
         
-        <tag>React Native </tag>
-         
-        <tag>React </tag>
-         
-        <tag>optimization </tag>
+        <tag>data </tag>
          
          
            
@@ -1599,26 +1617,6 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2017/10/18/lulutia/IntersectionObserver/</loc>
-    <lastmod>2019-06-14T07:08:56.529Z</lastmod>
-    <data>
-        <display>
-        <title>基于IntersectionObserver的曝光统计测试</title>
-        <pubTime>2017-10-18T09:23:00.000Z</pubTime>
-        
-        <tag>data </tag>
-         
-         
-           
-             
-              <breadCrumb title="lulutia" url="http://xgfe.ienav.com/categories/lulutia/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2018/01/19/lulutia/keep-alive/</loc>
     <lastmod>2019-06-14T07:08:56.529Z</lastmod>
     <data>
@@ -1631,6 +1629,30 @@
         <tag>keep-alive </tag>
          
         <tag>vue-router </tag>
+         
+         
+           
+             
+              <breadCrumb title="lulutia" url="http://xgfe.ienav.com/categories/lulutia/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2017/07/10/lulutia/immutable-RN-Redux/</loc>
+    <lastmod>2019-06-14T07:08:56.529Z</lastmod>
+    <data>
+        <display>
+        <title>基于React-Native及Redux的Immutable.js引入</title>
+        <pubTime>2017-07-10T12:07:00.000Z</pubTime>
+        
+        <tag>React Native </tag>
+         
+        <tag>React </tag>
+         
+        <tag>optimization </tag>
          
          
            
@@ -1729,28 +1751,6 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2017/09/17/ivanchou/layout-with-constraintlayout-by-programming/</loc>
-    <lastmod>2019-06-14T07:08:56.526Z</lastmod>
-    <data>
-        <display>
-        <title>ConstraintLayout 采用代码方式布局用法简介</title>
-        <pubTime>2017-09-16T16:00:00.000Z</pubTime>
-        
-        <tag>Android </tag>
-         
-        <tag>布局 </tag>
-         
-         
-           
-             
-              <breadCrumb title="ivanchou" url="http://xgfe.ienav.com/categories/ivanchou/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2017/05/15/jakii/cocos2d-x%20introduction/</loc>
     <lastmod>2019-06-14T07:08:56.526Z</lastmod>
     <data>
@@ -1766,6 +1766,28 @@
            
              
               <breadCrumb title="jakii" url="http://xgfe.ienav.com/categories/jakii/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2017/09/17/ivanchou/layout-with-constraintlayout-by-programming/</loc>
+    <lastmod>2019-06-14T07:08:56.526Z</lastmod>
+    <data>
+        <display>
+        <title>ConstraintLayout 采用代码方式布局用法简介</title>
+        <pubTime>2017-09-16T16:00:00.000Z</pubTime>
+        
+        <tag>Android </tag>
+         
+        <tag>布局 </tag>
+         
+         
+           
+             
+              <breadCrumb title="ivanchou" url="http://xgfe.ienav.com/categories/ivanchou/"/>
           
         </display>
     </data>
@@ -1834,28 +1856,6 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2018/07/11/guanxiaofeng/Dayjs/</loc>
-    <lastmod>2019-06-14T07:08:56.524Z</lastmod>
-    <data>
-        <display>
-        <title>Day.js 源码学习</title>
-        <pubTime>2018-07-11T04:00:00.000Z</pubTime>
-        
-        <tag>dayjs </tag>
-         
-        <tag>momentjs </tag>
-         
-         
-           
-             
-              <breadCrumb title="guanxiaofeng" url="http://xgfe.ienav.com/categories/guanxiaofeng/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2016/11/28/felix/web-secure-skill/</loc>
     <lastmod>2019-06-14T07:08:56.524Z</lastmod>
     <data>
@@ -1878,6 +1878,28 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2018/07/11/guanxiaofeng/Dayjs/</loc>
+    <lastmod>2019-06-14T07:08:56.524Z</lastmod>
+    <data>
+        <display>
+        <title>Day.js 源码学习</title>
+        <pubTime>2018-07-11T04:00:00.000Z</pubTime>
+        
+        <tag>dayjs </tag>
+         
+        <tag>momentjs </tag>
+         
+         
+           
+             
+              <breadCrumb title="guanxiaofeng" url="http://xgfe.ienav.com/categories/guanxiaofeng/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2018/05/26/guanxiaofeng/Eggjs/</loc>
     <lastmod>2019-06-14T07:08:56.524Z</lastmod>
     <data>
@@ -1893,26 +1915,6 @@
            
              
               <breadCrumb title="guanxiaofeng" url="http://xgfe.ienav.com/categories/guanxiaofeng/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2017/09/07/felix/html-parsing-and-resources-load/</loc>
-    <lastmod>2019-06-14T07:08:56.523Z</lastmod>
-    <data>
-        <display>
-        <title>HTML解析和资源加载</title>
-        <pubTime>2017-09-07T03:00:00.000Z</pubTime>
-        
-        <tag>html </tag>
-         
-         
-           
-             
-              <breadCrumb title="felix" url="http://xgfe.ienav.com/categories/felix/"/>
           
         </display>
     </data>
@@ -1984,6 +1986,26 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2017/09/07/felix/html-parsing-and-resources-load/</loc>
+    <lastmod>2019-06-14T07:08:56.523Z</lastmod>
+    <data>
+        <display>
+        <title>HTML解析和资源加载</title>
+        <pubTime>2017-09-07T03:00:00.000Z</pubTime>
+        
+        <tag>html </tag>
+         
+         
+           
+             
+              <breadCrumb title="felix" url="http://xgfe.ienav.com/categories/felix/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2015/11/30/felix/forms-in-angularjs-1.3/</loc>
     <lastmod>2019-06-14T07:08:56.522Z</lastmod>
     <data>
@@ -1999,30 +2021,6 @@
            
              
               <breadCrumb title="felix" url="http://xgfe.ienav.com/categories/felix/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2018/04/07/chenyu/routable-ios_sourceAnalysis/</loc>
-    <lastmod>2019-06-14T07:08:56.521Z</lastmod>
-    <data>
-        <display>
-        <title>routable-ios 源码解析</title>
-        <pubTime>2018-04-07T05:12:00.000Z</pubTime>
-        
-        <tag>iOS </tag>
-         
-        <tag>源码 </tag>
-         
-        <tag>路由 </tag>
-         
-         
-           
-             
-              <breadCrumb title="chenyu" url="http://xgfe.ienav.com/categories/chenyu/"/>
           
         </display>
     </data>
@@ -2070,12 +2068,36 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2015/11/24/chenwubai/d3-basicCharts-radar/</loc>
+    <loc>http://xgfe.ienav.com/2018/04/07/chenyu/routable-ios_sourceAnalysis/</loc>
+    <lastmod>2019-06-14T07:08:56.521Z</lastmod>
+    <data>
+        <display>
+        <title>routable-ios 源码解析</title>
+        <pubTime>2018-04-07T05:12:00.000Z</pubTime>
+        
+        <tag>iOS </tag>
+         
+        <tag>源码 </tag>
+         
+        <tag>路由 </tag>
+         
+         
+           
+             
+              <breadCrumb title="chenyu" url="http://xgfe.ienav.com/categories/chenyu/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/</loc>
     <lastmod>2019-06-14T07:08:56.520Z</lastmod>
     <data>
         <display>
-        <title>基于D3.js的雷达图的实现</title>
-        <pubTime>2015-11-24T07:28:00.000Z</pubTime>
+        <title>基于D3.js的散点图和气泡图的实现</title>
+        <pubTime>2015-11-23T16:00:00.000Z</pubTime>
         
         <tag>数据可视化 </tag>
          
@@ -2094,12 +2116,32 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/</loc>
+    <loc>http://xgfe.ienav.com/2016/04/20/chenwubai/vividCharts/</loc>
     <lastmod>2019-06-14T07:08:56.520Z</lastmod>
     <data>
         <display>
-        <title>基于D3.js的散点图和气泡图的实现</title>
-        <pubTime>2015-11-23T16:00:00.000Z</pubTime>
+        <title>鲜活的图表</title>
+        <pubTime>2016-04-20T02:36:00.000Z</pubTime>
+        
+        <tag>数据可视化 </tag>
+         
+         
+           
+             
+              <breadCrumb title="chenwubai" url="http://xgfe.ienav.com/categories/chenwubai/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2015/11/24/chenwubai/d3-basicCharts-radar/</loc>
+    <lastmod>2019-06-14T07:08:56.520Z</lastmod>
+    <data>
+        <display>
+        <title>基于D3.js的雷达图的实现</title>
+        <pubTime>2015-11-24T07:28:00.000Z</pubTime>
         
         <tag>数据可视化 </tag>
          
@@ -2142,14 +2184,38 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2016/04/20/chenwubai/vividCharts/</loc>
-    <lastmod>2019-06-14T07:08:56.520Z</lastmod>
+    <loc>http://xgfe.ienav.com/2018/06/10/anjing/Communication-between-front-end/</loc>
+    <lastmod>2019-06-14T07:08:56.519Z</lastmod>
     <data>
         <display>
-        <title>鲜活的图表</title>
-        <pubTime>2016-04-20T02:36:00.000Z</pubTime>
+        <title>前后端通信的几种方式</title>
+        <pubTime>2018-06-09T16:00:00.000Z</pubTime>
+        
+        <tag>前后端通信 </tag>
+         
+         
+           
+             
+              <breadCrumb title="ANJING" url="http://xgfe.ienav.com/categories/ANJING/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://xgfe.ienav.com/2015/11/23/chenwubai/d3-basicCharts-bar/</loc>
+    <lastmod>2019-06-14T07:08:56.519Z</lastmod>
+    <data>
+        <display>
+        <title>基于D3.js的柱状图的实现</title>
+        <pubTime>2015-11-22T16:00:00.000Z</pubTime>
         
         <tag>数据可视化 </tag>
+         
+        <tag>svg </tag>
+         
+        <tag>D3.js </tag>
          
          
            
@@ -2186,56 +2252,12 @@
 
     
   <url>
-    <loc>http://xgfe.ienav.com/2018/06/10/anjing/Communication-between-front-end/</loc>
-    <lastmod>2019-06-14T07:08:56.519Z</lastmod>
-    <data>
-        <display>
-        <title>前后端通信的几种方式</title>
-        <pubTime>2018-06-09T16:00:00.000Z</pubTime>
-        
-        <tag>前后端通信 </tag>
-         
-         
-           
-             
-              <breadCrumb title="ANJING" url="http://xgfe.ienav.com/categories/ANJING/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://xgfe.ienav.com/2015/11/23/chenwubai/d3-basicCharts-line/</loc>
     <lastmod>2019-06-14T07:08:56.519Z</lastmod>
     <data>
         <display>
         <title>基于D3.js的折线图的实现</title>
         <pubTime>2015-11-23T07:00:00.000Z</pubTime>
-        
-        <tag>数据可视化 </tag>
-         
-        <tag>svg </tag>
-         
-        <tag>D3.js </tag>
-         
-         
-           
-             
-              <breadCrumb title="chenwubai" url="http://xgfe.ienav.com/categories/chenwubai/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2015/11/23/chenwubai/d3-basicCharts-bar/</loc>
-    <lastmod>2019-06-14T07:08:56.519Z</lastmod>
-    <data>
-        <display>
-        <title>基于D3.js的柱状图的实现</title>
-        <pubTime>2015-11-22T16:00:00.000Z</pubTime>
         
         <tag>数据可视化 </tag>
          
@@ -2276,6 +2298,26 @@
 
     
   <url>
+    <loc>http://xgfe.ienav.com/2017/09/22/Sudaxi/attributeStr1/</loc>
+    <lastmod>2019-06-14T07:08:56.518Z</lastmod>
+    <data>
+        <display>
+        <title>关于富文本AttributedString的使用总结</title>
+        <pubTime>2017-09-22T08:00:00.000Z</pubTime>
+        
+        <tag>iOS </tag>
+         
+         
+           
+             
+              <breadCrumb title="Sudaxi" url="http://xgfe.ienav.com/categories/Sudaxi/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://xgfe.ienav.com/2017/02/07/TinySymphony/React-Native-ART%E4%BB%8B%E7%BB%8D/</loc>
     <lastmod>2019-06-14T07:08:56.518Z</lastmod>
     <data>
@@ -2291,26 +2333,6 @@
            
              
               <breadCrumb title="TinySymphony" url="http://xgfe.ienav.com/categories/TinySymphony/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://xgfe.ienav.com/2017/09/22/Sudaxi/attributeStr1/</loc>
-    <lastmod>2019-06-14T07:08:56.518Z</lastmod>
-    <data>
-        <display>
-        <title>关于富文本AttributedString的使用总结</title>
-        <pubTime>2017-09-22T08:00:00.000Z</pubTime>
-        
-        <tag>iOS </tag>
-         
-         
-           
-             
-              <breadCrumb title="Sudaxi" url="http://xgfe.ienav.com/categories/Sudaxi/"/>
           
         </display>
     </data>
