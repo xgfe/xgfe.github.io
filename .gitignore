@@ -1,5 +1,6 @@
 # Object files
 .DS_Store
+.history
 .idea/
 *.log
 node_modules/
