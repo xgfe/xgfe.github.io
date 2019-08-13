@@ -25,7 +25,7 @@ Reactive Extension，也叫ReactiveX，或者简称Rx，指的是实践响应式
 # 二、RxJS 中的基本概念与原理
 &emsp;&emsp;任何数据都可以被表达为数据流的形式，我们需要对数据流进行创建、订阅、过滤、转换、合并等各种操作，RxJS 便可以很好的解决这些问题。
 
-<img src="/uploads/JuntingLiu/pipe.png" width="600" height="400"/>
+<img src="https://user-images.githubusercontent.com/14134344/62932664-28c1c180-bdf3-11e9-9f0f-64a648101070.png" width="600" height="400"/>
 
 ## 在 RxJS 中用来解决异步事件管理的的基本概念是
   * Observable (可观察对象): 表示一个概念，这个概念是一个可调用的未来值或事件的集合。
@@ -38,14 +38,14 @@ Reactive Extension，也叫ReactiveX，或者简称Rx，指的是实践响应式
 以上概念大部分依据发布订阅模式去思考都是比较容易理解的。对我来说比较不太理解的是 Subject 的存在。为什么只有通过 Subject 才能实现多播，而多次对一个普通的 observable 进行 subscribe 不能实现多播？下面通过一段代码来解释这个问题。
 ```
 const numbers$ = interval(1000).pipe(take(3));
-    numbers$.subscribe((value)=>{
-      console.log('observer1: ' + value)
-    })
-    setTimeout(()=>{
-      numbers$.subscribe((value)=>{
-        console.log('observer2: ' +value)
-      }) 
-    }, 1000)
+numbers$.subscribe(value => {
+  console.log("observer1: " + value);
+});
+setTimeout(() => {
+  numbers$.subscribe(value => {
+    console.log("observer2: " + value);
+  });
+}, 1000);
 ```
 你觉得这段代码的输出结果是？
 ```
@@ -69,7 +69,7 @@ observer2: 2
 
 ## RxJS 的设计模式
 ### 发布订阅
-<img src="/uploads/JuntingLiu/publish.png" width="500" height="200"/>
+<img src="https://user-images.githubusercontent.com/14134344/62932669-2bbcb200-bdf3-11e9-92bc-cf6c117505c9.png" width="500" height="200"/>
 ### 迭代器 
 迭代器模式是指提供一种方法，顺序访问一个聚合对象中的各元素，而又不需要暴露该对象的内部表示。迭代器模式的实现主要处理以下三种情况：
 * 获取下一个值
@@ -84,12 +84,12 @@ const observable$ = Observable.create(observer => {
 });
 
 const observer = {
-  next: x => console.log('Observer got a next value: ' + x),
-  error: err => console.error('Observer got an error: ' + err),
-  complete: () => console.log('Observer got a complete notification'),
+  next: x => console.log("Observer got a next value: " + x),
+  error: err => console.error("Observer got an error: " + err),
+  complete: () => console.log("Observer got a complete notification")
 };
 
-observable$.subscribe(observer); 
+observable$.subscribe(observer);
 
 // 输出结果
 // Observer got a next value: 1
@@ -105,25 +105,26 @@ class RxSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: '',
-      debounced: '',
+      search: "",
+      debounced: ""
     };
     this.onSearch$ = new Subject();
   }
-  componentDidMount(){
-    this.subscription = this.onSearch$.pipe(debounceTime(300))
+  componentDidMount() {
+    this.subscription = this.onSearch$
+      .pipe(debounceTime(300))
       .subscribe(debounced => this.setState({ debounced }));
   }
-  
+
   componentWillUnmount() {
     this.subscription && this.subscription.unsubscribe();
   }
-  
-  onSearch = (e) => {
+
+  onSearch = e => {
     const search = e.target.value;
     this.setState({ search });
     this.onSearch$.next(search);
-  }
+  };
 
   render() {
     const { search, debounced } = this.state;
@@ -135,18 +136,23 @@ class RxSearch extends Component {
     );
   }
 }
+
 ```
 当然，防抖节流类有很多工具库，比如 lodash、Ramda 。但对于函数式编程的实践 lodash 是不够的，而且这些库更多的目的是工具库，而不是处理数据流，如果有更多的要求，这些库处理起来是不够优雅的。比如结果再延迟 1000 毫秒显示，结果做过滤、转换、取消失效结果、自动重试等等。
 ## 快速切换筛选条件，结果竟态
 ```
-this.onClickFilter$.pipe(
-  debounceTime(300), // 加入 debounce 特性，停止输入 500ms 之后再发送请求
-  distinctUntilChanged(), //内容不变时不再继续流水线
-  // switchMap 后前面的请求会被自动 cancel 掉，天然避免竞态问题
-  switchMap(filter => from(fetch('https://api.github.com/repos/ReactiveX/rxjs')))
-).subscribe(data => {
-  console.log(data)
-});
+this.onClickFilter$
+  .pipe(
+    debounceTime(300), // 加入 debounce 特性，停止输入 500ms 之后再发送请求
+    distinctUntilChanged(), //内容不变时不再继续流水线
+    // switchMap 后前面的请求会被自动 cancel 掉，天然避免竞态问题
+    switchMap(filter =>
+      from(fetch("https://api.github.com/repos/ReactiveX/rxjs"))
+    )
+  )
+  .subscribe(data => {
+    console.log(data);
+  });
 ```
 ## 批量请求异步数据流的集中管理与重试
 ```
@@ -154,16 +160,16 @@ const source$ = range(1, 5);
 source$
   .pipe(
     mergeMap(x => {
-      return fetch(`https://api.github.com/repos/ReactiveX/rxjs`).then((res)=>{
-        if(res.status !== '200') {
+      return fetch(`https://api.github.com/repos/ReactiveX/rxjs`).then(res => {
+        if (res.status !== "200") {
           throw new Error("Error!");
-        } else  {
-          return of(res)
+        } else {
+          return of(res);
         }
-      })
+      });
     }),
     retry(2),
-    catchError(err => of(err)),
+    catchError(err => of(err))
   )
   .subscribe(x => console.log("source1$:", x));
 ```
@@ -174,22 +180,18 @@ source$
 
 > Store.js
 ```
-import {createStore, applyMiddleware} from 'redux'
-import {createEpicMiddleware} from 'redux-observable'
-import reducer from './Reducer'
-import epic from './Epic'
+import { createStore, applyMiddleware } from "redux";
+import { createEpicMiddleware } from "redux-observable";
+import reducer from "./Reducer";
+import epic from "./Epic";
 
 const initValues = {
   count: 0
-}
+};
 const epicMiddleware = createEpicMiddleware();
-const store = createStore(
-  reducer,
-  initValues,
-  applyMiddleware(epicMiddleware)
-)
+const store = createStore(reducer, initValues, applyMiddleware(epicMiddleware));
 epicMiddleware.run(epic);
-export default store
+export default store;
 ```
 
 > Epic.js
@@ -202,13 +204,13 @@ const epic = (action$, state$) => {
   return action$.pipe(
     filter(
       action =>
-        action.type === ActionTypes.DECREMENT 
-        || action.type === ActionTypes.INCREMENT
+        action.type === ActionTypes.DECREMENT ||
+        action.type === ActionTypes.INCREMENT
     ),
     delay(1000),
     map(action => {
       const count = state$.value.count;
-      console.log(action$, state$)
+      console.log(action$, state$);
       if (count > 0) {
         return decrement();
       } else if (count < 0) {
@@ -221,31 +223,34 @@ const epic = (action$, state$) => {
 };
 
 export default epic;
-
 ```
 
 >Counter.js
 ```
-import {connect} from 'react-redux'
-import * as Actions from '../../redux/Actions'
+import { connect } from "react-redux";
+import * as Actions from "../../redux/Actions";
 import CounterView from "./CounterView";
 
-
-function mapStateToProps(state, ownProps){
-  return{count:state.count}
+function mapStateToProps(state, ownProps) {
+  return { count: state.count };
 }
-function mapDispatchToProps(dispatch,ownProps){
+function mapDispatchToProps(dispatch, ownProps) {
   return {
-    onIncrement:() => dispatch(Actions.increment()),
-    onDecrement:()=>{ 
-      debugger
-      const action = Actions.decrement()
-      return dispatch(action)
+    onIncrement: () => dispatch(Actions.increment()),
+    onDecrement: () => {
+      debugger;
+      const action = Actions.decrement();
+      return dispatch(action);
     },
-    reset: ()=>{dispatch(Actions.reset())}
-  }
+    reset: () => {
+      dispatch(Actions.reset());
+    }
+  };
 }
-const ReduxCounter = connect(mapStateToProps,mapDispatchToProps)(CounterView);
+const ReduxCounter = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CounterView);
 export default ReduxCounter;
 ```
 Reducer.js Action.js 等和基础 Redux 使用时没有区别的，最需要关注的就是 Epic.js, 我们在 Epic 里，可以随意的使用 RxJS 提供的异步处理能力，而且可以保证真正的 Action 动作不需要写到组件逻辑中（可以对比 thunk 、promise 等方案的代码）
@@ -254,7 +259,7 @@ Reducer.js Action.js 等和基础 Redux 使用时没有区别的，最需要关�
 
 # 四、总结
 我认为学习 RxJS 的原因有两点: 
-* 在遇到某些问题的时候能够想起这个解决方案。
+* RxJS 为我们提供了便捷处理异步数据流的能力。比如上文所提到的节流防抖、结果竟态、重试、数据流合并、多播等问题。当然，RxJS 不仅限于解决这些问题，还有很多本文没有涉及到，比如调度器的提供使我们更便捷的调度异步数据流、多种 Subject 的变体使我们可以进行便捷的进行多样化的多播。
 * RxJS 的编程范式以及设计模式都是我们该去了解的知识。
 
 学习方法总结:
