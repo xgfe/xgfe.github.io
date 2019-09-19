@@ -30,7 +30,7 @@ JS中常见的异步执行场景：网络请求（Ajax等）、定时器（SetTi
 ---
 
 ## 回调函数
-JS中最常见的处理异步问题的方法，将任务结束时要做的事（或者说必须拿到异步任务的结果才能进行的操作）包装成函数作为参数传递给异步操作，待异步操作结束后执行函数，称之为“回调”函数。如SetTimeout函数：
+JS中最常见的处理异步问题的方法，将任务结束时要做的事（或者说必须拿到异步任务的结果才能进行的操作）包装成函数作为参数传递给异步操作，待异步操作结束后执行函数，称之为“回调”函数。如SetTimeout函数就接受一个函数参数作为回调函数，在指定延迟时间后执行该回调函数：
 
 ```
 异步操作setTimeout示例
@@ -738,10 +738,35 @@ async函数是目前最集大成的JS异步操作方式，但回调函数、prom
 
 --- 
 
-总结：
+## demo演示
+<p class="codepen" data-height="465" data-theme-id="0" data-default-tab="js,result" data-user="linxiaowen0127" data-slug-hash="BaBYMvN" style="height: 465px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="BaBYMvN">
+  <span>See the Pen <a href="https://codepen.io/linxiaowen0127/pen/BaBYMvN/">
+  BaBYMvN</a> by linxiaowen0127 (<a href="https://codepen.io/linxiaowen0127">@linxiaowen0127</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+--- 
+
+## 总结
+| 异步方式 | 优点 | 缺点 | 备注 |
+| --- | --- | --- | --- |
+| 1、回调函数 | 简单、逻辑上易理解、易实现 | 多个嵌套时：代码耦合高难以维护，程序结构混乱；流程难以追踪；错误捕获困难；|1-2个异步操作按顺序执行时，使用回调函数显得很便捷很简单，也不会造成难以维护的情况。多个异步操作时谢绝直接使用回调函数进行流程控制。回调函数是其他所有异步操作的基石。|
+|2、事件监听 | 理解也较为容易；有效去耦合；多对多（事件与触发的函数），更灵活；|事件驱动型，流程不清晰；多对多也会造成事件的监听与触发混乱；|非常常用，最多的应该是点击事件触发。事件监听同样不建议用来控制大型/较复杂的流程运转。|
+|3、发布订阅（事件监听升级版）|消息中心的存在让消息（事件）、订阅者（回调函数）更加清晰且更好掌控；|实现较为复杂（特别是包含取消订阅等功能时）则占用内存也多；大量使用时跟踪bug较为困难；|Vue也是基于发布-订阅（可能3+版会更改实现方式）。要实现较为完备的发布订阅相当复杂。少数异步操作不建议使用。感觉是系统级的而不是用来操控几个异步流程。|
+|4、Promise|链式调用，流程清晰；|配套方法较完善；可串行可并行执行多个异步操作；一旦开始，无法取消；pending状态无法确认是刚开始还是即将结束；复杂情况时代码冗余、语义不清；|也非常常用，并且可以配合async达到自动按顺序执行效果。实际运用中例如HTTP请求会封装在promise里，更好的进行请求返回的下一步操作以及错误捕获处理。|
+|5、Generator（生成遍历器对象）|将异步操作表达得像同步操作一样；语法简单，流程清晰，代码实现简洁；外部调用next可携带数据到内部；|手动迭代较麻烦（有thunk、co库可辅助）；yield语义不清；|generator返回遍历器对象的特性，让其拥有了进行异步操作流程控制以外的功能，例如可利用generator进行对象的属性遍历并进行一定的操作。甚至可以被视为一种数据结构。|
+|6、Async（基于Promise，Gnerator升级版）|可自动执行流程（对于generator的next方法的改进）；语法简单，流程清晰，代码实现简洁；|多个异步操作若不存在依赖关系时，使用async降低性能；|await后面直接跟着回调函数不生效（例如await setTimout(500,()=>{...})，并不会等延迟操作结束后再继续往下），需将其封装为Promise。|
+
+
 本文主要JS的几种异步语法进行介绍，对JS异步语法的发展过程及各API进行了学习举例，其中很多结论及代码例子来源于下列参考文献，总结不到位的地方还请大家批评指正。
 
-友情参考链接：
-http://es6.ruanyifeng.com/#docs/
-https://segmentfault.com/a/1190000014874668
-https://www.infoq.cn/article/zwowtega7KjC4Ad-trp4
+## 参考链接
+
+阮一峰ES6入门 http://es6.ruanyifeng.com/#docs/
+详解前端异步编程的六种方案 https://www.infoq.cn/article/zwowtega7KjC4Ad-trp4
+夯实基础-JavaScript异步编程 https://segmentfault.com/a/1190000014874668
+co源码 https://github.com/tj/co
+thunkify 源码 https://github.com/tj/node-thunkify
+Javascript设计模式之发布-订阅模式 https://juejin.im/post/5a9108b6f265da4e7527b1a4
+JS 异步编程六种方案 https://juejin.im/post/5c30375851882525ec200027
