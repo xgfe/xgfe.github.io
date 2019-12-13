@@ -1,0 +1,970 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="JS异步,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要针对Javascript中异步编程的几种语法以及使用方式进行了介绍。">
+<meta name="keywords" content="JS异步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS异步语法">
+<meta property="og:url" content="http://xgfe.github.io/2019/08/07/linxiaowen/Javascript-asynchronous/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要针对Javascript中异步编程的几种语法以及使用方式进行了介绍。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-13T03:07:04.025Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS异步语法">
+<meta name="twitter:description" content="本文主要针对Javascript中异步编程的几种语法以及使用方式进行了介绍。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> JS异步语法 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              JS异步语法
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-08-07T00:00:00+08:00" content="2019-08-07">
+            2019-08-07
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/Linxiaowen/" itemprop="url" rel="index">
+                  <span itemprop="name">Linxiaowen</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/JS异步/" rel="tag"><i class="icon-next-tags"></i>JS异步</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要针对Javascript中异步编程的几种语法以及使用方式进行了介绍。</p>
+<a id="more"></a>
+<h2 id="前言-同步与异步"><a href="#前言-同步与异步" class="headerlink" title="前言 同步与异步"></a>前言 同步与异步</h2><p>在JS中，通常代码按顺序从上到下同步执行，但某些特殊场景/操作下需要以异步的方式执行，即将代码划分为至少两部分，先执行一部分代码，在进行耗时操作时将主线程的执行权交出，执行其他代码，待耗时任务完成后以一定规则触发使得另一部分代码被继续执行。</p>
+<p>JS中常见的异步执行场景：网络请求（Ajax等）、定时器（SetTimeout等）、IO操作（readFile等）…</p>
+<p>对于JS的这些异步场景，有两个重点：</p>
+<p>1.得知异步任务何时结束，以便进行后续操作；<br>2.处理多个异步任务按顺序执行/并发执行的场景；</p>
+<p>在处理JS异步场景方法的衍化过程当中，逐步出现了几种方式：</p>
+<ul>
+<li>回调函数</li>
+<li>事件监听</li>
+<li>发布订阅</li>
+<li>Promise</li>
+<li>Generator/yield</li>
+<li>Async/await</li>
+</ul>
+<hr>
+<h2 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h2><p>JS中最常见的处理异步问题的方法，将任务结束时要做的事（或者说必须拿到异步任务的结果才能进行的操作）包装成函数作为参数传递给异步操作，待异步操作结束后执行函数，称之为“回调”函数。如SetTimeout函数就接受一个函数参数作为回调函数，在指定延迟时间后执行该回调函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">异步操作setTimeout示例</span><br><span class="line">setTimeout(function()&#123;//延迟100ms后执行“代码块”；延迟即视为异步操作，代码块则是异步操作结束后的“回调函数”；</span><br><span class="line">  //代码块</span><br><span class="line">&#125;，100);</span><br></pre></td></tr></table></figure>
+<p>回调函数的异步方法简单易理解，但不利于代码维护，尤其在多个异步任务继发执行使得回调函数嵌套的情况下，代码耦合度高不利于代码的阅读和维护，且每个任务只能指定一个回调函数。此外它不能使用 try catch 捕获错误，不能直接 return。</p>
+<p>虽然回调函数这种方式问题很多，但是不可否认的是在ES6之前，他就是处理异步问题普遍较好的方式，而且后面很多方式仍然基于回调函数。</p>
+<hr>
+<h2 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h2><p>JS中关于DOM操作的一系列监听事件也属于异步方法，如监听各种元素的onclick、onload等方法。只有当监听元素对应的事件被发生时对应的代码才会被执行。</p>
+<p>回调函数与事件监听的区别：</p>
+<ul>
+<li>回调函数多是一对一的关系，事件监听可以是多对一。</li>
+<li>运行异步函数，在一个不确定的时间段之后运行回调函数；不确定何时触发事件，但是触发事件同步响应事件的回调。</li>
+<li>事件监听相对于回调函数，可配置的监听（可增可减）关系减少了耦合性。</li>
+</ul>
+<p>不过事件监听也存在问题：</p>
+<ul>
+<li>多对多的监听组成了一个复杂的事件网络，单个节点通常监听了多个事件，维护成本很大。</li>
+<li>多个异步事件仍然还是回调的形式。</li>
+</ul>
+<hr>
+<h2 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h2><p>和事件监听非常类似的是发布/订阅者模式，在事件监听的基础上，假定存在一个 “ 消息中心 “，某个任务执行完成，就向消息中心 “ 发布 “（publish）一个消息，其他任务可以向消息中心 “ 订阅 “（subscribe）这个消息，从而知道什么时候自己可以开始执行。（直观产品就是微信的公众号模式）</p>
+<p>发布订阅模式在事件监听的基础上增加消息中心的概念，使得多个监听事件的运转流程和消息传递更加有序。但与事件监听相同的是发布订阅者模式也是“事件驱动”型，无法预知到事件何时发生/发布。</p>
+<hr>
+<h2 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h2><p>Promise的三种状态：pending（进行中），fulfilled（已成功），rejected（已失败），其状态只能从进行中到成功或者是失败，不可逆。而当Promise成功/失败/发生错误时可以调用不同的回调函数来处理不同的情况。当状态定型后称为resolved(已定型)，为了方便表述，后续所有resolved统一只指fulfilled状态，不包含rejected状态。基本使用方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">let promise1 = new Promise((resolve, reject) =&gt; &#123;//传入resolve和reject两个函数(自带，名字也随意)来改变Promise的状态</span><br><span class="line">  //一顿操作</span><br><span class="line">  if(/*异步操作成功*/)&#123;</span><br><span class="line">  	resolve(&apos;success&apos;); //调用resolve函数使Promise状态从pengding=&gt;fulfilled,reject则相反；</span><br><span class="line">  &#125;else&#123;</span><br><span class="line">  	 reject(&apos;reject&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  //还可以操作，promise状态变化后仍会继续执行代码，但原则上不应该，因此可以用return resolve();的方式避免该情况；</span><br><span class="line">&#125;);</span><br><span class="line">promise1.then(//then方法是在Promise结束(成功/失败)后进行调用，可以传入两个回调函数作为参数分别对应成功/失败的状态；</span><br><span class="line">  value =&gt; &#123;//回调函数的参数(此为value)则是Promise状态转换时传递出的信息，resolve(&quot;success&quot;)中的“success”；</span><br><span class="line">    console.log(value);</span><br><span class="line">  &#125;,</span><br><span class="line">  reason =&gt; &#123;//then方法的第二个回调函数为可选；</span><br><span class="line">    console.log(reason);//reject</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="当resolve-a-传递的参数a也是一个Promise时"><a href="#当resolve-a-传递的参数a也是一个Promise时" class="headerlink" title="当resolve(a)传递的参数a也是一个Promise时"></a>当resolve(a)传递的参数a也是一个Promise时</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const p1 = new Promise(function (resolve, reject) &#123;</span><br><span class="line">  setTimeout(() =&gt; reject(new Error(&apos;fail&apos;)), 3000)</span><br><span class="line">&#125;)</span><br><span class="line">const p2 = new Promise(function (resolve, reject) &#123;</span><br><span class="line">  setTimeout(() =&gt; resolve(p1), 1000)</span><br><span class="line">&#125;)</span><br><span class="line">p2</span><br><span class="line">  .then(result =&gt; console.log(result))</span><br><span class="line">  .catch(error =&gt; console.log(error))</span><br><span class="line">// Error: fail，3秒后</span><br></pre></td></tr></table></figure>
+<p>由于p2返回的是另一个 Promise，导致p2自己的状态无效了，由p1的状态决定p2的状态。所以，后面的then语句都变成针对后者（p1）。又过了 2 秒，p1变为rejected，导致触发catch方法指定的回调函数。</p>
+<h3 id="Promise的链式调用-then"><a href="#Promise的链式调用-then" class="headerlink" title="Promise的链式调用(then)"></a>Promise的链式调用(then)</h3><p>then函数定义在原型对象Promise.prototype.then()上，then函数可以链式调用，因为每次调用返回的都是一个新的 Promise 实例；promise1.then().then().then()…</p>
+<ul>
+<li>在 then 中使用了 return，那么 return 的值会被 Promise.resolve() 包装，传递给下一次 then 中的成功回调 ；</li>
+<li>then 中可以不传递参数，如果不传递（then().then(…)？）会透到下一个 then 中 ；</li>
+<li>如果 then 中出现异常, 会走下一个 then 的失败回调/被最近的catch捕获；</li>
+</ul>
+<h3 id="Promise的异常捕获（catch）"><a href="#Promise的异常捕获（catch）" class="headerlink" title="Promise的异常捕获（catch）"></a>Promise的异常捕获（catch）</h3><p>Promise.prototype.catch方法是.then(null, rejection)或.then(undefined, rejection)的别名，用于指定发生错误时的回调函数。当异步操作抛出错误时状态会变为rejected，then方法指定的回调函数，如果运行中抛出错误，也会被catch方法捕获。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a=new Promise(function(res,rej)&#123;//当Promise内抛出错误，且then函数有rejected的回调函数以及存在catch函数</span><br><span class="line">	throw new Error(&quot;cuowu&quot;);</span><br><span class="line">&#125;)</span><br><span class="line">.then(null,function(val)&#123;</span><br><span class="line">	console.log(&quot;rej&quot;+val);</span><br><span class="line">  throw new Error(&quot;reject error&quot;);//在rejected回调函数中抛出错误会被catch捕获</span><br><span class="line">&#125;)</span><br><span class="line">.catch(function(e)&#123;</span><br><span class="line">	console.log(&quot;err&quot;+e);</span><br><span class="line">&#125;);</span><br><span class="line">//rejError: cuowu		//即会直接被rejected回调函数捕获而不被catch捕获</span><br><span class="line">//errError: reject error</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>Promise 在resolve语句后面，再抛出错误不会被捕获，等于没有抛出。因为 Promise 的状态一旦改变，就永久保持该状态，不会再变了。</p>
+</li>
+<li><p>Promise 对象的错误具有“冒泡”性质，会一直向后传递，直到被捕获为止。也就是说，错误总是会被下一个catch语句捕获。</p>
+</li>
+<li><p>一般来说，不要在then方法里面定义 Reject 状态的回调函数（即then的第二个参数），总是使用catch方法(还可以捕获then中的错误)。</p>
+</li>
+<li><p>catch方法返回的还是一个 Promise 对象，状态变为resolve，因此后面还可以接着调用then方法。</p>
+</li>
+<li><p>catch不会捕获其之后的错误（catch().then().then(),后面两个then函数中错误与catch无关）。</p>
+</li>
+<li><p>catch中报错与then一样向下传递，若有catch则能被捕获。</p>
+</li>
+</ol>
+<p>若没有用catch方法捕获错误，Promise 对象抛出的错误不会传递到外层代码，即运行出错仍然会报错，但不会退出进程终止运行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const someAsyncThing = function() &#123;</span><br><span class="line">  return new Promise(function(resolve, reject) &#123;</span><br><span class="line">    resolve(x + 2);// 下面一行会报错，因为x没有声明</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line">someAsyncThing().then(function() &#123;</span><br><span class="line">  console.log(&apos;everything is great&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">setTimeout(() =&gt; &#123; console.log(123) &#125;, 2000);</span><br><span class="line">// Uncaught (in promise) ReferenceError: x is not defined</span><br><span class="line">// 123    	//即使报错但2秒后仍然输出123；</span><br></pre></td></tr></table></figure></p>
+<p>Promise 指定在下一轮“事件循环”再抛出错误。到了那个时候，Promise 的运行已经结束了，所以这个错误是在 Promise 函数体外抛出的，会冒泡到最外层，成了未捕获的错误。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a=new Promise(function(res,rej)&#123;</span><br><span class="line">	rej(&quot;rej&quot;);</span><br><span class="line">  //res(&quot;ok&quot;);</span><br><span class="line">  setTimeout(()=&gt;&#123;throw new Error(&quot;cuowu&quot;)&#125;,0);</span><br><span class="line">&#125;)</span><br><span class="line">.then(val=&gt;console.log(&quot;res:&quot;+val),function(val)&#123;</span><br><span class="line">	console.log(&quot;rej&quot;+val);&#125;)</span><br><span class="line">.catch(function(e)&#123;console.log(&quot;err&quot;+e);&#125;);</span><br><span class="line">//rejrej</span><br><span class="line">//Uncaught Error: cuowu		//无论用rej还是res,Promise里设置延时报错都不会被catch捕获（Promise已经结束了）</span><br></pre></td></tr></table></figure></p>
+<h3 id="Promise-all-Promise-race"><a href="#Promise-all-Promise-race" class="headerlink" title="Promise.all/Promise.race"></a>Promise.all/Promise.race</h3><h4 id="Promise-all"><a href="#Promise-all" class="headerlink" title="Promise.all"></a>Promise.all</h4><p>Promise.all方法用于将多个 Promise 实例，包装成一个新的 Promise 实例。（and的判定方式）</p>
+<p>Promise.all一般使用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const p = Promise.all([p1, p2, p3]);</span><br><span class="line">//p的状态由p1/p2/p3决定，p1&amp;&amp;p2&amp;&amp;p3的关系，均resolve才resolve,任意一个rejected就rejected.</span><br><span class="line">//传值：p状态resolve时，p1/p2/p3的返回值组成数组传给p的回调函数，</span><br><span class="line">	//p状态rejected时，第一个被rejected的实例返回值传给p的回调函数。</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>接受一个数组参数（非数组也可，必须有Iterator接口），且返回的每个成员都是Promise实例。</li>
+<li>若参数成员不是Promise实例会调用Promise.resolve方法将其转为Promise实例，再进一步处理。</li>
+<li>如果作为参数的 Promise 实例，自己定义了catch方法，那么它一旦被rejected，并不会触发Promise.all()的catch方法，会被自己的catch方法捕获，而后返回的实例状态变成resolve，使得Promise.all()的整体状态可能变成resolve。</li>
+</ul>
+<h4 id="Promise-race"><a href="#Promise-race" class="headerlink" title="Promise.race"></a>Promise.race</h4><p>Promise.race方法同样是将多个 Promise 实例，包装成一个新的 Promise 实例。（or的判定方式）</p>
+<ul>
+<li>只要参数中有一个实例率先改变状态，p的状态就跟着改变。那个率先改变的 Promise 实例的返回值，就传递给p的回调函数。</li>
+<li>若参数成员不是Promise实例会调用Promise.resolve方法将其转为Promise实例（与all相同）。</li>
+</ul>
+<h3 id="Promise-resolve-Promise-reject"><a href="#Promise-resolve-Promise-reject" class="headerlink" title="Promise.resolve/Promise.reject"></a>Promise.resolve/Promise.reject</h3><h4 id="Promise-resolve"><a href="#Promise-resolve" class="headerlink" title="Promise.resolve()"></a>Promise.resolve()</h4><p>Promise.resolve方法可以将现有对象转为Promise对象。根据resolve()方法参数的不同有4种情况：</p>
+<ol>
+<li>参数是Promise对象，则不做任何修改、原封不动返回实例。</li>
+<li>参数是一个thenable对象（即对象具有then方法）<ul>
+<li>thenable被转为Promise实例后会直接调用then方法。</li>
+<li>thenable的then函数中，使用rej和res可以改变实例状态,return不会被当成res对待，error会被当成rej对待。</li>
+<li>thenable的then函数中，不使用res和rej则状态为pending，p1将不会执行then和catch。</li>
+</ul>
+</li>
+<li>参数不是具有then方法的对象，或根本就不是对象<ul>
+<li>返回一个新的Promise对象，状态为resolved，同时可以传值给回调函数(Promise.resolve(“abc”))。</li>
+</ul>
+</li>
+<li>不带任何参数(Promise.resolve())<ul>
+<li>直接返回Promise对象，状态为resolved。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let thenable = &#123;//thenable被转为Promise实例后会直接调用then方法。</span><br><span class="line">  then: function(res, rej) &#123;</span><br><span class="line">    rej(42);	//res(3);	//使用rej和res可以改变实例状态,return不会被当成res对待，error会被当成rej对待。</span><br><span class="line">    //console.log(1);	//不使用res和rej则状态为pending，p1将不会执行then和catch。</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">let p1 = Promise.resolve(thenable);</span><br><span class="line">p1.then(function(value) &#123;</span><br><span class="line">  console.log(value);</span><br><span class="line">&#125;).catch(val=&gt;console.log(val));//thenable中then函数rejected/error会被捕获</span><br></pre></td></tr></table></figure>
+<p>立即resolve()的 Promise 对象，是在本轮“事件循环”（event loop）的结束时执行，而不是在下一轮“事件循环”的开始时（宏任务与微任务）。</p>
+<h4 id="Promise-reject"><a href="#Promise-reject" class="headerlink" title="Promise.reject()"></a>Promise.reject()</h4><p>Promise.reject方法与Promise.resolve类似，返回一个新的Promise实例，只是状态为rejected。</p>
+<p>Promise.reject()方法的参数，会原封不动地作为reject的理由，变成后续方法的参数。这一点与Promise.resolve方法不一致。</p>
+<p>Promise.reject(thenable)参数的thenable函数reject后，其信息不会被后续catch捕获，而是thenable对象被捕获。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const thenable = &#123;</span><br><span class="line">  then(resolve, reject) &#123;</span><br><span class="line">    reject(&apos;出错了&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Promise.reject(thenable)</span><br><span class="line">.catch(e =&gt; &#123;</span><br><span class="line">  console.log(e === thenable)</span><br><span class="line">&#125;)</span><br><span class="line">//true  //catch方法的参数不是reject抛出的“出错了”这个字符串，而是thenable对象。</span><br></pre></td></tr></table></figure></p>
+<h3 id="Promise-prototype-finally"><a href="#Promise-prototype-finally" class="headerlink" title="Promise.prototype.finally()"></a>Promise.prototype.finally()</h3><ul>
+<li>finally用于指定不管Promise对象最后状态如何都会执行的操作，ES2018引入。</li>
+<li>finally不接受任何参数，因此也无法得知Promise的状态是fulfilled还是rejected，这表明finally方法里面的操作，应该是与状态无关的，不依赖于 Promise 的执行结果。</li>
+<li>finally的回调函数中写不写return都不影响finally函数将前面Promise的状态和值（PromiseStatus和PromiseValue）往后传递。</li>
+<li>finally函数执行后返回的还是一个Promise。</li>
+</ul>
+<p>finally特性（不接受参数+传递状态和值）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Promise.resolve(2).finally((val) =&gt; &#123;console.log(val)&#125;);</span><br><span class="line">//undefined   //finally中参数val无效</span><br><span class="line">//[[PromiseStatus]]: &quot;resolved&quot;  [[PromiseValue]]: 2    //可以传递Promise的状态和值</span><br><span class="line">Promise.resolve(2).finally((val=3) =&gt; &#123;console.log(val+1)&#125;) //4   //默认参数有效但与Promise无关</span><br></pre></td></tr></table></figure></p>
+<h3 id="Promise-try"><a href="#Promise-try" class="headerlink" title="*Promise.try()"></a>*Promise.try()</h3><p>用于处理不区分/确认是同步or异步操作的情况，可以做到若try(a)的a是同步函数则同步执行，是异步函数则异步执行。浏览器还未原生支持，romise 库Bluebird、Q和when提供了该方法。自己实现该功能则是使用立即执行函数+async/promise：</p>
+<p>async函数实现-同步操作同步执行，异步操作异步执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const f = () =&gt; console.log(&apos;now&apos;);</span><br><span class="line">(async () =&gt; f())()//f若是同步则会立即得到同步结果（后续有then函数则进入then函数），</span><br><span class="line">.then(...)          //若异步则可以用then和catch进行下一步操作。</span><br><span class="line">.catch(...);      //async () =&gt; f()会吃掉f()抛出的错误。所以，如果想捕获错误，要使用promise.catch方法。</span><br><span class="line">console.log(&apos;next&apos;);</span><br><span class="line">// now</span><br><span class="line">// next</span><br></pre></td></tr></table></figure></p>
+<p>new Promise实现-同步操作同步执行，异步操作异步执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const f = () =&gt; console.log(&apos;now&apos;);</span><br><span class="line">(() =&gt; new Promise(</span><br><span class="line">    resolve =&gt; resolve(f());  //使用resolve时用”f()“立即执行f函数。</span><br><span class="line">))();</span><br><span class="line">console.log(&apos;next&apos;);</span><br><span class="line">// now</span><br><span class="line">// next</span><br></pre></td></tr></table></figure></p>
+<p>Promise.try可以更好地管理异常，不论是同步操作or异步操作时抛出的错误。</p>
+<ol>
+<li>在构造 Promise 的时候，构造函数内部的代码是立即执行的；</li>
+<li>Promise一旦运行，不能终止。</li>
+<li>利用Promise处理一个异步的后续处理十分简便，但是处理多个请求按顺序执行仍然很不方便。</li>
+<li>如果不设置回调函数，Promise内部抛出的错误，不会反应到外部。</li>
+<li>当处于Pending状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）。</li>
+</ol>
+<hr>
+<h2 id="Generator-yield"><a href="#Generator-yield" class="headerlink" title="Generator/yield"></a>Generator/yield</h2><p>ES6中提供的一种异步编程解决方案，中文称为生成器，生成器可以在执行的时候暂停，交出函数执行权给其他函数，然后其他函数可以在需要的时候让该函数再次运行。</p>
+<ol>
+<li>function和函数名之间加星号*，函数内部用yield划分不同操作or状态来暂停函数，函数外部用next方法重新启动。</li>
+<li>yield 表达式本身没有返回值，返回 undefined。next 方法可以带一个参数，该参数就会被当作上一个 yield 表达式的返回值。</li>
+</ol>
+<p>generator函数使用基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function* foo(x) &#123;  //加星号（无规范，在function与函数名之间即可，空格在哪边或者没有空格均可）</span><br><span class="line">  console.log(&quot;begin&quot;);</span><br><span class="line">  let y = 2 * (yield (x + 1));  //yield表达式作为暂停标记</span><br><span class="line">  let z = yield (y / 3);</span><br><span class="line">  return (x + y + z); //若此处return换成yield，则next执行至此返回的done=false，需再执行一次next，done=true；</span><br><span class="line">&#125;</span><br><span class="line">let it = foo(5);  //首次执行函数不会执行函数内部（begin不会被打印），只传递参数，返回的是一个指向内部状态的指针对象（遍历器）。</span><br><span class="line">console.log(it.next());   //next执行后函数内部继续执行，停在下一个yield处，返回的对象包含value和done两个属性；</span><br><span class="line">// =&gt; &#123;value: 6, done: false&#125; //value为yield后面的表达式的值，done表示遍历是否结束；</span><br><span class="line">console.log(it.next(12))  //next(12)函数可以传入参数，会传到继续执行的yield处代替上一次的yield表达式；</span><br><span class="line">// =&gt; &#123;value: 8, done: false&#125; //12代替(x+1)因此y=24,本次next停在y/3处所以next.value=8</span><br><span class="line">console.log(it.next(13))  //13传入即z=13</span><br><span class="line">// =&gt; &#123;value: 42, done: true&#125;   //next.value=5+24+13=42,因为本次next执行至return所以done=true；</span><br></pre></td></tr></table></figure></p>
+<p>当一个对象的属性是 Generator 函数，可以简写成 ：* 属性名(){}的形式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let obj = &#123;  * myGeneratorMethod() &#123; ···&#125;&#125;; //属性前加*,表明属性是个generator函数。</span><br><span class="line">let obj = &#123; myGeneratorMethod : function* () &#123;...&#125;&#125;;  //两种写法等价</span><br></pre></td></tr></table></figure></p>
+<h3 id="yield与yield"><a href="#yield与yield" class="headerlink" title="yield与yield*"></a>yield与yield*</h3><h4 id="yield表达式"><a href="#yield表达式" class="headerlink" title="yield表达式"></a>yield表达式</h4><ul>
+<li>yield关键词作为每次函数执行next方法的分界点，其后面跟着的表达式会等到调用了next方法并执行到此处时才会进行计算。</li>
+<li>当generator函数里没有使用yield表达式时，此时函数变成一个单纯的暂缓执行函数。（f.()不会执行内部语句，f.().next();才会执行）</li>
+<li>yield关键词若不在generator函数里会报错（即函数是否加*)。</li>
+</ul>
+<h4 id="yield"><a href="#yield" class="headerlink" title="yield*"></a>yield*</h4><p>用来在一个generator函数里执行另一个generator函数。当yield后面跟着的对象是另一个generator函数时，使用yield*可以进入其内部继续遍历状态。</p>
+<p>yield*使用对比<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function* inner() &#123;</span><br><span class="line">  yield &apos;hello!&apos;;</span><br><span class="line">&#125;</span><br><span class="line">function* outer() &#123;</span><br><span class="line">  yield &apos;open&apos;;</span><br><span class="line">  yield inner();</span><br><span class="line">  yield* inner();</span><br><span class="line">  yield &apos;close&apos;;</span><br><span class="line">&#125;</span><br><span class="line">var gen = outer();</span><br><span class="line">gen.next().value // &quot;open&quot;</span><br><span class="line">gen.next().value // 返回一个遍历器对象。（不会进入内部）</span><br><span class="line">gen.next().value // &quot;hello!&quot;    //该yield带*表明后续表达式也是generator函数，会进入内部遍历状态。</span><br><span class="line">gen.next().value // &quot;close&quot;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>yield*后面的 Generator 函数（没有return语句时），等同于在 Generator 函数内部，部署一个for…of循环。</li>
+<li>有return语句时，则需要用let value = yield* iterator的形式获取return语句的值（done=true时会直接略过value跳出函数继续寻找yield，但整个函数返回值为return后的值）。</li>
+<li>任何数据结构只要有 Iterator 接口，就可以被yield*遍历（数组，字符串等等）。</li>
+</ul>
+<p>yield*后跟着一个带有return语句的generator<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function* genFuncWithReturn() &#123;</span><br><span class="line">  yield &apos;a&apos;;</span><br><span class="line">  yield &apos;b&apos;;</span><br><span class="line">  return &apos;The result&apos;;</span><br><span class="line">&#125;</span><br><span class="line">function* logReturned(genObj) &#123;</span><br><span class="line">  let result = yield* genObj;</span><br><span class="line">  console.log(result);</span><br><span class="line">&#125;</span><br><span class="line">[...logReturned(genFuncWithReturn())]</span><br><span class="line">// The result</span><br><span class="line">// 值为 [ &apos;a&apos;, &apos;b&apos; ]</span><br></pre></td></tr></table></figure></p>
+<h3 id="next方法的参数"><a href="#next方法的参数" class="headerlink" title="next方法的参数"></a>next方法的参数</h3><ul>
+<li>yield表达式本身没有返回值，或者说总是返回undefined。next方法可以带一个参数，该参数就会被当作上一个yield表达式的返回值。</li>
+<li>由于next方法的参数表示上一个yield表达式的返回值，所以在第一次使用next方法时，传递参数是无效的。</li>
+</ul>
+<p>如果想要第一次调用next方法时，就能够输入值，可以在 Generator 函数外面再包一层。</p>
+<p>包装generator函数，首次next()在内部执行，外部从第二次开始（对于外部而言为第一次）即可传入参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function wrapper(generatorFunction) &#123;</span><br><span class="line">  return function (...args) &#123; //return第一个函数：包涵generator函数并执行一次的next.</span><br><span class="line">    let generatorObject = generatorFunction(...args);</span><br><span class="line">    console.log(args[0]);</span><br><span class="line">    generatorObject.next();</span><br><span class="line">    return generatorObject;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">const wrapped = wrapper(function* () &#123;</span><br><span class="line">  console.log(`First input: $&#123;yield&#125;`);</span><br><span class="line">  return &apos;DONE&apos;;</span><br><span class="line">&#125;);</span><br><span class="line">wrapped(1).next(&apos;hello!&apos;);  //1   // First input: hello!</span><br></pre></td></tr></table></figure></p>
+<h3 id="generator函数遍历–针对同步操作"><a href="#generator函数遍历–针对同步操作" class="headerlink" title="generator函数遍历–针对同步操作"></a>generator函数遍历–针对同步操作</h3><p>（iterator接口：for…of、…扩展运算符、Array.from）</p>
+<p>由于 Generator 函数就是遍历器生成函数，因此可以把 Generator 赋值给对象的Symbol.iterator属性，从而使得该对象具有 Iterator 接口。</p>
+<p>generator函数执行后，返回的遍历器对象，其本身也具有Symbol.iterator属性，执行后返回自身。</p>
+<p>gen() === gen()[Symbol.iterator]()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function* gen()&#123;</span><br><span class="line">  // some code</span><br><span class="line">&#125;</span><br><span class="line">let g = gen();</span><br><span class="line">g[Symbol.iterator]() === g   //// true</span><br></pre></td></tr></table></figure></p>
+<p>generator函数赋值给对象的Symbol.iterator后，对象就可以被”…“扩展运算符遍历。</p>
+<p>generator函数赋值给Symbol.iterator<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let myIterable = &#123;&#125;;</span><br><span class="line">myIterable[Symbol.iterator] = function* () &#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  yield 2;</span><br><span class="line">  yield 3;</span><br><span class="line">&#125;;</span><br><span class="line">[...myIterable] // [1, 2, 3]</span><br></pre></td></tr></table></figure></p>
+<p>for…of循环可以自动遍历 Generator 函数运行时生成的Iterator对象，且此时不再需要调用next方法。</p>
+<p>一旦next方法的返回对象的done属性为true，for…of循环就会中止，且不包含该返回对象，所以下面代码的return语句返回的7，不包括在for…of循环之中。</p>
+<p>generator函数用for循环自动执行(方便地取出嵌套数组的内容)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">let arr = [1, [[2, 3], 4], [5, 6]];</span><br><span class="line">let flat = function* (a) &#123;</span><br><span class="line">  let length = a.length;</span><br><span class="line">  for (let i = 0; i &lt; length; i++) &#123;</span><br><span class="line">    let item = a[i];</span><br><span class="line">    if (typeof item !== &apos;number&apos;) &#123;</span><br><span class="line">      yield* flat(item);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      yield item;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return 7； //for...of循环不会返回7，因为此时done=true。</span><br><span class="line">&#125;;</span><br><span class="line">for (let f of flat(arr)) &#123;</span><br><span class="line">  console.log(f);</span><br><span class="line">&#125;</span><br><span class="line">// 1, 2, 3, 4, 5, 6</span><br></pre></td></tr></table></figure></p>
+<p>原生的 JavaScript 对象没有遍历接口，无法使用for…of循环，通过 generator 函数为它加上这个接口，就可以用了。可以把对象作为参数传递给generator函数，然后使用for…of  gen(object)方式来遍历对象属性。也可以直接把写好的generator函数赋值给对象的Symbol.iterator属性，然后再遍历（后者更直观）。</p>
+<p>除了for…of循环以外，扩展运算符（…）、解构赋值和Array.from方法内部调用的，都是遍历器接口。这意味着，它们都可以将 Generator 函数返回的 Iterator 对象，作为参数。</p>
+<p>扩展运算符，Array.from，解构赋值，for…of循环分别遍历generator函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function* numbers () &#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  yield 2;</span><br><span class="line">  return 3;</span><br><span class="line">&#125;</span><br><span class="line">[...numbers()]        // 扩展运算符  // [1, 2]</span><br><span class="line">Array.from(numbers());    // Array.from 方法  // [1, 2]</span><br><span class="line">let [x, y] = numbers();   // 解构赋值   //x=&gt; 1,y =&gt; 2</span><br><span class="line">for (let n of numbers()) &#123;    // for...of 循环</span><br><span class="line">  console.log(n);         // 1  // 2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="generator函数throw、return方法"><a href="#generator函数throw、return方法" class="headerlink" title="generator函数throw、return方法"></a>generator函数throw、return方法</h3><h4 id="throw"><a href="#throw" class="headerlink" title="throw()"></a>throw()</h4><p>Generator 函数返回的遍历器对象，都有一个throw方法，可以在函数体外抛出错误(gen.throw())，然后在 Generator 函数体内捕获(try…catch)。</p>
+<p>gen.throw()示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">var g = function* () &#123;</span><br><span class="line">  try &#123;</span><br><span class="line">    yield 1;</span><br><span class="line">    yield 2;</span><br><span class="line">  &#125; catch (e) &#123;</span><br><span class="line">    yield 2.5;    //2.5会成为throw的返回值，若没有执行throw方法此yield会被略过。</span><br><span class="line">    yield 2.7;    //2.7因为throw只会被捕获一次，因此会被throw紧接着的next取得，若throw紧接着还是throw则略过。</span><br><span class="line">    console.log(&apos;内部捕获&apos;, e);</span><br><span class="line">  &#125;</span><br><span class="line">  yield 3;</span><br><span class="line">&#125;;</span><br><span class="line">var i = g();</span><br><span class="line">i.next();   //value:1</span><br><span class="line">try &#123;</span><br><span class="line">  i.throw(&apos;a&apos;);   //value=2.5; throw除了抛出错误的语义外同时兼顾执行一次yield（catch内部的或是后续的，try里的略过）。</span><br><span class="line">  i.throw(&apos;b&apos;);   //第二次执行throw函数由于内部已经执行过catch了，不会再捕获一次。</span><br><span class="line">&#125; catch (e) &#123;</span><br><span class="line">  console.log(&apos;外部捕获&apos;, e);       // 内部捕获 a   // 外部捕获 b</span><br><span class="line">&#125;</span><br><span class="line">i.next();   //value:undefined,done:true</span><br><span class="line">i.next();   //由于第二次throw被外部捕获，对内部而言即出错终止了，因此后续都是undefined。</span><br><span class="line">//若没有第二次throw，则后两次next函数的value为2.7和3（2被第一次throw方法跳过了）。</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>generator函数的throw方法与全局throw方法不同，后者只能被函数外的catch捕获（即在generator函数内部用全局throw抛出错误）。</li>
+<li>如果 generator 函数内部没有部署try…catch代码块，那么generator的throw方法抛出的错误，将被外部try…catch代码块捕获。generator函数则相当于出错终止继续执行外部代码，使用next方法会返回{value:undefined, done=true}。</li>
+<li>如果 generator 函数内部和外部都没有部署try…catch代码，那么执行generator函数的throw方法程序将报错直接中断所有代码执行。</li>
+<li>throw方法抛出的错误要被内部捕获，前提是必须至少执行过一次next方法（这样才启动执行了内部代码）。</li>
+<li>throw方法被generator内部try模块捕获进入catch会默认执行一次next，停在catch内部或后续代码中的yield处。</li>
+<li>generator 函数体内抛出的错误，可以被函数体外的catch捕获。</li>
+</ul>
+<h4 id="return"><a href="#return" class="headerlink" title="return()"></a>return()</h4><p>generator 函数返回的遍历器对象，还有一个return方法，可以返回给定的值，并且终结遍历 generator 函数。</p>
+<p>gen.return()示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function* numbers () &#123;</span><br><span class="line">  yield 1;</span><br><span class="line">  try &#123;</span><br><span class="line">    yield 2;</span><br><span class="line">    yield 3;</span><br><span class="line">  &#125; finally &#123;   //当外部使用numbers.return()方法时，会等待finally执行完成后再执行return。</span><br><span class="line">    yield 4;</span><br><span class="line">    yield 5;</span><br><span class="line">  &#125;</span><br><span class="line">  yield 6;</span><br><span class="line">&#125;</span><br><span class="line">var g = numbers();</span><br><span class="line">g.next() // &#123; value: 1, done: false &#125;</span><br><span class="line">g.next() // &#123; value: 2, done: false &#125;</span><br><span class="line">g.return(7) // &#123; value: 4, done: false &#125;  //本次return因为内部有finally存在因此返回其内部的4。</span><br><span class="line">g.next() // &#123; value: 5, done: false &#125;</span><br><span class="line">g.next() // &#123; value: 7, done: true &#125;  //finally模块内执行完成后的下一次next直接是当时return的效果。</span><br></pre></td></tr></table></figure></p>
+<h4 id="next-throw-return-的共同点"><a href="#next-throw-return-的共同点" class="headerlink" title="next(),throw(),return()的共同点"></a>next(),throw(),return()的共同点</h4><p>next()、throw()、return()这三个方法本质上是同一件事，可以放在一起理解。它们的作用都是让 Generator 函数恢复执行，并且使用不同的语句替换yield表达式。</p>
+<ul>
+<li>next()是将yield表达式替换成一个值。</li>
+<li>throw()是将yield表达式替换成一个throw语句(需要被内部try模块catch，否则寻求外部try模块)。</li>
+<li>return()是将yield表达式替换成一个return语句(函数终止效果，遇上finally需等待finally内部执行完毕再终止)。</li>
+</ul>
+<h3 id="generator函数的this"><a href="#generator函数的this" class="headerlink" title="generator函数的this"></a>generator函数的this</h3><p>Generator 函数总是返回一个遍历器，ES6 规定这个遍历器是 Generator 函数的实例，也继承了 Generator 函数的prototype对象上的方法。但如果把generator函数当作普通的构造函数，并不会生效，因为其返回的总是遍历器对象，而不是this对象。</p>
+<p>generator函数的this使用示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">function* g() &#123; </span><br><span class="line">  this.a = 1; </span><br><span class="line">  yield this.b = 2;  </span><br><span class="line">  yield this.c = 3; </span><br><span class="line">&#125;</span><br><span class="line">g.prototype.hello = function () &#123; return &apos;hi!&apos;;&#125;;</span><br><span class="line">let obj = g();</span><br><span class="line">obj instanceof g // true    //obj是g的实例，继承了g.prototype</span><br><span class="line">obj.hello() // &apos;hi!&apos;</span><br><span class="line">obj.next();</span><br><span class="line">obj.a     //undefined   //obj拿不到this对象的属性。</span><br><span class="line">new g();  /// TypeError: g is not a constructor   //使用new来创建实例报错，g不是构造函数。</span><br><span class="line">​</span><br><span class="line">//generator函数用call方法绑定对象，指向函数内部的this对象。</span><br><span class="line">let o = &#123;&#125;;</span><br><span class="line">let gen = g.call(o);</span><br><span class="line">gen.next(); gen.next();   // value分别为2和3 与正常generator函数相同。</span><br><span class="line">console.log(&quot;a:&quot;+o.a+&quot; b:&quot;+o.b+&quot; c:&quot;+o.c);  // a:1 b:2 c:3  </span><br><span class="line">//obj对象成为了g函数的实例，但与g函数执行返回遍历器对象gen是分离的。</span><br><span class="line">​</span><br><span class="line">//将generator函数用call方法绑定自身prototype对象。</span><br><span class="line">let gg = g.call(g.prototype);</span><br><span class="line">gg.next();gg.next();  //value分别为2和3 与正常generator函数相同。</span><br><span class="line">console.log(&quot;a:&quot;+gg.a+&quot; b:&quot;+gg.b+&quot; c:&quot;+gg.c); // a:1 b:2 c:3</span><br><span class="line">​</span><br><span class="line">//将g改造成构造函数，就可以执行new命令</span><br><span class="line">function G()&#123;</span><br><span class="line">  return g.call(g.prototype);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="generator函数自动执行–针对异步操作（thunk、co）"><a href="#generator函数自动执行–针对异步操作（thunk、co）" class="headerlink" title="generator函数自动执行–针对异步操作（thunk、co）"></a>generator函数自动执行–针对异步操作（thunk、co）</h3><p>generator函数解决了使用Promise时多个异步操作顺序执行代码冗余、语义模糊的问题，在多个异步操作顺序执行的表示上非常清晰。</p>
+<p>generator函数最大的问题是如何在函数外部用next重新启动函数，手动执行在多个异步操作嵌套时异常繁琐，因此有thunk函数、co库可以自动执行generator函数。而简易版实现就是配合Promise实现自动执行。</p>
+<h4 id="thunk函数"><a href="#thunk函数" class="headerlink" title="thunk函数"></a>thunk函数</h4><p>thunk函数在JavaScript中是用于将多参数函数封装成只接受一个回调函数参数的单参数函数。</p>
+<p>现有的thunkify模块就是实现这样的一个封装器。</p>
+<p>thunkify模块使用示例及源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">let thunkify = require(&apos;thunkify&apos;); //事先需要安装模块  npm install thunkify 。</span><br><span class="line">let f = thunkify(fn);   //封装方法：将需要封装的带有回调函数参数的方法传入thunkify即可。</span><br><span class="line">f(para1,para2...)(cb);  //使用方法：将回调函数作为第二次执行（第一次执行后返回函数）的参数，其余参数在第一次执行时传入。</span><br><span class="line">​</span><br><span class="line">//源码</span><br><span class="line">var assert = require(&apos;assert&apos;);</span><br><span class="line">function thunkify(fn)&#123;</span><br><span class="line">  assert(&apos;function&apos; == typeof fn, &apos;function required&apos;); //判断fn是否为函数。</span><br><span class="line">​</span><br><span class="line">  return function()&#123;</span><br><span class="line">    var args = new Array(arguments.length); //根据返回的function执行时传入的参数个数创建数组。</span><br><span class="line">    var ctx = this;     //保留上下文环境this。</span><br><span class="line">​</span><br><span class="line">    for(var i = 0; i &lt; args.length; ++i) &#123;  //传入参数赋值给数组args。</span><br><span class="line">      args[i] = arguments[i];         </span><br><span class="line">    &#125;</span><br><span class="line">​</span><br><span class="line">    return function(done)&#123;    //返回函数，参数为回调函数。</span><br><span class="line">      var called;             //标记，是否执行过回调函数。</span><br><span class="line">​</span><br><span class="line">      args.push(function()&#123;   //将回调函数封装推入args参数数组，作为最后一个参数。</span><br><span class="line">        if (called) return;   //封装回调函数主要是判断是否已执行过回调函数，执行过则直接return，推入args的相当于一个空函数。</span><br><span class="line">        called = true;</span><br><span class="line">        done.apply(null, arguments);  </span><br><span class="line">      &#125;);</span><br><span class="line">​</span><br><span class="line">      try &#123;</span><br><span class="line">        fn.apply(ctx, args);</span><br><span class="line">      &#125; catch (err) &#123;</span><br><span class="line">        done(err);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>thunk函数简单来说就是将带有回调函数的方法的执行方式从f(a, b, c, callback)包装成f(a, b, c)(callback)。<br>thunk函数的作用本身并不显著，关键在于和generator函数结合在一起，使generator函数可以自动执行。</p>
+<p>thunk函数与generator函数结合，自动执行（针对异步操作）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">//针对同步操作的generator函数自动执行方法有几种，核心都是借助generator函数执行后返回的是一个遍历器，但这仅仅适合同步操作。</span><br><span class="line">//thunk函数自动执行generator函数的核心点在于用递归的方式在回调函数中使用next重新启动generator函数。</span><br><span class="line">var fs = require(&apos;fs&apos;);var thunkify = require(&apos;thunkify&apos;);</span><br><span class="line">var readFileThunk = thunkify(fs.readFile);//将文件读取函数封装为thunk函数。</span><br><span class="line">​</span><br><span class="line">//generator函数示例，内部包含两次文件读取操作。</span><br><span class="line">var gen = function* ()&#123;</span><br><span class="line">    console.log(&quot;进入generator&quot;);</span><br><span class="line">      //当run函数第二次执行gen.next(data)时，r1=data取到文件读取结果。</span><br><span class="line">      //value= readFileThunk(&apos;test2.txt&apos;, &apos;utf8&apos;)，执行后返回thunk函数接收回调函数作为参数。</span><br><span class="line">    var r1 = yield readFileThunk(&apos;test.txt&apos;, &apos;utf8&apos;);//test1-When you look long into an abyss, the abyss looks into you.</span><br><span class="line">    console.log(r1);    </span><br><span class="line">    var r2 = yield readFileThunk(&apos;test2.txt&apos;, &apos;utf8&apos;);//test2-When you look long into an abyss, the abyss looks into you.</span><br><span class="line">    console.log(r2);</span><br><span class="line">&#125;;</span><br><span class="line">​</span><br><span class="line">//配合thunk递归调用自动执行generator函数</span><br><span class="line">function thunkGenerator(f)&#123;</span><br><span class="line">    let fn=f();     //执行一次generator函数，得到遍历器。</span><br><span class="line">    let time=0;     </span><br><span class="line">    function next(err,data)&#123;  //thunk回调函数，因此要求generator函数中yield后跟着的必须是一个thunk函数（接收回调函数参数）。</span><br><span class="line">        if(err)throw err;</span><br><span class="line">        console.log(&quot;第&quot;+(++time)+&quot;次进入自定义next函数&quot;);</span><br><span class="line">        let res=fn.next(data);  //执行next，定位到下一个yield，传入data使gen函数拿到文件读取结果。</span><br><span class="line">        if (res.done) return;  //若done=true表明generator函数执行完毕，直接返回。</span><br><span class="line">        res.value(next);      //result.value是一个接收回调函数作为参数的thunk函数，next作为回调函数传入，当文件读取成功后执行。</span><br><span class="line">                              //此处真正执行读取文件操作，待读取成功后执行回调函数next。</span><br><span class="line">    &#125;</span><br><span class="line">    next();</span><br><span class="line">&#125;</span><br><span class="line">thunkGenerator(gen);//用thunkGenerator函数自动执行gen函数。</span><br><span class="line">//第1次进入自定义next函数</span><br><span class="line">//进入generator</span><br><span class="line">//第2次进入自定义next函数</span><br><span class="line">//test1-When you look long into an abyss, the abyss looks into you.</span><br><span class="line">//第3次进入自定义next函数</span><br><span class="line">//test2-When you look long into an abyss, the abyss looks into you.</span><br></pre></td></tr></table></figure></p>
+<p>thunk函数跟在yield后面，在thunk的回调函数中执行next重新启动generator函数，递归方式遍历generator。</p>
+<h4 id="co模块"><a href="#co模块" class="headerlink" title="co模块"></a>co模块</h4><p>co模块是结合promise对象来使generator函数自动执行。co(gen)执行后返回一个promise对象，用then方法添加最后的回调函数。</p>
+<p>co模块使用示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;);var co = require(&quot;co&quot;);var readFileThunk = thunkify(fs.readFile);</span><br><span class="line">var gen = function* ()&#123;</span><br><span class="line">    console.log(&quot;进入generator&quot;);</span><br><span class="line">    var r1 = yield readFileThunk(&apos;test.txt&apos;, &apos;utf8&apos;);//test1-When you look long into an abyss, the abyss looks into you.</span><br><span class="line">    console.log(r1);</span><br><span class="line">    var r2 = yield readFileThunk(&apos;test2.txt&apos;, &apos;utf8&apos;);//test2-When you look long into an abyss, the abyss looks into you.</span><br><span class="line">    console.log(r2);</span><br><span class="line">&#125;;</span><br><span class="line">​</span><br><span class="line">//使用co函数库自动执行generator函数</span><br><span class="line">//co(gen);co函数返回的事一个promise对象，可以用then添加回调函数；</span><br><span class="line">co(gen).then(()=&gt;&#123;</span><br><span class="line">    console.log(&quot;generator函数执行完毕。&quot;);</span><br><span class="line">&#125;)</span><br><span class="line">//进入generator</span><br><span class="line">//test1-When you look long into an abyss, the abyss looks into you.</span><br><span class="line">//test2-When you look long into an abyss, the abyss looks into you.</span><br><span class="line">//generator函数执行完毕。</span><br><span class="line">​</span><br></pre></td></tr></table></figure></p>
+<p>co模块源码中，自动执行generator函数的next函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function next(ret) &#123;</span><br><span class="line">  if (ret.done) return resolve(ret.value); //判断generator函数是否执行完毕。</span><br><span class="line">  var value = toPromise.call(ctx, ret.value); //将每一步返回的value都转为promise对象。</span><br><span class="line">  if (value &amp;&amp; isPromise(value)) return value.then(onFulfilled, onRejected);  //用then方法传入回调函数onFulfilled和onRejected，在两个函数内部继续调用next函数。</span><br><span class="line">  return onRejected(new TypeError(&apos;You may only yield a function, promise, generator, array, or object, &apos;</span><br><span class="line">     + &apos;but the following object was passed: &quot;&apos; + String(ret.value) + &apos;&quot;&apos;));  //参数不符合要求（函数、promise、generator、array、object以外）的情况下直接rejected，终止执行。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>对比thunk函数与co模块中自动执行generator的next函数，核心逻辑都是在递归调用next，在回调函数里重启generator。</li>
+<li>在自动执行generator上，相较于使用 thunk函数, 使用co模块能够接受的参数种类更多。</li>
+<li>co 支持并发的异步操作，即允许某些操作同时进行，等到它们全部完成，才进行下一步。只需把并发的操作都放在数组或对象里面，跟在yield语句后面。</li>
+</ul>
+<hr>
+<h2 id="Async-await"><a href="#Async-await" class="headerlink" title="Async/await"></a>Async/await</h2><p>async函数在generator函数的基础上进行了改进。</p>
+<ul>
+<li>语义清晰。async表示异步，await表示等待。</li>
+<li>自动执行。async函数执行后，自动逐步执行内部各个语句，在await处等待操作完成后自动继续往下执行。</li>
+<li>返回值为Promise对象。可以执行async函数后使用then函数进行下一步操作。</li>
+</ul>
+<p>async函数使用示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//函数声明</span><br><span class="line">async function f()&#123;&#125;</span><br><span class="line">//表达式</span><br><span class="line">let fn = async function ()&#123;&#125;;</span><br><span class="line">//对象的方法</span><br><span class="line">let obj = &#123;async f()&#123;&#125;&#125;;  obj.f().then();</span><br><span class="line">//Class的方法</span><br><span class="line">Class Test()&#123;</span><br><span class="line">  async fn()&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">let test = new Test();  test.fn().then();</span><br><span class="line">//箭头函数</span><br><span class="line">let func = async () =&gt; &#123;&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>基本使用方法：</p>
+<ul>
+<li>async函数内部用await暂停函数，用法类似yield，但await会在后面跟着的异步操作执行完成后自动继续执行。</li>
+<li>await命令后面，可以是 Promise 对象和原始类型的值（数值、字符串和布尔值，但这时会自动转成立即 resolved 的 Promise 对象）。</li>
+<li>返回的Promise对象的状态取决于async函数内部，return  aa，则promise对象状态为resolved，aa作为then函数参数；throw 错误则promise对象状态为rejected，错误作为参数传入catch函数or then函数的第二个参数函数。</li>
+<li>async函数绑定的then方法必须等到async内部的所有异步操作执行完才会被调用，即遇到有return or 错误抛出，若都没有的话，执行完最后的语句后async函数仍然返回一个状态为resolved的promise对象，但无任何数据传递。</li>
+</ul>
+<p>await后面跟着的命令：</p>
+<ul>
+<li>通常await后面跟着promise对象，返回该对象的结果，如果不是promise对象，就直接返回对应值，如 await 123，若想向async函数外传值则可以 return await 123，等同于return 123。</li>
+<li>若await后面跟着的promise对象状态返回为rejected，则会中断整个async函数，并且返回rejected传递的参数（前面不需要return，因为等同于报错，会被外面的catch捕获），若rejected的promise对象被try…catch模块包含or promise对象本身带有catch方法，可以捕获到该rejected或者错误，进行一些处理，并继续执行async函数。</li>
+<li>await后面若跟着一个thenable对象（定义了then方法的对象），await也会将其视为promise对象处理，执行其then方法。</li>
+<li>多个异步操作可以同时触发，可以使用Promise.all/race 或用同步语句分别执行异步操作，后续使用await分别等待异步操作的返回结果。</li>
+<li>await命令在async函数外会报错。</li>
+<li>async函数在遇到await时暂停执行（转而执行await后面带的命令），此时会保留上下文环境。</li>
+</ul>
+<p>async函数是目前最集大成的JS异步操作方式，但回调函数、promise、generator同样适合许多应用场景。在实际环境中，根据不同的需求来选取不同的方法才是最合适的。 </p>
+<hr>
+<h2 id="demo演示"><a href="#demo演示" class="headerlink" title="demo演示"></a>demo演示</h2><p></p><p class="codepen" data-height="465" data-theme-id="0" data-default-tab="js,result" data-user="linxiaowen0127" data-slug-hash="BaBYMvN" style="height: 465px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="BaBYMvN"><br>  <span>See the Pen <a href="https://codepen.io/linxiaowen0127/pen/BaBYMvN/" target="_blank" rel="noopener"><br>  BaBYMvN</a> by linxiaowen0127 (<a href="https://codepen.io/linxiaowen0127" target="_blank" rel="noopener">@linxiaowen0127</a>)<br>  on <a href="https://codepen.io" target="_blank" rel="noopener">CodePen</a>.</span><br></p><p></p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>异步方式</th>
+<th>优点</th>
+<th>缺点</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1、回调函数</td>
+<td>简单、逻辑上易理解、易实现</td>
+<td>多个嵌套时：代码耦合高难以维护，程序结构混乱；流程难以追踪；错误捕获困难；</td>
+<td>1-2个异步操作按顺序执行时，使用回调函数显得很便捷很简单，也不会造成难以维护的情况。多个异步操作时谢绝直接使用回调函数进行流程控制。回调函数是其他所有异步操作的基石。</td>
+</tr>
+<tr>
+<td>2、事件监听</td>
+<td>理解也较为容易；有效去耦合；多对多（事件与触发的函数），更灵活；</td>
+<td>事件驱动型，流程不清晰；多对多也会造成事件的监听与触发混乱；</td>
+<td>非常常用，最多的应该是点击事件触发。事件监听同样不建议用来控制大型/较复杂的流程运转。</td>
+</tr>
+<tr>
+<td>3、发布订阅（事件监听升级版）</td>
+<td>消息中心的存在让消息（事件）、订阅者（回调函数）更加清晰且更好掌控；</td>
+<td>实现较为复杂（特别是包含取消订阅等功能时）则占用内存也多；大量使用时跟踪bug较为困难；</td>
+<td>Vue也是基于发布-订阅（可能3+版会更改实现方式）。要实现较为完备的发布订阅相当复杂。少数异步操作不建议使用。感觉是系统级的而不是用来操控几个异步流程。</td>
+</tr>
+<tr>
+<td>4、Promise</td>
+<td>链式调用，流程清晰；</td>
+<td>配套方法较完善；可串行可并行执行多个异步操作；一旦开始，无法取消；pending状态无法确认是刚开始还是即将结束；复杂情况时代码冗余、语义不清；</td>
+<td>也非常常用，并且可以配合async达到自动按顺序执行效果。实际运用中例如HTTP请求会封装在promise里，更好的进行请求返回的下一步操作以及错误捕获处理。</td>
+</tr>
+<tr>
+<td>5、Generator（生成遍历器对象）</td>
+<td>将异步操作表达得像同步操作一样；语法简单，流程清晰，代码实现简洁；外部调用next可携带数据到内部；</td>
+<td>手动迭代较麻烦（有thunk、co库可辅助）；yield语义不清；</td>
+<td>generator返回遍历器对象的特性，让其拥有了进行异步操作流程控制以外的功能，例如可利用generator进行对象的属性遍历并进行一定的操作。甚至可以被视为一种数据结构。</td>
+</tr>
+<tr>
+<td>6、Async（基于Promise，Gnerator升级版）</td>
+<td>可自动执行流程（对于generator的next方法的改进）；语法简单，流程清晰，代码实现简洁；</td>
+<td>多个异步操作若不存在依赖关系时，使用async降低性能；</td>
+<td>await后面直接跟着回调函数不生效（例如await setTimout(500,()=&gt;{…})，并不会等延迟操作结束后再继续往下），需将其封装为Promise。</td>
+</tr>
+</tbody>
+</table>
+<p>本文主要JS的几种异步语法进行介绍，对JS异步语法的发展过程及各API进行了学习举例，其中很多结论及代码例子来源于下列参考文献，总结不到位的地方还请大家批评指正。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>阮一峰ES6入门 <a href="http://es6.ruanyifeng.com/#docs/" target="_blank" rel="noopener">http://es6.ruanyifeng.com/#docs/</a><br>详解前端异步编程的六种方案 <a href="https://www.infoq.cn/article/zwowtega7KjC4Ad-trp4" target="_blank" rel="noopener">https://www.infoq.cn/article/zwowtega7KjC4Ad-trp4</a><br>夯实基础-JavaScript异步编程 <a href="https://segmentfault.com/a/1190000014874668" target="_blank" rel="noopener">https://segmentfault.com/a/1190000014874668</a><br>co源码 <a href="https://github.com/tj/co" target="_blank" rel="noopener">https://github.com/tj/co</a><br>thunkify 源码 <a href="https://github.com/tj/node-thunkify" target="_blank" rel="noopener">https://github.com/tj/node-thunkify</a><br>Javascript设计模式之发布-订阅模式 <a href="https://juejin.im/post/5a9108b6f265da4e7527b1a4" target="_blank" rel="noopener">https://juejin.im/post/5a9108b6f265da4e7527b1a4</a><br>JS 异步编程六种方案 <a href="https://juejin.im/post/5c30375851882525ec200027" target="_blank" rel="noopener">https://juejin.im/post/5c30375851882525ec200027</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/17/qiuwei/whistle/" rel="prev">代理工具whistle的基本使用</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/29/hardhpp/javascript 异步/" rel="next">JavaScript 异步</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">118</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言-同步与异步"><span class="nav-number">1.</span> <span class="nav-text">前言 同步与异步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回调函数"><span class="nav-number">2.</span> <span class="nav-text">回调函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件监听"><span class="nav-number">3.</span> <span class="nav-text">事件监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发布订阅"><span class="nav-number">4.</span> <span class="nav-text">发布订阅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise"><span class="nav-number">5.</span> <span class="nav-text">Promise</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#当resolve-a-传递的参数a也是一个Promise时"><span class="nav-number">5.1.</span> <span class="nav-text">当resolve(a)传递的参数a也是一个Promise时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Promise的链式调用-then"><span class="nav-number">5.2.</span> <span class="nav-text">Promise的链式调用(then)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Promise的异常捕获（catch）"><span class="nav-number">5.3.</span> <span class="nav-text">Promise的异常捕获（catch）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Promise-all-Promise-race"><span class="nav-number">5.4.</span> <span class="nav-text">Promise.all/Promise.race</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-all"><span class="nav-number">5.4.1.</span> <span class="nav-text">Promise.all</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-race"><span class="nav-number">5.4.2.</span> <span class="nav-text">Promise.race</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Promise-resolve-Promise-reject"><span class="nav-number">5.5.</span> <span class="nav-text">Promise.resolve/Promise.reject</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-resolve"><span class="nav-number">5.5.1.</span> <span class="nav-text">Promise.resolve()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-reject"><span class="nav-number">5.5.2.</span> <span class="nav-text">Promise.reject()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Promise-prototype-finally"><span class="nav-number">5.6.</span> <span class="nav-text">Promise.prototype.finally()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Promise-try"><span class="nav-number">5.7.</span> <span class="nav-text">*Promise.try()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator-yield"><span class="nav-number">6.</span> <span class="nav-text">Generator/yield</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yield与yield"><span class="nav-number">6.1.</span> <span class="nav-text">yield与yield*</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#yield表达式"><span class="nav-number">6.1.1.</span> <span class="nav-text">yield表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#yield"><span class="nav-number">6.1.2.</span> <span class="nav-text">yield*</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#next方法的参数"><span class="nav-number">6.2.</span> <span class="nav-text">next方法的参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generator函数遍历–针对同步操作"><span class="nav-number">6.3.</span> <span class="nav-text">generator函数遍历–针对同步操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generator函数throw、return方法"><span class="nav-number">6.4.</span> <span class="nav-text">generator函数throw、return方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#throw"><span class="nav-number">6.4.1.</span> <span class="nav-text">throw()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#return"><span class="nav-number">6.4.2.</span> <span class="nav-text">return()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#next-throw-return-的共同点"><span class="nav-number">6.4.3.</span> <span class="nav-text">next(),throw(),return()的共同点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generator函数的this"><span class="nav-number">6.5.</span> <span class="nav-text">generator函数的this</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generator函数自动执行–针对异步操作（thunk、co）"><span class="nav-number">6.6.</span> <span class="nav-text">generator函数自动执行–针对异步操作（thunk、co）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#thunk函数"><span class="nav-number">6.6.1.</span> <span class="nav-text">thunk函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#co模块"><span class="nav-number">6.6.2.</span> <span class="nav-text">co模块</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Async-await"><span class="nav-number">7.</span> <span class="nav-text">Async/await</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#demo演示"><span class="nav-number">8.</span> <span class="nav-text">demo演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

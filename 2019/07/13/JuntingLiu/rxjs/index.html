@@ -1,0 +1,763 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="RxJS,redux-observable,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="RxJS 最近经常被提起，但其实在工作中，我并没有怎么用到过 RxJS，只在公司内部封装的桥接库中使用过。所以 RxJS 是没多少使用场景么？到底为什么要学习 RxJS 呢？">
+<meta name="keywords" content="RxJS,redux-observable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJS 初探">
+<meta property="og:url" content="http://xgfe.github.io/2019/07/13/JuntingLiu/rxjs/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="RxJS 最近经常被提起，但其实在工作中，我并没有怎么用到过 RxJS，只在公司内部封装的桥接库中使用过。所以 RxJS 是没多少使用场景么？到底为什么要学习 RxJS 呢？">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-images.githubusercontent.com/14134344/62932664-28c1c180-bdf3-11e9-9f0f-64a648101070.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/14134344/62932669-2bbcb200-bdf3-11e9-92bc-cf6c117505c9.png">
+<meta property="og:updated_time" content="2019-12-13T08:50:34.247Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJS 初探">
+<meta name="twitter:description" content="RxJS 最近经常被提起，但其实在工作中，我并没有怎么用到过 RxJS，只在公司内部封装的桥接库中使用过。所以 RxJS 是没多少使用场景么？到底为什么要学习 RxJS 呢？">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/14134344/62932664-28c1c180-bdf3-11e9-9f0f-64a648101070.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> RxJS 初探 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              RxJS 初探
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-07-13T16:28:30+08:00" content="2019-07-13">
+            2019-07-13
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/JuntingLiu/" itemprop="url" rel="index">
+                  <span itemprop="name">JuntingLiu</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/RxJS/" rel="tag"><i class="icon-next-tags"></i>RxJS</a>
+            
+              <a href="/tags/redux-observable/" rel="tag"><i class="icon-next-tags"></i>redux-observable</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>RxJS 最近经常被提起，但其实在工作中，我并没有怎么用到过 RxJS，只在公司内部封装的桥接库中使用过。所以 RxJS 是没多少使用场景么？到底为什么要学习 RxJS 呢？</p>
+<a id="more"></a>
+<h1 id="一、什么是-RxJS"><a href="#一、什么是-RxJS" class="headerlink" title="一、什么是 RxJS"></a>一、什么是 RxJS</h1><p>&emsp;&emsp;RxJS 是 Reactive Extension 这种模式的 JS 实现。它使用了一种不同于传统的编程模式—函数响应式编程。也有人称它为操作数据流的 「lodash」，旨在更方便的处理数据流。</p>
+<h2 id="函数式编程"><a href="#函数式编程" class="headerlink" title="函数式编程"></a>函数式编程</h2><p>用函数来解决问题的一种编程范式，主要特点有：声明式、纯函数、数据不可变性。</p>
+<h2 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h2><p>响应式编程是一个编程范式，但是与其他编程范式不同的是它是基于数据流和变化传播的。比如 A = B + C, 如果我们运用一种机制，当 B 或 C 变化时，A 也同时变化，这样就实现了响应式。我们熟悉的 React、Redux 就利用了响应式。</p>
+<h2 id="Reactive-Extension"><a href="#Reactive-Extension" class="headerlink" title="Reactive Extension"></a>Reactive Extension</h2><p>Reactive Extension，也叫ReactiveX，或者简称Rx，指的是实践响应式编程的一套工具，是一套通过可监听流来做异步编程的API。Rx的概念最初由微软公司实现并开源，也就是Rx.NET，因为Rx带来的编程方式大大改进了异步编程模型，在.NET之后，众多开发者在其他平台和语言上也实现了Rx的类库，如 RxJava、RxJS 、Rx.NET。</p>
+<hr>
+<h1 id="二、RxJS-中的基本概念与原理"><a href="#二、RxJS-中的基本概念与原理" class="headerlink" title="二、RxJS 中的基本概念与原理"></a>二、RxJS 中的基本概念与原理</h1><p>&emsp;&emsp;任何数据都可以被表达为数据流的形式，我们需要对数据流进行创建、订阅、过滤、转换、合并等各种操作，RxJS 便可以很好的解决这些问题。</p>
+<p><img src="https://user-images.githubusercontent.com/14134344/62932664-28c1c180-bdf3-11e9-9f0f-64a648101070.png" width="600" height="400"></p>
+<h2 id="在-RxJS-中用来解决异步事件管理的的基本概念是"><a href="#在-RxJS-中用来解决异步事件管理的的基本概念是" class="headerlink" title="在 RxJS 中用来解决异步事件管理的的基本概念是"></a>在 RxJS 中用来解决异步事件管理的的基本概念是</h2><ul>
+<li>Observable (可观察对象): 表示一个概念，这个概念是一个可调用的未来值或事件的集合。</li>
+<li>Observer (观察者): 一个回调函数的集合，它知道如何去监听由 Observable 提供的值。</li>
+<li>Subscription (订阅): 表示 Observable 的执行，主要用于取消 Observable 的执行。</li>
+<li>Operators (操作符): 采用函数式编程风格的纯函数 (pure function)，使用像 map、filter、concat、flatMap 等这样的操作符来处理集合。</li>
+<li>Subject (主体): 相当于 EventEmitter，并且是将值或事件多路推送给多个 Observer 的唯一方式。</li>
+<li>Schedulers (调度器): 用来控制并发并且是中央集权的调度员，允许我们在发生计算时进行协调，例如 setTimeout 或requestAnimationFrame 或其他。</li>
+</ul>
+<p>以上概念大部分依据发布订阅模式去思考都是比较容易理解的。对我来说比较不太理解的是 Subject 的存在。为什么只有通过 Subject 才能实现多播，而多次对一个普通的 observable 进行 subscribe 不能实现多播？下面通过一段代码来解释这个问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const numbers$ = interval(1000).pipe(take(3));</span><br><span class="line">numbers$.subscribe(value =&gt; &#123;</span><br><span class="line">  console.log(&quot;observer1: &quot; + value);</span><br><span class="line">&#125;);</span><br><span class="line">setTimeout(() =&gt; &#123;</span><br><span class="line">  numbers$.subscribe(value =&gt; &#123;</span><br><span class="line">    console.log(&quot;observer2: &quot; + value);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure></p>
+<p>你觉得这段代码的输出结果是？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">observer1: 0</span><br><span class="line">observer1: 1</span><br><span class="line">observer2: 1</span><br><span class="line">observer1: 2</span><br><span class="line">observer2: 2</span><br></pre></td></tr></table></figure></p>
+<p>实际结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">observer1: 0</span><br><span class="line">observer1: 1</span><br><span class="line">observer2: 0</span><br><span class="line">observer1: 2</span><br><span class="line">observer2: 1</span><br><span class="line">observer2: 2</span><br></pre></td></tr></table></figure></p>
+<p>虽然我们对 Observable 做了多次 subscribe，但是对于每个 Observer ，其实都有一个独立的数据流。而真正的多播应该是同一个数据源的。其实这种区别涉及了一个概念叫做 Cold Observable 和 hot Observable， interval 实际上产生的是一个 Cold Observable，而 Cold Observable 是无法实现真正的多播的。</p>
+<h2 id="RxJS-的设计模式"><a href="#RxJS-的设计模式" class="headerlink" title="RxJS 的设计模式"></a>RxJS 的设计模式</h2><h3 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h3><p><img src="https://user-images.githubusercontent.com/14134344/62932669-2bbcb200-bdf3-11e9-92bc-cf6c117505c9.png" width="500" height="200"></p>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><p>迭代器模式是指提供一种方法，顺序访问一个聚合对象中的各元素，而又不需要暴露该对象的内部表示。迭代器模式的实现主要处理以下三种情况：</p>
+<ul>
+<li>获取下一个值</li>
+<li>无更多值</li>
+<li>错误处理</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">const observable$ = Observable.create(observer =&gt; &#123;</span><br><span class="line">  observer.next(1);</span><br><span class="line">  observer.next(2);</span><br><span class="line">  observer.complete();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">const observer = &#123;</span><br><span class="line">  next: x =&gt; console.log(&quot;Observer got a next value: &quot; + x),</span><br><span class="line">  error: err =&gt; console.error(&quot;Observer got an error: &quot; + err),</span><br><span class="line">  complete: () =&gt; console.log(&quot;Observer got a complete notification&quot;)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">observable$.subscribe(observer);</span><br><span class="line"></span><br><span class="line">// 输出结果</span><br><span class="line">// Observer got a next value: 1</span><br><span class="line">// Observer got a next value: 2</span><br><span class="line">// Observer got a complete notification</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="三、RxJS-的使用示例"><a href="#三、RxJS-的使用示例" class="headerlink" title="三、RxJS 的使用示例"></a>三、RxJS 的使用示例</h1><h2 id="防抖"><a href="#防抖" class="headerlink" title="防抖"></a>防抖</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">class RxSearch extends Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.state = &#123;</span><br><span class="line">      search: &quot;&quot;,</span><br><span class="line">      debounced: &quot;&quot;</span><br><span class="line">    &#125;;</span><br><span class="line">    this.onSearch$ = new Subject();</span><br><span class="line">  &#125;</span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    this.subscription = this.onSearch$</span><br><span class="line">      .pipe(debounceTime(300))</span><br><span class="line">      .subscribe(debounced =&gt; this.setState(&#123; debounced &#125;));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentWillUnmount() &#123;</span><br><span class="line">    this.subscription &amp;&amp; this.subscription.unsubscribe();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  onSearch = e =&gt; &#123;</span><br><span class="line">    const search = e.target.value;</span><br><span class="line">    this.setState(&#123; search &#125;);</span><br><span class="line">    this.onSearch$.next(search);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    const &#123; search, debounced &#125; = this.state;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;input type=&quot;text&quot; value=&#123;search&#125; onChange=&#123;this.onSearch&#125; /&gt;</span><br><span class="line">        &lt;div&gt;debounced value: &#123;debounced&#125;&lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，防抖节流类有很多工具库，比如 lodash、Ramda 。但对于函数式编程的实践 lodash 是不够的，而且这些库更多的目的是工具库，而不是处理数据流，如果有更多的要求，这些库处理起来是不够优雅的。比如结果再延迟 1000 毫秒显示，结果做过滤、转换、取消失效结果、自动重试等等。</p>
+<h2 id="快速切换筛选条件，结果竟态"><a href="#快速切换筛选条件，结果竟态" class="headerlink" title="快速切换筛选条件，结果竟态"></a>快速切换筛选条件，结果竟态</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">this.onClickFilter$</span><br><span class="line">  .pipe(</span><br><span class="line">    debounceTime(300), // 加入 debounce 特性，停止输入 500ms 之后再发送请求</span><br><span class="line">    distinctUntilChanged(), //内容不变时不再继续流水线</span><br><span class="line">    // switchMap 后前面的请求会被自动 cancel 掉，天然避免竞态问题</span><br><span class="line">    switchMap(filter =&gt;</span><br><span class="line">      from(fetch(&quot;https://api.github.com/repos/ReactiveX/rxjs&quot;))</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  .subscribe(data =&gt; &#123;</span><br><span class="line">    console.log(data);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="批量请求异步数据流的集中管理与重试"><a href="#批量请求异步数据流的集中管理与重试" class="headerlink" title="批量请求异步数据流的集中管理与重试"></a>批量请求异步数据流的集中管理与重试</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const source$ = range(1, 5);</span><br><span class="line">source$</span><br><span class="line">  .pipe(</span><br><span class="line">    mergeMap(x =&gt; &#123;</span><br><span class="line">      return fetch(`https://api.github.com/repos/ReactiveX/rxjs`).then(res =&gt; &#123;</span><br><span class="line">        if (res.status !== &quot;200&quot;) &#123;</span><br><span class="line">          throw new Error(&quot;Error!&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          return of(res);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;),</span><br><span class="line">    retry(2),</span><br><span class="line">    catchError(err =&gt; of(err))</span><br><span class="line">  )</span><br><span class="line">  .subscribe(x =&gt; console.log(&quot;source1$:&quot;, x));</span><br></pre></td></tr></table></figure>
+<h2 id="RxJS-结合-Redux-驱动-React"><a href="#RxJS-结合-Redux-驱动-React" class="headerlink" title="RxJS 结合 Redux 驱动 React"></a>RxJS 结合 Redux 驱动 React</h2><p>我们在工作中，大部分时候会用数据管理的库结合 UI 框架去开发，比如 Vuex + Vue，Redux + React 等，所以此处我们来实践一下 Rxjs + Redux + React 。<br>为什么不干脆用 RxJS 代替 Redux ？Redux 的社区相对更成熟，Redux 不足的是对异步的处理，周边已经有了 redux-thunk、redux-promise、redux-saga 等一系列的中间件。RxJS 也可以提供更优雅的异步处理能力，而与此对应的中间件便是redux-observable 。（<a href="https://juejin.im/entry/58db23552f301e007e9786a2" target="_blank" rel="noopener">对比参考</a>）</p>
+<blockquote>
+<p>Store.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import &#123; createStore, applyMiddleware &#125; from &quot;redux&quot;;</span><br><span class="line">import &#123; createEpicMiddleware &#125; from &quot;redux-observable&quot;;</span><br><span class="line">import reducer from &quot;./Reducer&quot;;</span><br><span class="line">import epic from &quot;./Epic&quot;;</span><br><span class="line"></span><br><span class="line">const initValues = &#123;</span><br><span class="line">  count: 0</span><br><span class="line">&#125;;</span><br><span class="line">const epicMiddleware = createEpicMiddleware();</span><br><span class="line">const store = createStore(reducer, initValues, applyMiddleware(epicMiddleware));</span><br><span class="line">epicMiddleware.run(epic);</span><br><span class="line">export default store;</span><br></pre></td></tr></table></figure></p>
+<p>Epic.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import &#123; increment, decrement &#125; from &quot;./Actions&quot;;</span><br><span class="line">import * as ActionTypes from &quot;./ActionTypes&quot;;</span><br><span class="line">import &#123; delay, filter, map &#125; from &quot;rxjs/operators&quot;;</span><br><span class="line"></span><br><span class="line">const epic = (action$, state$) =&gt; &#123;</span><br><span class="line">  return action$.pipe(</span><br><span class="line">    filter(</span><br><span class="line">      action =&gt;</span><br><span class="line">        action.type === ActionTypes.DECREMENT ||</span><br><span class="line">        action.type === ActionTypes.INCREMENT</span><br><span class="line">    ),</span><br><span class="line">    delay(1000),</span><br><span class="line">    map(action =&gt; &#123;</span><br><span class="line">      const count = state$.value.count;</span><br><span class="line">      console.log(action$, state$);</span><br><span class="line">      if (count &gt; 0) &#123;</span><br><span class="line">        return decrement();</span><br><span class="line">      &#125; else if (count &lt; 0) &#123;</span><br><span class="line">        return increment();</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        return &#123; type: &quot;no-op&quot; &#125;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">export default epic;</span><br></pre></td></tr></table></figure></p>
+<p>Counter.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import &#123; connect &#125; from &quot;react-redux&quot;;</span><br><span class="line">import * as Actions from &quot;../../redux/Actions&quot;;</span><br><span class="line">import CounterView from &quot;./CounterView&quot;;</span><br><span class="line"></span><br><span class="line">function mapStateToProps(state, ownProps) &#123;</span><br><span class="line">  return &#123; count: state.count &#125;;</span><br><span class="line">&#125;</span><br><span class="line">function mapDispatchToProps(dispatch, ownProps) &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    onIncrement: () =&gt; dispatch(Actions.increment()),</span><br><span class="line">    onDecrement: () =&gt; &#123;</span><br><span class="line">      debugger;</span><br><span class="line">      const action = Actions.decrement();</span><br><span class="line">      return dispatch(action);</span><br><span class="line">    &#125;,</span><br><span class="line">    reset: () =&gt; &#123;</span><br><span class="line">      dispatch(Actions.reset());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">const ReduxCounter = connect(</span><br><span class="line">  mapStateToProps,</span><br><span class="line">  mapDispatchToProps</span><br><span class="line">)(CounterView);</span><br><span class="line">export default ReduxCounter;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>Reducer.js Action.js 等和基础 Redux 使用时没有区别的，最需要关注的就是 Epic.js, 我们在 Epic 里，可以随意的使用 RxJS 提供的异步处理能力，而且可以保证真正的 Action 动作不需要写到组件逻辑中（可以对比 thunk 、promise 等方案的代码）</p>
+<hr>
+<h1 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h1><p>我认为学习 RxJS 的原因有两点: </p>
+<ul>
+<li>RxJS 为我们提供了便捷处理异步数据流的能力。比如上文所提到的节流防抖、结果竟态、重试、数据流合并、多播等问题。当然，RxJS 不仅限于解决这些问题，还有很多本文没有涉及到，比如调度器的提供使我们更便捷的调度异步数据流、多种 Subject 的变体使我们可以进行便捷的进行多样化的多播。</li>
+<li>RxJS 的编程范式以及设计模式都是我们该去了解的知识。</li>
+</ul>
+<p>学习方法总结:</p>
+<ul>
+<li>掌握基础操作符，才能体会到 RxJS 的能力</li>
+<li>利用弹珠图理解基础操作符</li>
+</ul>
+<hr>
+<h1 id="五、学习资料"><a href="#五、学习资料" class="headerlink" title="五、学习资料"></a>五、学习资料</h1><ul>
+<li><a href="https://cn.rx.js.org/manual/overview.html#h11" target="_blank" rel="noopener">中文文档</a></li>
+<li><a href="https://rxjs.dev/api" target="_blank" rel="noopener">英文文档</a></li>
+<li><a href="https://rxviz.com/examples/custom-operator" target="_blank" rel="noopener">弹珠图</a></li>
+<li><a href="https://github.com/redux-observable/redux-observable" target="_blank" rel="noopener">redux-observable</a></li>
+</ul>
+<hr>
+<p>本文部分内容参考自程墨的 《RxJS 深入浅出》，建议大家有时间亲自读一下这本书。<br>本文内容如有错误或不妥，欢迎交流指正。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/23/luoyu/vue/" rel="prev">【浅度解析】new Vue() 源码结构梳理</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/04/chenluan/tint/" rel="next">Android 着色器 tint</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">118</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、什么是-RxJS"><span class="nav-number">1.</span> <span class="nav-text">一、什么是 RxJS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#函数式编程"><span class="nav-number">1.1.</span> <span class="nav-text">函数式编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应式编程"><span class="nav-number">1.2.</span> <span class="nav-text">响应式编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reactive-Extension"><span class="nav-number">1.3.</span> <span class="nav-text">Reactive Extension</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、RxJS-中的基本概念与原理"><span class="nav-number">2.</span> <span class="nav-text">二、RxJS 中的基本概念与原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在-RxJS-中用来解决异步事件管理的的基本概念是"><span class="nav-number">2.1.</span> <span class="nav-text">在 RxJS 中用来解决异步事件管理的的基本概念是</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RxJS-的设计模式"><span class="nav-number">2.2.</span> <span class="nav-text">RxJS 的设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发布订阅"><span class="nav-number">2.2.1.</span> <span class="nav-text">发布订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#迭代器"><span class="nav-number">2.2.2.</span> <span class="nav-text">迭代器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、RxJS-的使用示例"><span class="nav-number">3.</span> <span class="nav-text">三、RxJS 的使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#防抖"><span class="nav-number">3.1.</span> <span class="nav-text">防抖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速切换筛选条件，结果竟态"><span class="nav-number">3.2.</span> <span class="nav-text">快速切换筛选条件，结果竟态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量请求异步数据流的集中管理与重试"><span class="nav-number">3.3.</span> <span class="nav-text">批量请求异步数据流的集中管理与重试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RxJS-结合-Redux-驱动-React"><span class="nav-number">3.4.</span> <span class="nav-text">RxJS 结合 Redux 驱动 React</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、总结"><span class="nav-number">4.</span> <span class="nav-text">四、总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、学习资料"><span class="nav-number">5.</span> <span class="nav-text">五、学习资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

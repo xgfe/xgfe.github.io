@@ -1,0 +1,833 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="JavaScript,异步,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="介绍JavaScript异步的四种实现方式：1&amp;gt;回调函数；2&amp;gt;Promise；3&amp;gt;生成器Gererator；4&amp;gt;Async/Await。">
+<meta name="keywords" content="JavaScript,异步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 异步">
+<meta property="og:url" content="http://xgfe.github.io/2019/07/29/hardhpp/javascript 异步/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="介绍JavaScript异步的四种实现方式：1&amp;gt;回调函数；2&amp;gt;Promise；3&amp;gt;生成器Gererator；4&amp;gt;Async/Await。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-13T07:08:39.703Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 异步">
+<meta name="twitter:description" content="介绍JavaScript异步的四种实现方式：1&amp;gt;回调函数；2&amp;gt;Promise；3&amp;gt;生成器Gererator；4&amp;gt;Async/Await。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> JavaScript 异步 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              JavaScript 异步
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-07-29T00:00:00+08:00" content="2019-07-29">
+            2019-07-29
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/hardhpp/" itemprop="url" rel="index">
+                  <span itemprop="name">hardhpp</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/JavaScript/" rel="tag"><i class="icon-next-tags"></i>JavaScript</a>
+            
+              <a href="/tags/异步/" rel="tag"><i class="icon-next-tags"></i>异步</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>介绍JavaScript异步的四种实现方式：1&gt;回调函数；2&gt;Promise；3&gt;生成器Gererator；4&gt;Async/Await。</p>
+<a id="more"></a>
+<p><strong>异步编程的核心：处理程序中现在运行的部分和将来运行的部分之间的关系。</strong></p>
+<h2 id="方法一：回调函数"><a href="#方法一：回调函数" class="headerlink" title="方法一：回调函数"></a>方法一：回调函数</h2><p>回调是JavaScript中最基础的异步模式，常见于一个耗时操作后执行某个函数。</p>
+<h3 id="例1-一个定时器，定时器中的匿名函数就是回调函数，在1000ms后执行该函数"><a href="#例1-一个定时器，定时器中的匿名函数就是回调函数，在1000ms后执行该函数" class="headerlink" title="例1: 一个定时器，定时器中的匿名函数就是回调函数，在1000ms后执行该函数"></a>例1: 一个定时器，定时器中的匿名函数就是回调函数，在1000ms后执行该函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setTimeout( function() &#123;</span><br><span class="line">  console.log(&apos;Time out&apos;);</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
+<h3 id="例2-异步读取文件后执行回调函数"><a href="#例2-异步读取文件后执行回调函数" class="headerlink" title="例2: 异步读取文件后执行回调函数"></a>例2: 异步读取文件后执行回调函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&apos;fs&apos;); </span><br><span class="line">fs.readFile(&apos;./text1.txt&apos;, &apos;utf8&apos;, function(err, data)&#123;</span><br><span class="line">  if (err)&#123;</span><br><span class="line">    throw err;</span><br><span class="line">  &#125;</span><br><span class="line">  console.log(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>下面，我们使用回调函数实现一个简单的需求：某应用希望根据登录人的信息，获取不同的筛选项，再根据筛选项获取到相应的数据。</p>
+<p>整个过程分为3步：</p>
+<ol>
+<li>调用获取登录人岗位接口，获取登录人信息</li>
+<li>根据登录人的信息，获取相应的筛选项</li>
+<li>根据筛选项信息，获取该登录人默认查看的信息</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">let position, filter, source;</span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">    type: &apos;get&apos;,</span><br><span class="line">    url: &apos;http://xx/getPosition&apos;,</span><br><span class="line">    success: function (data) &#123;</span><br><span class="line">        position = data;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &apos;get&apos;,</span><br><span class="line">            url: &apos;http://xx/getFilter&apos;,</span><br><span class="line">            data: &#123;</span><br><span class="line">                position</span><br><span class="line">            &#125;,</span><br><span class="line">            success: function (data) &#123;</span><br><span class="line">                filter = data;</span><br><span class="line">                $.ajax(&#123;</span><br><span class="line">                    type: &apos;get&apos;,</span><br><span class="line">                    url: &apos;http://xx/getSource&apos;,</span><br><span class="line">                    data: &#123;</span><br><span class="line">                        filter</span><br><span class="line">                    &#125;,</span><br><span class="line">                    success: function (data) &#123;</span><br><span class="line">                        console.log(&apos;查看数据：&apos;, data);</span><br><span class="line">                    &#125;,</span><br><span class="line">                    error: function (err) &#123;</span><br><span class="line">                        console.log(err);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (err) &#123;</span><br><span class="line">                console.log(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    error: function (err) &#123;</span><br><span class="line">        console.log(err);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>以上代码存在两个问题：</p>
+<ol>
+<li><p>回调嵌套层数过多，调试困难，如果需求增加或者改变，代码难以维护和更新，即回调地狱</p>
+</li>
+<li><p>控制反转，即把sucess 和 error函数的执行控制交付给了第三方的ajax(..)，无法控制第三方工具的执行且第三方工具可能会出错</p>
+</li>
+</ol>
+<p><strong>控制反转(inversion of control)</strong>：把自己程序一部分的执行控制交给某个第三方。在你的代码和第三方工具(一组你希望有人维护的东西)之间有一份并没有明确表达的契约。</p>
+<p>以下列出了三方工具可能出错的情况:</p>
+<ul>
+<li>调用回调过早(在追踪之前);</li>
+<li>调用回调过晚(或没有调用);</li>
+<li>调用回调的次数太少或太多(就像你遇到过的问题!);</li>
+<li>没有把所需的环境 / 参数成功传给你的回调函数;</li>
+<li>吞掉可能出现的错误或异常;</li>
+<li>……</li>
+</ul>
+<p><strong>总结：回调函数存在的主要缺陷:缺乏顺序性和可信任性。</strong></p>
+<h2 id="方法二：Promise"><a href="#方法二：Promise" class="headerlink" title="方法二：Promise"></a>方法二：Promise</h2><p>1.Promise解决回调函数中的信任问题，不是将自己的程序交给第三方，而是希望第三方给我们提供了解其任务何时结束的能力，然后由我们自己的代码来决定下一步做什么。</p>
+<p>2.链式的写法，能够使得代码表达的有顺序性。</p>
+<h3 id="promise解决信任问题"><a href="#promise解决信任问题" class="headerlink" title="promise解决信任问题"></a>promise解决信任问题</h3><p><strong>1&gt;调用过早</strong></p>
+<p>根据定义，Promise 就不必担心这种问题，因为即使是立即完成的 Promise(类似于 new Promise(function(resolve){ resolve(42); }))也无法被同步观察到。</p>
+<p>也就是说，对一个 Promise 调用 then(..) 的时候，即使这个 Promise 已经决议，提供给then(..) 的回调也总会被异步调用。</p>
+<p><strong>2&gt;调用过晚</strong></p>
+<p>和前面一点类似，Promise 创建对象调用 resolve(..) 或 reject(..) 时，这个 Promise 的then(..) 注册的观察回调就会被自动调度。可以确信，这些被调度的回调在下一个异步事件点上一定会被触发。</p>
+<p><strong>3&gt;回调未调用</strong></p>
+<p>首先，没有任何东西(甚至 JavaScript 错误)能阻止 Promise 向你通知它的决议(如果它决议了的话)。如果你对一个 Promise 注册了一个完成回调和一个拒绝回调，那么 Promise在决议时总是会调用其中的一个。</p>
+<p><strong>4&gt;调用次数过少或过多</strong><br>根据定义，回调被调用的正确次数应该是 1。“过少”的情况就是调用 0 次，和前面解释过的“未被”调用是同一种情况。</p>
+<p>“过多”的情况很容易解释。Promise 的定义方式使得它只能被决议一次。如果出于某种原因，Promise 创建代码试图调用 resolve(..) 或 reject(..) 多次，或者试图两者都调用，那么这个 Promise 将只会接受第一次决议，并默默地忽略任何后续调用。</p>
+<p>由于 Promise 只能被决议一次，所以任何通过 then(..) 注册的(每个)回调就只会被调用一次。</p>
+<p>当然，如果你把同一个回调注册了不止一次(比如p.then(f); p.then(f);)，那它被调用的次数就会和注册次数相同。响应函数只会被调用一次，但这个保证并不能预防你搬起石头砸自己的脚。</p>
+<p><strong>5&gt;未能传递参数 / 环境值</strong></p>
+<p>Promise 至多只能有一个决议值(完成或拒绝)。如果你没有用任何值显式决议，那么这个值就是 undefined，这是 JavaScript 常见的处理方式。但不管这个值是什么，无论当前或未来，它都会被传给所有注册的(且适当的完成或拒绝)回调。</p>
+<p>还有一点需要清楚:如果使用多个参数调用 resovle(..) 或者 reject(..)，第一个参数之后的所有参数都会被默默忽略。这看起来似乎违背了我们前面介绍的保证，但实际上并没有，因为这是对 Promise 机制的无效使用。对于这组 API 的其他无效使用(比如多次重复调用 resolve(..))，也是类似的保护处理，所以这里的 Promise 行为是一致的(如果不是有点令人沮丧的话)。</p>
+<p>如果要传递多个值，你就必须要把它们封装在单个值中传递，比如通过一个数组或对象。对环境来说，JavaScript 中的函数总是保持其定义所在的作用域的闭包(参见《你不知道的 JavaScript(上卷)》的“作用域和闭包”部分)，所以它们当然可以继续访问你提供的环境状态。当然，对于只用回调的设计也是这样，因此这并不是 Promise 特有的优点——但不管怎样，这仍是我们可以依靠的一个保证。</p>
+<p><strong>6&gt; 吞掉错误或者异常</strong></p>
+<p>如果在Promise的创建过程或在查看其决议结果过程中的任何时间点上出现了一个JavaScript异常错误，比如一个TypeError或RerenceError，那这个异常就会被捕获，并且会使这个Promise被拒绝。</p>
+<h3 id="链式流"><a href="#链式流" class="headerlink" title="链式流"></a>链式流</h3><p>Promise 固有行为特性:</p>
+<ul>
+<li><p>每次你对 Promise 调用 then(..)，它都会创建并返回一个新的 Promise，我们可以将其链接起来;</p>
+</li>
+<li><p>不管从 then(..) 调用的完成回调(第一个参数)返回的值是什么，它都会被自动设置为被链接 Promise(第一点中的)的完成;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var p = Promise.resolve( 21 );</span><br><span class="line">var p2 = p.then( function(v)&#123;</span><br><span class="line">  console.log( v );</span><br><span class="line">  // 用值42填充p2</span><br><span class="line">  return v * 2;</span><br><span class="line">&#125;);</span><br><span class="line">// 连接p2</span><br><span class="line">p2.then( function(v)&#123;</span><br><span class="line">    console.log( v ); // 42</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="应用-1"><a href="#应用-1" class="headerlink" title="应用"></a>应用</h3><p>改写上面应用中回调函数实现的写法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">let getPositionPromise = function () &#123;</span><br><span class="line">    return new Promsie(function (resolve, reject) &#123;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &apos;get&apos;,</span><br><span class="line">            url: &apos;http://xx/getPosition&apos;,</span><br><span class="line">            success: function (data) &#123;</span><br><span class="line">               resolve(data);         </span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (err) &#123;</span><br><span class="line">                reject(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">let getFilterPromise = function (params) &#123;</span><br><span class="line">    return new Promsie(function (resolve, reject) &#123;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &apos;get&apos;,</span><br><span class="line">            url: &apos;http://xx/getFilter&apos;,</span><br><span class="line">            data: params,</span><br><span class="line">            success: function (data) &#123;</span><br><span class="line">                resolve(data);         </span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (err) &#123;</span><br><span class="line">                reject(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">let getListPromise = function (params) &#123;</span><br><span class="line">    return new Promsie(function (resolve, reject) &#123;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &apos;get&apos;,</span><br><span class="line">            url: &apos;http://xx/getSource&apos;,</span><br><span class="line">            data: params,</span><br><span class="line">            success: function (data) &#123;</span><br><span class="line">                resolve(data);         </span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (err) &#123;</span><br><span class="line">                reject(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">getPositionPromise()</span><br><span class="line">    .then(function (data) &#123;</span><br><span class="line">        return getTokenPromise(&#123;position: data&#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(function (data) &#123;</span><br><span class="line">        return getDataPromise(&#123;filter: data&#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(function (data) &#123;</span><br><span class="line">        console.log(&apos;数据：&apos;, data);</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(function (err) &#123;</span><br><span class="line">        console.log(err);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="方法三：生成器Gererator"><a href="#方法三：生成器Gererator" class="headerlink" title="方法三：生成器Gererator"></a>方法三：生成器Gererator</h2><p><strong>ES6中的生成器（Gererator）是</strong>一种顺序、看似同步的异步流程控制表达风格。</p>
+<h3 id="可迭代协议和迭代器协议"><a href="#可迭代协议和迭代器协议" class="headerlink" title="可迭代协议和迭代器协议"></a>可迭代协议和迭代器协议</h3><p><strong>可迭代协议</strong>运行JavaScript对象去定义或定制它们的迭代行为，例如（定义）在一个for…of结构中什么值可以被循环（得到）。以下内置类型都是内置的可迭代对象并且有默认的迭代行为：</p>
+<ol>
+<li>Array</li>
+<li>Map</li>
+<li>Set</li>
+<li>String</li>
+<li>TypedArray</li>
+<li>函数的Arguments对象</li>
+<li>NodeList对象</li>
+</ol>
+<p><strong>注意，Object不符合可迭代协议</strong>。</p>
+<p>为了变成可迭代对象，一个对象必须实现@@iterator方法，意思是这个对象（或者它原型链prototype chain上的某个对象）必须有一个名字是Symbol.iterator的属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[Symbol.iterator]</td>
+<td>返回一个对象的无参函数，被返回对象符合迭代器协议</td>
+</tr>
+</tbody>
+</table>
+<p>当一个对象需要被迭代的时候（比如开始用于一个for…of循环中），它的@@iterator方法被调用并且无参数，然后返回一个用于在迭代中获得值的迭代器。</p>
+<p><strong>迭代器协议</strong>定义了一种标准的方式来产生一个有限或无限序列的值。<br>当一个对象被认为是一个迭代器时，它实现了一个next()的方法并且拥有以下含义：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>next</td>
+<td>返回一个对象的无参函数，被返回对象拥有两个属性：<br> <strong>1. done（boolean）</strong> - 如果迭代器已经经过了被迭代序列时为true。这时value可能描述了该迭代器的返回值  - 如果迭代器可以产生序列中的下一个值，则为false。这等效于连同done属性也不指定。<br><strong>2. value</strong> - 迭代器返回的任何JavaScript值。done为true时可以忽略。</td>
+</tr>
+</tbody>
+</table>
+<p>使用可迭代协议和迭代器协议的例子：</p>
+<p>代码块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var str = &apos;hello&apos;; </span><br><span class="line"></span><br><span class="line">// 可迭代协议使用for...of访问</span><br><span class="line">typeof str[Symbol.iterator]; // &apos;function&apos; </span><br><span class="line">for (var s of str) &#123;</span><br><span class="line">  console.log(s); // 分别打印 &apos;h&apos;、&apos;e&apos;、&apos;l&apos;、&apos;l&apos;、&apos;o&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 迭代器协议next方法</span><br><span class="line">var iterator = str[Symbol.iterator]();</span><br><span class="line">iterator.next(); // &#123;value: &quot;h&quot;, done: false&#125;</span><br><span class="line">iterator.next(); // &#123;value: &quot;e&quot;, done: false&#125;</span><br><span class="line">iterator.next(); // &#123;value: &quot;l&quot;, done: false&#125;</span><br><span class="line">iterator.next(); // &#123;value: &quot;l&quot;, done: false&#125;</span><br><span class="line">iterator.next(); // &#123;value: &quot;o&quot;, done: false&#125;</span><br><span class="line">iterator.next(); // &#123;value: undefined, done: true&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>用Generator实现异步</strong></p>
+<h3 id="应用-2"><a href="#应用-2" class="headerlink" title="应用"></a>应用</h3><p>如果我们用Generator改写上面回调嵌套的例子会是什么样的呢？见代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">function getPosition () &#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: &apos;get&apos;,</span><br><span class="line">        url: &apos;http://xx/getPosition&apos;,</span><br><span class="line">        success: function (data) &#123;</span><br><span class="line">            it.next(data);</span><br><span class="line">        &#125;</span><br><span class="line">        error: function (err) &#123;</span><br><span class="line">            console.log(err);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getFilter (params) &#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: &apos;get&apos;,</span><br><span class="line">        url: &apos;http://xx/getFilter&apos;,</span><br><span class="line">        data: params,</span><br><span class="line">        success: function (data) &#123;</span><br><span class="line">            it.next(data);</span><br><span class="line">        &#125;</span><br><span class="line">        error: function (err) &#123;</span><br><span class="line">            console.log(err);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getList (params) &#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: &apos;get&apos;,</span><br><span class="line">        url: &apos;http://xx/getList&apos;,</span><br><span class="line">        data: params,</span><br><span class="line">        success: function (data) &#123;</span><br><span class="line">            it.next(data);</span><br><span class="line">        &#125;</span><br><span class="line">        error: function (err) &#123;</span><br><span class="line">            console.log(err);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function *main () &#123;</span><br><span class="line">    let position = yield getPosition();</span><br><span class="line">    let filter = yield getFilter(&#123;position: position &#125;);</span><br><span class="line">    let List = yield getList(&#123;filter: filter&#125;);</span><br><span class="line">    console.log(&apos;列表数据：&apos;, List);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 生成迭代器实例</span><br><span class="line">var it = main();</span><br><span class="line"></span><br><span class="line">// 运行第一步</span><br><span class="line">it.next();</span><br><span class="line">console.log(&apos;不影响主线程执行&apos;);</span><br></pre></td></tr></table></figure>
+<p>我们注意*main()生成器内部的代码，不看yield关键字的话，是完全符合大脑思维习惯的同步书写形式，把异步的流程封装到外面，在成功的回调函数里面调用it.next()，将传回的数据放到任务队列里进行排队，当JavaScript主线程空闲的时候会从任务队列里依次取出回调任务执行。</p>
+<p>如果我们一直占用JavaScript主线程的话，是没有时间去执行任务队列中的任务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 运行第一步</span><br><span class="line">it.next();</span><br><span class="line"></span><br><span class="line">// 持续占用JavaScript主线程</span><br><span class="line">while(1) &#123;&#125;;// 这里是拿不到异步数据的，因为没有机会去任务队列里取任务执行</span><br></pre></td></tr></table></figure>
+<p>综上，生成器Generator解决了回调函数处理异步流程的<strong>第一个问题：不符合大脑顺序、线性的思维方式。</strong>。</p>
+<h2 id="方法四：Async-Await"><a href="#方法四：Async-Await" class="headerlink" title="方法四：Async/Await"></a>方法四：Async/Await</h2><p>Promise和Generator这两者结合起来，就是Async/Await。</p>
+<p>Generator的缺点是还需要我们手动控制next()执行，使用Async/Await的时候，只要await后面跟着一个Promise，它会自动等到Promise决议以后的返回值，resolve(…)或者reject(…)都可以。</p>
+<p>我们把最开始的例子用Async/Await的方式改写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">let getPositionPromise = function () &#123;</span><br><span class="line">    return new Promsie(function (resolve, reject) &#123;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &apos;get&apos;,</span><br><span class="line">            url: &apos;http://xx/getPosition&apos;,</span><br><span class="line">            success: function (data) &#123;</span><br><span class="line">               resolve(data);         </span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (err) &#123;</span><br><span class="line">                reject(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">let getFilterPromise = function (params) &#123;</span><br><span class="line">    return new Promsie(function (resolve, reject) &#123;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &apos;get&apos;,</span><br><span class="line">            url: &apos;http://xx/getFilter&apos;,</span><br><span class="line">            data: params,</span><br><span class="line">            success: function (data) &#123;</span><br><span class="line">                resolve(data);         </span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (err) &#123;</span><br><span class="line">                reject(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">let getListPromise = function (params) &#123;</span><br><span class="line">    return new Promsie(function (resolve, reject) &#123;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &apos;get&apos;,</span><br><span class="line">            url: &apos;http://xx/getList&apos;,</span><br><span class="line">            data: params,</span><br><span class="line">            success: function (data) &#123;</span><br><span class="line">                resolve(data);         </span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (err) &#123;</span><br><span class="line">                reject(err);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">async function main () &#123;</span><br><span class="line">    let position = await getPosition();</span><br><span class="line">    let filter = await getFilter(&#123;position: position &#125;);</span><br><span class="line">    let List = await getList(&#123;filter: filter&#125;);</span><br><span class="line">    console.log(&apos;列表数据：&apos;, List);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main();</span><br><span class="line"></span><br><span class="line">console.log(&apos;不影响主线程执行&apos;);</span><br></pre></td></tr></table></figure>
+<p>可以看到，使用Async/Await，完全就是同步的书写方式，逻辑和数据依赖都非常清楚，只需要把异步的东西用Promise封装出去，然后使用await调用就可以了，也不需要像Generator一样需要手动控制next()执行。</p>
+<p><strong>Async/Await是Generator和Promise的组合，完全解决了基于回调的异步流程存在的两个问题，可能是现在最好的JavaScript处理异步的方式了。</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过四个阶段来讲述JavaScript异步编程的发展历程：</p>
+<ol>
+<li><strong>第一个阶段 - 回调函数</strong>，但会导致两个问题:<ul>
+<li>缺乏顺序性： 回调地狱导致的调试困难，和大脑的思维方式不符</li>
+<li>缺乏可信任性： 控制反转导致的一系列信任问题</li>
+</ul>
+</li>
+<li><strong>第二个阶段 - Promise</strong>，Promise是基于PromiseA+规范的实现，它很好的解决了控制反转导致的信任问题，将代码执行的主动权重新拿了回来。</li>
+<li><strong>第三个阶段 - 生成器函数Generator</strong>，使用Generator，可以让我们用同步的方式来书写代码，解决了顺序性的问题，但是需要手动去控制next(…)，将回调成功返回的数据送回JavaScript主流程中。</li>
+<li><strong>第四个阶段 - Async/Await</strong>，Async/Await结合了Promise和Generator，在await后面跟一个Promise，它会自动等待Promise的决议值，解决了Generator需要手动控制next(…)执行的问题，真正实现了<strong>用同步的方式书写异步代码</strong>。</li>
+</ol>
+<blockquote>
+<p>相关参考<br><a href="https://segmentfault.com/a/1190000015711829" target="_blank" rel="noopener">JavaScript异步编程</a></p>
+</blockquote>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/07/linxiaowen/Javascript-asynchronous/" rel="prev">JS异步语法</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/23/luoyu/vue/" rel="next">【浅度解析】new Vue() 源码结构梳理</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">118</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法一：回调函数"><span class="nav-number">1.</span> <span class="nav-text">方法一：回调函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例1-一个定时器，定时器中的匿名函数就是回调函数，在1000ms后执行该函数"><span class="nav-number">1.1.</span> <span class="nav-text">例1: 一个定时器，定时器中的匿名函数就是回调函数，在1000ms后执行该函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例2-异步读取文件后执行回调函数"><span class="nav-number">1.2.</span> <span class="nav-text">例2: 异步读取文件后执行回调函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用"><span class="nav-number">1.3.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法二：Promise"><span class="nav-number">2.</span> <span class="nav-text">方法二：Promise</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#promise解决信任问题"><span class="nav-number">2.1.</span> <span class="nav-text">promise解决信任问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链式流"><span class="nav-number">2.2.</span> <span class="nav-text">链式流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用-1"><span class="nav-number">2.3.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法三：生成器Gererator"><span class="nav-number">3.</span> <span class="nav-text">方法三：生成器Gererator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可迭代协议和迭代器协议"><span class="nav-number">3.1.</span> <span class="nav-text">可迭代协议和迭代器协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用-2"><span class="nav-number">3.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法四：Async-Await"><span class="nav-number">4.</span> <span class="nav-text">方法四：Async/Await</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>
