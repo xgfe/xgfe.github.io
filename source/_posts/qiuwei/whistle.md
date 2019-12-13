@@ -54,7 +54,7 @@ whistle(读音[ˈwɪsəl]，拼音[wēisǒu])基于Node实现的跨平台web调�
     a.meituan.com log://test            # a.meituan.com下的consolelog打印  ://后面的名字随便起 这只是一个标识
     
   (2）在network窗口右侧的tools下的Console窗口可查看客户端的console.log打印以及异常报错。
-<img src="https://p0.meituan.net/spacex/cf8ab4025831138fb87ff953d0fca060.png" />
+<img src="https://raw.githubusercontent.com/workforqw/imgs/master/pic1.png" />
     
   注：whistle也整合了weinre远程调试的功能，可以直接看[官方文档](http://wproxy.org/whistle/webui/weinre.html)。
 
@@ -129,7 +129,7 @@ whistle(读音[ˈwɪsəl]，拼音[wēisǒu])基于Node实现的跨平台web调�
     `` `
   注：因为不能转义 所以把```中间加了个空格 实际操作时应该是连续的。
   注：上述js的控制台打印可在（network - tools - Server）看到，这也就让我们拥有了调试能力。
-<img src="https://p0.meituan.net/spacex/dd06637b80edc0164ff4ecba04a6978b.png"  width="800px" />
+<img src="https://raw.githubusercontent.com/workforqw/imgs/master/pic2.png"  width="800px" />
  
  ## 页面注入js/css
   直接往线上注入我们本地的js/css。
@@ -142,10 +142,10 @@ whistle(读音[ˈwɪsəl]，拼音[wēisǒu])基于Node实现的跨平台web调�
 # 其他小点
 
 ## 本地ip查看
-<img src="https://p0.meituan.net/spacex/a8824c1f6ad4ca1b2ad604d62eb41bd4.png" />
+<img src="https://raw.githubusercontent.com/workforqw/imgs/master/pic3.png" />
 
 ## 过滤
-<img src="https://p0.meituan.net/spacex/912beee28fecf0c003d2f11524897072.png" />
+<img src="https://raw.githubusercontent.com/workforqw/imgs/master/pic4.png" />
 
 ## Rules窗口、Values窗口
-<img src="https://p0.meituan.net/spacex/2b39a1e37ea763d111805cdcd7123880.png" />
+<img src="https://raw.githubusercontent.com/workforqw/imgs/master/pic5.png" />
