@@ -12,7 +12,7 @@ new Vue() 源码结构浅度解析梳理。
 因为深度解析网上太多了，需要的话有太多资源，本文主要是为了帮助理解new Vue()时部分源码结构。
 
 # 本文适用人群？
-<img src="https://km.sankuai.com/api/file/cdn/176152462/176153325?contentType=1&amp;isNewContent=false" width="300px" height="300px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/176153322.png" width="300px" height="300px">
 
 大概知道Vue生命周期是怎么回事且琢磨过上面这张图的可放心食用。
 当然了，没琢磨过也没有关系。
@@ -28,7 +28,7 @@ new Vue() 源码结构浅度解析梳理。
     git clone https://github.com/vuejs/vue.git
 
 然后进入到路径：src/core/instance，可以看到如下文件：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/176575345?contentType=1&amp;isNewContent=false" width="500px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/176575342.jpg" width="500px" height="500px">
 
 再来看看index.js做了什么，引入各部分初始化Mixin函数，在Vue函数中执行init.js的ths._init()函数。
 
@@ -58,12 +58,12 @@ new Vue() 源码结构浅度解析梳理。
 ```
 
 所以，这几个文件的逻辑：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/176154276?contentType=1&amp;isNewContent=false" width="500px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/176154273.png" width="500px" height="500px">
 
 # _init逻辑及具体模块
 
 那么 _init 函数做了些什么呢？
-<img src="https://km.sankuai.com/api/file/cdn/176152462/176566742?contentType=1&amp;isNewContent=false" width="300px" height="300px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/176566739.png" width="300px" height="300px">
 
 ## 性能检测：开发环境下，标记时间
 
@@ -93,16 +93,16 @@ new Vue() 源码结构浅度解析梳理。
   然后进行属性赋值。
   
   详细解读可看 [https://juejin.im/post/5b1b4acf6fb9a01e573c3fcf](https://juejin.im/post/5b1b4acf6fb9a01e573c3fcf)
-<img src="https://km.sankuai.com/api/file/cdn/176152462/176592301?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/176547198.png" width="1000px" height="500px">
 
 ## initEvents
   初始化父组件事件，updateListeners：遍历父组件事件组，迭代到当前组件上：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/176592946?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/176592945.png" width="1000px" height="500px">
 
 ## initRender
 
   定义了各类渲染选项，并且对 （$attrs--继承所有的父组件属性）、（$listeners--子组件继承父组件的事件）进行，同时定义两个createElement方法：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/178851415?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/178851414.png" width="1000px" height="500px">
 
 ## callHook(vm, 'beforeCreate')
 
@@ -111,7 +111,7 @@ new Vue() 源码结构浅度解析梳理。
 ## initInjections
 
   将祖先元素：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/178660104?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/178660101.png" width="1000px" height="500px">
 
 ## initState
 
@@ -125,12 +125,12 @@ new Vue() 源码结构浅度解析梳理。
   **initComputed**：挂载Computed
   
   **initWatch**：挂载watch
-<img src="https://km.sankuai.com/api/file/cdn/176152462/179281438?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/179281435.png" width="1000px" height="500px">
 
 ## initProvide
 
   这里很简单,数据挂载后初始化Provide,如果时函数则call再挂在至_provided：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/179310335?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/179310332.png" width="1000px" height="500px">
 
 ## callHook(vm, 'created')
 
@@ -143,7 +143,7 @@ new Vue() 源码结构浅度解析梳理。
 ## vm.$mount(vm.$options.el)
 
   如果存在元素,则触发mounted钩子函数：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/179284934?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/179284931.png" width="1000px" height="500px">
 
 # Minxin funs
  
@@ -157,10 +157,10 @@ new Vue() 源码结构浅度解析梳理。
   主要是定义原型的_update，$forceUpdate，$destroy方法，其中beforeDestroy和destroyed周期函数在此触发。
 ## renderMixin
   首先通过installRenderHelpers安装一系列渲染函数，然后定义$nextTick和_render：
-<img src="https://km.sankuai.com/api/file/cdn/176152462/179524445?contentType=1&isNewContent=false&isNewContent=false" width="1000px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/179524442.png" width="1000px" height="500px">
 
 
 # 整体关系图
 
 
-<img src="https://km.sankuai.com/api/file/cdn/176152462/179544320?contentType=1&isNewContent=false&isNewContent=false" width="1500px" height="500px">
+<img src="https://raw.githubusercontent.com/Ly2zzZ/miaomiaowu/master/photo/179544311.png" width="1500px" height="500px">
