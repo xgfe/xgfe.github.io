@@ -1,6 +1,6 @@
 title: 【浅度解析】new Vue() 源码结构梳理
 date: 2019-07-23 13:47:00
-categories: luoyu
+categories: luoyu 
 tags: 
 - vue
 ---
