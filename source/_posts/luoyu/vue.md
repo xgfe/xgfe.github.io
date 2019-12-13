@@ -5,7 +5,7 @@ tags:
 - vue
 ---
 
-new Vue() 源码结构浅度解析梳理😁
+new Vue() 源码结构浅度解析梳理。
 <!--more-->
 # 为什么是浅度解析？
 
@@ -15,19 +15,15 @@ new Vue() 源码结构浅度解析梳理😁
 <img src="https://km.sankuai.com/api/file/cdn/176152462/176153325?contentType=1&amp;isNewContent=false" width="300px" height="300px">
 
 大概知道Vue生命周期是怎么回事且琢磨过上面这张图的可放心食用。
-
 当然了，没琢磨过也没有关系。
-
-如果您有一定的vue开发经验以及理解可以直接Command+W 😁。
+如果您有一定的vue开发经验以及理解可以直接Command+W。
 
 ---
 
 
 # 文件结构
 
-首先Git克隆项目源码
-
-代码块
+首先Git克隆项目源码:
 
     git clone https://github.com/vuejs/vue.git
 
@@ -71,101 +67,96 @@ new Vue() 源码结构浅度解析梳理😁
 
 ## 性能检测：开发环境下，标记时间
 
-	startTag = `vue-perf-start:${vm._uid}`
-
-	endTag = `vue-perf-end:${vm._uid}`
-
-	**mark**(startTag)
+  ```js
+  startTag = `vue-perf-start:${vm._uid}`
+  endTag = `vue-perf-end:${vm._uid}`
+  mark(startTag)
+  ```
 
 ## 合并方案：存在option且有子组件？
 
-	Y:因为Vue动态合并策略非常慢，并且内部组件的选项都不需要特殊处理。initInternalComponent，内部组件调用此快捷方法，内部组件实例化。
-
-	N:策略合并options vm.$options = mergeOptions(resolveConstructorOptions(vm.constructor),options || {},vm)
-
-	详细解读可转至 https://github.com/CommanderXL/biu-blog/issues/20
+  Y:因为Vue动态合并策略非常慢，并且内部组件的选项都不需要特殊处理。initInternalComponent，内部组件调用此快捷方法，内部组件实例化。
+  N:策略合并options vm.$options = mergeOptions(resolveConstructorOptions(vm.constructor),options || {},vm)
+  
+  详细解读可转至 https://github.com/CommanderXL/biu-blog/issues/20
 
 ## 代理方案：
 
-	当前环境是开发环境，则调用initProxy方法
-
-	如果不是开发环境，则vue实例的_renderProxy属性指向vue实例本身。
-
-	详细解读可看 
+  当前环境是开发环境，则调用initProxy方法。
+  如果不是开发环境，则vue实例的_renderProxy属性指向vue实例本身。
+  
+  详细解读可看 https://juejin.im/post/5b11db686fb9a01e5b10eae7
 
 ## initLifecycle
 
-	向上循环找到第一个非抽象父组件对象，然后把当前vm实例push到定位的第一个非抽象parent的$children属性上，什么叫非抽象组件，比如transition和keep-alive。
-
-	然后进行属性赋值
-
-	详细解读可看 [https://juejin.im/post/5b1b4acf6fb9a01e573c3fcf](https://juejin.im/post/5b1b4acf6fb9a01e573c3fcf)
+  向上循环找到第一个非抽象父组件对象，然后把当前vm实例push到定位的第一个非抽象parent的$children属性上，什么叫非抽象组件，比如transition和keep-alive。
+  然后进行属性赋值。
+  
+  详细解读可看 [https://juejin.im/post/5b1b4acf6fb9a01e573c3fcf](https://juejin.im/post/5b1b4acf6fb9a01e573c3fcf)
 <img src="https://km.sankuai.com/api/file/cdn/176152462/176592301?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
 
 ## initEvents
-
-初始化父组件事件，updateListeners：遍历父组件事件组，迭代到当前组件上
+  初始化父组件事件，updateListeners：遍历父组件事件组，迭代到当前组件上：
 <img src="https://km.sankuai.com/api/file/cdn/176152462/176592946?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
 
 ## initRender
 
-	定义了各类渲染选项，并且对 （$attrs--继承所有的父组件属性）、（$listeners--子组件继承父组件的事件）进行，同时定义两个createElement方法：
+  定义了各类渲染选项，并且对 （$attrs--继承所有的父组件属性）、（$listeners--子组件继承父组件的事件）进行，同时定义两个createElement方法：
 <img src="https://km.sankuai.com/api/file/cdn/176152462/178851415?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
 
 ## callHook(vm, 'beforeCreate')
 
-	很好理解，触发beforeCreate钩子函数
+  很好理解，触发beforeCreate钩子函数。
 
 ## initInjections
 
-	将祖先元素的
+  将祖先元素：
 <img src="https://km.sankuai.com/api/file/cdn/176152462/178660104?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
 
 ## initState
 
-	创建数据，初始化
-
-	initProps：简单地说，遍历 props，给 props 设置响应式，给 props 设置代理，详细可见
-
-	initMethods：这里主要是一串检测，然后绑定函数
-
-	initData：挂载data
-
-	initComputed：挂载Computed
-
-	initWatch：挂载watch
+  创建数据，初始化。
+  **initProps**：简单地说，遍历 props，给 props 设置响应式，给 props 设置代理，详细可见
+  
+  **initMethods**：这里主要是一串检测，然后绑定函数
+  
+  **initData**：挂载data
+  
+  **initComputed**：挂载Computed
+  
+  **initWatch**：挂载watch
 <img src="https://km.sankuai.com/api/file/cdn/176152462/179281438?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
 
 ## initProvide
 
-	这里很简单,数据挂载后初始化Provide,如果时函数则call再挂在至_provided
+  这里很简单,数据挂载后初始化Provide,如果时函数则call再挂在至_provided：
 <img src="https://km.sankuai.com/api/file/cdn/176152462/179310335?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
 
 ## callHook(vm, 'created')
 
-	触发created钩子函数
+  触发created钩子函数。
 
 ## mark(endTag)
 
-	注意，created之后，计时结束
+  注意，created之后，计时结束。
 
 ## vm.$mount(vm.$options.el)
 
-	如果存在元素,则触发mounted钩子函数
+  如果存在元素,则触发mounted钩子函数：
 <img src="https://km.sankuai.com/api/file/cdn/176152462/179284934?contentType=1&amp;isNewContent=false&amp;isNewContent=false" width="1000px" height="500px">
 
 # Minxin funs
  
 ## initMixin
-  混入init函数，执行各部分初始化操作
+  混入init函数，执行各部分初始化操作。
 ## stateMixin
-  设置data和props的setter，getter，并且在原型上定义其，同时定义$watch函数
+  设置data和props的setter，getter，并且在原型上定义其，同时定义$watch函数。
 ## eventsMixin
-  主要是在原型上定义事件的几种启动关闭方法
+  主要是在原型上定义事件的几种启动关闭方法。
 ## lifecycleMixin
-  主要是定义原型的_update，$forceUpdate，$destroy方法，其中beforeDestroy和destroyed周期函数在此触发
+  主要是定义原型的_update，$forceUpdate，$destroy方法，其中beforeDestroy和destroyed周期函数在此触发。
 ## renderMixin
-  首先通过installRenderHelpers安装一系列渲染函数，然后定义$nextTick和_render
+  首先通过installRenderHelpers安装一系列渲染函数，然后定义$nextTick和_render：
 <img src="https://km.sankuai.com/api/file/cdn/176152462/179524445?contentType=1&isNewContent=false&isNewContent=false" width="1000px" height="500px">
 
 
