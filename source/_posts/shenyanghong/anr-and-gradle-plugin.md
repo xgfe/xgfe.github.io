@@ -44,7 +44,7 @@ private long notifyANR(InputApplicationHandle inputApplicationHandle,
 }
 ```
 
-mWindowManagerCallbacks的实现是InputMonitor，InputMonitor的notifyANR,最终会调用AMS的inputDispatchingTimeOut方法，notifyANR中关键代码如下：
+mWindowManagerCallbacks的实现是InputMonitor，InputMonitor的notifyANR，最终会调用AMS的inputDispatchingTimeOut方法，notifyANR中关键代码如下：
 ```
 try {
     // Notify the activity manager about the timeout and let it decide whether
