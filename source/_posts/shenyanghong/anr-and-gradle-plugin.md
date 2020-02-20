@@ -42,7 +42,7 @@ private long notifyANR(InputApplicationHandle inputApplicationHandle,
     return mWindowManagerCallbacks.notifyANR(
             inputApplicationHandle, inputWindowHandle, reason);
 }
-````
+```
 
 mWindowManagerCallbacks的实现是InputMonitor，InputMonitor的notifyANR,最终会调用AMS的inputDispatchingTimeOut方法，notifyANR中关键代码如下：
 ```
