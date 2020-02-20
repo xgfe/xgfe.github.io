@@ -13,15 +13,16 @@ tags:
 <!--more-->
 
 ## 什么是ANR
-ANR是"Application Not Responding" 的简称，当Android应用程序的UI线程被阻止时间太长时，将触发“应用程序无响应”（ANR）错误，如下图。如果应用程序位于前台，则系统会向用户显示一个对话框，使得用户可以强制退出该应用。开发者模式下可以设置后台程序也展示ANR对话框。
+ANR是“Application Not Responding”的简称，当Android应用程序的UI线程被阻止时间太长时，将触发应用程序无响应（ANR）的错误，如下图。如果应用程序位于前台，则系统会向用户显示一个对话框，使得用户可以强制退出该应用。开发者模式下可以设置后台程序也展示ANR对话框。
 <img src="/uploads/shenyanghong/anr/pic1.png" alt="" width="200" />
+
 ### 通常哪些情况会触发ANR
 1.在主线程做耗时的IO操作
 2.在主线程中做耗时计算
 3.主线程中做跨进程操作
 4.主线程中使用同步锁，或者sleep等，导致线程长时间等待
 ### 线下如何检测和排查ANR
-1.在开发者模式下，开启“显示所有“应用程序无响应””，是的后台应用程序也会显示ANR对话框
+1.在开发者模式下，开启“显示所有应用程序无响应”选项，后台应用程序也会显示ANR对话框
 2.开启StrictMode( 严苛模式)，帮助检测主线程中的磁盘操作和网络请求
 3.从设备中提取/data/anr/anr_* 文件分析，需要root权限，无权限时可以执行adb bugreport > trace.txt 命令，将ANR信息导入trace.txt文件
 
@@ -30,9 +31,10 @@ ANR是"Application Not Responding" 的简称，当Android应用程序的UI线程
 ### 系统定义的ANR场景有哪些
 ANR都会走到AMS的mAppErrors.appNotResponding方法，通过查看该方法调用，主要有以下场景：
 1.前台服务在20s内未执行完成 或者 android 8.0调用startForegroundService() 后，5秒内没有调用startForeground()也会触发ANR
-2.前台广播在10s内未执行完成,默认的后台广播超时时间是60s
+2.前台广播在10s内未执行完成，默认的后台广播超时时间是60s
 3.ContentProviderClient 也可能会调用ams.appNotRespondingViaProvider。ContentProviderClient中所有操作都会先调用beforeRemote()，最后调用afterRemote()，在beforeRemote时就会开始ANR计时。ContentProviderClient主要是用来缓存ContentResolver的，使用较少，一般都是使用getContentResolver()。
 4.输入事件分发超时5s，包括按键和触摸事件，当native层监控到超时后，会调用InputManagerService.notifyANR，方法如下：
+
 ```
 // Native callback.
 private long notifyANR(InputApplicationHandle inputApplicationHandle,
@@ -41,6 +43,7 @@ private long notifyANR(InputApplicationHandle inputApplicationHandle,
             inputApplicationHandle, inputWindowHandle, reason);
 }
 ````
+
 mWindowManagerCallbacks的实现是InputMonitor，InputMonitor的notifyANR,最终会调用AMS的inputDispatchingTimeOut方法，notifyANR中关键代码如下：
 ```
 try {
@@ -109,7 +112,7 @@ mService.broadcastIntentLocked(null, null, intent,
 通过上述分析，判断ANR时机，较好的办法是通过FileObserver监听/data/anr/目录或者 “android.intent.action.ANR”广播。
 而由于没有root权限，/data/anr/目录或文件的监听会无效，ANR广播在部分手机上不ok，因此大部分线上监控方案还会结合5秒轮询的方式。轮询时判断AMS.getProcessesInErrorState()中是否有ANR异常信息。或者监听主线程Looper.loop时，每条Message的执行时间。而ANR问题基本上同一个APP不同用户的现象相差不大，因此会设置一个采样率，不用所有人都监控采样。
 #### 输出anr堆栈信息
-堆栈信息可以通过提取/data/anr/目录中文件或者调用AMS.getProcessesInErrorState(),该方法返回进程所有错误信息，在发生ANR之后过滤出包含ANR的ProcessErrorStateInfo即可。
+堆栈信息可以通过提取/data/anr/目录中文件或者调用AMS.getProcessesInErrorState()，该方法返回进程所有错误信息，在发生ANR之后过滤出包含ANR的ProcessErrorStateInfo即可。
 ## SharedPreference导致的ANR
 我们遇到过一个占比较高的ANR和SharedPreference有关，堆栈信息如下：
 <img src="/uploads/shenyanghong/anr/pic2.png" alt="" width="600" />
@@ -383,9 +386,12 @@ public void apply() {
 
 为了减少class扫描，因此增加一个外部配置，可以用正则表达式，配置不需要检查的class，默认配置如下：
 
+```
 SPManagerPlugin {
- skipClass = ['R\\..*', 'R\\$.*', '.*BuildConfig.*','.*SafeSharedPreferenceUtil.*']
+    skipClass = ['R\\..*', 'R\\$.*', '.*BuildConfig.*','.*SafeSharedPreferenceUtil.*']
 }
+```
+
 ### 新建Plugin工程
 自定义Plugin可以在build.gradle文件中直接定义，为了方便复用，我们这里新建一个独立的Plugin工程来实现，由于AndroidStudio下没有提供直接创建Plugin工程的快捷方式，但可以用AndroidStudio新建一个Java-Library，将build.gradle文件中apply plugin: 'java' 改成 apply plugin: 'groovy'，且在dependencies中添加依赖：compile gradleApi() 和 compile 'com.android.tools.build:gradle:2.3.3' ，这样才可以导入gradle.api 以及gradle相关的类。同时为了兼容java7，需要制定jdk编译版本：
 
@@ -433,6 +439,7 @@ public Set<QualifiedContent.ContentType> getInputTypes() {
 }
 ```
 2.getScopes:用于指明Transform的作用域，需要返回各种Scope集合，这里需要支持所有工程，因此返回SCOPE_FULL_PROJECT
+
 ```
 @Override
 public Set<? super QualifiedContent.Scope> getScopes() {
@@ -534,7 +541,7 @@ public class MyClassVisitor extends ClassVisitor {
 ```
 由于ASM api比较复杂也容易出错，这里我们借助AndroidStudio  asm-bytecode-outline 插件，可以直接查看这个java文件的class类需要用什么asm api来生成。然后通过前后asm字节码文件进行比较即可。
 ### 本地发布aar
-远程发布无法快速测试，因此开发期间可以先采用本地发布aar。主要实现为在plugin工程的build.gradle中添加maven配置，然后在命令行调用  ./gradlew install ,就会生成aar到本地mavenLocal目录：~/.m2/repository。maven配置如下：
+远程发布无法快速测试，因此开发期间可以先采用本地发布aar。主要实现为在plugin工程的build.gradle中添加maven配置，然后在命令行调用  ./gradlew install，就会生成aar到本地mavenLocal目录：~/.m2/repository。maven配置如下：
 ```
 apply plugin: 'maven'
 //arr打包配置
@@ -547,13 +554,14 @@ project.archivesBaseName = 'SPManagerPlugin'
 Android运行时代码调试只需要打上断点，选择调试进程即可。而编译期的代码调试则需要做如下处理：
 1.添加远程debug运行模式，操作步骤如图1，图2，添加后如图3，名称可以自选，选需要调试的工程
 <img src="/uploads/shenyanghong/anr/debug1.png" alt="" width="200" /> <img src="/uploads/shenyanghong/anr/debug2.png" alt="" width="400" />
-2.执行编译命令,在正常的编译命令后加--no-daemon -Dorg.gradle.debug=true 即可。
+2.执行编译命令，在正常的编译命令后加--no-daemon -Dorg.gradle.debug=true 即可。
+
 ```
 ./gradlew clean assembleDebug -p plugintest --no-daemon -Dorg.gradle.debug=true
 ```
 3.打上断点，选中刚创建的远程调试模式，也可以在执行命令前选中，点击Debug即可
 ## 总结
-本文首先介绍了ANR相关概念，以及ANR是如何由系统底层产生的。了解底层原理后，我们又分析了如何在线上监控ANR。同时通过剖析SharedPreference实现原理，找到了产生ANR的原因，以及解决办法。为了彻底解决App中此类问题，我们用到了Gradle插件，最后，本文介绍了Gradle插件的开发、调试以及发布技巧。
+本文首先介绍了ANR相关概念，以及ANR是如何由系统底层产生的。了解底层原理后，我们又分析了如何在线上监控ANR。同时通过剖析SharedPreference实现原理，找到了产生ANR的原因，以及解决办法。为了彻底解决App中此类问题，我们用到了Gradle插件。最后，本文介绍了Gradle插件的开发、调试以及发布技巧。
 
 
 
