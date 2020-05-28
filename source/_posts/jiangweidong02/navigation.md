@@ -1,4 +1,4 @@
-title: Jetpack-Navigation概览
+title: Jetpack-Navigation使用指南与原理剖析
 date: 2020-05-27 10:00:00
 categories: jiangweidong02
 tags:
@@ -9,7 +9,7 @@ tags:
 
 ## 简介
 Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组件，该组件推崇的是使用单Activity+多Fragment的方式来架构你的app。
-类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置navigation.xml文件以对所有的Fragment进行集中管控。
+类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。
 <!--more-->
 ## 特性
 >·提供一套标准的单Activity+多Fragment的解决方案。
@@ -27,67 +27,98 @@ Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组
      build.gradle文件中加入:
 
 ``` groovy
-def nav_version = "2.3.0"
-implementation "androidx.navigation:navigation-fragment:$nav_version"
-implementation "androidx.navigation:navigation-ui:$nav_version"
+    def nav_version = "2.3.0-alpha01"
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
 ```
-**注意：如果要在 Android Studio 中使用 Navigation 组件，则必须使用 Android Studio 3.3 或更高版本。且必须将您的应用升级为androidX**
+**注意：如果要在 Android Studio 中使用 Navigation 组件，则必须使用 Android Studio 3.3 或更高版本。且必须将应用升级为androidX**
 ### 概念理解
   | 名词 | 含义 |
   | ---- | ---- |
-  | destination | 想要前往的目的地 |
-  | graph | 一个视图，视图中可包含多个Fragment、Graph、Activity。是模块化的利器 |
-  | action | 发起一个跳转行为 |  
-
-### 携参跳转
-下面的例子中我们尝试Fragment间的跳转。并携带一个int型参数。
-首先我们在xml文件中做一下配置:
+  | Destination | 想要前往的目的地,可以是Fragment、Activity、或者Graph |
+  | Graph | 一个视图，视图中可包含多个Fragment、Activity、Graph,是模块化的利器 |
+### 宿主Activity搭建
+要想使用Navigation组件，我们需要提供一个宿主Activity作为整体导航框架的依托，这个宿主activity中会提供一块区域用来容纳所有的Fragment。
+我们首先看一下宿主Activity的布局文件:
 ``` xml
-    <fragment
-        android:id="@+id/fragment_login"
-        android:name="com.example.android.navigation.LoginFragment">
-        <argument //别的Fragment想要跳过来，需要传递的参数
-            android:name="userId"
-            app:argType="integer" />
-         <argument
-            android:name="token"
-            app:argType="string" />
-        <action  //当前Fragment可以跳到哪个Fragment去
-            android:id="@+id/action_home"
-            app:destination="@id/fragment_home"
-         />
-    </fragment>
+    <?xml version="1.0" encoding="utf-8"?>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <fragment
+            android:id="@+id/fragment_host"
+            //这里我们需要指定一个NavHostFragment或者是继承自它的一个Fragment就可以。
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            //我们知道,一个activity中可以有多个同级的fragment，所以这里需要指定一个默认的Fragment用来响应系统事件，如截获back键的操作。
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/navigation" />
+    </FrameLayout>
+```
+再来看一下app:navGraph所引用的文件navigation.xml，后续所有的路由配置都是在这个xml文件中进行的，这个文件是整个Navigation框架的核心。
+<img width = "600px" src="/uploads/jiangweidong02/navigation/n13.png" alt="">
+### 携参跳转
+下面的例子中我们尝试从LoginFragment跳转到HomeFragment,并携带一个String类型的参数。
+首先我们来看一下navigation.xml文件中的基本配置:
+``` xml
+    <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nav"
+        app:startDestination="@+id/fragment_splash">
+        <fragment
+            android:id="@+id/fragment_login"
+            android:name="com.example.android.navigation.LoginFragment">
+            <action  //当前Fragment可以跳到哪个Fragment去
+                android:id="@+id/action_home"
+                app:destination="@id/fragment_home"
+             />
+        </fragment>
+        <fragment
+            android:id="@+id/fragment_home"
+            android:name="com.example.android.navigation.HomeFragment"
+            tools:layout="@layout/home_fragment">
+            <argument //别的Fragment想要跳过来，需要传递的参数
+                android:name="userName"
+                android:defaultValue="String"
+                />
+        </fragment>
+    </navigation>
 ```
 ***需要理解的是，同一个<fragment>标签下的<argument>和<action>标签是没有任何联系的。***
+Navigation帮开发者定制了一个规范：
+1.规定每个Fragment所接收的参数类型和最大数量是明确的。
+2.规定每个Fragment可跳转到哪些别的Fragment是明确的。
+仔细想想，确实只有在规范了这两点的基础上，才可以达到生成导航图的目的。
 
-随后我们发起一个跳转动作，并传入参数:
+
+现在,我们想从LoginFragment跳转到HomeFragment，让我们发起一个跳转动作，并传入参数:
 ``` kotlin
-         btnLogin?.setOnClickListener {
-            var bundle = Bundle()
-            bundle.putInt("userId",1)
-            Navigation.findNavController(view).navigate(R.id.fragment_login, bundle)
-        }
+    btnLogin?.setOnClickListener {
+        var bundle = Bundle()
+        bundle.putString("userName","小驴")
+        findNavController().navigate(R.id.fragment_login, bundle)
+    }
 ```
 
 也可以发送对象，注意对象需要实现序列化
 ``` xml
     <fragment
-        android:id="@+id/fragment_login"
-        android:name="com.example.android.navigation.LoginFragment">
+        android:id="@+id/fragment_home"
+        android:name="com.example.android.navigation.HomeFragment">
         <argument
             android:name="user"
             app:argType="com.example.android.navigation.User" />
-        <action
-            android:id="@+id/action_home"
-            app:destination="@id/fragment_home" />
     </fragment>
 ```
 ``` kotlin
-            var bundle = Bundle()
-            bundle.putParcelable("user",User("快驴",26))
-            findNavController().navigate(R.id.fragment_login, bundle)
+    var bundle = Bundle()
+    bundle.putParcelable("user",User())
+    findNavController().navigate(R.id.fragment_home, bundle)
 ```
-除上述的跳转方式外，我们还可以使用Navigation组件提供的SafeArgs进行跳转。
+除上述的跳转方式外，我们还可以使用Navigation组件提供的SafeArgs方式进行跳转。
 使用SafeArgs需要添加额外的依赖。
 root级build.gradle中添加：
 ``` groovy
@@ -103,41 +134,29 @@ root级build.gradle中添加：
 ```
 app级build.gradle中添加：
 ``` groovy
-apply plugin: "androidx.navigation.safeargs"
+    apply plugin: "androidx.navigation.safeargs"
 ```
 如果是纯kotlin开发环境，可替换为：
 ``` groovy
-apply plugin: "androidx.navigation.safeargs.kotlin"
+    apply plugin: "androidx.navigation.safeargs.kotlin"
 ```
+
 跳转:
 ``` kotlin
-        btnHome?.setOnClickListener {
-            SplashFragmentDirections.actionHome("12345","23456")
-            findNavController().navigate(R.id.fragment_home)
-        }
+    btnHome?.setOnClickListener {
+        SplashFragmentDirections.actionHome("小驴")
+        findNavController().navigate(R.id.fragment_home)
+    }
 ```
 接收:
 ``` kotlin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var bundle = HomeFragmentArgs.fromBundle(arguments!!)
-        LogUtil.log("token=$bundle.token")
-        LogUtil.log("userId=$bundle.userId")
-    }
-```        
-kotlin环境下建议使用以下方式接收参数，会更加便捷:
-``` kotlin
-    val args: HomeFragmentArgs by navArgs()
-    
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        LogUtil.log("token=$args.token")
-        LogUtil.log("userId=$args.userId")
+        LogUtil.log("userName=$bundle.userName")
     }
 ```
-SafeArgs实际上是将xml文件中的<action>和<argments>标签进行解析,再通过dsl方式在编译期动态生成与跳转和接收参数相关的封装类。
-
-想了解代码生成过程的同学可以查看[SafeArgs插件源码](https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-master-dev/navigation/navigation-safe-args-gradle-plugin?source=post_page---------------------------%2F&autodive=0%2F/)。
+SafeArgs的作用实际上是将xml文件中的<action>和<argments>标签进行解析,再通过dsl方式在编译期动态生成与跳转和接收参数相关的封装类。
 
 SafeArgs插件的工作流程：SafeArgsPlugin.kt->ArgumentsGenerationTask.kt->NavSafeArgsGenerator.kt
 
@@ -154,10 +173,24 @@ SafeArgs插件的工作流程：SafeArgsPlugin.kt->ArgumentsGenerationTask.kt->N
 >·对类型安全做了检测
 >·代码自动生成，提高开发效率。
 
+想了解代码生成过程的同学可以查看[SafeArgs插件源码](https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-master-dev/navigation/navigation-safe-args-gradle-plugin?source=post_page---------------------------%2F&autodive=0%2F/)。
+
 ## 跳转方式
 类似于Activity中的lunchMode，Navigation组件也为开发者提供了友好的跳转的方式。
+### 默认跳转方式
+``` xml
+    <fragment
+        android:id="@+id/fragment_login"
+        android:name="com.example.android.navigation.LoginFragment">
+        <action
+            android:id="@+id/action_home"
+            app:destination="@id/fragment_home" />
+    </fragment>
+```
+默认跳转方式也是最常见的跳转方式是，与activity的默认跳转方式规则一致,保持正常的入栈顺序和出栈顺序。
+
 ### launchSingleTop属性
-launchSingleTop与activity的singleTop理解是一致的，都是栈顶复用的含义。
+
 ``` xml
     <fragment
         android:id="@+id/fragment_login"
@@ -168,11 +201,12 @@ launchSingleTop与activity的singleTop理解是一致的，都是栈顶复用的
             app:destination="@id/fragment_home" />
     </fragment>
 ```
+launchSingleTop与activity的singleTop理解是一致的，都是栈顶复用的含义。
 这里需要注意的是，在AndroidManifest.xml中我们配置singleTop属性是在<activity>标签中，意味着默认情况下，从任何地方跳转到该Activity都是栈顶复用的模式。
 而在navigation.xml中，launchSingleTop配置在了<action>标签下，这相当于将以下代码做成了配置:
 ``` kotlin
-  var intent= Intent();
-  intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    var intent= Intent();
+    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 ```
 ### popUpTo&popUpToInclusive
 popUpTo："fragmentId"是对栈的操作管理，意思是不断的弹出栈顶的Fragment直到遇到FragemntId对应的Fragment为止。这个属性很有用，
@@ -198,7 +232,7 @@ popUpTo："fragmentId"是对栈的操作管理，意思是不断的弹出栈顶�
 
 所以popUpToInclusive=true的含义就是将popUpTo标签所指定的Fragment也一并销毁。个人感觉多数情况下我们都会将popUpToInclusive设置为true。
 <!--more-->
->**<action>标签处理的不一定只有跳转，也可以单纯的对栈进行操作。**
+>** action标签处理的不一定只有跳转，也可以单纯的对栈进行操作。**
 >**这也就意味着popUpTo不需要和destination同时使用，且Navigation内部的处理机制会先将popUpTo、popUpToInclusive两个属性执行完毕后再对destination属性进行处理。**
 ## XML标签概览
 ![](/uploads/jiangweidong02/navigation/n6.png)
@@ -218,7 +252,10 @@ argType的可选类型：
   | 自定义 Serializable | app:argType="com.example.User"|支持默认值“@null”。不支持其他默认值。|是|
 
 ## Navigation实现原理
-    Navigation是如何进行的堆栈管理、如何保存的后退栈都是我们需要关注的问题。
+
+Navigation是如何进行的堆栈管理、如何保存的后退栈都是我们需要关注的问题。
+我们先来看一下重要类和接口的关系图：
+
 ![](/uploads/jiangweidong02/navigation/n7.png)
 
 **NavHostFragment.java**
@@ -245,17 +282,17 @@ argType的可选类型：
 ```
 Navcontroller更是负责导航操作的关键，所有的导航操作都是由这里发起，具体由其内部的Navigator 进行处理。
 ``` java
-private void navigate(@NonNull NavDestination node, @Nullable Bundle args,
-            @Nullable NavOptions navOptions, @Nullable Navigator.Extras navigatorExtras) {
-  .......
-        Navigator<NavDestination> navigator = mNavigatorProvider.getNavigator(
-                node.getNavigatorName());
-        NavDestination newDest = navigator.navigate(node, finalArgs,
-                navOptions, navigatorExtras);
-  ........
-}
+    private void navigate(@NonNull NavDestination node, @Nullable Bundle args,
+                @Nullable NavOptions navOptions, @Nullable Navigator.Extras navigatorExtras) {
+      .......
+            Navigator<NavDestination> navigator = mNavigatorProvider.getNavigator(
+                    node.getNavigatorName());
+            NavDestination newDest = navigator.navigate(node, finalArgs,
+                    navOptions, navigatorExtras);
+      ........
+    }
 ```
-Navigator的实现类有很多：
+Navigator是个抽象类，它的继承类有很多：
 
 <img width = "800px" src="/uploads/jiangweidong02/navigation/n8.png" alt="">
 通过上图我们也可以发现“导航”不仅仅针对Fragment，也有针对Activity、DialogFragment、Graph的考虑。
@@ -280,31 +317,33 @@ replace方式进行的堆栈管理一定要使用addToBackStack操作，这个�
 
 如果有一个跳转动作跳到了Graph，那具体会是跳到哪里？可以看下NavGraphNavigator是如何处理navigate()方法的：
 ``` java
-public class NavGraphNavigator extends Navigator<NavGraph> {
-    ...
-    public NavDestination navigate(@NonNull NavGraph destination, @Nullable Bundle args,
-            @Nullable NavOptions navOptions, @Nullable Extras navigatorExtras) {
-        int startId = destination.getStartDestination();
+    public class NavGraphNavigator extends Navigator<NavGraph> {
         ...
-        NavDestination startDestination = destination.findNode(startId, false);
-        if (startDestination == null) {
-            final String dest = destination.getStartDestDisplayName();
-            throw new IllegalArgumentException("navigation destination " + dest
-                    + " is not a direct child of this NavGraph");
+        public NavDestination navigate(@NonNull NavGraph destination, @Nullable Bundle args,
+                @Nullable NavOptions navOptions, @Nullable Extras navigatorExtras) {
+            int startId = destination.getStartDestination();
+            ...
+            NavDestination startDestination = destination.findNode(startId, false);
+            if (startDestination == null) {
+                final String dest = destination.getStartDestDisplayName();
+                throw new IllegalArgumentException("navigation destination " + dest
+                        + " is not a direct child of this NavGraph");
+            }
+            Navigator<NavDestination> navigator = mNavigatorProvider.getNavigator(
+                    startDestination.getNavigatorName());
+            return navigator.navigate(startDestination, startDestination.addInDefaultArgs(args),
+                    navOptions, navigatorExtras);
         }
-        Navigator<NavDestination> navigator = mNavigatorProvider.getNavigator(
-                startDestination.getNavigatorName());
-        return navigator.navigate(startDestination, startDestination.addInDefaultArgs(args),
-                navOptions, navigatorExtras);
+       ...
     }
-   ...
-}
 ```
-通过阅读源码，我们发现如果是一个Graph的话，则必须指定一个startDestination用于具体的跳转。
+通过阅读源码，我们发现如果是一个Graph的话，则必须指定一个startDestination用于具体的跳转。那还记得我们在哪里看到过<startDestination>标签么？请看下图：
+<img width = "600px" src="/uploads/jiangweidong02/navigation/n13.png" alt="">
+图中的startDestination写在了navigation标签下，所以其实每一个navigation标签就是一个Graph，我们完全可以依靠Graph将业务模块化。（一个navigation.xml文件中可以有多个navigation标签）
 
 ## AndroidStudio导航图绘制原理
 
-首先，为什么想讲这个原理？是因为，多数情况下我们没有办法在短时间内将现有的项目架构迁移成Navigation形式，但我们确实对他的导航图感到欣喜，出于这一点，可以简单讲一下AS绘制导航图的原理，以便为创建我们自己的导航图提供一些思路。
+首先，为什么想讲这个原理？是因为多数情况下我们没有办法在短时间内将现有的项目架构迁移成Navigation形式，但我们确实对他的导航图感到欣喜，出于这一点，可以简单讲一下AS绘制导航图的原理，以便为创建我们自己的导航图提供一些思路。
 
 我们先将[AndroidStudio源码](https://github.com/JetBrains/android)下载下来。navigation编辑器相关的代码都存在了android/naveditor/src/com/android/tools/idea/naveditor路径下。
 
@@ -335,18 +374,16 @@ class ScrollToDestinationAction(private val surface: NavDesignSurface, private v
 ## 总结
 Navigation并不只是一个单Activity+多Fragment的解决方案，它更是一个**闭环的工具链条**。可惜出现的比较晚，没有多少人会真正的把老项目用它进行重构，所以更多的我们还是学习它的思想和核心要领。
 
-有个有意思的想法，在保证我们项目中跳转和传参的形式稳定的情况下：
+在保证我们项目中**跳转和传参的形式稳定**的情况下：
 
-我们是否可以通过脚本扫描跳转和传参的代码，输出一个xxx_navigation.xml文件？
+1.我们是否可以通过脚本扫描跳转和传参的代码，输出一个xxx_navigation.xml文件？
 
-或者是通过注解的方式在编译期生成xxx_navigation.xml文件？
+2.或者是通过注解的方式在编译期生成xxx_navigation.xml文件？
 
-有了xxx_navigation.xml文件后，是否可以模仿SafeArg编写个gradle插件自动生成代码？
+3.有了xxx_navigation.xml文件后，是否可以模仿SafeArg编写个gradle插件自动生成代码？
 
-是否还可以利用xxx_navigation.xml文件，再编写个AS插件生成导航图？
+4.是否还可以利用xxx_navigation.xml文件，再编写个AS插件生成导航图？
 
-再或者我们可不可以直接将生成的xxx_navigation.xml的格式与Navigation组件中xml的格式保持一致？这样就能直接利用他的导航图了。
-
-
+5.再或者我们可不可以直接将生成的xxx_navigation.xml的格式与Navigation组件中xml的格式保持一致？这样就能直接利用他的导航图了。
 
 
