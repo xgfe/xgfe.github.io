@@ -12,16 +12,16 @@ Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组
 类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。
 <!--more-->
 ## 特性
->·提供一套标准的单Activity+多Fragment的解决方案。
->·可以在Android Studio中直观的查看和编辑导航图。
->·可在目标之间导航和传递数据时提供类型安全的 Gradle 插件。（SafeArgs）
->·使用DeepLink处理Schema形式的跳转。
+>提供一套标准的单Activity+多Fragment的解决方案。
+>可以在Android Studio中直观的查看和编辑导航图。
+>可在目标之间导航和传递数据时提供类型安全的 Gradle 插件。（SafeArgs）
+>使用DeepLink处理Schema形式的跳转。
 
 ## 如何使用
 我们先来看一下导航图的全貌，相信就凭这一张图我们就能感受到它的重要性。
 随着频繁的版本迭代，RD同学在找一个页面都有哪些入口的时候只能是去翻代码查引用关系，甚至特殊情况下PM同学有时还会找我们问页面路径。
 现在，Navigation提供的导航图可以轻松帮你找到入口，快速看清整体业务的来龙去脉。
-![](/uploads/jiangweidong02/navigation/n1.png)
+![](https://p0.meituan.net/spacex/185b1054649b4aa1b768608328c8871d.png)
 
 ### 依赖添加
      build.gradle文件中加入:
@@ -58,7 +58,7 @@ Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组
     </FrameLayout>
 ```
 再来看一下app:navGraph所引用的文件navigation.xml，后续所有的路由配置都是在这个xml文件中进行的，这个文件是整个Navigation框架的核心。
-<img width = "600px" src="/uploads/jiangweidong02/navigation/n13.png" alt="">
+<img width = "600px" src="https://p0.meituan.net/spacex/8b84a8049eec616cd698d75f6854c2dd.png" alt=""/>
 ### 携参跳转
 下面的例子中我们尝试从LoginFragment跳转到HomeFragment,并携带一个String类型的参数。
 首先我们来看一下navigation.xml文件中的基本配置:
@@ -88,7 +88,7 @@ Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组
     </navigation>
 ```
 ***需要理解的是，同一个<fragment>标签下的<argument>和<action>标签是没有任何联系的。***
-Navigation帮开发者定制了一个规范：
+Navigation帮助开发者制定了一下规范：
 1.规定每个Fragment所接收的参数类型和最大数量是明确的。
 2.规定每个Fragment可跳转到哪些别的Fragment是明确的。
 仔细想想，确实只有在规范了这两点的基础上，才可以达到生成导航图的目的。
@@ -160,11 +160,11 @@ SafeArgs的作用实际上是将xml文件中的<action>和<argments>标签进行
 
 SafeArgs插件的工作流程：SafeArgsPlugin.kt->ArgumentsGenerationTask.kt->NavSafeArgsGenerator.kt
 
-![](/uploads/jiangweidong02/navigation/n2.png)
+![](https://p0.meituan.net/spacex/9f07dba339d062a4597e0df8a2ba265b.png)
 
 编译后产生的文件示例：
 
-<img width = "400px" src="/uploads/jiangweidong02/navigation/n3.png" alt="">
+<img width = "400px" src="https://p0.meituan.net/spacex/72c95085cf0dd36b67d86f00164d9a98.png" alt=""/>
 
 <!--more-->
 使用SafeArgs的好处有：
@@ -225,17 +225,17 @@ popUpTo："fragmentId"是对栈的操作管理，意思是不断的弹出栈顶�
             />
     </fragment>
 ```
-<img width = "1200px" src="/uploads/jiangweidong02/navigation/n4.png" alt="">
+<img width = "1200px" src="https://p0.meituan.net/spacex/ba1845eefb9f95d81bbb067728c2658f.png" alt=""/>
 再看下popUpToInclusive=false的情况：
 
-<img width = "1200px" src="/uploads/jiangweidong02/navigation/n5.png" alt="">
+<img width = "1200px" src="https://p0.meituan.net/spacex/f4bf76a6fbce33ce68affa280229f9ad.png" alt=""/>
 
 所以popUpToInclusive=true的含义就是将popUpTo标签所指定的Fragment也一并销毁。个人感觉多数情况下我们都会将popUpToInclusive设置为true。
 <!--more-->
 >** action标签处理的不一定只有跳转，也可以单纯的对栈进行操作。**
 >**这也就意味着popUpTo不需要和destination同时使用，且Navigation内部的处理机制会先将popUpTo、popUpToInclusive两个属性执行完毕后再对destination属性进行处理。**
 ## XML标签概览
-![](/uploads/jiangweidong02/navigation/n6.png)
+![](https://p0.meituan.net/spacex/4c24402dc98bc08de174e5326daf8fde.png)
 
 argType的可选类型：
 
@@ -256,7 +256,7 @@ argType的可选类型：
 Navigation是如何进行的堆栈管理、如何保存的后退栈都是我们需要关注的问题。
 我们先来看一下重要类和接口的关系图：
 
-![](/uploads/jiangweidong02/navigation/n7.png)
+![](https://p0.meituan.net/spacex/907dddd3d49cba4928c7d1d2e26e2dd6.png)
 
 **NavHostFragment.java**
 
@@ -281,6 +281,7 @@ Navigation是如何进行的堆栈管理、如何保存的后退栈都是我们�
     private LifecycleOwner mLifecycleOwner;
 ```
 Navcontroller更是负责导航操作的关键，所有的导航操作都是由这里发起，具体由其内部的Navigator 进行处理。
+
 ``` java
     private void navigate(@NonNull NavDestination node, @Nullable Bundle args,
                 @Nullable NavOptions navOptions, @Nullable Navigator.Extras navigatorExtras) {
@@ -294,9 +295,10 @@ Navcontroller更是负责导航操作的关键，所有的导航操作都是由�
 ```
 Navigator是个抽象类，它的继承类有很多：
 
-<img width = "800px" src="/uploads/jiangweidong02/navigation/n8.png" alt="">
+<img width = "800px" src="https://p0.meituan.net/spacex/35076d08689d70d51ac4717ebc5a6e85.png" alt=""/>
 通过上图我们也可以发现“导航”不仅仅针对Fragment，也有针对Activity、DialogFragment、Graph的考虑。
 再看一下FragmentNavigator是如何处理navigate()方法的：
+
 ``` java
     public NavDestination navigate(@NonNull Destination destination, @Nullable Bundle args,
             @Nullable NavOptions navOptions, @Nullable Navigator.Extras navigatorExtras) {
@@ -316,6 +318,7 @@ replace方式进行的堆栈管理一定要使用addToBackStack操作，这个�
 
 
 如果有一个跳转动作跳到了Graph，那具体会是跳到哪里？可以看下NavGraphNavigator是如何处理navigate()方法的：
+
 ``` java
     public class NavGraphNavigator extends Navigator<NavGraph> {
         ...
@@ -338,7 +341,7 @@ replace方式进行的堆栈管理一定要使用addToBackStack操作，这个�
     }
 ```
 通过阅读源码，我们发现如果是一个Graph的话，则必须指定一个startDestination用于具体的跳转。那还记得我们在哪里看到过<startDestination>标签么？请看下图：
-<img width = "600px" src="/uploads/jiangweidong02/navigation/n13.png" alt="">
+<img width = "600px" src="https://p0.meituan.net/spacex/8b84a8049eec616cd698d75f6854c2dd.png" alt=""/>
 图中的startDestination写在了navigation标签下，所以其实每一个navigation标签就是一个Graph，我们完全可以依靠Graph将业务模块化。（一个navigation.xml文件中可以有多个navigation标签）
 
 ## AndroidStudio导航图绘制原理
@@ -348,24 +351,24 @@ replace方式进行的堆栈管理一定要使用addToBackStack操作，这个�
 我们先将[AndroidStudio源码](https://github.com/JetBrains/android)下载下来。navigation编辑器相关的代码都存在了android/naveditor/src/com/android/tools/idea/naveditor路径下。
 
 转化一下角色，**想象自己是一名AndroidStudio工具开发者**。然后继续分析naveditor目录结构：
-<img width = "300px" src="/uploads/jiangweidong02/navigation/n9.png" alt="">
+<img width = "300px" src="https://p0.meituan.net/spacex/37e9b0501bb000780aaeb90a5dccd3e5.png" alt=""/>
 **../actions目录**
     这里的action是用来处理与navigation编辑器中每个可点击动作的.每一个action都继承自anAction，anAction是Intellij系列ide中编写插件重要的类。
     例如ScrollToDestinationAction.kt：
 ``` kotlin
-class ScrollToDestinationAction(private val surface: NavDesignSurface, private val component: NlComponent): AnAction("Scroll into view") {
-  override fun actionPerformed(e: AnActionEvent) {
-    surface.scrollToCenter(listOf(component))
-  }
-}
+    class ScrollToDestinationAction(private val surface: NavDesignSurface, private val component: NlComponent): AnAction("Scroll into view") {
+      override fun actionPerformed(e: AnActionEvent) {
+        surface.scrollToCenter(listOf(component))
+      }
+    }
 ```
-<img width = "300px" src="/uploads/jiangweidong02/navigation/n10.png" alt="">
+<img width = "300px" src="https://p0.meituan.net/spacex/57e4efde6cdf7b0ff51029799d31cf47.png" alt=""/>
  **../property目录**
  所有的属性也需要显示在界面上。例如NavActionsProperty
-<img width = "300px" src="/uploads/jiangweidong02/navigation/n11.png" alt="">
+<img width = "300px" src="https://p0.meituan.net/spacex/15a7118875bfb55db98e3705204ff5e0.png" alt=""/>
  **.../scene/decorator**
 这里有很多decorator，每个decorator中都分配了一个scene，以FragmentDecorator为例，编辑器中显示的每个Fragment其实就是一个FragmentDecorator。每个decorator中都会生成各自特有的绘制指令，然后之后交给Draw类进行绘制工作。
-<img width = "300px" src="/uploads/jiangweidong02/navigation/n12.png" alt="">
+<img width = "300px" src="https://p0.meituan.net/spacex/03ff110b711d6f6194d7927a6a729946.png" alt=""/>
  **.../scene/draw** 
 执行decorator产生的绘制指令，以完成真正的显示工作。
  **.../surface**
