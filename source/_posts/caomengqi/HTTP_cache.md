@@ -33,7 +33,7 @@ web缓存一直是前端备受关注的一个话题，主要包括数据库缓�
 
 缓存处理步骤可以用一张图来表示：
 
-![1589872657427](http://p0.inf.test.sankuai.com/spacex/1cb6c89ce9a50392295895b2e17982f5.png)
+![1589872657427](https://p0.meituan.net/spacex/689248b0db9ead4609e591284a38b67b.png)
 
 分析上图，可以了解到缓存处理主要分为6个步骤：
 
@@ -69,7 +69,7 @@ web缓存一直是前端备受关注的一个话题，主要包括数据库缓�
 
 为了方便理解，可以假设浏览器存在一个缓存数据库，用于存储缓存信息（实际上静态资源是被缓存到了内存和磁盘中），在浏览器第一次请求数据时，缓存数据库没有对应的缓存数据，则需要请求服务器，服务器将返回缓存规则和数据，浏览器将缓存规则和数据存储进缓存数据库。
 
-![1589873289242](http://p0.inf.test.sankuai.com/spacex/8d372c1cd1d84c606ab8828aab7f5139.png)
+![1589873289242](https://p0.meituan.net/spacex/f128a87935661c41f78fca0d311f87a9.png)
 
 注意：在浏览器地址栏输入地址后，请求的 index.html 是不会被缓存的，但 index.html 内部请求的其他资源会遵循缓存策略。
 
@@ -81,13 +81,13 @@ HTTP 缓存有多种规则，根据是否需要向服务器发送请求主要分
 
 强制缓存是第一次访问服务器获取数据后，在有效时间内不会再请求服务器，而是直接使用缓存数据，强制缓存的流程如下。
 
-![1589873518965](http://p0.inf.test.sankuai.com/spacex/dc2840328961f287ac9d607b2ba57ee2.png)
+![1589873518965](https://p0.meituan.net/spacex/bb11a5a591085b6d09accf91d7cf5daf.png)
 
 ### 强缓存到期时间
 
 通过特殊的 HTTP Cache-Control 首部(HTTP/1.0+)和 Expires 首部(HTTP/1.1 )，HTTP 让原始服务器向每个文档附加了一个“过期日期”。这些首部说明了在多长时间内可以将这些内容视为新鲜的。 
 
-![1589873870042](http://p0.inf.test.sankuai.com/spacex/b51c0be1f4a81763e3687259fd1b3b23.png)
+![1589873870042](https://p0.meituan.net/spacex/6611fde19d148f9031c38c776113ddcf.png)
 
 在 HTTP 1.0 版本中，Expires 字段的绝对时间是从服务器获取的，由于请求需要时间，所以浏览器的请求时间与服务器接收到请求所获取的时间是存在误差的，这也导致了缓存命中的误差。在 HTTP 1.1 版本中，因为 Cache-Control 的值 max-age=xxx 中的 xxx 是以秒为单位的相对时间，所以在浏览器接收到资源后开始倒计时，规避了 HTTP 1.0 中缓存命中存在误差的缺点。
 
@@ -151,11 +151,11 @@ app.listen(3001);
 
 第一次请求，状态码200 OK，Response Header中增加Cache-Control，过期时间为10秒：
 
-![1589887718530](http://p0.inf.test.sankuai.com/spacex/53714f329995a896bf27c7ffbea771d1.png)
+![1589887718530](https://p0.meituan.net/spacex/aa3728e363c3187709e4f65266e814ef.png)
 
 十秒内第二次请求，状态码200 OK (from disk cache)，并在在Response Headers中，Date未更新：
 
-![1589887736499](http://p0.inf.test.sankuai.com/spacex/70f710e37b52675c87ea574e3543aa21.png)
+![1589887736499](https://p0.meituan.net/spacex/a8a2611be26837e89249df0a693ac716.png)
 
 ## 协商缓存
 
@@ -163,7 +163,7 @@ app.listen(3001);
 
 协商缓存又叫对比缓存，设置协商缓存后，第一次访问服务器获取数据时，服务器会将数据和缓存标识一起返回给浏览器，客户端会将数据和标识存入缓存数据库中，下一次请求时，会先去缓存中取出缓存标识发送给服务器进行询问，当服务器数据更改时会更新标识，所以服务器拿到浏览器发来的标识进行对比，相同代表数据未更改，响应浏览器通知数据未更改，浏览器会去缓存中获取数据，如果标识不同，代表服务器更改过数据，所以会将新的数据和新的标识返回浏览器，浏览器会将新的数据和标识存入缓存中，协商缓存的流程如下。
 
-![1589874616041](http://p0.inf.test.sankuai.com/spacex/5e2876aec74f60452e06685a996bcd6f.png)
+![1589874616041](https://p0.meituan.net/spacex/200106127c37bd2eb59e04c4cd847b1f.png)
 
 协商缓存和强制缓存不同的是，协商缓存每次请求都需要跟服务器通信，而且命中缓存服务器返回状态码不再是200，而是304。
 
@@ -210,11 +210,11 @@ app.listen(3000);
 
 第一次请求，状态码为200 OK，响应头中带有资源的hash信息和最后一次修改时间：
 
-![1589885754975](http://p0.inf.test.sankuai.com/spacex/76fe7e01c87d69ddad0304d1a781b2c0.png)
+![1589885754975](https://p0.meituan.net/spacex/4629ed3bec0e6af2c9619354076021c5.png)
 
 第二次请求，服务端根据请求头中的 If-Modified-Since 和 If-None-Match 验证文件是否修改，未修改返回状态码304 Not Modified：
 
-![1589885770173](http://p0.inf.test.sankuai.com/spacex/a2936a41aa822bb83afe5797b046c85f.png)
+![1589885770173](https://p0.meituan.net/spacex/0b7f944872390c95114f5a49af558463.png)
 
 ## 强缓存vs协商缓存
 
