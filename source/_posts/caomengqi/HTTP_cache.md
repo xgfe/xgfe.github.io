@@ -71,7 +71,7 @@ web缓存一直是前端备受关注的一个话题，主要包括数据库缓�
 
 ![1589873289242](https://p0.meituan.net/spacex/f128a87935661c41f78fca0d311f87a9.png)
 
-注意：在浏览器地址栏输入地址后，请求的 index.html 是不会被缓存的，但 index.html 内部请求的其他资源会遵循缓存策略。
+注意：在浏览器地址栏输入地址后，与页面相关的所有资源都会遵循缓存策略，而是否被缓存则依赖于缓存策略的设置。
 
 HTTP 缓存有多种规则，根据是否需要向服务器发送请求主要分为两大类，强缓存和协商缓存。
 
@@ -224,3 +224,10 @@ app.listen(3000);
 # 总结
 
 为了使缓存策略更加健壮、灵活，HTTP 1.0 版本 和 HTTP 1.1 版本的缓存策略会同时使用，甚至强制缓存和协商缓存也会同时使用，对于强制缓存，服务器通知浏览器一个缓存时间，在缓存时间内，下次请求，直接使用缓存，超出有效时间，执行协商缓存策略，对于协商缓存，将缓存信息中的 Etag 和 Last-Modified 通过请求头 If-None-Match 和 If-Modified-Since 发送给服务器，由服务器校验同时设置新的强制缓存，校验通过并返回 304 状态码时，浏览器直接使用缓存，如果协商缓存也未命中，则服务器重新设置协商缓存的标识。
+
+相关参考链接：
+
+* [HTTP缓存介绍](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ)
+* [图解HTTP缓存](https://juejin.im/post/5eb7f811f265da7bbc7cc5bd)
+* [HTTP缓存机制](https://juejin.im/post/5a1d4e546fb9a0450f21af23)
+* [前端缓存最佳实践](https://juejin.im/post/5c136bd16fb9a049d37efc47)
