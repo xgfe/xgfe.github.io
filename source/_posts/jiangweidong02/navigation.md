@@ -8,8 +8,7 @@ tags:
 ---
 
 ## 简介
-Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组件，该组件推崇的是使用单Activity+多Fragment的方式来架构你的app。
-类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。
+Navigation是Jetpack全家桶中负责处理界面导航的组件，该组件推崇使用单Activity+多Fragment的方式来进行APP的架构。类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。
 <!--more-->
 ## 特性
 >提供一套标准的单Activity+多Fragment的解决方案。
@@ -18,9 +17,8 @@ Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组
 >使用DeepLink处理Schema形式的跳转。
 
 ## 如何使用
-我们先来看一下导航图的全貌，相信就凭这一张图我们就能感受到它的重要性。
-随着频繁的版本迭代，RD同学在找一个页面都有哪些入口的时候只能是去翻代码查引用关系，甚至特殊情况下PM同学有时还会找我们问页面路径。
-现在，Navigation提供的导航图可以轻松帮你找到入口，快速看清整体业务的来龙去脉。
+我们先来看一下导航图的全貌，相信就凭这一张图我们就能感受到它的重要性。随着频繁的版本迭代，RD同学在找一个页面都有哪些入口的时候只能是去翻代码查引用关系，甚至特殊情况下PM同学有时还会找我们问页面路径。
+   现在，Navigation提供的导航图可以轻松帮你找到入口，快速看清整体业务的来龙去脉。
 ![](https://p0.meituan.net/spacex/185b1054649b4aa1b768608328c8871d.png)
 
 ### 依赖添加
@@ -38,8 +36,8 @@ Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组
   | Destination | 想要前往的目的地,可以是Fragment、Activity、或者Graph |
   | Graph | 一个视图，视图中可包含多个Fragment、Activity、Graph,是模块化的利器 |
 ### 宿主Activity搭建
-要想使用Navigation组件，我们需要提供一个宿主Activity作为整体导航框架的依托，这个宿主activity中会提供一块区域用来容纳所有的Fragment。
-我们首先看一下宿主Activity的布局文件:
+我们需要提供一个宿主Activity作为整体导航框架的依托，这个宿主activity中会提供一块区域用来容纳所有的Fragment。
+首先看一下宿主Activity的布局文件:
 ``` xml
     <?xml version="1.0" encoding="utf-8"?>
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -87,14 +85,14 @@ Navigation是Jetpack系列组件中针对界面导航的一个非常好用的组
         </fragment>
     </navigation>
 ```
-***需要理解的是，同一个<fragment>标签下的<argument>和<action>标签是没有任何联系的。***
-Navigation帮助开发者制定了一下规范：
+***需要理解的是，同一个fragment标签下的argument和action标签是没有任何联系的。***
+Navigation帮助开发者制定了以下规范：
 1.规定每个Fragment所接收的参数类型和最大数量是明确的。
 2.规定每个Fragment可跳转到哪些别的Fragment是明确的。
 仔细想想，确实只有在规范了这两点的基础上，才可以达到生成导航图的目的。
 
 
-现在,我们想从LoginFragment跳转到HomeFragment，让我们发起一个跳转动作，并传入参数:
+由LoginFragment跳转到HomeFragment:
 ``` kotlin
     btnLogin?.setOnClickListener {
         var bundle = Bundle()
@@ -169,14 +167,14 @@ SafeArgs插件的工作流程：SafeArgsPlugin.kt->ArgumentsGenerationTask.kt->N
 <!--more-->
 使用SafeArgs的好处有：
 
->·规范了页面跳转的方式
->·对类型安全做了检测
->·代码自动生成，提高开发效率。
+>·规范了页面跳转的方式.
+>·对类型安全做了检测.
+>·代码自动生成，提高开发效率.
 
 想了解代码生成过程的同学可以查看[SafeArgs插件源码](https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-master-dev/navigation/navigation-safe-args-gradle-plugin?source=post_page---------------------------%2F&autodive=0%2F/)。
 
 ## 跳转方式
-类似于Activity中的lunchMode，Navigation组件也为开发者提供了友好的跳转的方式。
+类似于Activity中的launchMode，Navigation组件也为开发者提供了友好的跳转的方式。
 ### 默认跳转方式
 ``` xml
     <fragment
@@ -187,7 +185,7 @@ SafeArgs插件的工作流程：SafeArgsPlugin.kt->ArgumentsGenerationTask.kt->N
             app:destination="@id/fragment_home" />
     </fragment>
 ```
-默认跳转方式也是最常见的跳转方式是，与activity的默认跳转方式规则一致,保持正常的入栈顺序和出栈顺序。
+默认跳转方式与activity的默认跳转方式规则一致,保持正常的入栈顺序和出栈顺序。
 
 ### launchSingleTop属性
 
@@ -254,7 +252,7 @@ argType的可选类型：
 ## Navigation实现原理
 
 Navigation是如何进行的堆栈管理、如何保存的后退栈都是我们需要关注的问题。
-我们先来看一下重要类和接口的关系图：
+我们先来看一下重要的类与接口:
 
 ![](https://p0.meituan.net/spacex/907dddd3d49cba4928c7d1d2e26e2dd6.png)
 
@@ -313,7 +311,7 @@ Navigator是个抽象类，它的继承类有很多：
         .......
         }
 ```
-这里的mContainerId实际上就是NavHostFragment中的空FrameLayout。所以通过阅读源码我们发现Navigation是使用的replace的方式进行的堆栈处理。
+这里的mContainerId实际上就是NavHostFragment中的空FrameLayout。所以通过阅读源码我们发现Navigation是使用replace方式进行的堆栈处理。
 replace方式进行的堆栈管理一定要使用addToBackStack操作，这个操作不仅会将上一个Fragment保存在后退栈中，也会影响Fragment的生命周期，使得上一个Fragment只触发onDestoryView()，不会触发onDestory()。
 
 
