@@ -5,7 +5,7 @@ tags:
 - 前端
 ---
 
-本文主要是讲解如何使用Node构建自己的命令行，并对其实现原理做了一定对解析
+本文主要是讲解如何使用Node构建自己的命令行，并对其实现原理做了一定的解析。
 
 <!-- more -->
 
@@ -15,16 +15,16 @@ tags:
 ```
 node index.js
 ```
-使用`process.argv`，可以拿到相关`node`命令执行的所有参数
+使用`process.argv`，可以拿到相关`node`命令执行的所有参数。
 ```
 // index.js
 console.log(process.argv);
 // 运行以下指令
 node index x y; // ['/usr/local/bin/node', '.../index', 'x', 'y']
 ```
-可以根据业务逻辑来自行解析处理这些参数，也可以引入`commander`库来帮助扩展命令行参数解析，`commaneder`将所有的参数结构化，在使用的时候更加方便
+可以根据业务逻辑来自行解析处理这些参数，也可以引入`commander`库来帮助扩展命令行参数解析，`commaneder`将所有的参数结构化，在使用的时候更加方便。
 #### option
-使用`commander.option()`的方法，可以扩展当前指令能够支持的参数，并使用`commander.parse(process.argv)`将命令行参数告知`commander`进行处理
+使用`commander.option()`的方法，可以扩展当前指令能够支持的参数，并使用`commander.parse(process.argv)`将命令行参数告知`commander`进行处理。
 ```
 // index.js
 let program = require('commander');
