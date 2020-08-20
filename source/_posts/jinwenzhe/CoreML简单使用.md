@@ -36,3 +36,34 @@ Build intelligence into your apps using machine learning models from the researc
 CoreML官网中可供使用的一些关于计算机视觉的模型：
 
 ​![](https://p0.meituan.net/spacex/3ddf02503149cfe5c10ef3b91d6f10db.png)
+
+Demo展示：
+主界面：
+​![](https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png)
+图像识别：
+​![](https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png)
+​![](https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png)
+主体识别：
+​![](https://p0.meituan.net/spacex/620c41f68a181febbd710e1633fc7439.png)
+​![](https://p0.meituan.net/spacex/4377a0f840316051156a449d1285dce5.png)
+物体检测：
+​![](https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png)
+​![](https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png)
+使用方法：
+一、下载模型：
+下载链接：https://developer.apple.com/machine-learning/models/
+
+不同的mlmodel区别在于参数精度不同
+![](https://p0.meituan.net/spacex/4d9c5017d03297ea071508d25195ead2.png)
+二、导入工程：
+将下载好的mlmodel文件直接拖进工程文件：
+![](https://p0.meituan.net/spacex/cf9d4fc0556922c6b2fa4795670b7490.png)
+
+三、查看模型输入输出：
+![](ttps://p0.meituan.net/spacex/acd4de65d6e0046ebb6558ed461d2be7.png)
+四、导入头文件开始使用：
+代码块
+Objective-C
+#import "SqueezeNetFP16.h"
+模型介绍：
+SqueezeNet
