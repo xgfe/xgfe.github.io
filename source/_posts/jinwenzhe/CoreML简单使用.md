@@ -89,6 +89,7 @@ Squeezenet比alexnet参数少50倍，同时大小仅4.8mb
 ![](https://p0.meituan.net/spacex/6a7664866f8e47ce76378f532e3e2066.png)
 简单使用：
 
+
 ```
 //加载一张需要识别的图片
 UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
@@ -104,27 +105,31 @@ SqueezeNetFP16Output *res = [mod predictionFromImage:img error:nil];
 //打印出识别的名称和识别率
 NSLog(@"识别为:%@,概率为:%@",res.classLabel,res.classLabelProbs[res.classLabel]);
 ```
+
 SqueezeNetFP16Output的classLabelProbs属性
 classLabelProbs属性包含了预测的所有种类对应的概率，
 
 所以，res.classLabelProbs[res.classLabel]可以取出预测名称所对应的概率
 
 ```
+
 {
-    "Afghan hound, Afghan" = "9.044347437864655e-14";
-    "African chameleon, Chamaeleo chamaeleon" = "1.968000415408788e-11";
-    "African crocodile, Nile crocodile, Crocodylus niloticus" = "2.88645680707883e-13";
-    "African elephant, Loxodonta africana" = "9.819910726585612e-13";
-    "African grey, African gray, Psittacus erithacus" = "8.513797999931683e-11";
-    "African hunting dog, hyena dog, Cape hunting dog, Lycaon pictus" = "1.588692420890006e-13";
-    "Airedale, Airedale terrier" = "3.033485734740132e-13";
-    "American Staffordshire terrier, Staffordshire terrier, American pit bull terrier, pit bull terrier" = "4.295829802991591e-10";
-    "American alligator, Alligator mississipiensis" = "1.02866250673711e-12";
-    "American black bear, black bear, Ursus americanus, Euarctos americanus" = "9.978090402540385e-13";
-    "American chameleon, anole, Anolis carolinensis" = "2.216001861177208e-11";
-    "American coot, marsh hen, mud hen, water hen, Fulica americana" = "7.412853967811
+"Afghan hound, Afghan" = "9.044347437864655e-14";
+"African chameleon, Chamaeleo chamaeleon" = "1.968000415408788e-11";
+"African crocodile, Nile crocodile, Crocodylus niloticus" = "2.88645680707883e-13";
+"African elephant, Loxodonta africana" = "9.819910726585612e-13";
+"African grey, African gray, Psittacus erithacus" = "8.513797999931683e-11";
+"African hunting dog, hyena dog, Cape hunting dog, Lycaon pictus" = "1.588692420890006e-13";
+"Airedale, Airedale terrier" = "3.033485734740132e-13";
+"American Staffordshire terrier, Staffordshire terrier, American pit bull terrier, pit bull terrier" = "4.295829802991591e-10";
+"American alligator, Alligator mississipiensis" = "1.02866250673711e-12";
+"American black bear, black bear, Ursus americanus, Euarctos americanus" = "9.978090402540385e-13";
+"American chameleon, anole, Anolis carolinensis" = "2.216001861177208e-11";
+"American coot, marsh hen, mud hen, water hen, Fulica americana" = "7.412853967811
 }
-​```
+
+```
+
 Resnet50
 简介：
 Resnet是残差网络(Residual Network)的缩写,
@@ -136,10 +141,10 @@ Resnet是残差网络(Residual Network)的缩写,
 Resnet网络的证明网络能够向更深（包含更多隐藏层）的方向发展。
 
 
-
 使用说明：
 ![](https://p0.meituan.net/spacex/49fe90eeb134d8ab5837a3e4b7f755bc.png)
 简单使用：
+
 
 ```
 //ResNet的输入图片大小要求为224*224，这里先将获取的image resize一下
@@ -157,8 +162,10 @@ CVPixelBufferRef pbimg_resNet = [self pixelBufferFromCGImage:imgRef_resNet];
 // Resnet50Output的classLabelProbs属性为识别成每个类别的对应概率
 //res_resNet.classLabelProbs[res_resNet.classLabel] 可以取出最终识别的类别的概率（即最大概率）
 Resnet50Output *res_resNet = [self.mod_resNet predictionFromImage:pbimg_resNet error:nil];
-//    NSLog(@"resNet识别为:%@,概率为:%@",res_resNet.classLabel,res_resNet.classLabelProbs[res_resNet.classLabel]);
+//  NSLog(@"resNet识别为:%@,概率为:%@",res_resNet.classLabel,res_resNet.classLabelProbs[res_resNet.classLabel]);
+
 ​```
+
 ​
 Resnet50Output的classLabelProbs属性：
 同SqueezeNet
@@ -265,7 +272,7 @@ CGImageRef 转  CVPixelBufferRef
 ​
     CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
 ​
-    return pxbuffer;
-​
+    return pxbuffer;​
 }
 ​```
+
