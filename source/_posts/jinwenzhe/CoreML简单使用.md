@@ -143,8 +143,8 @@ Resnet网络的证明网络能够向更深（包含更多隐藏层）的方向�
 
 使用说明：
 ![](https://p0.meituan.net/spacex/49fe90eeb134d8ab5837a3e4b7f755bc.png)
-简单使用：
 
+简单使用：
 
 ```
 //ResNet的输入图片大小要求为224*224，这里先将获取的image resize一下
@@ -164,9 +164,10 @@ CVPixelBufferRef pbimg_resNet = [self pixelBufferFromCGImage:imgRef_resNet];
 Resnet50Output *res_resNet = [self.mod_resNet predictionFromImage:pbimg_resNet error:nil];
 //  NSLog(@"resNet识别为:%@,概率为:%@",res_resNet.classLabel,res_resNet.classLabelProbs[res_resNet.classLabel]);
 
-​```
-
+```
 ​
+​
+
 Resnet50Output的classLabelProbs属性：
 同SqueezeNet
 
@@ -179,13 +180,13 @@ DeepLab是谷歌使用tensorflow基于CNN开发的语义分割模型，至今已
 ![](https://p0.meituan.net/spacex/35f5a3d928e02acaef02092bce2b1e47.jpg)
 使用说明：
 输入为image，输出一个与image尺寸相同的矩阵，每个矩阵数值代表了对图片前后景的分类（后景为0，前景不为0）
-![](https://p0.meituan.net/spacex/5cd0408eb81ec16f51400fbf4d27644b.png)
 
+![](https://p0.meituan.net/spacex/5cd0408eb81ec16f51400fbf4d27644b.png)
 简单使用：
 
 ```
 UIImage *img = info[@"UIImagePickerControllerEditedImage"];
-    
+
 //输入image 规格为513*513
 //先resize图片
 CGSize size = CGSizeMake(513,513);
@@ -210,9 +211,8 @@ DeepLabV3Output *res = [self.mod_deeplab predictionFromImage:pbimg error:nil];
 UIImage *myimg = [self imageBlackToTransparent:resultImage withArr:res.semanticPredictions];
 //将处理后的图片展示在另一个imageView中
 [self.imageView2 setImage:myimg];
-​```
 
-
+```
 附录：
 CoreML官方文档：https://developer.apple.com/documentation/coreml
 
@@ -222,7 +222,7 @@ UIImage 转 CGImageRef
 ```
 UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
 CGImageRef imgRef = [image CGImage];
-​```
+```
 
 CGImageRef 转  CVPixelBufferRef
 
@@ -274,5 +274,4 @@ CGImageRef 转  CVPixelBufferRef
 ​
     return pxbuffer;​
 }
-​```
-
+```
