@@ -88,7 +88,8 @@ Squeezenet比alexnet参数少50倍，同时大小仅4.8mb
 使用说明：
 ![](https://p0.meituan.net/spacex/6a7664866f8e47ce76378f532e3e2066.png)
 简单使用：
-```objectivec
+
+```
 //加载一张需要识别的图片
 UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
 CGImageRef imgRef = [image CGImage];
@@ -102,13 +103,13 @@ SqueezeNetFP16 *mod = [[SqueezeNetFP16 alloc] init];
 SqueezeNetFP16Output *res = [mod predictionFromImage:img error:nil];
 //打印出识别的名称和识别率
 NSLog(@"识别为:%@,概率为:%@",res.classLabel,res.classLabelProbs[res.classLabel]);
-​```
+```
 SqueezeNetFP16Output的classLabelProbs属性
 classLabelProbs属性包含了预测的所有种类对应的概率，
 
 所以，res.classLabelProbs[res.classLabel]可以取出预测名称所对应的概率
 
-```objectivec
+```
 {
     "Afghan hound, Afghan" = "9.044347437864655e-14";
     "African chameleon, Chamaeleo chamaeleon" = "1.968000415408788e-11";
