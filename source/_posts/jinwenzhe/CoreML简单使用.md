@@ -140,7 +140,8 @@ Resnet网络的证明网络能够向更深（包含更多隐藏层）的方向�
 使用说明：
 ![](https://p0.meituan.net/spacex/49fe90eeb134d8ab5837a3e4b7f755bc.png)
 简单使用：
-```objectivec
+
+```
 //ResNet的输入图片大小要求为224*224，这里先将获取的image resize一下
 CGSize size_resNet = CGSizeMake(224,224);
 UIGraphicsBeginImageContextWithOptions(size_resNet, NO, 1.0);
@@ -174,7 +175,8 @@ DeepLab是谷歌使用tensorflow基于CNN开发的语义分割模型，至今已
 ![](https://p0.meituan.net/spacex/5cd0408eb81ec16f51400fbf4d27644b.png)
 
 简单使用：
-```objectivec
+
+```
 UIImage *img = info[@"UIImagePickerControllerEditedImage"];
     
 //输入image 规格为513*513
@@ -209,12 +211,15 @@ CoreML官方文档：https://developer.apple.com/documentation/coreml
 
 pixelBufferFromCGImage: 函数
 UIImage 转 CGImageRef
-```objectivec
+
+```
 UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
 CGImageRef imgRef = [image CGImage];
 ​```
+
 CGImageRef 转  CVPixelBufferRef
-```objectivec
+
+```
 - (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image{
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
