@@ -39,12 +39,12 @@ CoreML官网中可供使用的一些关于计算机视觉的模型：
 
 Demo展示：
 主界面：
-<img src="https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png" width="40%">
+<img src="https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png" width="35%">
 
 <!-- ​![](https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png) -->
 图像识别：
-<img src="https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png" width="50%">
-<img src="https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png" width="50%">
+<img src="https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png" width="35%">
+<img src="https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png" width="35%">
 <!-- ​![](https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png)
 ​![](https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png) -->
 主体识别：
@@ -53,8 +53,8 @@ Demo展示：
 <!-- ​![](https://p0.meituan.net/spacex/620c41f68a181febbd710e1633fc7439.png)
 ​![](https://p0.meituan.net/spacex/4377a0f840316051156a449d1285dce5.png) -->
 物体检测：
-<img src="https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png" width="30%">
-<img src="https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png" width="30%">
+<img src="https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png" width="35%">
+<img src="https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png" width="35%">
 <!-- ​![](https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png)
 ​![](https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png) -->
 使用方法：
@@ -88,8 +88,7 @@ Squeezenet比alexnet参数少50倍，同时大小仅4.8mb
 使用说明：
 ![](https://p0.meituan.net/spacex/6a7664866f8e47ce76378f532e3e2066.png)
 简单使用：
-代码块
-Objective-C
+```objectivec
 //加载一张需要识别的图片
 UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
 CGImageRef imgRef = [image CGImage];
@@ -103,14 +102,13 @@ SqueezeNetFP16 *mod = [[SqueezeNetFP16 alloc] init];
 SqueezeNetFP16Output *res = [mod predictionFromImage:img error:nil];
 //打印出识别的名称和识别率
 NSLog(@"识别为:%@,概率为:%@",res.classLabel,res.classLabelProbs[res.classLabel]);
-​
+​```
 SqueezeNetFP16Output的classLabelProbs属性
 classLabelProbs属性包含了预测的所有种类对应的概率，
 
 所以，res.classLabelProbs[res.classLabel]可以取出预测名称所对应的概率
 
-代码块
-Objective-C
+```objectivec
 {
     "Afghan hound, Afghan" = "9.044347437864655e-14";
     "African chameleon, Chamaeleo chamaeleon" = "1.968000415408788e-11";
@@ -125,7 +123,7 @@ Objective-C
     "American chameleon, anole, Anolis carolinensis" = "2.216001861177208e-11";
     "American coot, marsh hen, mud hen, water hen, Fulica americana" = "7.412853967811
 }
-​
+​```
 Resnet50
 简介：
 Resnet是残差网络(Residual Network)的缩写,
@@ -141,8 +139,7 @@ Resnet网络的证明网络能够向更深（包含更多隐藏层）的方向�
 使用说明：
 ![](https://p0.meituan.net/spacex/49fe90eeb134d8ab5837a3e4b7f755bc.png)
 简单使用：
-代码块
-Objective-C
+```objectivec
 //ResNet的输入图片大小要求为224*224，这里先将获取的image resize一下
 CGSize size_resNet = CGSizeMake(224,224);
 UIGraphicsBeginImageContextWithOptions(size_resNet, NO, 1.0);
@@ -159,7 +156,7 @@ CVPixelBufferRef pbimg_resNet = [self pixelBufferFromCGImage:imgRef_resNet];
 //res_resNet.classLabelProbs[res_resNet.classLabel] 可以取出最终识别的类别的概率（即最大概率）
 Resnet50Output *res_resNet = [self.mod_resNet predictionFromImage:pbimg_resNet error:nil];
 //    NSLog(@"resNet识别为:%@,概率为:%@",res_resNet.classLabel,res_resNet.classLabelProbs[res_resNet.classLabel]);
-​
+​```
 ​
 Resnet50Output的classLabelProbs属性：
 同SqueezeNet
@@ -176,8 +173,7 @@ DeepLab是谷歌使用tensorflow基于CNN开发的语义分割模型，至今已
 ![](https://p0.meituan.net/spacex/5cd0408eb81ec16f51400fbf4d27644b.png)
 
 简单使用：
-代码块
-Objective-C
+```objectivec
 UIImage *img = info[@"UIImagePickerControllerEditedImage"];
     
 //输入image 规格为513*513
@@ -204,7 +200,7 @@ DeepLabV3Output *res = [self.mod_deeplab predictionFromImage:pbimg error:nil];
 UIImage *myimg = [self imageBlackToTransparent:resultImage withArr:res.semanticPredictions];
 //将处理后的图片展示在另一个imageView中
 [self.imageView2 setImage:myimg];
-​
+​```
 
 
 附录：
@@ -212,14 +208,12 @@ CoreML官方文档：https://developer.apple.com/documentation/coreml
 
 pixelBufferFromCGImage: 函数
 UIImage 转 CGImageRef
-代码块
-Objective-C
+```objectivec
 UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
 CGImageRef imgRef = [image CGImage];
-​
+​```
 CGImageRef 转  CVPixelBufferRef
-代码块
-Objective-C
+```objectivec
 - (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image{
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
@@ -268,4 +262,4 @@ Objective-C
     return pxbuffer;
 ​
 }
-​
+​```
