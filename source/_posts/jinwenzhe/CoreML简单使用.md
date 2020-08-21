@@ -39,16 +39,24 @@ CoreML官网中可供使用的一些关于计算机视觉的模型：
 
 Demo展示：
 主界面：
-​![](https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png)
+<img src="https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png" width="40%">
+
+<!-- ​![](https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png) -->
 图像识别：
-​![](https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png)
-​![](https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png)
+<img src="https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png" width="50%">
+<img src="https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png" width="50%">
+<!-- ​![](https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png)
+​![](https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png) -->
 主体识别：
-​![](https://p0.meituan.net/spacex/620c41f68a181febbd710e1633fc7439.png)
-​![](https://p0.meituan.net/spacex/4377a0f840316051156a449d1285dce5.png)
+<img src="https://p0.meituan.net/spacex/620c41f68a181febbd710e1633fc7439.png" width="35%">
+<img src="https://p0.meituan.net/spacex/4377a0f840316051156a449d1285dce5.png" width="35%">
+<!-- ​![](https://p0.meituan.net/spacex/620c41f68a181febbd710e1633fc7439.png)
+​![](https://p0.meituan.net/spacex/4377a0f840316051156a449d1285dce5.png) -->
 物体检测：
-​![](https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png)
-​![](https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png)
+<img src="https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png" width="30%">
+<img src="https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png" width="30%">
+<!-- ​![](https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png)
+​![](https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png) -->
 使用方法：
 一、下载模型：
 下载链接：https://developer.apple.com/machine-learning/models/
