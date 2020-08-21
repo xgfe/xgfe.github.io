@@ -12,12 +12,12 @@ tags:
 # 简介：
 
 
-Core ML 是一个框架，支持iPhone的一些功能，比如FaceID、Animoji和增强现实AR。
-自从Core ML在2017年发布以来，它已经走过了很长的路，现在它支持大量的工具，可以帮助我们快速构建基于机器学习的应用程序。
-Core ML通过轻松集成机器学习模型来提供惊人的快速性能，使你仅需几行代码即可构建具有智能新功能的应用程序。
-使用由Core ML支持的API轻松地将预建的机器学习功能添加到您的应用程序中，或者使用Create ML以获得更大的灵活性，并在Mac上训练自定义的Core ML模型。
-你还可以使用Core ML Converters转换其他培训库中的模型，或下载即可使用的Core ML模型。
-Core ML提供了一系列的API，仅需几行代码，即可将设备上的机器学习功能（如图像和视频中的对象检测，语言分析和声音分类）带到您的应用中。
+        Core ML 是一个框架，支持iPhone的一些功能，比如FaceID、Animoji和增强现实AR。
+        自从Core ML在2017年发布以来，它已经走过了很长的路，现在它支持大量的工具，可以帮助我们快速构建基于机器学习的应用程序。
+        Core ML通过轻松集成机器学习模型来提供惊人的快速性能，使你仅需几行代码即可构建具有智能新功能的应用程序。
+        使用由Core ML支持的API轻松地将预建的机器学习功能添加到您的应用程序中，或者使用Create ML以获得更大的灵活性，并在Mac上训练自定义的Core ML模型。
+        你还可以使用Core ML Converters转换其他培训库中的模型，或下载即可使用的Core ML模型。
+        Core ML提供了一系列的API，仅需几行代码，即可将设备上的机器学习功能（如图像和视频中的对象检测，语言分析和声音分类）带到您的应用中。
 
 ​![](https://p0.meituan.net/spacex/ceadf7f29a7865d11a79e999447d08ad.png)
 
@@ -36,9 +36,9 @@ Core ML通过利用CPU，GPU和神经引擎来优化设备上的性能，同时�
 ​![](https://p0.meituan.net/spacex/3ddf02503149cfe5c10ef3b91d6f10db.png)
 
 # 宗旨：
-Build intelligence into your apps using machine learning models from the research community designed for Core ML.
+        Build intelligence into your apps using machine learning models from the research community designed for Core ML.
 
-使用研究社区专门为Core ML设计的机器学习模型，将智能构建到您的应用中。
+        使用研究社区专门为Core ML设计的机器学习模型，将智能构建到您的应用中。
 
 
 
@@ -65,11 +65,14 @@ Build intelligence into your apps using machine learning models from the researc
 不同的mlmodel区别在于参数精度不同
 ![](https://p0.meituan.net/spacex/4d9c5017d03297ea071508d25195ead2.png)
 ## 二、导入工程：
+
 将下载好的mlmodel文件直接拖进工程文件：
+
+
 ![](https://p0.meituan.net/spacex/cf9d4fc0556922c6b2fa4795670b7490.png)
 
 ## 三、查看模型输入输出：
-![](https://p0.meituan.net/spacex/acd4de65d6e0046ebb6558ed461d2be7.png)
+![](https://p0.meituan.net/spacex/6101140a24583fe73f6471843869c561.png)
 ## 四、导入头文件开始使用：
 
 ```objectivec
@@ -281,5 +284,53 @@ CGImageRef 转  CVPixelBufferRef
     CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
 ​
     return pxbuffer;​
+}
+```
+
+
+## pixelBufferFromCGImage: 函数
+
+对UIImage进行像素值修改，入参为MLMultiArray：
+
+```objectivec
+- (UIImage*)imageBlackToTransparent:(UIImage*)image withArr:(MLMultiArray*)arr{
+    const int imageWidth = image.size.width;
+    const int imageHeight = image.size.height;
+    size_t      bytesPerRow = imageWidth * 4;
+    uint32_t* rgbImageBuf = (uint32_t*)malloc(bytesPerRow * imageHeight);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpace,
+                                                 kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipLast);
+    CGContextDrawImage(context, CGRectMake(0, 0, imageWidth, imageHeight), image.CGImage);
+    // 遍历像素
+    int pixelNum = imageWidth * imageHeight;
+    uint32_t* pCurPtr = rgbImageBuf;
+    for (int i = 0; i < pixelNum; i++, pCurPtr++){
+        
+        uint8_t* ptr = (uint8_t*)pCurPtr;
+​
+        if(arr[i].intValue == 0){
+            ptr[3] = 0; //0~255
+            ptr[2] = 0;
+            ptr[1] = 0;
+        }
+​
+    }
+       
+    // 输出图片
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, rgbImageBuf, bytesPerRow * imageHeight, ProviderReleaseData);
+    CGImageRef imageRef = CGImageCreate(imageWidth, imageHeight, 8, 32, bytesPerRow, colorSpace,
+                                        kCGImageAlphaLast | kCGBitmapByteOrder32Little, dataProvider,
+                                        NULL, true, kCGRenderingIntentDefault);
+    CGDataProviderRelease(dataProvider);
+    UIImage* resultUIImage = [UIImage imageWithCGImage:imageRef];
+    // 清理空间
+    CGImageRelease(imageRef);
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    return resultUIImage;
+}
+static void ProviderReleaseData (void *info, const void *data, size_t size){
+    free((void*)data);
 }
 ```
