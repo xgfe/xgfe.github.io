@@ -19,7 +19,8 @@ Core ML通过轻松集成机器学习模型来提供惊人的快速性能，使�
 你还可以使用Core ML Converters转换其他培训库中的模型，或下载即可使用的Core ML模型。
 Core ML提供了一系列的API，仅需几行代码，即可将设备上的机器学习功能（如图像和视频中的对象检测，语言分析和声音分类）带到您的应用中。
 
-​![](https://p0.meituan.net/spacex/ceadf7f29a7865d11a79e999447d08ad.png)
+<img src="https://p0.meituan.net/spacex/ceadf7f29a7865d11a79e999447d08ad.png" width="60%">
+
 
 ## 优势：
 ### 简单、轻量：
@@ -79,7 +80,7 @@ Core ML通过利用CPU，GPU和神经引擎来优化设备上的性能，同时�
 
 将下载好的mlmodel文件直接拖进工程文件：
 
-<img src="https://p0.meituan.net/spacex/cf9d4fc0556922c6b2fa4795670b7490.png" width="80%">
+<img src="https://p0.meituan.net/spacex/cf9d4fc0556922c6b2fa4795670b7490.png" width="60%">
 
 ## 三、查看模型输入输出：
 ![](https://p0.meituan.net/spacex/6101140a24583fe73f6471843869c561.png)
