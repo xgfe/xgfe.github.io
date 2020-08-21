@@ -235,7 +235,8 @@ UIImage *myimg = [self imageBlackToTransparent:resultImage withArr:res.semanticP
 
 ```
 # 附录：
-## CoreML官方文档：https://developer.apple.com/documentation/coreml
+## CoreML官方文档：
+https://developer.apple.com/documentation/coreml
 
 ## pixelBufferFromCGImage: 函数
 UIImage 转 CGImageRef
