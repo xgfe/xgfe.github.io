@@ -1,16 +1,14 @@
 title: HTTP缓存机制
-date: 2020-05-18
+date: 2020-05-18 10:00:00
 categories:
-
 - caomengqi
-
 tags:
-
-* 缓存
+- 缓存
 
 ---
 
 本文主要针对HTTP的缓存机制进行了介绍。
+<!--More-->
 
 # 前言
 
