@@ -21,6 +21,7 @@ Core ML提供了一系列的API，仅需几行代码，即可将设备上的机�
 
 <img src="https://p0.meituan.net/spacex/ceadf7f29a7865d11a79e999447d08ad.png" width="80%">
 
+<!--more-->
 
 ## 优势：
 ### 简单、轻量：
