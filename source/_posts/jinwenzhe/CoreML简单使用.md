@@ -306,9 +306,10 @@ CGImageRef imgRef = [image CGImage];
 
 ## pixelBufferFromCGImage: 函数
 
-对UIImage进行像素值修改，入参为MLMultiArray：
+
 
 ```objectivec
+//对UIImage进行像素值修改，入参为MLMultiArray：
 - (UIImage*)imageBlackToTransparent:(UIImage*)image withArr:(MLMultiArray*)arr{
     const int imageWidth = image.size.width;
     const int imageHeight = image.size.height;
