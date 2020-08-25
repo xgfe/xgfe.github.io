@@ -71,7 +71,9 @@ Core ML通过利用CPU，GPU和神经引擎来优化设备上的性能，同时�
 
 # 使用方法：
 ## 一、下载模型：
-下载链接：https://developer.apple.com/machine-learning/models/
+
+
+>下载链接：https://developer.apple.com/machine-learning/models/
 
 不同的mlmodel区别在于参数精度不同
 
@@ -237,20 +239,21 @@ UIImage *myimg = [self imageBlackToTransparent:resultImage withArr:res.semanticP
 ```
 # 附录：
 ## CoreML官方文档：
-https://developer.apple.com/documentation/coreml
+>https://developer.apple.com/documentation/coreml
 
 ## pixelBufferFromCGImage: 函数
-UIImage 转 CGImageRef
+
 
 ```objectivec
+//UIImage 转 CGImageRef
 UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
 CGImageRef imgRef = [image CGImage];
 ```
 
 ## pixelBufferFromCGImage: 函数
-CGImageRef 转  CVPixelBufferRef
 
 ```objectivec
+//CGImageRef 转  CVPixelBufferRef
 - (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image{
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
