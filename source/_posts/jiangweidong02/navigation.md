@@ -346,7 +346,8 @@ replace方式进行的堆栈管理一定要使用addToBackStack操作，这个�
 
 首先，为什么想讲这个原理？是因为多数情况下我们没有办法在短时间内将现有的项目架构迁移成Navigation形式，但我们确实对他的导航图感到欣喜，出于这一点，可以简单讲一下AS绘制导航图的原理，以便为创建我们自己的导航图提供一些思路。
 
-我们先将[AndroidStudio源码](https://github.com/JetBrains/android)下载下来。navigation编辑器相关的代码都存在了android/naveditor/src/com/android/tools/idea/naveditor路径下。
+我们先将[AndroidStudio源码](https://github.com/JetBrains/android)下载下来。
+navigation编辑器相关的代码都存在了android/naveditor/src/com/android/tools/idea/naveditor路径下。
 
 转化一下角色，**想象自己是一名AndroidStudio工具开发者**。然后继续分析naveditor目录结构：
 <img width = "300px" src="https://p0.meituan.net/spacex/37e9b0501bb000780aaeb90a5dccd3e5.png" alt=""/>
