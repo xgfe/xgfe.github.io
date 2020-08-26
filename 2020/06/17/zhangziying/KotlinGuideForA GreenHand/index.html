@@ -1,0 +1,722 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="Android,Kotlin,Mobile,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="简介Kotlin凭什么被称为 “better Java”？本文从Java使用者的角度入门Kotlin，看看Kotlin好处都有啥。">
+<meta name="keywords" content="Android,Kotlin,Mobile">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin初探(Java视角)">
+<meta property="og:url" content="http://xgfe.github.io/2020/06/17/zhangziying/KotlinGuideForA GreenHand/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="简介Kotlin凭什么被称为 “better Java”？本文从Java使用者的角度入门Kotlin，看看Kotlin好处都有啥。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-06-17T08:01:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin初探(Java视角)">
+<meta name="twitter:description" content="简介Kotlin凭什么被称为 “better Java”？本文从Java使用者的角度入门Kotlin，看看Kotlin好处都有啥。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Kotlin初探(Java视角) | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Kotlin初探(Java视角)
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2020-06-17T16:01:00+08:00" content="2020-06-17">
+            2020-06-17
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zhangziying03/" itemprop="url" rel="index">
+                  <span itemprop="name">zhangziying03</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/Android/" rel="tag"><i class="icon-next-tags"></i>Android</a>
+            
+              <a href="/tags/Kotlin/" rel="tag"><i class="icon-next-tags"></i>Kotlin</a>
+            
+              <a href="/tags/Mobile/" rel="tag"><i class="icon-next-tags"></i>Mobile</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Kotlin凭什么被称为 “better Java”？本文从Java使用者的角度入门Kotlin，看看Kotlin好处都有啥。<br><a id="more"></a></p>
+<h2 id="Kotlin是什么"><a href="#Kotlin是什么" class="headerlink" title="Kotlin是什么"></a>Kotlin是什么</h2><h3 id="Kotlin和Java的关系："><a href="#Kotlin和Java的关系：" class="headerlink" title="Kotlin和Java的关系："></a>Kotlin和Java的关系：</h3><p>Kotlin兼容Java，可以直接调用Java代码，因此一切Java的库也适用于Kotlin。Kotlin可以编译成JVM字节码也可以编译成JavaScript方便在没有 JVM 的设备上运行。Java能跑的地方Kotlin也能跑，Kotlin可以看做Java的扩展/优化。<br>在语法糖的加持下Kotlin相比Java可以写出更简洁的代码。Kotlin在无缝兼容Java的基础上还拥有一些其他特性，比如协程、空类型检查等特性。</p>
+<h3 id="Kotlin的社会地位："><a href="#Kotlin的社会地位：" class="headerlink" title="Kotlin的社会地位："></a>Kotlin的社会地位：</h3><p>Kotlin 在2017年被Google宣布为Android官方开发语言。</p>
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>Kotlin中一切都是对象。可以采用统一的方式进行声明。</p>
+<h3 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h3><p>Kotlin中可以使用var或val对变量进行定义，其中var定义可变变量，val定义不可变变量。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Kotlin中不需要分号了哦</span></span><br><span class="line"><span class="keyword">var</span> &lt;标识符&gt; : &lt;类型&gt; = &lt;初始化值&gt;</span><br><span class="line"><span class="keyword">val</span> &lt;标识符&gt; : &lt;类型&gt; = &lt;初始化值&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="null检测"><a href="#null检测" class="headerlink" title="null检测"></a>null检测</h3><p>Java中虽然有@Nullable @NotNull等注解,但是加上这些注解后仅仅会有IDE警告，提示处理null情况。Kotlin编译器则可以强制处理null情况，最大限度避免null问题。Kotlin在声明变量的时候，可以指定变量是否为空，调用可为空对象时，需要进行空判断。<br>在Kotlin的null检查机制中，使用!!以及?进行null检测。其中加上!!后则变量不可为空，否则会NPE(NullPointerException)，而?则可以为空。<br>在声明变量的时候，在类型后面加上相应的符号：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> h: String? = <span class="string">"helloworld"</span></span><br></pre></td></tr></table></figure></p>
+<p>在使用变量的时候对于可空的变量可以直接抛出异常或者进行相应的处理或者不作处理。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> h: String? = <span class="string">"1"</span> </span><br><span class="line"><span class="comment">//!!抛出空指针异常</span></span><br><span class="line"><span class="keyword">val</span> ages = age!!.toInt()</span><br><span class="line"><span class="comment">//不做处理返回 null</span></span><br><span class="line"><span class="keyword">val</span> ages1 = age?.toInt()</span><br><span class="line"><span class="comment">//age为空返回-1 等价于 ages2 = age==null? -1: age;</span></span><br><span class="line"><span class="keyword">val</span> ages2 = age?.toInt() ?: <span class="number">-1</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="比较与类型判断"><a href="#比较与类型判断" class="headerlink" title="比较与类型判断"></a>比较与类型判断</h3><p>在 Kotlin 中，三个等号 === 表示比较对象地址，两个 == 表示比较两个值大小。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> c:<span class="built_in">Int</span> = <span class="number">999</span></span><br><span class="line"><span class="keyword">val</span> a:<span class="built_in">Int</span>? = c</span><br><span class="line"><span class="keyword">val</span> b:<span class="built_in">Int</span>? = c</span><br><span class="line">a===b <span class="comment">//false 需要注意两点 1、使用？会进行自动装箱，是Int对象。2、若c在-127到128之间则结果为true 因为会使用IntegerCache里缓存的数据而不是装箱成新对象。</span></span><br><span class="line">a==b <span class="comment">//true</span></span><br></pre></td></tr></table></figure></p>
+<p>类型判断也十分简便，使用 is 进行判断：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(a <span class="keyword">is</span> <span class="built_in">Int</span>) &#123; <span class="comment">//todo &#125;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="循环相关"><a href="#循环相关" class="headerlink" title="循环相关"></a>循环相关</h2><h3 id="区间遍历"><a href="#区间遍历" class="headerlink" title="区间遍历"></a>区间遍历</h3><p>对于一个区间的遍历，Kotlin提供了Java相比更为简约的写法：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//区间可以通过..进行连接，如A..B表示[A,B] 还可以通过 until 进行连接,比如 A until B 表示[A,B)</span></span><br><span class="line"><span class="keyword">for</span>(i <span class="keyword">in</span> 区间) </span><br><span class="line"><span class="comment">//还可以通过downTo从大往小取 </span></span><br><span class="line"><span class="keyword">for</span>(i <span class="keyword">in</span> <span class="number">5</span> downTo <span class="number">1</span>)</span><br><span class="line"><span class="comment">//也可以设定步长，比如每两个数取一次</span></span><br><span class="line"><span class="keyword">for</span>(i <span class="keyword">in</span> <span class="number">5</span> downTo <span class="number">1</span> step <span class="number">2</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="更简洁的switch：when"><a href="#更简洁的switch：when" class="headerlink" title="更简洁的switch：when"></a>更简洁的switch：when</h3><p>在Kotlin中可以使用when来替代Java中的switch：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">when</span> (x) &#123;</span><br><span class="line">    <span class="number">1</span>,<span class="number">3</span> -&gt; print(<span class="string">"1 OR 3"</span>)</span><br><span class="line">    <span class="number">2</span> -&gt; print(<span class="string">"3"</span>)</span><br><span class="line">    <span class="keyword">in</span> <span class="number">4.</span><span class="number">.10</span> -&gt; print(<span class="string">"in [4,10]"</span>)<span class="comment">//可以判断区间</span></span><br><span class="line">    <span class="keyword">is</span> <span class="built_in">Int</span> -&gt; print(<span class="string">"is Int"</span>) <span class="comment">// 还可以判断类型</span></span><br><span class="line">    <span class="keyword">else</span> -&gt; &#123; <span class="comment">// 除非覆盖所有情况，否则必须写</span></span><br><span class="line">        print(<span class="string">"err"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="类与对象"><a href="#类与对象" class="headerlink" title="类与对象"></a>类与对象</h2><h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>Kotlin对象支持多个构造函数，其中分为主构造函数和次构造函数。主构造函数的参数放在类的头，具体代码放在类内的 init{} 代码段中。次构造函数直接在类内使用constructor进行声明：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//若主构造函数没有任何注解或者可见性修饰符(public、protected、private、internal)，则 constructor 可以省略</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Demo</span> <span class="title">construcotr</span></span>(name: String) &#123;   </span><br><span class="line">        <span class="comment">//主构造函数</span></span><br><span class="line">   init &#123;</span><br><span class="line">             <span class="comment">// TODO  </span></span><br><span class="line">      &#125;    </span><br><span class="line">    <span class="comment">//次构造函数</span></span><br><span class="line">   construcotr(name: String, key: String)&#123;</span><br><span class="line">   <span class="comment">//TODO</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其他内容与Java相似度较大，不再展开。</p>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>首先，协程并不是Kotlin特有的，它已经有十几年的历史了，go Javascript python等语言都支持协程。简单的来说，协程就是轻量级的线程。协程完全由程序控制，因此协程的切换不设计用户态和内核态的转变消耗相对于线程切换更低。一个进程中可以有多个线程，而一个线程中也可以有多个协程。对于同一个线程里面的协程，它们之间的执行是串行的。因此协程序适合于io密集型的程序。</p>
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p><strong>launch</strong><br>一个最简单协程的创建用launch加上大括号括起来的代码即可，返回Job,可以用来对协程进行取消等操作：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> job = launch&#123;</span><br><span class="line">        <span class="comment">//todo</span></span><br><span class="line">    <span class="comment">//使用delay可以挂起协程</span></span><br><span class="line">    delay(<span class="number">1000</span>L)</span><br><span class="line">    &#125;</span><br><span class="line">    job.cancel()</span><br><span class="line">    job.join()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>runBlocking</strong><br>runBlocking启动的协程任务会阻断当前线程，直到该协程执行结束：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    runBlocking &#123;     </span><br><span class="line">        delay(<span class="number">2000</span>L)  </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以用runBlocking来包装一个函数：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">test</span><span class="params">()</span></span> = runBlocking&lt;T&gt; &#123; </span><br><span class="line">    <span class="comment">//todo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>async/await</strong><br>async方法的返回值类型是Deferred, 是Job的子类, Deferred里有个await方法, 调用它可得到协程的返回值。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">test</span><span class="params">()</span></span> = runBlocking&lt;T&gt; &#123; </span><br><span class="line">    <span class="keyword">var</span> deferred = async&#123; <span class="comment">//todo&#125;</span></span><br><span class="line">    <span class="comment">//输出结果</span></span><br><span class="line">    print(deferred.await())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="其他概念-amp-参数"><a href="#其他概念-amp-参数" class="headerlink" title="其他概念&amp;参数"></a>其他概念&amp;参数</h3><p>上下文：协程运行的上下文包括Job以及调度器等<br>协程调度器：决定协程运行的线程情况，比如指定线程或者不设限<br><strong><em>GlobalScope&amp;CoroutineScope</em></strong><br>GlobalScope继承自CoroutineScope。当一个协程被其它协程在 CoroutineScope中启动的时候则会继承父协程的上下文。当使用 GlobalScope来启动一个协程时，则新协程的作业没有父作业。 因此它与这个启动的作用域无关且独立运作。<br>可以在创建协程的时候使用，比如：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> job = GlobalScope.launch&#123;</span><br><span class="line">        <span class="comment">//todo</span></span><br><span class="line">    <span class="comment">//使用delay可以挂起协程</span></span><br><span class="line">    delay(<span class="number">1000</span>L)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以直接创建一个作用域，然后在里面创建协程：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GlobalScope&#123;</span><br><span class="line">        launch&#123;</span><br><span class="line">            <span class="comment">//todo</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong><em>调度器</em></strong><br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">launch(Dispatchers.Default) &#123; <span class="comment">// 将会获取默认调度器</span></span><br><span class="line">   <span class="comment">//todo</span></span><br><span class="line">&#125;</span><br><span class="line">launch(newSingleThreadContext(<span class="string">"MyOwnThread"</span>)) &#123; <span class="comment">// 将使它获得一个新的线程</span></span><br><span class="line">   <span class="comment">//todo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/03/zhangdezhi/VirtualDOM与diff(Vue实现)/" rel="prev">Vue中VirtualDOM与diff的实现</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/27/jiangweidong02/navigation/" rel="next">Jetpack-Navigation使用指南与原理剖析</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">127</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kotlin是什么"><span class="nav-number">2.</span> <span class="nav-text">Kotlin是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kotlin和Java的关系："><span class="nav-number">2.1.</span> <span class="nav-text">Kotlin和Java的关系：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kotlin的社会地位："><span class="nav-number">2.2.</span> <span class="nav-text">Kotlin的社会地位：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本语法"><span class="nav-number">3.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">4.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#声明"><span class="nav-number">4.1.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null检测"><span class="nav-number">4.2.</span> <span class="nav-text">null检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比较与类型判断"><span class="nav-number">4.3.</span> <span class="nav-text">比较与类型判断</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环相关"><span class="nav-number">5.</span> <span class="nav-text">循环相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#区间遍历"><span class="nav-number">5.1.</span> <span class="nav-text">区间遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更简洁的switch：when"><span class="nav-number">5.2.</span> <span class="nav-text">更简洁的switch：when</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类与对象"><span class="nav-number">6.</span> <span class="nav-text">类与对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数"><span class="nav-number">6.1.</span> <span class="nav-text">构造函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协程"><span class="nav-number">7.</span> <span class="nav-text">协程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本使用"><span class="nav-number">7.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他概念-amp-参数"><span class="nav-number">7.2.</span> <span class="nav-text">其他概念&amp;参数</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

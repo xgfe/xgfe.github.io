@@ -1,0 +1,759 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="android,anr,plugin,gradle,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文介绍了ANR相关原理，以及如何通过插件方式解决SharedPreference导致的ANR。">
+<meta name="keywords" content="android,anr,plugin,gradle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SharedPreference导致的ANR优化实践">
+<meta property="og:url" content="http://xgfe.github.io/2020/02/09/shenyanghong/anr-and-gradle-plugin/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文介绍了ANR相关原理，以及如何通过插件方式解决SharedPreference导致的ANR。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xgfe.github.io/uploads/shenyanghong/anr/pic1.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/shenyanghong/anr/pic2.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/shenyanghong/anr/debug1.png">
+<meta property="og:image" content="http://xgfe.github.io/uploads/shenyanghong/anr/debug2.png">
+<meta property="og:updated_time" content="2020-08-24T12:47:30.490Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SharedPreference导致的ANR优化实践">
+<meta name="twitter:description" content="本文介绍了ANR相关原理，以及如何通过插件方式解决SharedPreference导致的ANR。">
+<meta name="twitter:image" content="http://xgfe.github.io/uploads/shenyanghong/anr/pic1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> SharedPreference导致的ANR优化实践 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              SharedPreference导致的ANR优化实践
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2020-02-09T15:07:40+08:00" content="2020-02-09">
+            2020-02-09
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/shenyanghong/" itemprop="url" rel="index">
+                  <span itemprop="name">shenyanghong</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/android/" rel="tag"><i class="icon-next-tags"></i>android</a>
+            
+              <a href="/tags/anr/" rel="tag"><i class="icon-next-tags"></i>anr</a>
+            
+              <a href="/tags/plugin/" rel="tag"><i class="icon-next-tags"></i>plugin</a>
+            
+              <a href="/tags/gradle/" rel="tag"><i class="icon-next-tags"></i>gradle</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文介绍了ANR相关原理，以及如何通过插件方式解决SharedPreference导致的ANR。</p>
+<a id="more"></a>
+<h2 id="什么是ANR"><a href="#什么是ANR" class="headerlink" title="什么是ANR"></a>什么是ANR</h2><p>ANR是“Application Not Responding”的简称，当Android应用程序的UI线程被阻止时间太长时，将触发应用程序无响应（ANR）的错误，如下图。如果应用程序位于前台，则系统会向用户显示一个对话框，使得用户可以强制退出该应用。开发者模式下可以设置后台程序也展示ANR对话框。<br><img src="/uploads/shenyanghong/anr/pic1.png" alt="" width="200"></p>
+<h3 id="通常哪些情况会触发ANR"><a href="#通常哪些情况会触发ANR" class="headerlink" title="通常哪些情况会触发ANR"></a>通常哪些情况会触发ANR</h3><p>1.在主线程做耗时的IO操作<br>2.在主线程中做耗时计算<br>3.主线程中做跨进程操作<br>4.主线程中使用同步锁，或者sleep等，导致线程长时间等待</p>
+<h3 id="线下如何检测和排查ANR"><a href="#线下如何检测和排查ANR" class="headerlink" title="线下如何检测和排查ANR"></a>线下如何检测和排查ANR</h3><p>1.在开发者模式下，开启“显示所有应用程序无响应”选项，后台应用程序也会显示ANR对话框<br>2.开启StrictMode( 严苛模式)，帮助检测主线程中的磁盘操作和网络请求<br>3.从设备中提取/data/anr/anr_* 文件分析，需要root权限，无权限时可以执行adb bugreport &gt; trace.txt 命令，将ANR信息导入trace.txt文件</p>
+<h2 id="线上ANR如何监控"><a href="#线上ANR如何监控" class="headerlink" title="线上ANR如何监控"></a>线上ANR如何监控</h2><p>要想监控ANR，首先需要了解系统是何时抛出ANR对话框的。然后可以模拟系统做相同的监控，或者在系统监控到ANR的，通过手段获取到该通知。</p>
+<h3 id="系统定义的ANR场景有哪些"><a href="#系统定义的ANR场景有哪些" class="headerlink" title="系统定义的ANR场景有哪些"></a>系统定义的ANR场景有哪些</h3><p>ANR都会走到AMS的mAppErrors.appNotResponding方法，通过查看该方法调用，主要有以下场景：<br>1.前台服务在20s内未执行完成 或者 android 8.0调用startForegroundService() 后，5秒内没有调用startForeground()也会触发ANR<br>2.前台广播在10s内未执行完成，默认的后台广播超时时间是60s<br>3.ContentProviderClient 也可能会调用ams.appNotRespondingViaProvider。ContentProviderClient中所有操作都会先调用beforeRemote()，最后调用afterRemote()，在beforeRemote时就会开始ANR计时。ContentProviderClient主要是用来缓存ContentResolver的，使用较少，一般都是使用getContentResolver()。<br>4.输入事件分发超时5s，包括按键和触摸事件，当native层监控到超时后，会调用InputManagerService.notifyANR，方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Native callback.</span><br><span class="line">private long notifyANR(InputApplicationHandle inputApplicationHandle,</span><br><span class="line">        InputWindowHandle inputWindowHandle, String reason) &#123;</span><br><span class="line">    return mWindowManagerCallbacks.notifyANR(</span><br><span class="line">            inputApplicationHandle, inputWindowHandle, reason);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>mWindowManagerCallbacks的实现是InputMonitor，InputMonitor的notifyANR，最终会调用AMS的inputDispatchingTimeOut方法，notifyANR中关键代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    // Notify the activity manager about the timeout and let it decide whether</span><br><span class="line">    // to abort dispatching or keep waiting.</span><br><span class="line">    long timeout = ActivityManager.getService().inputDispatchingTimedOut(</span><br><span class="line">            windowState.mSession.mPid, aboveSystem, reason);</span><br><span class="line">    if (timeout &gt;= 0) &#123;</span><br><span class="line">        // The activity manager declined to abort dispatching.</span><br><span class="line">        // Wait a bit longer and timeout again later.</span><br><span class="line">        return timeout * 1000000L; // nanoseconds</span><br><span class="line">    &#125;</span><br><span class="line">&#125; catch (RemoteException ex) &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>AMS.inputDispatchingTimeOut方法，最终会调用AppErrors.appNotResponding方法，该方法主要做了以下几件事：<br>1.前台应用ANR时存储各个线程调用栈信息到/data/anr/目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// For background ANRs, don&apos;t pass the ProcessCpuTracker to</span><br><span class="line">// avoid spending 1/2 second collecting stats to rank lastPids.</span><br><span class="line">File tracesFile = mService.dumpStackTraces(true, firstPids,</span><br><span class="line">                                           (isSilentANR) ? null : processCpuTracker,</span><br><span class="line">                                           (isSilentANR) ? null : lastPids,</span><br><span class="line">                                           nativePids);</span><br></pre></td></tr></table></figure></p>
+<p>2.存储未响应状态到进程中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private void makeAppNotRespondingLocked(ProcessRecord app,</span><br><span class="line">            String activity, String shortMsg, String longMsg) &#123;</span><br><span class="line">    app.notResponding = true;</span><br><span class="line">    app.notRespondingReport = generateProcessError(app,</span><br><span class="line">            ActivityManager.ProcessErrorStateInfo.NOT_RESPONDING,</span><br><span class="line">            activity, shortMsg, longMsg, null);</span><br><span class="line">    startAppProblemLocked(app);</span><br><span class="line">    app.stopFreezingAllLocked();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3.显示ANR对话框<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Bring up the infamous App Not Responding dialog</span><br><span class="line">Message msg = Message.obtain();</span><br><span class="line">HashMap&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();</span><br><span class="line">msg.what = ActivityManagerService.SHOW_NOT_RESPONDING_UI_MSG;</span><br><span class="line">msg.obj = map;</span><br><span class="line">msg.arg1 = aboveSystem ? 1 : 0;</span><br><span class="line">map.put(&quot;app&quot;, app);</span><br><span class="line">if (activity != null) &#123;</span><br><span class="line">    map.put(&quot;activity&quot;, activity);</span><br><span class="line">&#125;</span><br><span class="line">mService.mUiHandler.sendMessage(msg);</span><br></pre></td></tr></table></figure></p>
+<p>4.发送ANR广播<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = new Intent(&quot;android.intent.action.ANR&quot;);</span><br><span class="line">if (!mService.mProcessesReady) &#123;</span><br><span class="line">    intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY</span><br><span class="line">            | Intent.FLAG_RECEIVER_FOREGROUND);</span><br><span class="line">&#125;</span><br><span class="line">mService.broadcastIntentLocked(null, null, intent,</span><br><span class="line">        null, null, 0, null, null, null, AppOpsManager.OP_NONE,</span><br><span class="line">        null, false, false, MY_PID, Process.SYSTEM_UID, 0);</span><br></pre></td></tr></table></figure></p>
+<p>通过上述分析，ANR发生在发送，启动服务，按键或者触摸事件时；而Activity生命周期耗时，并不会导致ANR，但是如果此时有service启动，用户操作等，则可能会出现ANR</p>
+<h3 id="线上监控方案"><a href="#线上监控方案" class="headerlink" title="线上监控方案"></a>线上监控方案</h3><h4 id="判断ANR时机"><a href="#判断ANR时机" class="headerlink" title="判断ANR时机"></a>判断ANR时机</h4><p>通过上述分析，判断ANR时机，较好的办法是通过FileObserver监听/data/anr/目录或者 “android.intent.action.ANR”广播。<br>而由于没有root权限，/data/anr/目录或文件的监听会无效，ANR广播在部分手机上不ok，因此大部分线上监控方案还会结合5秒轮询的方式。轮询时判断AMS.getProcessesInErrorState()中是否有ANR异常信息。或者监听主线程Looper.loop时，每条Message的执行时间。而ANR问题基本上同一个APP不同用户的现象相差不大，因此会设置一个采样率，不用所有人都监控采样。</p>
+<h4 id="输出anr堆栈信息"><a href="#输出anr堆栈信息" class="headerlink" title="输出anr堆栈信息"></a>输出anr堆栈信息</h4><p>堆栈信息可以通过提取/data/anr/目录中文件或者调用AMS.getProcessesInErrorState()，该方法返回进程所有错误信息，在发生ANR之后过滤出包含ANR的ProcessErrorStateInfo即可。</p>
+<h2 id="SharedPreference导致的ANR"><a href="#SharedPreference导致的ANR" class="headerlink" title="SharedPreference导致的ANR"></a>SharedPreference导致的ANR</h2><p>我们遇到过一个占比较高的ANR和SharedPreference有关，堆栈信息如下：<br><img src="/uploads/shenyanghong/anr/pic2.png" alt="" width="600"></p>
+<h3 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h3><h4 id="调用QueueWork-waitToFinish时机有哪些？"><a href="#调用QueueWork-waitToFinish时机有哪些？" class="headerlink" title="调用QueueWork.waitToFinish时机有哪些？"></a>调用QueueWork.waitToFinish时机有哪些？</h4><p>我们查看到调用路径为QueueWork.waitToFinish， 那么哪些情况下会调用该方法，查看ActivityThread源码发现有以下情况：<br>1.Service onStartCommand被调用时<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">private void handleServiceArgs(ServiceArgsData data) &#123;</span><br><span class="line">    Service s = mServices.get(data.token);</span><br><span class="line">    if (s != null) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            if (data.args != null) &#123;</span><br><span class="line">                data.args.setExtrasClassLoader(s.getClassLoader());</span><br><span class="line">                data.args.prepareToEnterProcess();</span><br><span class="line">            &#125;</span><br><span class="line">            int res;</span><br><span class="line">            if (!data.taskRemoved) &#123;</span><br><span class="line">                res = s.onStartCommand(data.args, data.flags, data.startId);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                s.onTaskRemoved(data.args);</span><br><span class="line">                res = Service.START_TASK_REMOVED_COMPLETE;</span><br><span class="line">            &#125;</span><br><span class="line">            QueuedWork.waitToFinish();</span><br><span class="line">            ...</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2.Service onStop时<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">private void handleStopService(IBinder token) &#123;</span><br><span class="line">    Service s = mServices.remove(token);</span><br><span class="line">    if (s != null) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            if (localLOGV) Slog.v(TAG, &quot;Destroying service &quot; + s);</span><br><span class="line">            s.onDestroy();</span><br><span class="line">            s.detachAndCleanUp();</span><br><span class="line">            Context context = s.getBaseContext();</span><br><span class="line">            if (context instanceof ContextImpl) &#123;</span><br><span class="line">                final String who = s.getClassName();</span><br><span class="line">                ((ContextImpl) context).scheduleFinalCleanup(who, &quot;Service&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            QueuedWork.waitToFinish();</span><br><span class="line">            ...</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        Slog.i(TAG, &quot;handleStopService: token=&quot; + token + &quot; not found.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3.Activity不可见时<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private void handleStopActivity(IBinder token, boolean show, int configChanges, int seq) &#123;</span><br><span class="line">    ActivityClientRecord r = mActivities.get(token);</span><br><span class="line">    r.activity.mConfigChangeFlags |= configChanges;</span><br><span class="line">    StopInfo info = new StopInfo();</span><br><span class="line">    performStopActivityInner(r, info, show, true, &quot;handleStopActivity&quot;);</span><br><span class="line">    updateVisibility(r, show);</span><br><span class="line">    // Make sure any pending writes are now committed.</span><br><span class="line">    if (!r.isPreHoneycomb()) &#123;</span><br><span class="line">        QueuedWork.waitToFinish();</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="为什么线程会阻塞在SharedPreferencesImpl中，它和QueuedWork有什么关系？"><a href="#为什么线程会阻塞在SharedPreferencesImpl中，它和QueuedWork有什么关系？" class="headerlink" title="为什么线程会阻塞在SharedPreferencesImpl中，它和QueuedWork有什么关系？"></a>为什么线程会阻塞在SharedPreferencesImpl中，它和QueuedWork有什么关系？</h4><p>SharedPreferencesImpl 是 SharedPreference的实现类，其中apply() 和 commit() 都调用了QueuedWork，apply()方法中写文件是调用QueuedWork中的Handler来延时执行的。<br>commit()方法是立即执行 或者调用QueuedWork中的Handler 批量立即执行的。其中加入QueuedWork.sFinishers列表的只有apply()<br>apply方法代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public void apply() &#123;</span><br><span class="line">    final MemoryCommitResult mcr = commitToMemory();//立即修改内存</span><br><span class="line">    final Runnable awaitCommit = new Runnable() &#123;</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    mcr.writtenToDiskLatch.await(); //等待该apply数据写完文件</span><br><span class="line">                &#125; catch (InterruptedException ignored) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">    QueuedWork.addFinisher(awaitCommit);//加入QueuedWork的Finisher队列，检查时机见下文</span><br><span class="line"></span><br><span class="line">    Runnable postWriteRunnable = new Runnable() &#123; //写入文件完毕的回调，从QueuedWork移除等待</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                awaitCommit.run();</span><br><span class="line">                QueuedWork.removeFinisher(awaitCommit);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">    SharedPreferencesImpl.this.enqueueDiskWrite(mcr, postWriteRunnable);//加入QueuedWork队列，并延时执行</span><br><span class="line"></span><br><span class="line">    notifyListeners(mcr);//回调通过registerOnSharedPreferenceChangeListener注册的listener，⚠️回调时不等文件写完成。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>commit方法代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public boolean commit() &#123;</span><br><span class="line">    MemoryCommitResult mcr = commitToMemory();//写入内存</span><br><span class="line"></span><br><span class="line">    //如果所有的apply commit 文件都写入完成，则在当前线程执行写入，否则丢到QueuedWork队列，且立即在子线程中执行队列中的runnable</span><br><span class="line">    SharedPreferencesImpl.this.enqueueDiskWrite(mcr, null);</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        mcr.writtenToDiskLatch.await();//等待本次写完</span><br><span class="line">    &#125; catch (InterruptedException e) &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    notifyListeners(mcr);</span><br><span class="line">    return mcr.writeToDiskResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>apply中关键的异步写方法enqueueDiskWrite代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">private void enqueueDiskWrite(final MemoryCommitResult mcr,</span><br><span class="line">                              final Runnable postWriteRunnable) &#123;</span><br><span class="line">    final boolean isFromSyncCommit = (postWriteRunnable == null);</span><br><span class="line"></span><br><span class="line">    final Runnable writeToDiskRunnable = new Runnable() &#123;</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                synchronized (mWritingToDiskLock) &#123;</span><br><span class="line">                    writeToFile(mcr, isFromSyncCommit);</span><br><span class="line">                &#125;</span><br><span class="line">                synchronized (mLock) &#123;</span><br><span class="line">                    //写入完成，减少计数器</span><br><span class="line">                    mDiskWritesInFlight--;</span><br><span class="line">                &#125;</span><br><span class="line">                if (postWriteRunnable != null) &#123;</span><br><span class="line">                    postWriteRunnable.run();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">    // commit操作</span><br><span class="line">    if (isFromSyncCommit) &#123;</span><br><span class="line">        boolean wasEmpty = false;</span><br><span class="line">        synchronized (mLock) &#123;</span><br><span class="line">            //mDiskWritesInFlight==1表示只有本次写入未完成</span><br><span class="line">            wasEmpty = mDiskWritesInFlight == 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (wasEmpty) &#123;</span><br><span class="line">            //如果所有的apply commit 文件都写入完成，则在当前线程执行写入</span><br><span class="line">            writeToDiskRunnable.run();</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //丢到QueuedWork队列，由子线程执行writeToDiskRunnable，commit操作会理解执行，apply会延时100ms执行</span><br><span class="line">    QueuedWork.queue(writeToDiskRunnable, !isFromSyncCommit);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>真正写数据到文件的方法writeToFile代码如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">private void writeToFile(MemoryCommitResult mcr, boolean isFromSyncCommit) &#123;</span><br><span class="line">    boolean fileExists = mFile.exists();</span><br><span class="line">    // Rename the current file so it may be used as a backup during the next read</span><br><span class="line">    // 如果文件存在，则先备份，写入时会写到mFile中</span><br><span class="line">    if (fileExists) &#123;</span><br><span class="line">        boolean needsWrite = false;</span><br><span class="line">        // 当磁盘缓存的版本低于需要写入的版本时，才写入</span><br><span class="line">        if (mDiskStateGeneration &lt; mcr.memoryStateGeneration) &#123;</span><br><span class="line">            if (isFromSyncCommit) &#123;</span><br><span class="line">                needsWrite = true;// 当commit时，由于外面在等待写入结果，因此每次都写入</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                synchronized (mLock) &#123;</span><br><span class="line">                    // 当内存的版本等于要写入的版本时，才写入，也就是多个apply操作，只写入最后一个apply时的内存</span><br><span class="line">                    if (mCurrentMemoryStateGeneration == mcr.memoryStateGeneration) &#123;</span><br><span class="line">                        needsWrite = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (!needsWrite) &#123;</span><br><span class="line">            //如果不需要写入时，实际是否写入文件为false，是否操作成功为true</span><br><span class="line">            mcr.setDiskWriteResult(false, true);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        boolean backupFileExists = mBackupFile.exists();</span><br><span class="line">        if (!backupFileExists) &#123;</span><br><span class="line">            if (!mFile.renameTo(mBackupFile)) &#123;</span><br><span class="line">                //备份失败则算没有写入，且写入失败</span><br><span class="line">                mcr.setDiskWriteResult(false, false);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            mFile.delete();//backup文件存在，则丢弃mFile，因为backupFile永远是完整的</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //真正开始写入mFile，出现任何异常，删除写入异常的mFile</span><br><span class="line">    try &#123;</span><br><span class="line">        FileOutputStream str = createFileOutputStream(mFile);</span><br><span class="line"></span><br><span class="line">        if (str == null) &#123;</span><br><span class="line">            mcr.setDiskWriteResult(false, false);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        XmlUtils.writeMapXml(mcr.mapToWriteToDisk, str);</span><br><span class="line">        ...略</span><br><span class="line"></span><br><span class="line">        // 写入成功，mBackupFile就无用了，删除</span><br><span class="line">        mBackupFile.delete();</span><br><span class="line">        mDiskStateGeneration = mcr.memoryStateGeneration;</span><br><span class="line"></span><br><span class="line">        //更新写入成功回调</span><br><span class="line">        mcr.setDiskWriteResult(true, true);</span><br><span class="line"></span><br><span class="line">        long fsyncDuration = fsyncTime - writeTime;</span><br><span class="line">        mSyncTimes.add(Long.valueOf(fsyncDuration).intValue());</span><br><span class="line">        return;</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">        Log.w(TAG, &quot;writeToFile: Got exception:&quot;, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 出现异常，删除写入异常的mFile</span><br><span class="line">    if (mFile.exists()) &#123;</span><br><span class="line">        mFile.delete()</span><br><span class="line">    &#125;</span><br><span class="line">    mcr.setDiskWriteResult(false, false);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="ANR原因"><a href="#ANR原因" class="headerlink" title="ANR原因"></a>ANR原因</h3><p>通过上面汇总的waitToFinish调用时机，我们了解到，它都是在主线程执行的。而apply方法执行时，往sFinishes添加了一个等待写入完成的Runnable，因此在触发waitToFinish时，由于主线程等待子线程写入执行完成，从而可能造成ANR，因此主要原因在于QueuedWork.addFinisher代码。</p>
+<h3 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h3><p>初步解决思路是，apply时，不将等待写入完成runnable加入sFinishes 队列。设计原因在代码中未说明，可能是为了防止丢失数据，让写入线程有更多时机写入。经过分析和讨论这个不是必须的，因为该方案无法保证进程被杀时的数据丢失问题，修改前后，通过杀进程测试，发现被杀前apply的数据都无法保留下来。而通过和其他端解决方案对比，发现也有将sFinishers 队列清空的方案，这种方案改动更大且未暴露出其他问题，因此我们决定采用apply()时，不将等待写入完成的runnable加入sFinishes 队列。经过多个版本灰度，未见异常，最终全量后没有SharedPreference相关的ANR。</p>
+<h3 id="具体方案"><a href="#具体方案" class="headerlink" title="具体方案"></a>具体方案</h3><p>重写了SharedPreferencesImpl的包装类，该包装类中改变了Editor的apply方法的实现。<br>apply()重新实现时，将不包含QueuedWork.addFinisher(awaitCommit)，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public void apply() &#123;</span><br><span class="line">    if (!SafeSp.sEnable) &#123;</span><br><span class="line">        //如果未开启优化，则调用原apply方法</span><br><span class="line">        this.mEditor.apply();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            //通过反射，调用commitToMemory</span><br><span class="line">            final Object mcr = this.commitToMemoryWrapper();</span><br><span class="line">            Runnable postWriteRunnable = new Runnable() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        //通过反射，调用真正写文件方法writtenToDiskLatch</span><br><span class="line">                        SafeApplyEditor.this.startDiskLatchAwait(mcr);</span><br><span class="line">                    &#125; catch (Exception var2) &#123;</span><br><span class="line">                        SafeSp.setEnable(false);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">            //通过反射，调用enqueueDiskWrite</span><br><span class="line">            this.enqueueDiskWriteWrapper(mcr, postWriteRunnable);</span><br><span class="line">            //通过反射，调用notifyListeners</span><br><span class="line">            this.notifyListenersWrapper(mcr);</span><br><span class="line">        &#125; catch (Exception var3) &#123;</span><br><span class="line">            //API有变更时，关闭优化</span><br><span class="line">            this.mEditor.apply();</span><br><span class="line">            SafeSp.setEnable(false);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用时通过SafeSp.getSP(sharedPreferences) 可以返回一个修复了ANR的sharedPreferences，由于SDK中可能也使用了sharedPreferences，因此可以通过gradle插件修改字节码的方式，将app中所有使用SharedPreference的地方都进行替换，替换后是否开启优化可以由上层控制。</p>
+<h2 id="插件化方案"><a href="#插件化方案" class="headerlink" title="插件化方案"></a>插件化方案</h2><h3 id="插件开发"><a href="#插件开发" class="headerlink" title="插件开发"></a>插件开发</h3><p>插件方案为通过自定义Transform，实现在编译成class后，打包成dex前扫描所有class，找到所有Context.getSharedPreferences(“name”,mode) 和 PreferenceManager.getDefaultSharedPreferences(context) 代码，替换为SafeSp.getSP(原代码).</p>
+<p>为了减少class扫描，因此增加一个外部配置，可以用正则表达式，配置不需要检查的class，默认配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SPManagerPlugin &#123;</span><br><span class="line">    skipClass = [&apos;R\\..*&apos;, &apos;R\\$.*&apos;, &apos;.*BuildConfig.*&apos;,&apos;.*SafeSharedPreferenceUtil.*&apos;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="新建Plugin工程"><a href="#新建Plugin工程" class="headerlink" title="新建Plugin工程"></a>新建Plugin工程</h3><p>自定义Plugin可以在build.gradle文件中直接定义，为了方便复用，我们这里新建一个独立的Plugin工程来实现，由于AndroidStudio下没有提供直接创建Plugin工程的快捷方式，但可以用AndroidStudio新建一个Java-Library，将build.gradle文件中apply plugin: ‘java’ 改成 apply plugin: ‘groovy’，且在dependencies中添加依赖：compile gradleApi() 和 compile ‘com.android.tools.build:gradle:2.3.3’ ，这样才可以导入gradle.api 以及gradle相关的类。同时为了兼容java7，需要制定jdk编译版本：</p>
+<p>sourceCompatibility = “7”<br>targetCompatibility = “7”</p>
+<p>将src/main下的java目录改名为groovy，在groovy同级目录下新建resources/META-INF/gradle-plugins目录，并在该目录下新建一个文件按以下规则命名：插件名称.properties，插件名称将决定了如何使用该Plugin，用法如apply plugin: ‘插件名称’，文件内容为implementation-class=Plugin接口的实现类完整名称。如：implementation-class=com.sjst.xgfe.android.plugin.SPManagerPlugin</p>
+<p>最后的目录结构如下:<br>├── build.gradle<br>├── gradle.properties<br>└── src<br>    └── main<br>        ├── groovy<br>        └── resources<br>            └── META-INF<br>                └── gradle-plugins<br>                    └── SPManagerPlugin.properties</p>
+<h3 id="实现Plugin"><a href="#实现Plugin" class="headerlink" title="实现Plugin"></a>实现Plugin</h3><p>在groovy目录下新建plugin入口类：SPManagerPlugin.java ，也可以使用.groovy后缀，使用groovy语言开发。SPManagerPlugin需要实现Plugin接口的apply方法，该方法在apply插件的时候会被调用。在该方法中我们可以操作Project。通过Project，可以对已有的Task进行修改或者新增Task，同时也可以注册Transform来实现我们所需要的扫描class 以及新增class功能，注册Transform其本质也是添加一个TransformTask，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class SPManagerPlugin implements Plugin&lt;Project&gt; &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void apply(Project project) &#123;</span><br><span class="line">        if (project == null) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        LogUtils.sLogger = project.getLogger();//初始化log</span><br><span class="line">        PluginConfig pluginConfig = project.getExtensions().create(&quot;SPManagerPlugin&quot;, PluginConfig.class);//加载插件配置</span><br><span class="line"></span><br><span class="line">        AppExtension appExtension = project.getExtensions().findByType(AppExtension.class);</span><br><span class="line">        //注册Transform来处理字节，TransformProcessor为具体替换处理类</span><br><span class="line">        appExtension.registerTransform(new ReplaceSPTransform(pluginConfig, new TransformProcessor(project,</span><br><span class="line">                pluginConfig)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ReplaceSPTransform继承自Transform，它是Android官方提供的在项目构建class到生成dex期间修改class或资源的一套API。主要有以下方法需要实现:<br>1.getInputTypes:该方法用于指定需要处理的源，这里不需要处理资源，则只需要返回CONTENT_CLASS，如果需要处理资源和class，则返回CONTENT_JARS<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Set&lt;QualifiedContent.ContentType&gt; getInputTypes() &#123;</span><br><span class="line">    //这里只需要处理class</span><br><span class="line">    return TransformManager.CONTENT_CLASS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2.getScopes:用于指明Transform的作用域，需要返回各种Scope集合，这里需要支持所有工程，因此返回SCOPE_FULL_PROJECT</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Set&lt;? super QualifiedContent.Scope&gt; getScopes() &#123;</span><br><span class="line">    //所有module都检查</span><br><span class="line">    return TransformManager.SCOPE_FULL_PROJECT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3.isIncremental:是否支持增量编译，如果支持增量编译，则需要判断输入源的状态，根据状态处理。如jarInput 通过jarInput.getStatus()判断，directoryInput通过directoryInput.getChangedFiles()判断，来分别处理。当前该插件是不支持增量编译。</p>
+<p>Transform执行的入口方法是transform(TransformInvocation invocation)，其中invocation参数包含了输入、输出相关信息，在该方法中我们需要将输入源拷贝到输出目录，输入源中就包含了class文件或jar包，因此可以扫描所有类。同时如果需要修改或新增class，可以在拷贝的过程中处理。invocation输入源分为 JarInput 和 DirectoryInput，JarInput包含的是jar文件地址，DirectoryInput包含的是类或资源文件位置，因此需要分别处理，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public void transform(TransformInvocation invocation) throws TransformException, InterruptedException,</span><br><span class="line">        IOException &#123;</span><br><span class="line">    Collection&lt;TransformInput&gt; inputs = invocation.getInputs();</span><br><span class="line">    TransformOutputProvider outputProvider = invocation.getOutputProvider();</span><br><span class="line"></span><br><span class="line">    for (TransformInput input : inputs) &#123;</span><br><span class="line">        //处理jar文件，处理完后，需要将jar文件写入targetFile</span><br><span class="line">        for (JarInput jarInput : input.getJarInputs()) &#123;</span><br><span class="line"></span><br><span class="line">            File targetFile = outputProvider.getContentLocation(</span><br><span class="line">                    jarInput.getName(), jarInput.getContentTypes(), jarInput.getScopes(),</span><br><span class="line">                    Format.JAR);</span><br><span class="line">            processor.processJarFile(jarInput.getFile(), targetFile);</span><br><span class="line">        &#125;</span><br><span class="line">        //处理目录，处理完每个文件后，需要将文件拷贝到targetDir目录</span><br><span class="line">        for (DirectoryInput directoryInput : input.getDirectoryInputs()) &#123;</span><br><span class="line">            File targetDir = outputProvider.getContentLocation(</span><br><span class="line">                    directoryInput.getName(), directoryInput.getContentTypes(),</span><br><span class="line">                    directoryInput.getScopes(), Format.DIRECTORY);</span><br><span class="line">            processor.processDir(directoryInput.getFile(), targetDir);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="扫描Class"><a href="#扫描Class" class="headerlink" title="扫描Class"></a>扫描Class</h3><p>JarInput数据源处理方式实际上是解压jar文件，并解析jar中的class，DirectoryInput数据源处理实际是直接解析dir中class文件，或者jar文件，总之最终都会走到解析class文件流。</p>
+<h3 id="替换Class中内容"><a href="#替换Class中内容" class="headerlink" title="替换Class中内容"></a>替换Class中内容</h3><p>替换class中内容原理为通过asm API解析字节码，然后再通过visitor去遍历变量，方法或者注解，在遍历的时候可以修改内容，最后再取出修改后的字节码。<br>解析类内容的代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private byte[] processClassStream(InputStream inputStream) throws Exception &#123;</span><br><span class="line">    ClassReader classReader = new ClassReader(inputStream);</span><br><span class="line"></span><br><span class="line">    ClassWriter cw = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);</span><br><span class="line">    MyClassVisitor cv = new MyClassVisitor(cw);</span><br><span class="line">    classReader.accept(cv, EXPAND_FRAMES);</span><br><span class="line"></span><br><span class="line">    return cw.toByteArray();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>遍历方法并替换内容的代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">public class MyClassVisitor extends ClassVisitor &#123;</span><br><span class="line">    public MyClassVisitor(ClassVisitor cv) &#123;</span><br><span class="line">        super(Opcodes.ASM5, cv);</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) &#123;</span><br><span class="line">        super.visit(version, access, name, signature, superName, interfaces);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) &#123;</span><br><span class="line">        //遍历方法时，还需要进一步遍历方法中的内容</span><br><span class="line">        return new MyMethodVisitor(super.visitMethod(access, name, desc, signature, exceptions));</span><br><span class="line">    &#125;</span><br><span class="line">    public class MyMethodVisitor extends MethodVisitor &#123;</span><br><span class="line">        public MyMethodVisitor(MethodVisitor mv) &#123;</span><br><span class="line">            super(Opcodes.ASM5, mv);</span><br><span class="line">        &#125;</span><br><span class="line">        @Override</span><br><span class="line">        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) &#123;</span><br><span class="line">            if (!needReplace(opcode, owner, name, desc, itf)) &#123;</span><br><span class="line">                super.visitMethodInsn(opcode, owner, name, desc, itf);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //替换实现</span><br><span class="line">        private boolean needReplace(int opcode, String owner, String name, String desc, boolean itf) &#123;</span><br><span class="line">            boolean result = false;</span><br><span class="line">            boolean isGetSharedPreferences =</span><br><span class="line">                    &quot;android/content/Context&quot;.equals(owner) &amp;&amp; &quot;getSharedPreferences&quot;.equals(name);</span><br><span class="line">            boolean isGetDefaultSharedPreferences = &quot;android/preference/PreferenceManager&quot;.equals(owner) &amp;&amp;</span><br><span class="line">            &quot;getDefaultSharedPreferences&quot;.equals(name);</span><br><span class="line">            if (isGetSharedPreferences || isGetDefaultSharedPreferences) &#123;</span><br><span class="line">                super.visitMethodInsn(opcode, owner, name, desc, itf);</span><br><span class="line">                //如何替换，可以通过前后代码的asm字节码进行比较</span><br><span class="line">                super.visitMethodInsn(INVOKESTATIC, &quot;com/sjst/xgfe/android/safesp/SafeSp&quot;,</span><br><span class="line">                        &quot;getSP&quot;, &quot;(Landroid&quot; +</span><br><span class="line">                                &quot;/content/SharedPreferences;)Landroid/content/SharedPreferences;&quot;, false);</span><br><span class="line"></span><br><span class="line">                result = true;</span><br><span class="line">            &#125;</span><br><span class="line">            return result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于ASM api比较复杂也容易出错，这里我们借助AndroidStudio  asm-bytecode-outline 插件，可以直接查看这个java文件的class类需要用什么asm api来生成。然后通过前后asm字节码文件进行比较即可。</p>
+<h3 id="本地发布aar"><a href="#本地发布aar" class="headerlink" title="本地发布aar"></a>本地发布aar</h3><p>远程发布无法快速测试，因此开发期间可以先采用本地发布aar。主要实现为在plugin工程的build.gradle中添加maven配置，然后在命令行调用  ./gradlew install，就会生成aar到本地mavenLocal目录：~/.m2/repository。maven配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;maven&apos;</span><br><span class="line">//arr打包配置</span><br><span class="line">group = &apos;com.sjst.xgfe.android.plugin&apos;</span><br><span class="line">version = &apos;1.0.3&apos;</span><br><span class="line">project.archivesBaseName = &apos;SPManagerPlugin&apos;</span><br></pre></td></tr></table></figure></p>
+<p>因此调试的时候，在测试工程的repositories 中加入mavenLocal() 即可加载到本地插件aar。</p>
+<h3 id="断点调试"><a href="#断点调试" class="headerlink" title="断点调试"></a>断点调试</h3><p>Android运行时代码调试只需要打上断点，选择调试进程即可。而编译期的代码调试则需要做如下处理：<br>1.添加远程debug运行模式，操作步骤如图1，图2，添加后如图3，名称可以自选，选需要调试的工程<br><img src="/uploads/shenyanghong/anr/debug1.png" alt="" width="200"> <img src="/uploads/shenyanghong/anr/debug2.png" alt="" width="400"><br>2.执行编译命令，在正常的编译命令后加–no-daemon -Dorg.gradle.debug=true 即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew clean assembleDebug -p plugintest --no-daemon -Dorg.gradle.debug=true</span><br></pre></td></tr></table></figure>
+<p>3.打上断点，选中刚创建的远程调试模式，也可以在执行命令前选中，点击Debug即可</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文首先介绍了ANR相关概念，以及ANR是如何由系统底层产生的。了解底层原理后，我们又分析了如何在线上监控ANR。同时通过剖析SharedPreference实现原理，找到了产生ANR的原因，以及解决办法。为了彻底解决App中此类问题，我们用到了Gradle插件。最后，本文介绍了Gradle插件的开发、调试以及发布技巧。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/16/zhengchangjun/高阶函数学习总结/" rel="prev">高阶函数学习总结</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/20/patrickLh/使用Node构建命令行/" rel="next">使用Node构建命令行</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">127</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是ANR"><span class="nav-number">1.</span> <span class="nav-text">什么是ANR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通常哪些情况会触发ANR"><span class="nav-number">1.1.</span> <span class="nav-text">通常哪些情况会触发ANR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线下如何检测和排查ANR"><span class="nav-number">1.2.</span> <span class="nav-text">线下如何检测和排查ANR</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线上ANR如何监控"><span class="nav-number">2.</span> <span class="nav-text">线上ANR如何监控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统定义的ANR场景有哪些"><span class="nav-number">2.1.</span> <span class="nav-text">系统定义的ANR场景有哪些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线上监控方案"><span class="nav-number">2.2.</span> <span class="nav-text">线上监控方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#判断ANR时机"><span class="nav-number">2.2.1.</span> <span class="nav-text">判断ANR时机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#输出anr堆栈信息"><span class="nav-number">2.2.2.</span> <span class="nav-text">输出anr堆栈信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SharedPreference导致的ANR"><span class="nav-number">3.</span> <span class="nav-text">SharedPreference导致的ANR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原因分析"><span class="nav-number">3.1.</span> <span class="nav-text">原因分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#调用QueueWork-waitToFinish时机有哪些？"><span class="nav-number">3.1.1.</span> <span class="nav-text">调用QueueWork.waitToFinish时机有哪些？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么线程会阻塞在SharedPreferencesImpl中，它和QueuedWork有什么关系？"><span class="nav-number">3.1.2.</span> <span class="nav-text">为什么线程会阻塞在SharedPreferencesImpl中，它和QueuedWork有什么关系？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ANR原因"><span class="nav-number">3.2.</span> <span class="nav-text">ANR原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决思路"><span class="nav-number">3.3.</span> <span class="nav-text">解决思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体方案"><span class="nav-number">3.4.</span> <span class="nav-text">具体方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件化方案"><span class="nav-number">4.</span> <span class="nav-text">插件化方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#插件开发"><span class="nav-number">4.1.</span> <span class="nav-text">插件开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建Plugin工程"><span class="nav-number">4.2.</span> <span class="nav-text">新建Plugin工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现Plugin"><span class="nav-number">4.3.</span> <span class="nav-text">实现Plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扫描Class"><span class="nav-number">4.4.</span> <span class="nav-text">扫描Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#替换Class中内容"><span class="nav-number">4.5.</span> <span class="nav-text">替换Class中内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地发布aar"><span class="nav-number">4.6.</span> <span class="nav-text">本地发布aar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#断点调试"><span class="nav-number">4.7.</span> <span class="nav-text">断点调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

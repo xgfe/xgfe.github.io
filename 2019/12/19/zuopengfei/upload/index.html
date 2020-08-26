@@ -1,0 +1,866 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="koa,http,koa-body,文件上传,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文是写给新手前端的各种文件上传攻略，本文涉及到的知识点包括：文件上传的基本原理；最原始的基于form表单的文件上传；基于xhr2的文件上传、文件上传进度、终止上传；拖拽上传、剪贴板上传、大文件分片上传、大文件断点续传。">
+<meta name="keywords" content="koa,http,koa-body,文件上传">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件上传那些事">
+<meta property="og:url" content="http://xgfe.github.io/2019/12/19/zuopengfei/upload/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文是写给新手前端的各种文件上传攻略，本文涉及到的知识点包括：文件上传的基本原理；最原始的基于form表单的文件上传；基于xhr2的文件上传、文件上传进度、终止上传；拖拽上传、剪贴板上传、大文件分片上传、大文件断点续传。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p0.meituan.net/spacex/c3c978ff56b657f370a38ace0be3d5b9.png">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/297e0daeab680d302d60d1a2bdb38b26">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/e6f1c57f474671bddd9268dde7d0f57b">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/c61713f2f6f59ce31aa1693766317ecc">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/bafc069ad266dd863776cbcda27572e6">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/3dc77833bca65bcc35c2c379291e118d">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/c70ba1f24daa2f0d8647e18f8c728fb2">
+<meta property="og:image" content="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/1c9bbe108cb91d7e97c9231df6243095">
+<meta property="og:updated_time" content="2020-01-20T09:08:43.471Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="文件上传那些事">
+<meta name="twitter:description" content="本文是写给新手前端的各种文件上传攻略，本文涉及到的知识点包括：文件上传的基本原理；最原始的基于form表单的文件上传；基于xhr2的文件上传、文件上传进度、终止上传；拖拽上传、剪贴板上传、大文件分片上传、大文件断点续传。">
+<meta name="twitter:image" content="https://p0.meituan.net/spacex/c3c978ff56b657f370a38ace0be3d5b9.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 文件上传那些事 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              文件上传那些事
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-12-19T19:18:00+08:00" content="2019-12-19">
+            2019-12-19
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/zuopengfei/" itemprop="url" rel="index">
+                  <span itemprop="name">zuopengfei</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/koa/" rel="tag"><i class="icon-next-tags"></i>koa</a>
+            
+              <a href="/tags/http/" rel="tag"><i class="icon-next-tags"></i>http</a>
+            
+              <a href="/tags/koa-body/" rel="tag"><i class="icon-next-tags"></i>koa-body</a>
+            
+              <a href="/tags/文件上传/" rel="tag"><i class="icon-next-tags"></i>文件上传</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文是写给新手前端的各种文件上传攻略，本文涉及到的知识点包括：文件上传的基本原理；最原始的基于form表单的文件上传；基于xhr2的文件上传、文件上传进度、终止上传；拖拽上传、剪贴板上传、大文件分片上传、大文件断点续传。</p>
+<a id="more"></a>
+<h2 id="文件上传原理"><a href="#文件上传原理" class="headerlink" title="文件上传原理"></a>文件上传原理</h2><p>文件上传其实就是根据http协议的规范和定义，完成请求消息体的封装和消息体的解析，然后将二进制内容保存到文件。</p>
+<p>如果要上传一个文件，http请求的method必须为post方法；content-type类型必须是multipart/form-data；如果使用form表单上传文件时，必须让form的enctyped等于multipart/form-data。</p>
+<h3 id="什么是multipart-form-data？"><a href="#什么是multipart-form-data？" class="headerlink" title="什么是multipart/form-data？"></a>什么是multipart/form-data？</h3><p>multipart表示混合资源，也就是由多种元素组成的资源。</p>
+<h3 id="multipart-form-data的结构"><a href="#multipart-form-data的结构" class="headerlink" title="multipart/form-data的结构"></a>multipart/form-data的结构</h3><p><img src="https://p0.meituan.net/spacex/c3c978ff56b657f370a38ace0be3d5b9.png" alt="multipart/form-data的结构"></p>
+<h4 id="请求头："><a href="#请求头：" class="headerlink" title="请求头："></a>请求头：</h4><p>Content-Type: multipart/form-data; boundary=—-WebKitFormBoundaryDCntfiXcSkPhS4PN 表示本次请求要上传文件；其中boundary表示分隔符，如果要上传多个表单项，就要使用boundary分割，每个表单项由—-WebKitFormBoundaryXXX开始，以—-WebKitFormBoundaryXXX–结尾。</p>
+<h4 id="请求消息体Form-Data-部分"><a href="#请求消息体Form-Data-部分" class="headerlink" title="请求消息体Form Data 部分:"></a>请求消息体Form Data 部分:</h4><p>每一个表单项又由Content-Type和Content-Disposition组成。</p>
+<p>Content-Disposition：form-data 为固定值，表示一个表单元素；name 表示表单元素的名称；回车换行后面就是name的值；</p>
+<p>如果是上传文件是文件是二进制内容，则会多一个filename字段，表示上传文件的文件名称；还有多一个Content-Type：表示当前的内容的MIME类型，是图片、还是文本、还是二进制数据。</p>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>客户端发送请求到服务器后，服务器会收到请求的消息体，然后对消息体进行解析，解析出哪是普通表单哪些是附件。</p>
+<h2 id="基于form表单的最原始文件上传"><a href="#基于form表单的最原始文件上传" class="headerlink" title="基于form表单的最原始文件上传"></a>基于form表单的最原始文件上传</h2><h3 id="演示效果"><a href="#演示效果" class="headerlink" title="演示效果"></a>演示效果</h3><p><img src="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/297e0daeab680d302d60d1a2bdb38b26" alt="基于form表单的文件上传"></p>
+<h3 id="前端代码"><a href="#前端代码" class="headerlink" title="前端代码"></a>前端代码</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">action</span>=<span class="string">"http://localhost:8100"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">      选择文件: <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"f1"</span>/&gt;</span>input 必须设置 name 属性，否则数据无法发送<span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">      标题：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"title"</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">id</span>=<span class="string">"btn-0"</span>&gt;</span>上 传<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="上传接口"><a href="#上传接口" class="headerlink" title="上传接口"></a>上传接口</h3><p>基于现有的库koa-body结合koa2实现服务端文件的解析和保存。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 服务入口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"><span class="keyword">var</span> koaStatic = <span class="built_in">require</span>(<span class="string">'koa-static'</span>);</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">var</span> koaBody = <span class="built_in">require</span>(<span class="string">'koa-body'</span>);<span class="comment">//文件保存库</span></span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">var</span> Koa = <span class="built_in">require</span>(<span class="string">'koa2'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"><span class="keyword">var</span> port = process.env.PORT || <span class="string">'8100'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> uploadHost= <span class="string">`http://localhost:<span class="subst">$&#123;port&#125;</span>/uploads/`</span>;</span><br><span class="line"></span><br><span class="line">app.use(koaBody(&#123;</span><br><span class="line">    formidable: &#123;</span><br><span class="line">        <span class="comment">//设置文件的默认保存目录，不设置则保存在系统临时目录下  os</span></span><br><span class="line">        uploadDir: path.resolve(__dirname, <span class="string">'../static/uploads'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    multipart: <span class="literal">true</span> <span class="comment">// 开启文件上传，默认是关闭</span></span><br><span class="line">&#125;));</span><br><span class="line"></span><br><span class="line"><span class="comment">//开启静态文件访问</span></span><br><span class="line">app.use(koaStatic(</span><br><span class="line">    path.resolve(__dirname, <span class="string">'../static'</span>) </span><br><span class="line">));</span><br><span class="line"></span><br><span class="line"><span class="comment">//文件二次处理，修改名称</span></span><br><span class="line">app.use(<span class="function">(<span class="params">ctx</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> file = ctx.request.files.f1;<span class="comment">//得道文件对象</span></span><br><span class="line">    <span class="keyword">var</span> path = file.path;</span><br><span class="line">    <span class="keyword">var</span> fname = file.name;<span class="comment">//原文件名称</span></span><br><span class="line">    <span class="keyword">var</span> nextPath = path+fname;</span><br><span class="line">    <span class="keyword">if</span>(file.size&gt;<span class="number">0</span> &amp;&amp; path)&#123;</span><br><span class="line">        <span class="comment">//得到扩展名</span></span><br><span class="line">        <span class="keyword">var</span> extArr = fname.split(<span class="string">'.'</span>);</span><br><span class="line">        <span class="keyword">var</span> ext = extArr[extArr.length<span class="number">-1</span>];</span><br><span class="line">        <span class="keyword">var</span> nextPath = path+<span class="string">'.'</span>+ext;</span><br><span class="line">        <span class="comment">//重命名文件</span></span><br><span class="line">        fs.renameSync(path, nextPath);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//以 json 形式输出上传文件地址</span></span><br><span class="line">    ctx.body = <span class="string">`&#123;</span></span><br><span class="line"><span class="string">        "fileUrl":"<span class="subst">$&#123;uploadHost&#125;</span><span class="subst">$&#123;nextPath.slice(nextPath.lastIndexOf(<span class="string">'/'</span>)+<span class="number">1</span>)&#125;</span>"</span></span><br><span class="line"><span class="string">    &#125;`</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * http server</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> server = http.createServer(app.callback());</span><br><span class="line">server.listen(port);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'demo1 server start ......   '</span>);</span><br></pre></td></tr></table></figure>
+<p>koa-body会自动保存文件到系统临时目录下，也可以指定保存的文件路径。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">✘  ~/work/gitstash/other/fe-learn-code-master  node</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> os.tmpdir()</span></span><br><span class="line">'/var/folders/mc/lfl3v3n954v2ynmd8zbmk0xw0000gp/T'</span><br></pre></td></tr></table></figure>
+<p>然后在后续中间件内得到已保存的文件的信息；ctx.request.files.f1 可以得到上传的文件对象</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">key</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">demo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center">文件名</td>
+<td style="text-align:center">包括扩展名，扩展名需要自己截取 var extArr = fname.split(‘.’); var ext = extArr[extArr.length-1];</td>
+</tr>
+<tr>
+<td style="text-align:center">path</td>
+<td style="text-align:center">文件路径</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">lastModifiedDate</td>
+<td style="text-align:center">文件修改时间</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">size</td>
+<td style="text-align:center">文件大小</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">type</td>
+<td style="text-align:center">文件类型</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>拿到文件后就可以做二次处理了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">创建可读流 <span class="keyword">const</span> reader = fs.createReadStream(file.path)</span><br><span class="line">创建可写流 <span class="keyword">const</span> writer = fs.createWriteStream(<span class="string">'upload/newpath.txt'</span>)</span><br><span class="line">可读流通过管道写入可写流 reader.pipe(writer)</span><br></pre></td></tr></table></figure>
+<h2 id="多文件上传"><a href="#多文件上传" class="headerlink" title="多文件上传"></a>多文件上传</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//设置 multiple属性</span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"f1"</span> <span class="attr">multiple</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>服务端也需要进行简单的调整，由单文件对象变为多文件数组，然后进行遍历处理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> files = ctx.request.files.f1;<span class="comment">// 多文件， 得到上传文件的数组</span></span><br><span class="line"><span class="keyword">var</span> result=[];</span><br><span class="line"><span class="comment">//遍历处理</span></span><br><span class="line">files &amp;&amp; files.forEach(<span class="function"><span class="params">item</span>=&gt;</span>&#123;</span><br><span class="line">       ...</span><br></pre></td></tr></table></figure>
+<h2 id="局部刷新-iframe"><a href="#局部刷新-iframe" class="headerlink" title="局部刷新 - iframe"></a>局部刷新 - iframe</h2><h3 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h3><p><img src="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/e6f1c57f474671bddd9268dde7d0f57b" alt="局部刷新 - iframe"></p>
+<h3 id="前端代码-1"><a href="#前端代码-1" class="headerlink" title="前端代码"></a>前端代码</h3><p>页面内放一个隐藏的 iframe，或者使用 js 动态创建，指定 form 表单的 target 属性值为iframe标签 的 name 属性值，这样 form 表单的 shubmit 行为的跳转就会在 iframe 内完成，整体页面不会刷新。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">id</span>=<span class="string">"temp-iframe"</span> <span class="attr">name</span>=<span class="string">"temp-iframe"</span> <span class="attr">src</span>=<span class="string">""</span> <span class="attr">style</span>=<span class="string">"display:none;"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">target</span>=<span class="string">"temp-iframe"</span> <span class="attr">action</span>=<span class="string">"http://localhost:8100"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">  选择文件(可多选): <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"f1"</span> <span class="attr">id</span>=<span class="string">"f1"</span> <span class="attr">multiple</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span> input 必须设置 name 属性，否则数据无法发送<span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">  标题：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"title"</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">id</span>=<span class="string">"btn-0"</span>&gt;</span>上 传<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="如何拿到接口数据"><a href="#如何拿到接口数据" class="headerlink" title="如何拿到接口数据"></a>如何拿到接口数据</h3><p>为 iframe 添加load事件，得到 iframe 的页面内容，将结果转换为 JSON 对象，这样就拿到了接口的数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> iframe = <span class="built_in">document</span>.getElementById(<span class="string">'temp-iframe'</span>);</span><br><span class="line">iframe.addEventListener(<span class="string">'load'</span>,<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> result = iframe.contentWindow.document.body.innerText;</span><br><span class="line">      <span class="comment">//接口数据转换为 JSON 对象</span></span><br><span class="line">      <span class="keyword">var</span> obj = <span class="built_in">JSON</span>.parse(result);</span><br><span class="line">      <span class="keyword">if</span>(obj &amp;&amp; obj.fileUrl.length)&#123;</span><br><span class="line">          alert(<span class="string">'上传成功'</span>);</span><br><span class="line">          </span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">console</span>.log(obj);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="基于xhr2的文件上传"><a href="#基于xhr2的文件上传" class="headerlink" title="基于xhr2的文件上传"></a>基于xhr2的文件上传</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">XMLHttpRequest</th>
+<th style="text-align:center">XMLHttpRequest2 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">在 ie 时代就存在；只支持文本数据的传输；无法用来读取和上传二进制数据</td>
+<td style="text-align:center">可以读取和上传二进制数据；可以使用·FormData·对象管理表单数据。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="多文件上传-xhr-formdata"><a href="#多文件上传-xhr-formdata" class="headerlink" title="多文件上传-xhr formdata"></a>多文件上传-xhr formdata</h3><p>不用 form 表单元素包裹</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">	选择文件(可多选):</span><br><span class="line">  &lt;input type=<span class="string">"file"</span> id=<span class="string">"f1"</span> multiple/&gt;<span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><span class="xml"><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span></span><br><span class="line">  &lt;button type=<span class="string">"button"</span> id=<span class="string">"btn-submit"</span>&gt;上 传&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">submitUpload</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">//获得文件列表，注意这里不是数组，而是FileList对象，每个</span></span><br><span class="line">    <span class="keyword">var</span> fileList = <span class="built_in">document</span>.getElementById(<span class="string">'f1'</span>).files;</span><br><span class="line">    <span class="keyword">if</span>(!fileList.length)&#123;</span><br><span class="line">       alert(<span class="string">'请选择文件'</span>);</span><br><span class="line">       <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">		<span class="comment">//构造FormData对象</span></span><br><span class="line">    <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData();</span><br><span class="line">    <span class="comment">//多文件上传需要遍历添加到 fromdata 对象</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i =<span class="number">0</span>; i&lt;fileList.length; i++)&#123;</span><br><span class="line">        <span class="comment">//支持多文件上传</span></span><br><span class="line">        fd.append(<span class="string">'f1'</span>, fileList[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();   <span class="comment">//创建对象</span></span><br><span class="line">    xhr.open(<span class="string">'POST'</span>, <span class="string">'http://localhost:8100/'</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    xhr.send(fd);<span class="comment">//发送时  Content-Type默认就是: multipart/form-data; </span></span><br><span class="line">    ....                             </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多文件，单进度"><a href="#多文件，单进度" class="headerlink" title="多文件，单进度"></a>多文件，单进度</h3><h4 id="效果演示-1"><a href="#效果演示-1" class="headerlink" title="效果演示"></a>效果演示</h4><p><img src="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/c61713f2f6f59ce31aa1693766317ecc" alt="多文件，单进度"></p>
+<h4 id="获取进度条的原理"><a href="#获取进度条的原理" class="headerlink" title="获取进度条的原理"></a>获取进度条的原理</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 进度处理的监听函数</span></span><br><span class="line">xhr.upload.onprogress = updateProgress;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateProgress</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// event.lengthComputable这是一个状态，表示发送的长度有了变化，可计算</span></span><br><span class="line">	<span class="keyword">if</span> (event.lengthComputable) &#123;</span><br><span class="line">	<span class="comment">// event.loaded表示发送了多少字节</span></span><br><span class="line">     <span class="comment">// event.total表示文件总大小</span></span><br><span class="line">     <span class="comment">// 根据event.loaded和event.total计算进度</span></span><br><span class="line">	<span class="keyword">var</span> completedPercent = (event.loaded / event.total * <span class="number">100</span>).toFixed(<span class="number">2</span>);</span><br><span class="line">	progressSpan.style.width= completedPercent+<span class="string">'%'</span>;</span><br><span class="line">	progressSpan.innerHTML=completedPercent+<span class="string">'%'</span>;</span><br><span class="line">	<span class="keyword">if</span>(completedPercent&gt;<span class="number">90</span>)&#123;<span class="comment">//进度条变色</span></span><br><span class="line">		progressSpan.classList.add(<span class="string">'green'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'已上传'</span>,completedPercent);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//注意 send 一定要写在最下面，否则 onprogress 只会执行最后一次 也就是100%的时候</span></span><br><span class="line">xhr.send(fd);<span class="comment">//发送时  Content-Type默认就是: multipart/form-data;</span></span><br></pre></td></tr></table></figure>
+<h3 id="多文件上传之预览、多进度条、终止上传"><a href="#多文件上传之预览、多进度条、终止上传" class="headerlink" title="多文件上传之预览、多进度条、终止上传"></a>多文件上传之预览、多进度条、终止上传</h3><p>上一个栗子的多文件上传只有一个进度条，有些需求可能会不大一样，需要观察到每个文件的上传进度，并且可以终止上传。</p>
+<h4 id="效果演示-2"><a href="#效果演示-2" class="headerlink" title="效果演示"></a>效果演示</h4><p><img src="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/bafc069ad266dd863776cbcda27572e6" alt="多文件，多进度"></p>
+<h4 id="图片预览"><a href="#图片预览" class="headerlink" title="图片预览"></a>图片预览</h4><p>getObjectURL方法是一个用于获取本地图片的地址，使用该url可以显示图片</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">img.src = getObjectURL(file);</span><br><span class="line">img.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 在图片加载成功后需要清除使用的内存</span></span><br><span class="line">	<span class="built_in">window</span>.URL.revokeObjectURL(<span class="keyword">this</span>.src);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="多进度条"><a href="#多进度条" class="headerlink" title="多进度条"></a>多进度条</h4><p>每个file对象都创建一个与之对应的独立XMLHttpRequest对象，并行或者串行发送，每个file对象独立监听进度</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//遍历文件信息进行上传</span></span><br><span class="line"> willFiles.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">item</span>) </span>&#123;</span><br><span class="line">  xhrSend(&#123;</span><br><span class="line">  	file:item.file,</span><br><span class="line">  	progress:item.progress</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="终止上传"><a href="#终止上传" class="headerlink" title="终止上传"></a>终止上传</h4><p>取消请求的方法xhr.abort()调用后，xhr.readyState会立即变为4, 而不是0；但是MDN上说是0；所以这里需要做容错处理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'state change'</span>, xhr.readyState);</span><br><span class="line">	<span class="comment">//调用abort后，state立即变成了4,并不会变成0</span></span><br><span class="line">	<span class="comment">//增加自定义属性 xhr.uploaded</span></span><br><span class="line">	<span class="keyword">if</span> (xhr.readyState == <span class="number">4</span> &amp;&amp;  xhr.uploaded) &#123;</span><br><span class="line">		<span class="keyword">var</span> obj = <span class="built_in">JSON</span>.parse(xhr.responseText);   <span class="comment">//返回值</span></span><br><span class="line">		<span class="built_in">console</span>.log(obj);</span><br><span class="line">		<span class="keyword">if</span>(obj.fileUrl.length)&#123;</span><br><span class="line">			<span class="comment">//alert('上传成功');</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="拖拽上传"><a href="#拖拽上传" class="headerlink" title="拖拽上传"></a>拖拽上传</h2><h3 id="效果演示-3"><a href="#效果演示-3" class="headerlink" title="效果演示"></a>效果演示</h3><p><img src="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/3dc77833bca65bcc35c2c379291e118d" alt="拖拽上传"></p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>为拖拽区域绑定事件；鼠标在拖拽区域上 dragover, 鼠标离开拖拽区域dragleave, 在拖拽区域上释放文件drop</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">针对对象</th>
+<th style="text-align:center">事件</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">说明</td>
+<td style="text-align:center">dragenter</td>
+<td style="text-align:center">当被拖动元素进入目的地元素所占据的屏幕空间时触发</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">dragover</td>
+<td style="text-align:center">当被拖动元素在目的地元素内时触发</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">dragleave</td>
+<td style="text-align:center">当被拖动元素没有放下就离开目的地元素时触发</td>
+</tr>
+</tbody>
+</table>
+<p>drop事件内获得拖动操作中的文件列表 e.dataTransfer.files<br>取消drop 事件的默认行为e.preventDefault()；不然浏览器会直接打开文件</p>
+<h2 id="剪贴板上传"><a href="#剪贴板上传" class="headerlink" title="剪贴板上传"></a>剪贴板上传</h2><h3 id="效果演示-4"><a href="#效果演示-4" class="headerlink" title="效果演示"></a>效果演示</h3><p><img src="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/c70ba1f24daa2f0d8647e18f8c728fb2" alt="剪贴板上传"></p>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 页面内增加一个可编辑的编辑区域div.editor-box,开启contenteditable</span></span><br><span class="line"><span class="comment">// 为div.editor-box绑定paste事件</span></span><br><span class="line">box.addEventListener(<span class="string">'paste'</span>,<span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">				<span class="comment">// 处理paste 事件，从event.clipboardData || window.clipboardData获得数据</span></span><br><span class="line">        <span class="keyword">var</span> data = (event.clipboardData || <span class="built_in">window</span>.clipboardData);</span><br><span class="line">        <span class="built_in">console</span>.dir(data);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> items = data.items;</span><br><span class="line">        <span class="keyword">var</span> fileList = [];<span class="comment">//存储文件数据</span></span><br><span class="line">        <span class="keyword">if</span> (items &amp;&amp; items.length) &#123;</span><br><span class="line">            <span class="comment">// 检索剪切板items</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; items.length; i++) &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(items[i].getAsFile());</span><br><span class="line">                <span class="comment">// 将数据转换为文件items[i].getAsFile()</span></span><br><span class="line">                fileList.push(items[i].getAsFile());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'data.items.length'</span>, data.items.length);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'data.files.length'</span>, data.files.length);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">window</span>.willUploadFileList = fileList;</span><br><span class="line">        event.preventDefault();</span><br><span class="line"></span><br><span class="line">        submitUpload();</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="大文件分片上传"><a href="#大文件分片上传" class="headerlink" title="大文件分片上传"></a>大文件分片上传</h2><p>如果太大的文件，比如一个视频1g 2g那么大，直接采用上面的栗子中的方法上传可能会出链接现超时的情况，而且也会超过服务端允许上传文件的大小限制，所以解决这个问题我们可以将文件进行分片上传，每次只上传很小的一部分 比如2M。</p>
+<h3 id="演示效果-1"><a href="#演示效果-1" class="headerlink" title="演示效果"></a>演示效果</h3><p><img src="https://s3plus.meituan.net/v1/mss_877fd457c4cf425388a58130e2279ae8/file/1c9bbe108cb91d7e97c9231df6243095" alt="大文件分片上传"></p>
+<h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p>相信大家都对Blob 对象有所了解，它表示原始数据,也就是二进制数据，同时提供了对数据截取的方法slice, 而 File 继承了Blob的功能，所以可以直接使用此方法对数据进行分段截取。</p>
+<h4 id="前端逻辑："><a href="#前端逻辑：" class="headerlink" title="前端逻辑："></a>前端逻辑：</h4><p>把大文件进行分段 比如2M，发送到服务器携带一个标志，暂时用当前的时间戳，用于标识一个完整的文件。</p>
+<p>浏览器端所有分片上传完成，发送给服务端一个合并文件的请求 。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">submitUpload</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> chunkSize=<span class="number">2</span>*<span class="number">1024</span>*<span class="number">1024</span>;<span class="comment">//分片大小 2M</span></span><br><span class="line">        <span class="keyword">var</span> file = <span class="built_in">document</span>.getElementById(<span class="string">'f1'</span>).files[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">var</span> chunks=[], <span class="comment">//保存分片数据</span></span><br><span class="line">        token = (+ <span class="keyword">new</span> <span class="built_in">Date</span>()),<span class="comment">//时间戳</span></span><br><span class="line">        name =file.name,</span><br><span class="line">        chunkCount=<span class="number">0</span>,</span><br><span class="line">        sendChunkCount=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//分片逻辑  像操作字符串一样    </span></span><br><span class="line">        <span class="keyword">if</span>(file.size &gt; chunkSize)&#123;</span><br><span class="line">            <span class="comment">//拆分文件</span></span><br><span class="line">            <span class="keyword">var</span> start=<span class="number">0</span>,end=<span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">                end += chunkSize;</span><br><span class="line">                <span class="keyword">var</span> blob = file.slice(start,end);</span><br><span class="line">                start += chunkSize;</span><br><span class="line">                <span class="keyword">if</span>(!blob.size)&#123;<span class="comment">//截取的数据为空 则结束</span></span><br><span class="line">                    <span class="comment">//拆分结束</span></span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                chunks.push(blob);<span class="comment">//保存分段数据</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            chunks.push(file.slice(<span class="number">0</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        chunkCount=chunks.length;<span class="comment">//分片的个数 </span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//没有做并发限制，较大文件导致并发过多，tcp 链接被占光 ，需要做下并发控制，比如只有4个在请求在发送</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt; chunkCount;i++)&#123;</span><br><span class="line">            <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData();   <span class="comment">//构造FormData对象</span></span><br><span class="line">            fd.append(<span class="string">'token'</span>, token);</span><br><span class="line">            fd.append(<span class="string">'f1'</span>, chunks[i]);</span><br><span class="line">            fd.append(<span class="string">'index'</span>, i);</span><br><span class="line">            xhrSend(fd, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                sendChunkCount+=<span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span>(sendChunkCount===chunkCount)&#123;<span class="comment">//上传完成，发送合并请求</span></span><br><span class="line">                    <span class="built_in">console</span>.log(<span class="string">'上传完成，发送合并请求'</span>);</span><br><span class="line">                    <span class="keyword">var</span> formD = <span class="keyword">new</span> FormData();</span><br><span class="line">                    formD.append(<span class="string">'type'</span>,<span class="string">'merge'</span>);</span><br><span class="line">                    formD.append(<span class="string">'token'</span>,token);</span><br><span class="line">                    formD.append(<span class="string">'chunkCount'</span>,chunkCount);</span><br><span class="line">                    formD.append(<span class="string">'filename'</span>,name);</span><br><span class="line">                    xhrSend(formD);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">xhrSend</span>(<span class="params">fd,cb</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">        xhr.open(<span class="string">'POST'</span>, <span class="string">'http://localhost:8100/'</span>, <span class="literal">true</span>);</span><br><span class="line">        xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'state change'</span>, xhr.readyState);</span><br><span class="line">            <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span>) &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">                cb &amp;&amp; cb();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        xhr.send(fd);<span class="comment">//发送</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定提交事件</span></span><br><span class="line">    <span class="built_in">document</span>.getElementById(<span class="string">'btn-submit'</span>).addEventListener(<span class="string">'click'</span>,submitUpload);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h4><ul>
+<li>服务端保存各段文件</li>
+<li>浏览器端所有分片上传完成，发送给服务端一个合并文件的请求 </li>
+<li>服务端根据文件标识、类型、各分片顺序进行文件合并</li>
+<li>删除分片文件</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//二次处理文件，修改名称</span></span><br><span class="line">app.use(<span class="function">(<span class="params">ctx</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> body = ctx.request.body;</span><br><span class="line">    <span class="keyword">var</span> files = ctx.request.files ? ctx.request.files.f1:[];<span class="comment">//得到上传文件的数组</span></span><br><span class="line">    <span class="keyword">var</span> result=[];</span><br><span class="line">    <span class="keyword">var</span> fileToken = ctx.request.body.token;<span class="comment">// 文件标识</span></span><br><span class="line">    <span class="keyword">var</span> fileIndex=ctx.request.body.index;<span class="comment">//文件顺序</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(files &amp;&amp;  !<span class="built_in">Array</span>.isArray(files))&#123;<span class="comment">//单文件上传容错</span></span><br><span class="line">        files=[files];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    files &amp;&amp; files.forEach(<span class="function"><span class="params">item</span>=&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> path = item.path;</span><br><span class="line">        <span class="keyword">var</span> fname = item.name;<span class="comment">//原文件名称</span></span><br><span class="line">        <span class="keyword">var</span> nextPath = path.slice(<span class="number">0</span>, path.lastIndexOf(<span class="string">'/'</span>) + <span class="number">1</span>) + fileIndex + <span class="string">'-'</span> + fileToken;</span><br><span class="line">        <span class="keyword">if</span> (item.size &gt; <span class="number">0</span> &amp;&amp; path) &#123;</span><br><span class="line">            <span class="comment">//得到扩展名</span></span><br><span class="line">            <span class="keyword">var</span> extArr = fname.split(<span class="string">'.'</span>);</span><br><span class="line">            <span class="keyword">var</span> ext = extArr[extArr.length - <span class="number">1</span>];</span><br><span class="line">            <span class="comment">//var nextPath = path + '.' + ext;</span></span><br><span class="line">            <span class="comment">//重命名文件</span></span><br><span class="line">            fs.renameSync(path, nextPath);</span><br><span class="line">            result.push(uploadHost+nextPath.slice(nextPath.lastIndexOf(<span class="string">'/'</span>) + <span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(body.type===<span class="string">'merge'</span>)&#123;<span class="comment">//合并分片文件</span></span><br><span class="line">        <span class="keyword">var</span> filename = body.filename,</span><br><span class="line">        chunkCount = body.chunkCount,</span><br><span class="line">        folder = path.resolve(__dirname, <span class="string">'../static/uploads'</span>)+<span class="string">'/'</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">var</span> writeStream = fs.createWriteStream(<span class="string">`<span class="subst">$&#123;folder&#125;</span><span class="subst">$&#123;filename&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> cindex=<span class="number">0</span>;</span><br><span class="line">        <span class="comment">//合并文件</span></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">fnMergeFile</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">var</span> fname = <span class="string">`<span class="subst">$&#123;folder&#125;</span><span class="subst">$&#123;cindex&#125;</span>-<span class="subst">$&#123;fileToken&#125;</span>`</span>;</span><br><span class="line">            <span class="keyword">var</span> readStream = fs.createReadStream(fname);</span><br><span class="line">            readStream.pipe(writeStream, &#123; <span class="attr">end</span>: <span class="literal">false</span> &#125;);</span><br><span class="line">            readStream.on(<span class="string">"end"</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                fs.unlink(fname, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">                    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> err;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">if</span> (cindex+<span class="number">1</span> &lt; chunkCount)&#123;</span><br><span class="line">                    cindex += <span class="number">1</span>;</span><br><span class="line">                    fnMergeFile();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        fnMergeFile();</span><br><span class="line">        ctx.body=<span class="string">'merge ok 200'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="大文件断点续传"><a href="#大文件断点续传" class="headerlink" title="大文件断点续传"></a>大文件断点续传</h2><p>上面我们实现了大文件的分片上传，解决了大文件上传超时和服务器的限制。</p>
+<p>但是仍然不够完美，大文件上传并不是短时间内就上传完成，如果期间断网，页面刷新了仍然需要重头上传,这种时间的浪费怎么能忍？</p>
+<p>所以我们实现断点续传，已上传的部分跳过，只传未上传的部分。</p>
+<h3 id="原理-3"><a href="#原理-3" class="headerlink" title="原理"></a>原理</h3><p>在上面我们实现了文件分片上传和最终的合并，现在要做的就是如何检测这些分片，不再重新上传即可。 这里我们可以在本地进行保存已上传成功的分片，重新上传的时候使用spark-md5来生成文件 hash，区分此文件是否已上传。</p>
+<ul>
+<li>为每个分段生成 hash 值，使用 spark-md5 库</li>
+<li>将上传成功的分段信息保存到本地</li>
+<li>重新上传时，进行和本地分段 hash 值的对比，如果相同的话则跳过，继续下一个分段的上传</li>
+</ul>
+<p>模拟分段保存，本地保存到localStorage</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">/获得本地缓存的数据</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">getUploadedFromStorage</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse( localStorage.getItem(saveChunkKey) || <span class="string">"&#123;&#125;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//写入缓存</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">setUploadedToStorage</span>(<span class="params">index</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> obj =  getUploadedFromStorage();</span><br><span class="line">        obj[index]=<span class="literal">true</span>;      </span><br><span class="line">        localStorage.setItem(saveChunkKey, <span class="built_in">JSON</span>.stringify(obj) );</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//分段对比</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> uploadedInfo = getUploadedFromStorage();<span class="comment">//获得已上传的分段信息</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt; chunkCount;i++)&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'index'</span>,i, uploadedInfo[i]?<span class="string">'已上传过'</span>:<span class="string">'未上传'</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span>(uploadedInfo[i])&#123;<span class="comment">//对比分段</span></span><br><span class="line">                sendChunkCount=i+<span class="number">1</span>;<span class="comment">//记录已上传的索引</span></span><br><span class="line">                <span class="keyword">continue</span>;<span class="comment">//如果已上传则跳过</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData();   <span class="comment">//构造FormData对象</span></span><br><span class="line">            fd.append(<span class="string">'token'</span>, token);</span><br><span class="line">            fd.append(<span class="string">'f1'</span>, chunks[i]);</span><br><span class="line">            fd.append(<span class="string">'index'</span>, i);</span><br><span class="line">           </span><br><span class="line">           (<span class="function"><span class="keyword">function</span> (<span class="params">index</span>) </span>&#123;</span><br><span class="line">                    xhrSend(fd, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                    sendChunkCount += <span class="number">1</span>;</span><br><span class="line">                    <span class="comment">//将成功信息保存到本地</span></span><br><span class="line">                    setUploadedToStorage(index);</span><br><span class="line">                    <span class="keyword">if</span> (sendChunkCount === chunkCount) &#123;</span><br><span class="line">                        <span class="built_in">console</span>.log(<span class="string">'上传完成，发送合并请求'</span>);</span><br><span class="line">                        <span class="keyword">var</span> formD = <span class="keyword">new</span> FormData();</span><br><span class="line">                        formD.append(<span class="string">'type'</span>, <span class="string">'merge'</span>);</span><br><span class="line">                        formD.append(<span class="string">'token'</span>, token);</span><br><span class="line">                        formD.append(<span class="string">'chunkCount'</span>, chunkCount);</span><br><span class="line">                        formD.append(<span class="string">'filename'</span>, name);</span><br><span class="line">                        xhrSend(formD);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;)(i);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>基于上面一个栗子进行改进，服务端已保存了部分片段，客户端上传前需要从服务端获取已上传的分片信息（上面是保存在了本地浏览器），本地对比每个分片的 hash 值，跳过已上传的部分，只传未上传的分片</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>目前社区已经存在一些成熟的文件上传解决方案，如七牛SDK，腾讯云SDK等，也许并不需要我们手动去实现一个简陋的文件上传库，但是了解其原理还是十分有必要的。</p>
+<p>本文首先整理了前端文件上传的几种方式，然后讨论了大文件上传的几种场景，以及大文件上传需要实现的几个功能</p>
+<ul>
+<li>通过Blob对象的slice方法将文件拆分成切片</li>
+<li>整理了服务端还原文件所需条件和参数，演示了node将切片还原成文件</li>
+<li>通过保存已上传切片的记录来实现断点续传</li>
+</ul>
+<p>还留下了一些问题，如：合并文件时避免内存溢出、切片失效策略，并没有去深入或一一实现，继续学习吧~</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/20/patrickLh/使用Node构建命令行/" rel="prev">使用Node构建命令行</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/17/qiuwei/whistle/" rel="next">代理工具whistle的基本使用</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">127</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件上传原理"><span class="nav-number">1.</span> <span class="nav-text">文件上传原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是multipart-form-data？"><span class="nav-number">1.1.</span> <span class="nav-text">什么是multipart/form-data？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multipart-form-data的结构"><span class="nav-number">1.2.</span> <span class="nav-text">multipart/form-data的结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#请求头："><span class="nav-number">1.2.1.</span> <span class="nav-text">请求头：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求消息体Form-Data-部分"><span class="nav-number">1.2.2.</span> <span class="nav-text">请求消息体Form Data 部分:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析"><span class="nav-number">1.3.</span> <span class="nav-text">解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于form表单的最原始文件上传"><span class="nav-number">2.</span> <span class="nav-text">基于form表单的最原始文件上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#演示效果"><span class="nav-number">2.1.</span> <span class="nav-text">演示效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前端代码"><span class="nav-number">2.2.</span> <span class="nav-text">前端代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传接口"><span class="nav-number">2.3.</span> <span class="nav-text">上传接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多文件上传"><span class="nav-number">3.</span> <span class="nav-text">多文件上传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局部刷新-iframe"><span class="nav-number">4.</span> <span class="nav-text">局部刷新 - iframe</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#效果演示"><span class="nav-number">4.1.</span> <span class="nav-text">效果演示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前端代码-1"><span class="nav-number">4.2.</span> <span class="nav-text">前端代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何拿到接口数据"><span class="nav-number">4.3.</span> <span class="nav-text">如何拿到接口数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于xhr2的文件上传"><span class="nav-number">5.</span> <span class="nav-text">基于xhr2的文件上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多文件上传-xhr-formdata"><span class="nav-number">5.1.</span> <span class="nav-text">多文件上传-xhr formdata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多文件，单进度"><span class="nav-number">5.2.</span> <span class="nav-text">多文件，单进度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#效果演示-1"><span class="nav-number">5.2.1.</span> <span class="nav-text">效果演示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取进度条的原理"><span class="nav-number">5.2.2.</span> <span class="nav-text">获取进度条的原理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多文件上传之预览、多进度条、终止上传"><span class="nav-number">5.3.</span> <span class="nav-text">多文件上传之预览、多进度条、终止上传</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#效果演示-2"><span class="nav-number">5.3.1.</span> <span class="nav-text">效果演示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图片预览"><span class="nav-number">5.3.2.</span> <span class="nav-text">图片预览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多进度条"><span class="nav-number">5.3.3.</span> <span class="nav-text">多进度条</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#终止上传"><span class="nav-number">5.3.4.</span> <span class="nav-text">终止上传</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拖拽上传"><span class="nav-number">6.</span> <span class="nav-text">拖拽上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#效果演示-3"><span class="nav-number">6.1.</span> <span class="nav-text">效果演示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">6.2.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剪贴板上传"><span class="nav-number">7.</span> <span class="nav-text">剪贴板上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#效果演示-4"><span class="nav-number">7.1.</span> <span class="nav-text">效果演示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">7.2.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大文件分片上传"><span class="nav-number">8.</span> <span class="nav-text">大文件分片上传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#演示效果-1"><span class="nav-number">8.1.</span> <span class="nav-text">演示效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-2"><span class="nav-number">8.2.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前端逻辑："><span class="nav-number">8.2.1.</span> <span class="nav-text">前端逻辑：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器端"><span class="nav-number">8.2.2.</span> <span class="nav-text">服务器端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大文件断点续传"><span class="nav-number">9.</span> <span class="nav-text">大文件断点续传</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-3"><span class="nav-number">9.1.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

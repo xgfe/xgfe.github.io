@@ -1,0 +1,769 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="iOS,CoreML,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="简介Core ML 是一个机器学习框架，支持iPhone的一些功能，比如FaceID、Animoji和增强现实AR。">
+<meta name="keywords" content="iOS,CoreML">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CoreML简单使用">
+<meta property="og:url" content="http://xgfe.github.io/2020/08/20/jinwenzhe/CoreML简单使用/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="简介Core ML 是一个机器学习框架，支持iPhone的一些功能，比如FaceID、Animoji和增强现实AR。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p0.meituan.net/spacex/ceadf7f29a7865d11a79e999447d08ad.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/3ddf02503149cfe5c10ef3b91d6f10db.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/620c41f68a181febbd710e1633fc7439.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/4377a0f840316051156a449d1285dce5.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/4d9c5017d03297ea071508d25195ead2.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/cf9d4fc0556922c6b2fa4795670b7490.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/6101140a24583fe73f6471843869c561.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/d641cb8ddc7c31ad8aad57f2694e0e2b.jpg">
+<meta property="og:image" content="https://p0.meituan.net/spacex/6a7664866f8e47ce76378f532e3e2066.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/49fe90eeb134d8ab5837a3e4b7f755bc.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/35f5a3d928e02acaef02092bce2b1e47.jpg">
+<meta property="og:image" content="https://p0.meituan.net/spacex/5cd0408eb81ec16f51400fbf4d27644b.png">
+<meta property="og:updated_time" content="2020-08-26T12:23:59.917Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CoreML简单使用">
+<meta name="twitter:description" content="简介Core ML 是一个机器学习框架，支持iPhone的一些功能，比如FaceID、Animoji和增强现实AR。">
+<meta name="twitter:image" content="https://p0.meituan.net/spacex/ceadf7f29a7865d11a79e999447d08ad.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> CoreML简单使用 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              CoreML简单使用
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2020-08-20T00:00:00+08:00" content="2020-08-20">
+            2020-08-20
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/jinwenzhe/" itemprop="url" rel="index">
+                  <span itemprop="name">jinwenzhe</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/iOS/" rel="tag"><i class="icon-next-tags"></i>iOS</a>
+            
+              <a href="/tags/CoreML/" rel="tag"><i class="icon-next-tags"></i>CoreML</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Core ML 是一个机器学习框架，支持iPhone的一些功能，比如FaceID、Animoji和增强现实AR。<a id="more"></a><br>自从Core ML在2017年发布以来，它已经走过了很长的路，现在它支持大量的工具，可以帮助我们快速构建基于机器学习的应用程序。<br>Core ML通过轻松集成机器学习模型来提供惊人的快速性能，使你仅需几行代码即可构建具有智能新功能的应用程序。<br>使用由Core ML支持的API轻松地将预建的机器学习功能添加到您的应用程序中，或者使用Create ML以获得更大的灵活性，并在Mac上训练自定义的Core ML模型。<br>你还可以使用Core ML Converters转换其他培训库中的模型，或下载即可使用的Core ML模型。<br>Core ML提供了一系列的API，仅需几行代码，即可将设备上的机器学习功能（如图像和视频中的对象检测，语言分析和声音分类）带到您的应用中。</p>
+<p><img src="https://p0.meituan.net/spacex/ceadf7f29a7865d11a79e999447d08ad.png" width="60%"></p>
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><h3 id="简单、轻量"><a href="#简单、轻量" class="headerlink" title="简单、轻量"></a>简单、轻量</h3><p>模型是将机器学习算法应用于一组训练数据的结果。您可以基于新的输入数据使用模型进行预测。<br>一些很难或者用代码编写起来很困难的任务，可以通过模型来完成。<br>例如，您可以训练模型对照片进行分类，或者直接使用现有照片来进行识别。</p>
+<h3 id="性能、离线、安全"><a href="#性能、离线、安全" class="headerlink" title="性能、离线、安全"></a>性能、离线、安全</h3><p>Core ML通过利用CPU，GPU和神经引擎来优化设备上的性能，同时最大程度地减少其内存占用空间和功耗。<br>只在用户设备上运行模型可以消除对网络连接的任何需求，这有助于保持用户数据的私密性和您的应用程序的响应速度。</p>
+<h2 id="CoreML官网中可供使用的一些关于计算机视觉的模型"><a href="#CoreML官网中可供使用的一些关于计算机视觉的模型" class="headerlink" title="CoreML官网中可供使用的一些关于计算机视觉的模型"></a>CoreML官网中可供使用的一些关于计算机视觉的模型</h2><p>​<img src="https://p0.meituan.net/spacex/3ddf02503149cfe5c10ef3b91d6f10db.png" alt=""></p>
+<h1 id="宗旨"><a href="#宗旨" class="headerlink" title="宗旨"></a>宗旨</h1><pre><code>Build intelligence into your apps using machine learning models from the research community designed for Core ML.
+
+使用研究社区专门为Core ML设计的机器学习模型，将智能构建到您的应用中。
+</code></pre><h1 id="Demo展示"><a href="#Demo展示" class="headerlink" title="Demo展示"></a>Demo展示</h1><h2 id="主界面"><a href="#主界面" class="headerlink" title="主界面"></a>主界面</h2><p><img src="https://p0.meituan.net/spacex/12ef25396ce3fd3687801b2cf0582d77.png" width="30%"></p>
+<h2 id="图像识别"><a href="#图像识别" class="headerlink" title="图像识别"></a>图像识别</h2><div style="float:left;border:solid 1px 000;margin:2px;text-align:center"><div style="display:inline-block; width:30%; margin:5px"><img src="https://p0.meituan.net/spacex/c7a5809a62a5df0506c3a169ba7713ff.png"></div><div style="display:inline-block;width:30%; margin:5px"><img src="https://p0.meituan.net/spacex/5d4462d3316f734ea0677686d501d633.png"></div></div>
+
+<h2 id="主体识别"><a href="#主体识别" class="headerlink" title="主体识别"></a>主体识别</h2><div style="float:left;border:solid 1px 000;margin:2px;text-align:center"><div style="display:inline-block; width:30%; margin:5px"><img src="https://p0.meituan.net/spacex/620c41f68a181febbd710e1633fc7439.png"></div><div style="display:inline-block;width:30%; margin:5px"><img src="https://p0.meituan.net/spacex/4377a0f840316051156a449d1285dce5.png"></div></div>
+
+
+<h2 id="物体检测"><a href="#物体检测" class="headerlink" title="物体检测"></a>物体检测</h2><div style="float:left;border:solid 1px 000;margin:2px;text-align:center"><div style="display:inline-block; width:30%; margin:5px"><img src="https://p0.meituan.net/spacex/f0a2f9ac27c39a27ac2e3af30ae59244.png"></div><div style="display:inline-block;width:30%; margin:5px"><img src="https://p0.meituan.net/spacex/4b286f1bc4b72ed247e280fa744b1bf1.png"></div></div>
+
+
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><h2 id="一、下载模型"><a href="#一、下载模型" class="headerlink" title="一、下载模型"></a>一、下载模型</h2><blockquote>
+<p>下载链接：<a href="https://developer.apple.com/machine-learning/models/" target="_blank" rel="noopener">https://developer.apple.com/machine-learning/models/</a></p>
+</blockquote>
+<p>不同的mlmodel区别在于参数精度不同</p>
+<p><img src="https://p0.meituan.net/spacex/4d9c5017d03297ea071508d25195ead2.png" width="50%"></p>
+<h2 id="二、导入工程"><a href="#二、导入工程" class="headerlink" title="二、导入工程"></a>二、导入工程</h2><p>将下载好的mlmodel文件直接拖进工程文件：</p>
+<p><img src="https://p0.meituan.net/spacex/cf9d4fc0556922c6b2fa4795670b7490.png" width="40%"></p>
+<h2 id="三、查看模型输入输出"><a href="#三、查看模型输入输出" class="headerlink" title="三、查看模型输入输出"></a>三、查看模型输入输出</h2><p><img src="https://p0.meituan.net/spacex/6101140a24583fe73f6471843869c561.png" alt=""></p>
+<h2 id="四、导入头文件开始使用"><a href="#四、导入头文件开始使用" class="headerlink" title="四、导入头文件开始使用"></a>四、导入头文件开始使用</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">"SqueezeNetFP16.h"</span></span></span><br></pre></td></tr></table></figure>
+<h1 id="模型介绍"><a href="#模型介绍" class="headerlink" title="模型介绍"></a>模型介绍</h1><h2 id="SqueezeNet"><a href="#SqueezeNet" class="headerlink" title="SqueezeNet"></a>SqueezeNet</h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>SqueezeNet 发表于ICLR-2017，作者分别来自Berkeley和Stanford，</p>
+<p>SqueezeNet不是模型压缩技术，而是 “design strategies for CNN architectures with few parameters”</p>
+<p>Squeezenet比alexnet参数少50倍，同时大小仅4.8mb</p>
+<p>下图是AlexNet 与 SqueezeNet 相关参数的对照表：<br><img src="https://p0.meituan.net/spacex/d641cb8ddc7c31ad8aad57f2694e0e2b.jpg" alt=""></p>
+<h3 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h3><p><img src="https://p0.meituan.net/spacex/6a7664866f8e47ce76378f532e3e2066.png" alt=""></p>
+<h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加载一张需要识别的图片</span></span><br><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"fruit.jpeg"</span>];</span><br><span class="line"><span class="built_in">CGImageRef</span> imgRef = [image <span class="built_in">CGImage</span>];</span><br><span class="line"><span class="comment">//model 只接受CVPixelBufferRef的图片，所以先转一下</span></span><br><span class="line"><span class="comment">// pixelBufferFromCGImage 函数的具体内容见本文附录</span></span><br><span class="line">CVPixelBufferRef img = [<span class="keyword">self</span> pixelBufferFromCGImage:imgRef];</span><br><span class="line">​</span><br><span class="line"><span class="comment">//初始化model</span></span><br><span class="line">SqueezeNetFP16 *mod = [[SqueezeNetFP16 alloc] init];</span><br><span class="line"><span class="comment">//通过model的predictionFromImage函数，入参为image，出参为SqueezeNetFP16Output</span></span><br><span class="line">SqueezeNetFP16Output *res = [mod predictionFromImage:img error:<span class="literal">nil</span>];</span><br><span class="line"><span class="comment">//打印出识别的名称和识别率</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"识别为:%@,概率为:%@"</span>,res.classLabel,res.classLabelProbs[res.classLabel]);</span><br></pre></td></tr></table></figure>
+<h3 id="SqueezeNetFP16Output的classLabelProbs属性"><a href="#SqueezeNetFP16Output的classLabelProbs属性" class="headerlink" title="SqueezeNetFP16Output的classLabelProbs属性"></a>SqueezeNetFP16Output的classLabelProbs属性</h3><p>classLabelProbs属性包含了预测的所有种类对应的概率，</p>
+<p>所以，res.classLabelProbs[res.classLabel]可以取出预测名称所对应的概率</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">&quot;Afghan hound, Afghan&quot; = &quot;9.044347437864655e-14&quot;;</span><br><span class="line">&quot;African chameleon, Chamaeleo chamaeleon&quot; = &quot;1.968000415408788e-11&quot;;</span><br><span class="line">&quot;African crocodile, Nile crocodile, Crocodylus niloticus&quot; = &quot;2.88645680707883e-13&quot;;</span><br><span class="line">&quot;African elephant, Loxodonta africana&quot; = &quot;9.819910726585612e-13&quot;;</span><br><span class="line">&quot;African grey, African gray, Psittacus erithacus&quot; = &quot;8.513797999931683e-11&quot;;</span><br><span class="line">&quot;African hunting dog, hyena dog, Cape hunting dog, Lycaon pictus&quot; = &quot;1.588692420890006e-13&quot;;</span><br><span class="line">&quot;Airedale, Airedale terrier&quot; = &quot;3.033485734740132e-13&quot;;</span><br><span class="line">&quot;American Staffordshire terrier, Staffordshire terrier, American pit bull terrier, pit bull terrier&quot; = &quot;4.295829802991591e-10&quot;;</span><br><span class="line">&quot;American alligator, Alligator mississipiensis&quot; = &quot;1.02866250673711e-12&quot;;</span><br><span class="line">&quot;American black bear, black bear, Ursus americanus, Euarctos americanus&quot; = &quot;9.978090402540385e-13&quot;;</span><br><span class="line">&quot;American chameleon, anole, Anolis carolinensis&quot; = &quot;2.216001861177208e-11&quot;;</span><br><span class="line">&quot;American coot, marsh hen, mud hen, water hen, Fulica americana&quot; = &quot;7.412853967811</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Resnet50"><a href="#Resnet50" class="headerlink" title="Resnet50"></a>Resnet50</h2><h3 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h3><p>Resnet是残差网络(Residual Network)的缩写,</p>
+<p>该系列网络广泛用于目标分类等领域以及作为计算机视觉任务主干经典神经网络的一部分，</p>
+<p>典型的网络有resnet50, resnet101等。</p>
+<p>Resnet网络的证明网络能够向更深（包含更多隐藏层）的方向发展。</p>
+<h3 id="使用说明-1"><a href="#使用说明-1" class="headerlink" title="使用说明"></a>使用说明</h3><p><img src="https://p0.meituan.net/spacex/49fe90eeb134d8ab5837a3e4b7f755bc.png" alt=""></p>
+<h3 id="简单使用-1"><a href="#简单使用-1" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ResNet的输入图片大小要求为224*224，这里先将获取的image resize一下</span></span><br><span class="line"><span class="built_in">CGSize</span> size_resNet = <span class="built_in">CGSizeMake</span>(<span class="number">224</span>,<span class="number">224</span>);</span><br><span class="line"><span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(size_resNet, <span class="literal">NO</span>, <span class="number">1.0</span>);</span><br><span class="line">[img drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">224</span>, <span class="number">224</span>) blendMode:kCGBlendModeNormal alpha:<span class="number">1.0</span>];</span><br><span class="line"><span class="built_in">UIImage</span> *resultImage_resNet = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line"><span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line">​</span><br><span class="line"><span class="comment">// UIImage 转 CVPixelBufferRef</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imgRef_resNet = [resultImage_resNet <span class="built_in">CGImage</span>];</span><br><span class="line">CVPixelBufferRef pbimg_resNet = [<span class="keyword">self</span> pixelBufferFromCGImage:imgRef_resNet];</span><br><span class="line">​</span><br><span class="line"><span class="comment">// Resnet50Output的classLabel属性为识别的类别名称</span></span><br><span class="line"><span class="comment">// Resnet50Output的classLabelProbs属性为识别成每个类别的对应概率</span></span><br><span class="line"><span class="comment">//res_resNet.classLabelProbs[res_resNet.classLabel] 可以取出最终识别的类别的概率（即最大概率）</span></span><br><span class="line">Resnet50Output *res_resNet = [<span class="keyword">self</span>.mod_resNet predictionFromImage:pbimg_resNet error:<span class="literal">nil</span>];</span><br><span class="line"><span class="comment">//  NSLog(@"resNet识别为:%@,概率为:%@",res_resNet.classLabel,res_resNet.classLabelProbs[res_resNet.classLabel]);</span></span><br></pre></td></tr></table></figure>
+<p>​<br>​</p>
+<h3 id="Resnet50Output的classLabelProbs属性"><a href="#Resnet50Output的classLabelProbs属性" class="headerlink" title="Resnet50Output的classLabelProbs属性"></a>Resnet50Output的classLabelProbs属性</h3><p>同SqueezeNet</p>
+<h2 id="DeepLabV3"><a href="#DeepLabV3" class="headerlink" title="DeepLabV3"></a>DeepLabV3</h2><h3 id="简介-3"><a href="#简介-3" class="headerlink" title="简介"></a>简介</h3><p>DeepLab是谷歌使用tensorflow基于CNN开发的语义分割模型，至今已更新4个版本。</p>
+<p>最新版本是DeepLabv3+，在此模型中进一步将深度可分离卷积应用到孔空间金字塔池化和解码器模块，从而形成更快，更强大的语义分割编码器-解码器网络</p>
+<p><img src="https://p0.meituan.net/spacex/35f5a3d928e02acaef02092bce2b1e47.jpg" alt=""></p>
+<h3 id="使用说明-2"><a href="#使用说明-2" class="headerlink" title="使用说明"></a>使用说明</h3><p>输入为image，输出一个与image尺寸相同的矩阵，每个矩阵数值代表了对图片前后景的分类（后景为0，前景不为0）</p>
+<p><img src="https://p0.meituan.net/spacex/5cd0408eb81ec16f51400fbf4d27644b.png" alt=""></p>
+<h3 id="简单使用-2"><a href="#简单使用-2" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *img = info[<span class="string">@"UIImagePickerControllerEditedImage"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//输入image 规格为513*513</span></span><br><span class="line"><span class="comment">//先resize图片</span></span><br><span class="line"><span class="built_in">CGSize</span> size = <span class="built_in">CGSizeMake</span>(<span class="number">513</span>,<span class="number">513</span>);</span><br><span class="line"><span class="comment">//    UIGraphicsBeginImageContext(size);</span></span><br><span class="line"><span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(size, <span class="literal">NO</span>, <span class="number">1.0</span>);</span><br><span class="line">[img drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">513</span>, <span class="number">513</span>) blendMode:kCGBlendModeNormal alpha:<span class="number">1.0</span>];</span><br><span class="line"><span class="built_in">UIImage</span> *resultImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line"><span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line"><span class="comment">//将原图展示在imageView中</span></span><br><span class="line">[<span class="keyword">self</span>.imageView setImage:resultImage];</span><br><span class="line">​</span><br><span class="line"><span class="comment">//UIImage转输入要求的图片格式CVPixelBufferRef</span></span><br><span class="line"><span class="comment">// pixelBufferFromCGImage 函数见附录</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imgRef = [resultImage <span class="built_in">CGImage</span>];</span><br><span class="line">CVPixelBufferRef pbimg = [<span class="keyword">self</span> pixelBufferFromCGImage:imgRef];</span><br><span class="line">​</span><br><span class="line"><span class="comment">//得到模型输出</span></span><br><span class="line">DeepLabV3Output *res = [<span class="keyword">self</span>.mod_deeplab predictionFromImage:pbimg error:<span class="literal">nil</span>];</span><br><span class="line">​</span><br><span class="line"><span class="comment">//使用imageBlackToTransparent 函数处理输出，返回一张处理后的图片</span></span><br><span class="line"><span class="comment">// imageBlackToTransparent函数见附录</span></span><br><span class="line"><span class="built_in">UIImage</span> *myimg = [<span class="keyword">self</span> imageBlackToTransparent:resultImage withArr:res.semanticPredictions];</span><br><span class="line"><span class="comment">//将处理后的图片展示在另一个imageView中</span></span><br><span class="line">[<span class="keyword">self</span>.imageView2 setImage:myimg];</span><br></pre></td></tr></table></figure>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="CoreML官方文档"><a href="#CoreML官方文档" class="headerlink" title="CoreML官方文档"></a>CoreML官方文档</h2><blockquote>
+<p><a href="https://developer.apple.com/documentation/coreml" target="_blank" rel="noopener">https://developer.apple.com/documentation/coreml</a></p>
+</blockquote>
+<h2 id="pixelBufferFromCGImage-函数"><a href="#pixelBufferFromCGImage-函数" class="headerlink" title="pixelBufferFromCGImage: 函数"></a>pixelBufferFromCGImage: 函数</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UIImage 转 CGImageRef</span></span><br><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"fruit.jpeg"</span>];</span><br><span class="line"><span class="built_in">CGImageRef</span> imgRef = [image <span class="built_in">CGImage</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//CGImageRef 转  CVPixelBufferRef</span></span><br><span class="line">- (CVPixelBufferRef)pixelBufferFromCGImage:(<span class="built_in">CGImageRef</span>)image&#123;</span><br><span class="line">    <span class="built_in">NSDictionary</span> *options = [<span class="built_in">NSDictionary</span> dictionaryWithObjectsAndKeys:</span><br><span class="line">                             [<span class="built_in">NSNumber</span> numberWithBool:<span class="literal">YES</span>], kCVPixelBufferCGImageCompatibilityKey,</span><br><span class="line">                             [<span class="built_in">NSNumber</span> numberWithBool:<span class="literal">YES</span>], kCVPixelBufferCGBitmapContextCompatibilityKey,</span><br><span class="line">                             <span class="literal">nil</span>];</span><br><span class="line">​</span><br><span class="line">    CVPixelBufferRef pxbuffer = <span class="literal">NULL</span>;</span><br><span class="line">​</span><br><span class="line">    <span class="built_in">CGFloat</span> frameWidth = <span class="built_in">CGImageGetWidth</span>(image);</span><br><span class="line">    <span class="built_in">CGFloat</span> frameHeight = <span class="built_in">CGImageGetHeight</span>(image);</span><br><span class="line">​</span><br><span class="line">    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault,</span><br><span class="line">                                          frameWidth,</span><br><span class="line">                                          frameHeight,</span><br><span class="line">                                          kCVPixelFormatType_32ARGB,</span><br><span class="line">                                          (__bridge <span class="built_in">CFDictionaryRef</span>) options,</span><br><span class="line">                                          &amp;pxbuffer);</span><br><span class="line">​</span><br><span class="line">    <span class="built_in">NSParameterAssert</span>(status == kCVReturnSuccess &amp;&amp; pxbuffer != <span class="literal">NULL</span>);</span><br><span class="line">​</span><br><span class="line">    CVPixelBufferLockBaseAddress(pxbuffer, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">void</span> *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);</span><br><span class="line">    <span class="built_in">NSParameterAssert</span>(pxdata != <span class="literal">NULL</span>);</span><br><span class="line">​</span><br><span class="line">    <span class="built_in">CGColorSpaceRef</span> rgbColorSpace = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line">​</span><br><span class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">CGBitmapContextCreate</span>(pxdata,</span><br><span class="line">                                                 frameWidth,</span><br><span class="line">                                                 frameHeight,</span><br><span class="line">                                                 <span class="number">8</span>,</span><br><span class="line">                                                 CVPixelBufferGetBytesPerRow(pxbuffer),</span><br><span class="line">                                                 rgbColorSpace,</span><br><span class="line">                                                 (<span class="built_in">CGBitmapInfo</span>)kCGImageAlphaNoneSkipFirst);</span><br><span class="line">    <span class="built_in">NSParameterAssert</span>(context);</span><br><span class="line">    <span class="built_in">CGContextConcatCTM</span>(context, <span class="built_in">CGAffineTransformIdentity</span>);</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(context, <span class="built_in">CGRectMake</span>(<span class="number">0</span>,</span><br><span class="line">                                           <span class="number">0</span>,</span><br><span class="line">                                           frameWidth,</span><br><span class="line">                                           frameHeight),</span><br><span class="line">                       image);</span><br><span class="line">    <span class="built_in">CGColorSpaceRelease</span>(rgbColorSpace);</span><br><span class="line">    <span class="built_in">CGContextRelease</span>(context);</span><br><span class="line">​</span><br><span class="line">    CVPixelBufferUnlockBaseAddress(pxbuffer, <span class="number">0</span>);</span><br><span class="line">​</span><br><span class="line">    <span class="keyword">return</span> pxbuffer;​</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="imageBlackToTransparent-函数"><a href="#imageBlackToTransparent-函数" class="headerlink" title="imageBlackToTransparent 函数"></a>imageBlackToTransparent 函数</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//对UIImage进行像素值修改，入参为MLMultiArray：</span></span><br><span class="line">- (<span class="built_in">UIImage</span>*)imageBlackToTransparent:(<span class="built_in">UIImage</span>*)image withArr:(MLMultiArray*)arr&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> imageWidth = image.size.width;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> imageHeight = image.size.height;</span><br><span class="line">    size_t      bytesPerRow = imageWidth * <span class="number">4</span>;</span><br><span class="line">    uint32_t* rgbImageBuf = (uint32_t*)malloc(bytesPerRow * imageHeight);</span><br><span class="line">    <span class="built_in">CGColorSpaceRef</span> colorSpace = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">CGBitmapContextCreate</span>(rgbImageBuf, imageWidth, imageHeight, <span class="number">8</span>, bytesPerRow, colorSpace,</span><br><span class="line">                                                 kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipLast);</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(context, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, imageWidth, imageHeight), image.CGImage);</span><br><span class="line">    <span class="comment">// 遍历像素</span></span><br><span class="line">    <span class="keyword">int</span> pixelNum = imageWidth * imageHeight;</span><br><span class="line">    uint32_t* pCurPtr = rgbImageBuf;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pixelNum; i++, pCurPtr++)&#123;</span><br><span class="line">        </span><br><span class="line">        uint8_t* ptr = (uint8_t*)pCurPtr;</span><br><span class="line">​</span><br><span class="line">        <span class="keyword">if</span>(arr[i].intValue == <span class="number">0</span>)&#123;</span><br><span class="line">            ptr[<span class="number">3</span>] = <span class="number">0</span>; <span class="comment">//0~255</span></span><br><span class="line">            ptr[<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">            ptr[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">​</span><br><span class="line">    &#125;</span><br><span class="line">       </span><br><span class="line">    <span class="comment">// 输出图片</span></span><br><span class="line">    <span class="built_in">CGDataProviderRef</span> dataProvider = <span class="built_in">CGDataProviderCreateWithData</span>(<span class="literal">NULL</span>, rgbImageBuf, bytesPerRow * imageHeight, ProviderReleaseData);</span><br><span class="line">    <span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(imageWidth, imageHeight, <span class="number">8</span>, <span class="number">32</span>, bytesPerRow, colorSpace,</span><br><span class="line">                                        kCGImageAlphaLast | kCGBitmapByteOrder32Little, dataProvider,</span><br><span class="line">                                        <span class="literal">NULL</span>, <span class="literal">true</span>, kCGRenderingIntentDefault);</span><br><span class="line">    <span class="built_in">CGDataProviderRelease</span>(dataProvider);</span><br><span class="line">    <span class="built_in">UIImage</span>* resultUIImage = [<span class="built_in">UIImage</span> imageWithCGImage:imageRef];</span><br><span class="line">    <span class="comment">// 清理空间</span></span><br><span class="line">    <span class="built_in">CGImageRelease</span>(imageRef);</span><br><span class="line">    <span class="built_in">CGContextRelease</span>(context);</span><br><span class="line">    <span class="built_in">CGColorSpaceRelease</span>(colorSpace);</span><br><span class="line">    <span class="keyword">return</span> resultUIImage;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> ProviderReleaseData (<span class="keyword">void</span> *info, <span class="keyword">const</span> <span class="keyword">void</span> *data, size_t size)&#123;</span><br><span class="line">    free((<span class="keyword">void</span>*)data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/03/zhangdezhi/VirtualDOM与diff(Vue实现)/" rel="next">Vue中VirtualDOM与diff的实现</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">127</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优势"><span class="nav-number">1.1.</span> <span class="nav-text">优势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单、轻量"><span class="nav-number">1.1.1.</span> <span class="nav-text">简单、轻量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能、离线、安全"><span class="nav-number">1.1.2.</span> <span class="nav-text">性能、离线、安全</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CoreML官网中可供使用的一些关于计算机视觉的模型"><span class="nav-number">1.2.</span> <span class="nav-text">CoreML官网中可供使用的一些关于计算机视觉的模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#宗旨"><span class="nav-number">2.</span> <span class="nav-text">宗旨</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Demo展示"><span class="nav-number">3.</span> <span class="nav-text">Demo展示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#主界面"><span class="nav-number">3.1.</span> <span class="nav-text">主界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图像识别"><span class="nav-number">3.2.</span> <span class="nav-text">图像识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主体识别"><span class="nav-number">3.3.</span> <span class="nav-text">主体识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#物体检测"><span class="nav-number">3.4.</span> <span class="nav-text">物体检测</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用方法"><span class="nav-number">4.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、下载模型"><span class="nav-number">4.1.</span> <span class="nav-text">一、下载模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、导入工程"><span class="nav-number">4.2.</span> <span class="nav-text">二、导入工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、查看模型输入输出"><span class="nav-number">4.3.</span> <span class="nav-text">三、查看模型输入输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、导入头文件开始使用"><span class="nav-number">4.4.</span> <span class="nav-text">四、导入头文件开始使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型介绍"><span class="nav-number">5.</span> <span class="nav-text">模型介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SqueezeNet"><span class="nav-number">5.1.</span> <span class="nav-text">SqueezeNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介-1"><span class="nav-number">5.1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用说明"><span class="nav-number">5.1.2.</span> <span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单使用"><span class="nav-number">5.1.3.</span> <span class="nav-text">简单使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SqueezeNetFP16Output的classLabelProbs属性"><span class="nav-number">5.1.4.</span> <span class="nav-text">SqueezeNetFP16Output的classLabelProbs属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resnet50"><span class="nav-number">5.2.</span> <span class="nav-text">Resnet50</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介-2"><span class="nav-number">5.2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用说明-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单使用-1"><span class="nav-number">5.2.3.</span> <span class="nav-text">简单使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Resnet50Output的classLabelProbs属性"><span class="nav-number">5.2.4.</span> <span class="nav-text">Resnet50Output的classLabelProbs属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DeepLabV3"><span class="nav-number">5.3.</span> <span class="nav-text">DeepLabV3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介-3"><span class="nav-number">5.3.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用说明-2"><span class="nav-number">5.3.2.</span> <span class="nav-text">使用说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单使用-2"><span class="nav-number">5.3.3.</span> <span class="nav-text">简单使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附录"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CoreML官方文档"><span class="nav-number">6.1.</span> <span class="nav-text">CoreML官方文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pixelBufferFromCGImage-函数"><span class="nav-number">6.2.</span> <span class="nav-text">pixelBufferFromCGImage: 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#imageBlackToTransparent-函数"><span class="nav-number">6.3.</span> <span class="nav-text">imageBlackToTransparent 函数</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,755 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="前端,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要是讲解如何使用Node构建自己的命令行，并对其实现原理做了一定的解析。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Node构建命令行">
+<meta property="og:url" content="http://xgfe.github.io/2019/12/20/patrickLh/使用Node构建命令行/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要是讲解如何使用Node构建自己的命令行，并对其实现原理做了一定的解析。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-08-24T12:47:30.486Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Node构建命令行">
+<meta name="twitter:description" content="本文主要是讲解如何使用Node构建自己的命令行，并对其实现原理做了一定的解析。">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 使用Node构建命令行 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              使用Node构建命令行
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2019-12-20T09:00:00+08:00" content="2019-12-20">
+            2019-12-20
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/patrickLh/" itemprop="url" rel="index">
+                  <span itemprop="name">patrickLh</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/前端/" rel="tag"><i class="icon-next-tags"></i>前端</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要是讲解如何使用Node构建自己的命令行，并对其实现原理做了一定的解析。</p>
+<a id="more"></a>
+<h2 id="构建命令行"><a href="#构建命令行" class="headerlink" title="构建命令行"></a>构建命令行</h2><h3 id="扩展Node参数解析"><a href="#扩展Node参数解析" class="headerlink" title="扩展Node参数解析"></a>扩展Node参数解析</h3><p>我们执行一个node命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>process.argv</code>，可以拿到相关<code>node</code>命令执行的所有参数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// index.js</span><br><span class="line">console.log(process.argv);</span><br><span class="line">// 运行以下指令</span><br><span class="line">node index x y; // [&apos;/usr/local/bin/node&apos;, &apos;.../index&apos;, &apos;x&apos;, &apos;y&apos;]</span><br></pre></td></tr></table></figure></p>
+<p>可以根据业务逻辑来自行解析处理这些参数，也可以引入<code>commander</code>库来帮助扩展命令行参数解析，<code>commaneder</code>将所有的参数结构化，在使用的时候更加方便。</p>
+<h4 id="option"><a href="#option" class="headerlink" title="option"></a>option</h4><p>使用<code>commander.option()</code>的方法，可以扩展当前指令能够支持的参数，并使用<code>commander.parse(process.argv)</code>将命令行参数告知<code>commander</code>进行处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// index.js</span><br><span class="line">let program = require(&apos;commander&apos;);</span><br><span class="line">// 增加命令支持的参数</span><br><span class="line">program.option(&apos;-x, --extend&apos;, &apos;get all&apos;);</span><br><span class="line">program.option(&apos;-y, --yield &lt;type&gt;&apos;, &apos;set block type&apos;, &apos;defaultValue&apos;);</span><br><span class="line">//  program.option(&apos;-y, --yield &lt;type&gt;&apos;, &apos;set block type&apos;, (newValue, previous) =&gt; &#123;</span><br><span class="line">//    return newValue</span><br><span class="line">//  &#125;)</span><br><span class="line">// 将node参数转为program对象中使用</span><br><span class="line">program.parse(process.argv);</span><br><span class="line"></span><br><span class="line">if (program.extend) &#123;</span><br><span class="line">    console.log(program.opts());</span><br><span class="line">&#125;</span><br><span class="line">if (program.yield) &#123;</span><br><span class="line">    console.log(program.yield);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>执行命令后，可以看到相关输出结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js -x value1 -y value2 // &#123; extend: true, yield: &apos;value2&apos; &#125;, value2</span><br></pre></td></tr></table></figure></p>
+<p>PS：</p>
+<ol>
+<li><code>option</code>第三个参数可以设置默认值，也可以使用函数，对解析后的参数值进行处理。</li>
+<li><code>-x</code>中的<code>x</code>将作为简称在命令行执行时候使用，<code>--extend</code>中的<code>extend</code>将作为最后对象的属性使用。</li>
+</ol>
+<h4 id="version"><a href="#version" class="headerlink" title="version"></a>version</h4><p>使用<code>commander.version()</code>函数可以指定当前命令行工具的版本，通常版本信息从<code>package.json</code>中读取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let program = require(&apos;commander&apos;);</span><br><span class="line">let pkg = require(&apos;./package.json&apos;);</span><br><span class="line">program.version(pkg.version, &apos;-v, --vers&apos;, &apos;description&apos;);</span><br><span class="line">program.parse(process.argv);</span><br></pre></td></tr></table></figure></p>
+<p>之后执行以下命令获取到版本信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js -v</span><br></pre></td></tr></table></figure></p>
+<h4 id="command"><a href="#command" class="headerlink" title="command"></a>command</h4><p>如果需要扩展子命令（例如：<code>vue create</code>），可以使用<code>commander.command()</code>方法，并利用<code>comander.action()</code>函数，可以获得子命令中定义的参数<code>&lt;arg1&gt;</code>(必填) ,<code>[arg2]</code>（可选）和<code>option()</code>设置的命令行参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let program = require(&apos;commander&apos;);</span><br><span class="line">program.command(&apos;create &lt;arg1&gt; [arg2]&apos;)</span><br><span class="line">.description(&apos;description&apos;)</span><br><span class="line">.option(&apos;-x, --extend &lt;type&gt;&apos;, &apos;extend a message&apos;)</span><br><span class="line">.option(&apos;-y, --yield &lt;type&gt;&apos;, &apos;yield a message&apos;)</span><br><span class="line">.action((arg1, arg2, cmdObj) =&gt; &#123;</span><br><span class="line">    // todo</span><br><span class="line">    console.log(arg1, arg2, cmdObj);</span><br><span class="line">&#125;)</span><br><span class="line">program.parse(process.argv);</span><br></pre></td></tr></table></figure></p>
+<p>执行命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index create infile outfile -x 1 -y 2; // infile, outfile, &#123;...&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PS：每次运行<code>command()</code>方法，内部都会实例化一个新的对象，之后的<code>option</code>和<code>action</code>都是会绑定在新<code>command</code>的对象上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let program = require(&apos;commander&apos;);</span><br><span class="line">program.command(&apos;create &lt;arg1&gt; [arg2]&apos;)</span><br><span class="line">.description(&apos;description&apos;)</span><br><span class="line">.option(&apos;-x, --extend&apos;, &apos;create option&apos;) // 这里-x是create命令的参数</span><br><span class="line">.command(&apos;drop &lt;arg1&gt;&apos;)</span><br><span class="line">.options(&apos;-y, --yield&apos;, &apos;drop option&apos;) // 这里-y是drop命令的参数</span><br></pre></td></tr></table></figure></p>
+<h3 id="控制台交互"><a href="#控制台交互" class="headerlink" title="控制台交互"></a>控制台交互</h3><p>在使用命令行工具的时候，我们通常会使用到很多交互操作，以@<code>vue/cli</code>为例，命令行在创建项目的过程中，会提出问题，需要用户进行输入，选择某些特性。要实现这样的交互，我们可以使用<code>inquirer</code>库来进行辅助。</p>
+<p><code>inquirer</code>的使用十分简单，以<code>prompt</code>函数作为入口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">let inquirer = require(&apos;inquirer&apos;);</span><br><span class="line">inquirer.prompt([&#123;</span><br><span class="line">    type&lt;string&gt;: &apos;&apos;, // 输入类型包括：input, confirm, list, rawlist(有序列表)，expand, checkbox, password(隐藏输入模式)，editor（进入vi编辑模式）</span><br><span class="line">    name&lt;string&gt;: &apos;&apos;, // 必须，answers中获取时对应的属性名</span><br><span class="line">    message&lt;string|Function&gt;: &apos;&apos;, // 提示信息</span><br><span class="line">    default&lt;string|number|Array|Function&gt;: &apos;&apos;, // 默认值设置</span><br><span class="line">    choices&lt;Array|Function&gt;: &apos;&apos;, // 选项，用于list，rowlist，expand，checkbox</span><br><span class="line">    validate&lt;Function&gt;: &apos;&apos;, // 验证输入值是否符合要求</span><br><span class="line">    filter&lt;Function&gt;: &apos;&apos;, // 对当前requestion的结果做处理</span><br><span class="line">    when&lt;Function|boolean&gt;: &apos;&apos;, // 后续的question可以获取谦虚前序的所有answers</span><br><span class="line">    pageSize&lt;number&gt;: &apos;&apos;, // 选项的分页数量</span><br><span class="line">    prefix&lt;String&gt;: &apos;&apos;, // 提示问题显示的前缀</span><br><span class="line">    suffix&lt;String&gt;: &apos;&apos;, // 提示问题显示的后缀</span><br><span class="line">&#125;]).then(answers =&gt; &#123;</span><br><span class="line">    // 多结果数组</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><code>prompt</code>接受一个<code>question</code>数组，每个<code>question</code>设置<code>type</code>和<code>name</code>，在用户交互以后，通过<code>then</code>回调拿到对应的数据，所有的结果数据通过<code>anwsers[name]</code>的方式获取，这里的<code>name</code>就是在每一个<code>question</code>中配置的<code>name</code>，所以<code>name</code>必须要唯一。</p>
+<h3 id="安装命令行"><a href="#安装命令行" class="headerlink" title="安装命令行"></a>安装命令行</h3><p>在使用相关命令构建好命令行代码片段以后，我们想直接使用例如：<code>kibo create</code>的方式来执行命令行而不是<code>node kibo.js create</code>，可以将本地的包推到<code>npm</code>上，再利用<code>npm</code>的<code>install -g</code>特性进行安装，安装以后则可以全局使用，于是可以通过以下方式将包上传到<code>npm</code></p>
+<h4 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h4><p>在编写好<code>js</code>脚本以后，首先需要创建<code>package.json</code>文件，可以使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init</span><br></pre></td></tr></table></figure></p>
+<h4 id="配置相关依赖"><a href="#配置相关依赖" class="headerlink" title="配置相关依赖"></a>配置相关依赖</h4><p>之后配置可以安装我们脚本中所需要使用到的依赖包，可以直接修改<code>package.json</code>文件，也可以执行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save commender inquirer</span><br></pre></td></tr></table></figure></p>
+<p>PS：由于我们需要将包上传到npm并使用，所以如果手动配置，这里的依赖是需要放到<code>package.json</code>中的<code>dependences</code>中</p>
+<h4 id="配置bin属性"><a href="#配置bin属性" class="headerlink" title="配置bin属性"></a>配置bin属性</h4><p>我们需要增加/修改<code>pacakge.json</code>的<code>bin</code>属性，并将我们希望使用的命令行指令指向入口文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    bin: &#123;</span><br><span class="line">        &apos;kibo&apos;: &apos;./index.js&apos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="登陆npm发布"><a href="#登陆npm发布" class="headerlink" title="登陆npm发布"></a>登陆npm发布</h4><p>最后，配置完成以后，检查<code>pacakge.json</code>的名称，版本号，描述，就可以登陆<code>npm</code>进行发布，发布成功以后就可以通过<code>npm install</code>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// npm登陆</span><br><span class="line">npm login</span><br><span class="line">// 执行推送，注意package.json中的name不能有所重复</span><br><span class="line">npm publish</span><br><span class="line">// 如果要取消发布，可以使用以下命令</span><br><span class="line">npm unpublish --force</span><br></pre></td></tr></table></figure></p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>控制台输出内容的颜色和背景色默认都是系统颜色，对于警告，错误我们通常会使用更醒目的颜色来显示，所以我们可以使用<code>chalk</code>库，通过其提供的方法<code>chalk.&lt;style&gt;(text)</code>来对我们输出内容的文本颜色进行设置，例如设置一个文本输出为红色：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let chalk = require(&apos;chalk&apos;);</span><br><span class="line">console.log(chalk.red(&apos;this is a danger message&apos;));</span><br></pre></td></tr></table></figure></p>
+<h3 id="完整代码示例"><a href="#完整代码示例" class="headerlink" title="完整代码示例"></a>完整代码示例</h3><p>根据上面的描述，写一个简单的在当前目录下创建一个特定文件，且文件中包含输入的内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">let program = require(&apos;commander&apos;);</span><br><span class="line">let inquirer = require(&apos;inquirer&apos;);</span><br><span class="line">let fs = require(&apos;fs&apos;);</span><br><span class="line"></span><br><span class="line">program.command(&apos;create &lt;filename&gt;&apos;)</span><br><span class="line">.description(&apos;创建一个新的文件&apos;)</span><br><span class="line">.option(&apos;-d, --dest &lt;path&gt;&apos;, &apos;文件路径&apos;, &apos;.&apos;)</span><br><span class="line">.action((filename, cmdObj) =&gt; &#123;</span><br><span class="line">  // 判断文件路径是否存在，如果不存在需要创建文件结构</span><br><span class="line">  mkdir(cmdObj.dest);</span><br><span class="line">  inquirer.prompt([&#123;</span><br><span class="line">    name: &apos;extend&apos;,</span><br><span class="line">    type: &apos;list&apos;,</span><br><span class="line">    message: &apos;选择需要创建的文件类型&apos;,</span><br><span class="line">    choices: [&#123;name: &apos;html文件&apos;, value: &apos;html&apos;&#125;,</span><br><span class="line">              &#123;name: &apos;css文件&apos;, value: &apos;css&apos;&#125;,</span><br><span class="line">              &#123;name: &apos;javascript文件&apos;, value: &apos;js&apos;&#125;]</span><br><span class="line">  &#125;, &#123;</span><br><span class="line">    name: &apos;content&apos;,</span><br><span class="line">    type: &apos;editor&apos;,</span><br><span class="line">    message: &apos;输入文件内容&apos;</span><br><span class="line">  &#125;]).then(answers =&gt; &#123;</span><br><span class="line">    fs.writeFileSync(`$&#123;cmdObj.dest&#125;/$&#123;filename&#125;.$&#123;answers.extend&#125;`, answers.content);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">function mkdir(path) &#123;</span><br><span class="line">  let p = path.split(&apos;/&apos;);</span><br><span class="line">  let dir = p.reduce((accumulate, item) =&gt; &#123;</span><br><span class="line">    if (!fs.existsSync(accumulate)) &#123;</span><br><span class="line">      fs.mkdirSync(accumulate);</span><br><span class="line">    &#125;</span><br><span class="line">    return accumulate + &apos;/&apos; + item;</span><br><span class="line">  &#125;, &apos;.&apos;);</span><br><span class="line">  // 创建最后的目录</span><br><span class="line">  if (!fs.existsSync(dir)) &#123;</span><br><span class="line">    fs.mkdirSync(dir);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">program.parse(process.argv);</span><br><span class="line">// 如果参数少于2个弹出帮助提示</span><br><span class="line">if (!process.argv.slice(2).length) &#123;</span><br><span class="line">  program.outputHelp();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="核心源码解析"><a href="#核心源码解析" class="headerlink" title="核心源码解析"></a>核心源码解析</h2><h3 id="commander"><a href="#commander" class="headerlink" title="commander"></a>commander</h3><p>之前已经提及了<code>commander</code>如何使用，我们认为其目的是主要对<code>process.argv</code>进行了解析，那么如何解析？可以通过查看源码来学习</p>
+<p>入口文件中，引入对是一个<code>Command</code>对象实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// index.js</span><br><span class="line">function Command(name) &#123;</span><br><span class="line">  this.commands = [];</span><br><span class="line">  this.options = [];</span><br><span class="line">  this._execs = new Set();</span><br><span class="line">  this._allowUnknownOption = false;</span><br><span class="line">  this._args = [];</span><br><span class="line">  this._name = name || &apos;&apos;;</span><br><span class="line"></span><br><span class="line">  this._helpFlags = &apos;-h, --help&apos;;</span><br><span class="line">  this._helpDescription = &apos;output usage information&apos;;</span><br><span class="line">  this._helpShortFlag = &apos;-h&apos;;</span><br><span class="line">  this._helpLongFlag = &apos;--help&apos;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>之后我们通过调用<code>option()</code>方法来扩展命令，<code>option</code>方法主要会将所有设置的内容存放到<code>Command</code>对象的<code>options</code>属性中，并绑定特定事件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Command.prototype._optionEx = function(config, flags, description, fn, defaultValue) &#123;</span><br><span class="line">    ...</span><br><span class="line">    // 第419行</span><br><span class="line">    this.options.push(option);</span><br><span class="line">    // 绑定事件</span><br><span class="line">    this.on(&apos;option:&apos; + oname, function(val) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;)</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要说明一下，这里的事件绑定是使用<code>node</code>的<code>events</code>来扩展到<code>Command</code>对象上实现的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 第6行</span><br><span class="line">var EventEmitter = require(&apos;events&apos;).EventEmitter;</span><br><span class="line">// 第16行</span><br><span class="line">require(&apos;util&apos;).inherits(Command, EventEmitter);</span><br></pre></td></tr></table></figure></p>
+<p>而我们在调用<code>command()</code>方法的时候，则会在<code>commands</code>属性中增加内容，并将返回当前对象，也就是说，在调用<code>command()</code>之后，之后配置都会挂载到新设置到<code>Command</code>中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Command.prototype.command = function(nameAndArgs, actionOptsOrExecDesc, execOpts) &#123;</span><br><span class="line">    ...</span><br><span class="line">    // 172行</span><br><span class="line">    var cmd = new Command(args.shift());</span><br><span class="line">    ...</span><br><span class="line">    // 188行</span><br><span class="line">    this.commands.push(cmd);</span><br><span class="line">    cmd.parseExpectedArgs(args);</span><br><span class="line">    cmd.parent = this;</span><br><span class="line">    if (desc) return this;</span><br><span class="line">    return cmd;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于<code>action()</code>方法调用的时候，会调用当前<code>command</code>的事件绑定<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Command.prototype.action = function(fn) &#123;</span><br><span class="line">    ...</span><br><span class="line">    // 362行</span><br><span class="line">    var parent = this.parent || this;</span><br><span class="line">    var name = parent === this ? &apos;*&apos; : this._name;</span><br><span class="line">    parent.on(&apos;command:&apos; + name, listener);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后调用<code>parse()</code>方法，完成对输入<code>node</code>参数的解析（通过触发设置的事件）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 542行</span><br><span class="line">Command.prototype.parse = function(argv) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="inquirer"><a href="#inquirer" class="headerlink" title="inquirer"></a>inquirer</h3><p>从表现上来看，<code>inquirer</code>要完成交互，需要处理两个问题：第一个是如何处理键盘的操作（输入，方向键），另一个是如何在输入操作以后对输入结果进行渲染。</p>
+<p>以<code>prompt()</code>方法来作为入口，在调用的时候，会创建以下的实例，并运行<code>run</code>方法（根据<code>type</code>不同，这里的<code>ui</code>对象也不同，简单的工厂模式）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// inquirer.js</span><br><span class="line">// 25行</span><br><span class="line">inquirer.createPromptModule = function(opt) &#123;</span><br><span class="line">    ...</span><br><span class="line">    var ui = new inquirer.ui.Prompt(promptModule.prompts, opt);</span><br><span class="line">    var promise = ui.run(questions);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以<code>type: list</code>为例，可以看到主要进行了键位监听，处理光标，渲染操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// prompts/list.js</span><br><span class="line">// 49行</span><br><span class="line">  _run(cb) &#123;</span><br><span class="line">    this.done = cb;</span><br><span class="line">    var self = this;</span><br><span class="line">    // 事件监听</span><br><span class="line">    var events = observe(this.rl);</span><br><span class="line">    events.normalizedUpKey.pipe(takeUntil(events.line)).forEach(this.onUpKey.bind(this));</span><br><span class="line">    events.normalizedDownKey</span><br><span class="line">      .pipe(takeUntil(events.line))</span><br><span class="line">      .forEach(this.onDownKey.bind(this));</span><br><span class="line">    events.numberKey.pipe(takeUntil(events.line)).forEach(this.onNumberKey.bind(this));</span><br><span class="line">    events.line</span><br><span class="line">      .pipe(</span><br><span class="line">        take(1),</span><br><span class="line">        map(this.getCurrentValue.bind(this)),</span><br><span class="line">        flatMap(value =&gt; runAsync(self.opt.filter)(value).catch(err =&gt; err))</span><br><span class="line">      )</span><br><span class="line">      .forEach(this.onSubmit.bind(this));</span><br><span class="line"></span><br><span class="line">    // Init the prompt</span><br><span class="line">    cliCursor.hide();</span><br><span class="line">    // 输出渲染</span><br><span class="line">    this.render();</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="键盘监听"><a href="#键盘监听" class="headerlink" title="键盘监听"></a>键盘监听</h4><p>源码中使用了<code>rxjs</code>，但是核心代码是监听键盘输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// utils/events</span><br><span class="line">// 10行</span><br><span class="line">// 这里的fromEvent，takeUntil，pipe，filter都是rxjs相关的api</span><br><span class="line">// rl是node自带的readline库的实例</span><br><span class="line">var keypress = fromEvent(rl.input, &apos;keypress&apos;, normalizeKeypressEvents)</span><br><span class="line">    .pipe(takeUntil(fromEvent(rl, &apos;close&apos;)))</span><br><span class="line">    // Ignore `enter` key. On the readline, we only care about the `line` event.</span><br><span class="line">    .pipe(filter((&#123; key &#125;) =&gt; key.name !== &apos;enter&apos; &amp;&amp; key.name !== &apos;return&apos;));</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，在<code>rl.input</code>监听了<code>keypress</code>事件，将以上代码转换为非<code>rxjs</code>的方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">const readline = require(&apos;readline&apos;);</span><br><span class="line">// 如果增加mute-stream</span><br><span class="line">// var MuteStream = require(&apos;mute-stream&apos;);</span><br><span class="line">// var ms = new MuteStream();</span><br><span class="line">// ms.pipe(process.stdout);</span><br><span class="line">// 设置输入输出流</span><br><span class="line">let rl = readline.createInterface(&#123;</span><br><span class="line">  input: process.stdin,</span><br><span class="line">  output: process.stdout,</span><br><span class="line">  // output: ms,</span><br><span class="line">&#125;);</span><br><span class="line">// 监听每行输入，当输入回车的时候会触发改读入行操作</span><br><span class="line">rl.on(&apos;line&apos;, (input) =&gt; &#123;</span><br><span class="line">  console.log(`Received: $&#123;input&#125;`);</span><br><span class="line">&#125;);</span><br><span class="line">// 增加输入键盘监听</span><br><span class="line">rl.input.on(&apos;keypress&apos;, (value, key) =&gt; &#123;</span><br><span class="line">    console.log(`key.name: $&#123;key.name&#125;`);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>本质核心是<code>process.stdin</code>的键盘监听<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">process.stdin.on(&apos;keypress&apos;, (value, key) =&gt; &#123;</span><br><span class="line">    console.log(`key.name: $&#123;key.name&#125;`);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h4 id="渲染处理"><a href="#渲染处理" class="headerlink" title="渲染处理"></a>渲染处理</h4><p>渲染处理引用了<code>mute-stream</code>的库来进行辅助，可以在调用相关方法（<code>mute</code>,<code>unmute</code>）的时候，存储内容一次性输出内容，渲染的核心代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">this.screen.render(message);</span><br><span class="line">// utils/screen-manager</span><br><span class="line">// 25行</span><br><span class="line">render(content, bottomContent) &#123;</span><br><span class="line">    this.rl.output.unmute();</span><br><span class="line">    this.clean(this.extraLinesUnderPrompt);</span><br><span class="line">    ...</span><br><span class="line">    this.rl.output.write(fullContent);</span><br><span class="line">    ...</span><br><span class="line">    this.rl.output.mute();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 94行</span><br><span class="line">clean(extraLines) &#123;</span><br><span class="line">    if (extraLines &gt; 0) &#123;</span><br><span class="line">      util.down(this.rl, extraLines);</span><br><span class="line">    &#125;</span><br><span class="line">    util.clearLine(this.rl, this.height);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>渲染中最需要解决的问题在于，如何将控制台输出的内容清空后重新渲染，使用扩展库<code>ansi-escapes</code>可以实现这一效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let ansiEscapes = require(&apos;ansi-escapes&apos;);</span><br><span class="line">rl.output.write(ansiEscapes.eraseLines(1));</span><br></pre></td></tr></table></figure></p>
+<p>但是扩展库的本质是通过什么操作使得清空能得以实现？进一步阅读扩展库方法，可以看到扩展库在我们输出的字符串中增加了相关的内容，从而实现了清空控制台已输出内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// 6行</span><br><span class="line">const ESC = &apos;\u001B[&apos;;</span><br><span class="line">// 41行</span><br><span class="line">ansiEscapes.cursorUp = (count = 1) =&gt; ESC + count + &apos;A&apos;;</span><br><span class="line">// 51行</span><br><span class="line">ansiEscapes.cursorLeft = ESC + &apos;G&apos;;</span><br><span class="line">// 60行</span><br><span class="line">ansiEscapes.eraseLines = count =&gt; &#123;</span><br><span class="line">  let clear = &apos;&apos;;</span><br><span class="line">  for (let i = 0; i &lt; count; i++) &#123;</span><br><span class="line">    clear += ansiEscapes.eraseLine + (i &lt; count - 1 ? ansiEscapes.cursorUp() : &apos;&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  if (count) &#123;</span><br><span class="line">    clear += ansiEscapes.cursorLeft;</span><br><span class="line">  &#125;</span><br><span class="line">  return clear;</span><br><span class="line">&#125;;</span><br><span class="line">// 76行</span><br><span class="line">ansiEscapes.eraseLine = ESC + &apos;2K&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>对方法进行调用，实际上输出结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 如果调用改方法，则返回</span><br><span class="line">ansiEscapes.eraseLines(1); // &apos;\u001B[2K\u001B[1A\u001B[G&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>也就是说，如果我们在<code>node</code>脚本中使用以下内容，可以发现第二个输出并不会出现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 用标准输出流试一下</span><br><span class="line">console.log(1);</span><br><span class="line">console.log(2);</span><br><span class="line">process.stdout.write(&apos;\u001B[2K\u001B[1A\u001B[G&apos;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="chalk"><a href="#chalk" class="headerlink" title="chalk"></a>chalk</h3><p><code>chalk</code>可以使得文本输出颜色发生改变，那么具体是如何改变的呢？调查源码，发现引用了外部库<code>ansi-styles</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// source/index.js 第2行</span><br><span class="line">const ansiStyles = require(&apos;ansi-styles&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>外部库的核心操作，是在输出内容的前后增加了一段文本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// index.js  第125行</span><br><span class="line">styles[styleName] = &#123;</span><br><span class="line">    open: `\u001B[$&#123;style[0]&#125;m`,</span><br><span class="line">    close: `\u001B[$&#123;style[1]&#125;m`</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>其中，这里的<code>style</code>对象，以红色为例的开闭值为：[31, 39]，所以，如果想在控制台输出红色文本，在浏览器/<code>node</code>中可以使用以下输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(`\u001B[31m 测试 \u001B[39m`)</span><br></pre></td></tr></table></figure></p>
+<p>最后为什么增加文本能输出红色呢？初步认为<code>node</code>和浏览器中的<code>console.log</code>参照了ANSI的颜色解析规则，在使用相关的<a href="https://tintin.sourceforge.io/info/ansicolor" target="_blank" rel="noopener"><code>ANSI colors</code></a>的解析规则，从而使得输出文本可以显示颜色，然而具体底层细节实现是怎么做到的就不清楚了</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>要构建一个完整的命令行，其本质上从需要解决什么问题出发，然后推及到每一步操作如何实现（解析参数，输入交互，变为可执行命令行），同时再拆分到每一步的实现过程中的具体技术，最后将所有的组合起来。</p>
+<p>对于第三方库的使用，能很快的解决问题，但是如果有时间，了解代码本质的实现逻辑，可以扩展自己对编程的认知，便于以后解决问题的思路扩展。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://github.com/tj/commander.js" target="_blank" rel="noopener">commander</a></p>
+<p><a href="https://github.com/SBoudrias/Inquirer.js#readme" target="_blank" rel="noopener">inquirer</a></p>
+<p><a href="https://github.com/chalk/chalk" target="_blank" rel="noopener">chalk</a></p>
+<p><a href="https://tintin.sourceforge.io/info/ansicolor" target="_blank" rel="noopener">ANSI Colors</a></p>
+<p><a href="https://nodejs.org/docs/latest/api/readline.html" target="_blank" rel="noopener">Node readline</a></p>
+<p><a href="https://nodejs.org/docs/latest/api/process.html" target="_blank" rel="noopener">Node process</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/09/shenyanghong/anr-and-gradle-plugin/" rel="prev">SharedPreference导致的ANR优化实践</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/19/zuopengfei/upload/" rel="next">文件上传那些事</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">127</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建命令行"><span class="nav-number">1.</span> <span class="nav-text">构建命令行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展Node参数解析"><span class="nav-number">1.1.</span> <span class="nav-text">扩展Node参数解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#option"><span class="nav-number">1.1.1.</span> <span class="nav-text">option</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#version"><span class="nav-number">1.1.2.</span> <span class="nav-text">version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#command"><span class="nav-number">1.1.3.</span> <span class="nav-text">command</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制台交互"><span class="nav-number">1.2.</span> <span class="nav-text">控制台交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装命令行"><span class="nav-number">1.3.</span> <span class="nav-text">安装命令行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化项目"><span class="nav-number">1.3.1.</span> <span class="nav-text">初始化项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置相关依赖"><span class="nav-number">1.3.2.</span> <span class="nav-text">配置相关依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置bin属性"><span class="nav-number">1.3.3.</span> <span class="nav-text">配置bin属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登陆npm发布"><span class="nav-number">1.3.4.</span> <span class="nav-text">登陆npm发布</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">1.4.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码示例"><span class="nav-number">1.5.</span> <span class="nav-text">完整代码示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心源码解析"><span class="nav-number">2.</span> <span class="nav-text">核心源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#commander"><span class="nav-number">2.1.</span> <span class="nav-text">commander</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inquirer"><span class="nav-number">2.2.</span> <span class="nav-text">inquirer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#键盘监听"><span class="nav-number">2.2.1.</span> <span class="nav-text">键盘监听</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#渲染处理"><span class="nav-number">2.2.2.</span> <span class="nav-text">渲染处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chalk"><span class="nav-number">2.3.</span> <span class="nav-text">chalk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

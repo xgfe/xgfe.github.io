@@ -1,0 +1,874 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="android,jetpack,navigation,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="简介Navigation是Jetpack全家桶中负责处理界面导航的组件，该组件推崇使用单Activity+多Fragment的方式来进行APP的架构。类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。">
+<meta name="keywords" content="android,jetpack,navigation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jetpack-Navigation使用指南与原理剖析">
+<meta property="og:url" content="http://xgfe.github.io/2020/05/27/jiangweidong02/navigation/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="简介Navigation是Jetpack全家桶中负责处理界面导航的组件，该组件推崇使用单Activity+多Fragment的方式来进行APP的架构。类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p0.meituan.net/spacex/185b1054649b4aa1b768608328c8871d.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/8b84a8049eec616cd698d75f6854c2dd.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/9f07dba339d062a4597e0df8a2ba265b.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/72c95085cf0dd36b67d86f00164d9a98.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/ba1845eefb9f95d81bbb067728c2658f.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/f4bf76a6fbce33ce68affa280229f9ad.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/4c24402dc98bc08de174e5326daf8fde.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/907dddd3d49cba4928c7d1d2e26e2dd6.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/35076d08689d70d51ac4717ebc5a6e85.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/8b84a8049eec616cd698d75f6854c2dd.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/37e9b0501bb000780aaeb90a5dccd3e5.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/57e4efde6cdf7b0ff51029799d31cf47.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/15a7118875bfb55db98e3705204ff5e0.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/03ff110b711d6f6194d7927a6a729946.png">
+<meta property="og:updated_time" content="2020-08-26T12:27:08.818Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jetpack-Navigation使用指南与原理剖析">
+<meta name="twitter:description" content="简介Navigation是Jetpack全家桶中负责处理界面导航的组件，该组件推崇使用单Activity+多Fragment的方式来进行APP的架构。类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。">
+<meta name="twitter:image" content="https://p0.meituan.net/spacex/185b1054649b4aa1b768608328c8871d.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> Jetpack-Navigation使用指南与原理剖析 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              Jetpack-Navigation使用指南与原理剖析
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2020-05-27T10:00:00+08:00" content="2020-05-27">
+            2020-05-27
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/jiangweidong02/" itemprop="url" rel="index">
+                  <span itemprop="name">jiangweidong02</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/android/" rel="tag"><i class="icon-next-tags"></i>android</a>
+            
+              <a href="/tags/jetpack/" rel="tag"><i class="icon-next-tags"></i>jetpack</a>
+            
+              <a href="/tags/navigation/" rel="tag"><i class="icon-next-tags"></i>navigation</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Navigation是Jetpack全家桶中负责处理界面导航的组件，该组件推崇使用单Activity+多Fragment的方式来进行APP的架构。类似于AndroidManifest.xml文件中对Activity的配置，该组件需配置res/navigation/navigation.xml文件以对所有的Fragment进行集中管控。<br><a id="more"></a></p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><blockquote>
+<p>提供一套标准的单Activity+多Fragment的解决方案。<br>可以在Android Studio中直观的查看和编辑导航图。<br>可在目标之间导航和传递数据时提供类型安全的 Gradle 插件。（SafeArgs）<br>使用DeepLink处理Schema形式的跳转。</p>
+</blockquote>
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><p>我们先来看一下导航图的全貌，相信就凭这一张图我们就能感受到它的重要性。随着频繁的版本迭代，RD同学在找一个页面都有哪些入口的时候只能是去翻代码查引用关系，甚至特殊情况下PM同学有时还会找我们问页面路径。<br>   现在，Navigation提供的导航图可以轻松帮你找到入口，快速看清整体业务的来龙去脉。<br><img src="https://p0.meituan.net/spacex/185b1054649b4aa1b768608328c8871d.png" alt=""></p>
+<h3 id="依赖添加"><a href="#依赖添加" class="headerlink" title="依赖添加"></a>依赖添加</h3><pre><code>build.gradle文件中加入:
+</code></pre><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> nav_version = <span class="string">"2.3.0-alpha01"</span></span><br><span class="line">implementation <span class="string">"androidx.navigation:navigation-fragment:$nav_version"</span></span><br><span class="line">implementation <span class="string">"androidx.navigation:navigation-ui:$nav_version"</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意：如果要在 Android Studio 中使用 Navigation 组件，则必须使用 Android Studio 3.3 或更高版本。且必须将应用升级为androidX</strong></p>
+<h3 id="概念理解"><a href="#概念理解" class="headerlink" title="概念理解"></a>概念理解</h3><table>
+<thead>
+<tr>
+<th>名词</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Destination</td>
+<td>想要前往的目的地,可以是Fragment、Activity、或者Graph</td>
+</tr>
+<tr>
+<td>Graph</td>
+<td>一个视图，视图中可包含多个Fragment、Activity、Graph,是模块化的利器</td>
+</tr>
+</tbody>
+</table>
+<h3 id="宿主Activity搭建"><a href="#宿主Activity搭建" class="headerlink" title="宿主Activity搭建"></a>宿主Activity搭建</h3><p>我们需要提供一个宿主Activity作为整体导航框架的依托，这个宿主activity中会提供一块区域用来容纳所有的Fragment。<br>首先看一下宿主Activity的布局文件:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">FrameLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">fragment</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/fragment_host"</span></span></span><br><span class="line"><span class="tag">        //这里我们需要指定一个<span class="attr">NavHostFragment</span>或者是继承自它的一个<span class="attr">Fragment</span>就可以。</span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">"androidx.navigation.fragment.NavHostFragment"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        //我们知道,一个<span class="attr">activity</span>中可以有多个同级的<span class="attr">fragment</span>，所以这里需要指定一个默认的<span class="attr">Fragment</span>用来响应系统事件，如截获<span class="attr">back</span>键的操作。</span></span><br><span class="line"><span class="tag">        <span class="attr">app:defaultNavHost</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:navGraph</span>=<span class="string">"@navigation/navigation"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>再来看一下app:navGraph所引用的文件navigation.xml，后续所有的路由配置都是在这个xml文件中进行的，这个文件是整个Navigation框架的核心。<br><img width="600px" src="https://p0.meituan.net/spacex/8b84a8049eec616cd698d75f6854c2dd.png" alt=""></p>
+<h3 id="携参跳转"><a href="#携参跳转" class="headerlink" title="携参跳转"></a>携参跳转</h3><p>下面的例子中我们尝试从LoginFragment跳转到HomeFragment,并携带一个String类型的参数。<br>首先我们来看一下navigation.xml文件中的基本配置:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">navigation</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/nav"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">app:startDestination</span>=<span class="string">"@+id/fragment_splash"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">fragment</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/fragment_login"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">"com.example.android.navigation.LoginFragment"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span>  //当前<span class="attr">Fragment</span>可以跳到哪个<span class="attr">Fragment</span>去</span></span><br><span class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">"@+id/action_home"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">app:destination</span>=<span class="string">"@id/fragment_home"</span></span></span><br><span class="line"><span class="tag">         /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">fragment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">fragment</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/fragment_home"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">"com.example.android.navigation.HomeFragment"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">tools:layout</span>=<span class="string">"@layout/home_fragment"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">argument</span> //别的<span class="attr">Fragment</span>想要跳过来，需要传递的参数</span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">"userName"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:defaultValue</span>=<span class="string">"String"</span></span></span><br><span class="line"><span class="tag">            /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">fragment</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">navigation</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><strong><em>需要理解的是，同一个fragment标签下的argument和action标签是没有任何联系的。</em></strong><br>Navigation帮助开发者制定了以下规范：<br>1.规定每个Fragment所接收的参数类型和最大数量是明确的。<br>2.规定每个Fragment可跳转到哪些别的Fragment是明确的。<br>仔细想想，确实只有在规范了这两点的基础上，才可以达到生成导航图的目的。</p>
+<p>由LoginFragment跳转到HomeFragment:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">btnLogin?.setOnClickListener &#123;</span><br><span class="line">    <span class="keyword">var</span> bundle = Bundle()</span><br><span class="line">    bundle.putString(<span class="string">"userName"</span>,<span class="string">"小驴"</span>)</span><br><span class="line">    findNavController().navigate(R.id.fragment_login, bundle)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以发送对象，注意对象需要实现序列化<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">fragment</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/fragment_home"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:name</span>=<span class="string">"com.example.android.navigation.HomeFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">argument</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">"user"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:argType</span>=<span class="string">"com.example.android.navigation.User"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">fragment</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> bundle = Bundle()</span><br><span class="line">bundle.putParcelable(<span class="string">"user"</span>,User())</span><br><span class="line">findNavController().navigate(R.id.fragment_home, bundle)</span><br></pre></td></tr></table></figure>
+<p>除上述的跳转方式外，我们还可以使用Navigation组件提供的SafeArgs方式进行跳转。<br>使用SafeArgs需要添加额外的依赖。<br>root级build.gradle中添加：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        google()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        <span class="keyword">def</span> nav_version = <span class="string">"2.3.0-alpha01"</span></span><br><span class="line">        classpath <span class="string">"androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>app级build.gradle中添加：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">"androidx.navigation.safeargs"</span></span><br></pre></td></tr></table></figure></p>
+<p>如果是纯kotlin开发环境，可替换为：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">"androidx.navigation.safeargs.kotlin"</span></span><br></pre></td></tr></table></figure></p>
+<p>跳转:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">btnHome?.setOnClickListener &#123;</span><br><span class="line">    SplashFragmentDirections.actionHome(<span class="string">"小驴"</span>)</span><br><span class="line">    findNavController().navigate(R.id.fragment_home)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接收:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onViewCreated</span><span class="params">(view: <span class="type">View</span>, savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.onViewCreated(view, savedInstanceState)</span><br><span class="line">    <span class="keyword">var</span> bundle = HomeFragmentArgs.fromBundle(arguments!!)</span><br><span class="line">    LogUtil.log(<span class="string">"userName=<span class="variable">$bundle</span>.userName"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>SafeArgs的作用实际上是将xml文件中的<action>和<argments>标签进行解析,再通过dsl方式在编译期动态生成与跳转和接收参数相关的封装类。</argments></action></p>
+<p>SafeArgs插件的工作流程：SafeArgsPlugin.kt-&gt;ArgumentsGenerationTask.kt-&gt;NavSafeArgsGenerator.kt</p>
+<p><img src="https://p0.meituan.net/spacex/9f07dba339d062a4597e0df8a2ba265b.png" alt=""></p>
+<p>编译后产生的文件示例：</p>
+<p><img width="400px" src="https://p0.meituan.net/spacex/72c95085cf0dd36b67d86f00164d9a98.png" alt=""></p>
+<!--more-->
+<p>使用SafeArgs的好处有：</p>
+<blockquote>
+<p>·规范了页面跳转的方式.<br>·对类型安全做了检测.<br>·代码自动生成，提高开发效率.</p>
+</blockquote>
+<p>想了解代码生成过程的同学可以查看<a href="https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-master-dev/navigation/navigation-safe-args-gradle-plugin?source=post_page---------------------------%2F&amp;autodive=0%2F/" target="_blank" rel="noopener">SafeArgs插件源码</a>。</p>
+<h2 id="跳转方式"><a href="#跳转方式" class="headerlink" title="跳转方式"></a>跳转方式</h2><p>类似于Activity中的launchMode，Navigation组件也为开发者提供了友好的跳转的方式。</p>
+<h3 id="默认跳转方式"><a href="#默认跳转方式" class="headerlink" title="默认跳转方式"></a>默认跳转方式</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">fragment</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/fragment_login"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:name</span>=<span class="string">"com.example.android.navigation.LoginFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">action</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/action_home"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:destination</span>=<span class="string">"@id/fragment_home"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">fragment</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>默认跳转方式与activity的默认跳转方式规则一致,保持正常的入栈顺序和出栈顺序。</p>
+<h3 id="launchSingleTop属性"><a href="#launchSingleTop属性" class="headerlink" title="launchSingleTop属性"></a>launchSingleTop属性</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">fragment</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/fragment_login"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:name</span>=<span class="string">"com.example.android.navigation.LoginFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">action</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/action_home"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:launchSingleTop</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:destination</span>=<span class="string">"@id/fragment_home"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">fragment</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>launchSingleTop与activity的singleTop理解是一致的，都是栈顶复用的含义。<br>这里需要注意的是，在AndroidManifest.xml中我们配置singleTop属性是在<activity>标签中，意味着默认情况下，从任何地方跳转到该Activity都是栈顶复用的模式。<br>而在navigation.xml中，launchSingleTop配置在了<action>标签下，这相当于将以下代码做成了配置:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> intent= Intent();</span><br><span class="line">intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);</span><br></pre></td></tr></table></figure></action></activity></p>
+<h3 id="popUpTo-amp-popUpToInclusive"><a href="#popUpTo-amp-popUpToInclusive" class="headerlink" title="popUpTo&amp;popUpToInclusive"></a>popUpTo&amp;popUpToInclusive</h3><p>popUpTo：”fragmentId”是对栈的操作管理，意思是不断的弹出栈顶的Fragment直到遇到FragemntId对应的Fragment为止。这个属性很有用，</p>
+<p>例如有个很常见场景，登录页登录成功后进入首页、首页进入设置页、设置页中可以退出登录又回到登录页并清空堆栈中的设置页和首页。那我们就可以通过以下配置轻松进行跳转和堆栈管理：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">fragment</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/fragment_settings"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:name</span>=<span class="string">"com.example.android.navigation.SettingsFragment"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">tools:layout</span>=<span class="string">"@layout/settings_fragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">action</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/action_login"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:popUpTo</span>=<span class="string">"@id/fragment_login"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:popUpToInclusive</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:destination</span>=<span class="string">"@id/fragment_login"</span></span></span><br><span class="line"><span class="tag">        /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">fragment</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img width="1200px" src="https://p0.meituan.net/spacex/ba1845eefb9f95d81bbb067728c2658f.png" alt=""><br>再看下popUpToInclusive=false的情况：</p>
+<p><img width="1200px" src="https://p0.meituan.net/spacex/f4bf76a6fbce33ce68affa280229f9ad.png" alt=""></p>
+<p>所以popUpToInclusive=true的含义就是将popUpTo标签所指定的Fragment也一并销毁。个人感觉多数情况下我们都会将popUpToInclusive设置为true。<br><!--more--></p>
+<blockquote>
+<p><strong> action标签处理的不一定只有跳转，也可以单纯的对栈进行操作。</strong><br><strong>这也就意味着popUpTo不需要和destination同时使用，且Navigation内部的处理机制会先将popUpTo、popUpToInclusive两个属性执行完毕后再对destination属性进行处理。</strong></p>
+<h2 id="XML标签概览"><a href="#XML标签概览" class="headerlink" title="XML标签概览"></a>XML标签概览</h2><p><img src="https://p0.meituan.net/spacex/4c24402dc98bc08de174e5326daf8fde.png" alt=""></p>
+</blockquote>
+<p>argType的可选类型：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>app:argType语法</th>
+<th>是否支持默认值</th>
+<th>是否支持null值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>布尔值</td>
+<td>app:argType=”boolean”</td>
+<td>是 -“true”或“false”</td>
+<td>否</td>
+</tr>
+<tr>
+<td>浮点数</td>
+<td>app:argType=”float”</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>数组</td>
+<td>integer[]、float[]、com.example.User[]</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>长整数</td>
+<td>app:argType=”long”</td>
+<td>是 - 默认值必须始终以“L”后缀结尾（例如“123L”）</td>
+<td>否</td>
+</tr>
+<tr>
+<td>整数</td>
+<td>app:argType=”integer”</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>资源引用</td>
+<td>app:argType=”reference”</td>
+<td>是 - 默认值必须为“@resourceType/resourceName”格式（例如，“@style/myCustomStyle”）或“0”</td>
+<td>否</td>
+</tr>
+<tr>
+<td>字符串</td>
+<td>app:argType=”string”</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>自定义 Parcelable</td>
+<td>app:argType=”com.example.User”</td>
+<td>支持默认值“@null”。不支持其他默认值。</td>
+<td>是</td>
+</tr>
+<tr>
+<td>自定义 Serializable</td>
+<td>app:argType=”com.example.User”</td>
+<td>支持默认值“@null”。不支持其他默认值。</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Navigation实现原理"><a href="#Navigation实现原理" class="headerlink" title="Navigation实现原理"></a>Navigation实现原理</h2><p>Navigation是如何进行的堆栈管理、如何保存的后退栈都是我们需要关注的问题。<br>我们先来看一下重要的类与接口:</p>
+<p><img src="https://p0.meituan.net/spacex/907dddd3d49cba4928c7d1d2e26e2dd6.png" alt=""></p>
+<p><strong>NavHostFragment.java</strong></p>
+<p>这是宿主类，所有的业务Fragment实际上都是在它的布局中进行的replace操作，本质上就是一个空的FragmentLayout等待被填充。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,</span></span></span><br><span class="line"><span class="function"><span class="params">                         @Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    FrameLayout frameLayout = <span class="keyword">new</span> FrameLayout(inflater.getContext());</span><br><span class="line">    frameLayout.setId(getId());</span><br><span class="line">    <span class="keyword">return</span> frameLayout;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>NavController.java</strong></p>
+<p>这里存放了Fragment的堆栈，所以想要查看堆栈信息的同学可以从这里切入。同时可以发现Navigation组件已经将LifeCycle考虑了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Deque&lt;NavBackStackEntry&gt; mBackStack = <span class="keyword">new</span> ArrayDeque&lt;&gt;();</span><br><span class="line"><span class="keyword">private</span> LifecycleOwner mLifecycleOwner;</span><br></pre></td></tr></table></figure>
+<p>Navcontroller更是负责导航操作的关键，所有的导航操作都是由这里发起，具体由其内部的Navigator 进行处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">navigate</span><span class="params">(@NonNull NavDestination node, @Nullable Bundle args,</span></span></span><br><span class="line"><span class="function"><span class="params">            @Nullable NavOptions navOptions, @Nullable Navigator.Extras navigatorExtras)</span> </span>&#123;</span><br><span class="line">  .......</span><br><span class="line">        Navigator&lt;NavDestination&gt; navigator = mNavigatorProvider.getNavigator(</span><br><span class="line">                node.getNavigatorName());</span><br><span class="line">        NavDestination newDest = navigator.navigate(node, finalArgs,</span><br><span class="line">                navOptions, navigatorExtras);</span><br><span class="line">  ........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Navigator是个抽象类，它的继承类有很多：</p>
+<p><img width="800px" src="https://p0.meituan.net/spacex/35076d08689d70d51ac4717ebc5a6e85.png" alt=""><br>通过上图我们也可以发现“导航”不仅仅针对Fragment，也有针对Activity、DialogFragment、Graph的考虑。<br>再看一下FragmentNavigator是如何处理navigate()方法的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> NavDestination <span class="title">navigate</span><span class="params">(@NonNull Destination destination, @Nullable Bundle args,</span></span></span><br><span class="line"><span class="function"><span class="params">        @Nullable NavOptions navOptions, @Nullable Navigator.Extras navigatorExtras)</span> </span>&#123;</span><br><span class="line">    ........</span><br><span class="line">    <span class="keyword">final</span> FragmentTransaction ft = mFragmentManager.beginTransaction();</span><br><span class="line">    ........</span><br><span class="line">    ft.replace(mContainerId, frag);</span><br><span class="line">    .......</span><br><span class="line">    ft.addToBackStack(generateBackStackName(mBackStack.size(), destId));</span><br><span class="line">    .......</span><br><span class="line">    ft.commit();</span><br><span class="line">    .......</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这里的mContainerId实际上就是NavHostFragment中的空FrameLayout。所以通过阅读源码我们发现Navigation是使用replace方式进行的堆栈处理。<br>replace方式进行的堆栈管理一定要使用addToBackStack操作，这个操作不仅会将上一个Fragment保存在后退栈中，也会影响Fragment的生命周期，使得上一个Fragment只触发onDestoryView()，不会触发onDestory()。</p>
+<p>如果有一个跳转动作跳到了Graph，那具体会是跳到哪里？可以看下NavGraphNavigator是如何处理navigate()方法的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NavGraphNavigator</span> <span class="keyword">extends</span> <span class="title">Navigator</span>&lt;<span class="title">NavGraph</span>&gt; </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">public</span> NavDestination <span class="title">navigate</span><span class="params">(@NonNull NavGraph destination, @Nullable Bundle args,</span></span></span><br><span class="line"><span class="function"><span class="params">            @Nullable NavOptions navOptions, @Nullable Extras navigatorExtras)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> startId = destination.getStartDestination();</span><br><span class="line">        ...</span><br><span class="line">        NavDestination startDestination = destination.findNode(startId, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">if</span> (startDestination == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">final</span> String dest = destination.getStartDestDisplayName();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"navigation destination "</span> + dest</span><br><span class="line">                    + <span class="string">" is not a direct child of this NavGraph"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        Navigator&lt;NavDestination&gt; navigator = mNavigatorProvider.getNavigator(</span><br><span class="line">                startDestination.getNavigatorName());</span><br><span class="line">        <span class="keyword">return</span> navigator.navigate(startDestination, startDestination.addInDefaultArgs(args),</span><br><span class="line">                navOptions, navigatorExtras);</span><br><span class="line">    &#125;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过阅读源码，我们发现如果是一个Graph的话，则必须指定一个startDestination用于具体的跳转。那还记得我们在哪里看到过<startdestination>标签么？请看下图：<br><img width="600px" src="https://p0.meituan.net/spacex/8b84a8049eec616cd698d75f6854c2dd.png" alt=""><br>图中的startDestination写在了navigation标签下，所以其实每一个navigation标签就是一个Graph，我们完全可以依靠Graph将业务模块化。（一个navigation.xml文件中可以有多个navigation标签）</startdestination></p>
+<h2 id="AndroidStudio导航图绘制原理"><a href="#AndroidStudio导航图绘制原理" class="headerlink" title="AndroidStudio导航图绘制原理"></a>AndroidStudio导航图绘制原理</h2><p>首先，为什么想讲这个原理？是因为多数情况下我们没有办法在短时间内将现有的项目架构迁移成Navigation形式，但我们确实对他的导航图感到欣喜，出于这一点，可以简单讲一下AS绘制导航图的原理，以便为创建我们自己的导航图提供一些思路。</p>
+<p>我们先将<a href="https://github.com/JetBrains/android" target="_blank" rel="noopener">AndroidStudio源码</a>下载下来。<br>navigation编辑器相关的代码都存在了android/naveditor/src/com/android/tools/idea/naveditor路径下。</p>
+<p>转化一下角色，<strong>想象自己是一名AndroidStudio工具开发者</strong>。然后继续分析naveditor目录结构：<br><img width="300px" src="https://p0.meituan.net/spacex/37e9b0501bb000780aaeb90a5dccd3e5.png" alt=""><br><strong>../actions目录</strong><br>    这里的action是用来处理与navigation编辑器中每个可点击动作的.每一个action都继承自anAction，anAction是Intellij系列ide中编写插件重要的类。<br>    例如ScrollToDestinationAction.kt：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ScrollToDestinationAction</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> surface: NavDesignSurface, <span class="keyword">private</span> <span class="keyword">val</span> component: NlComponent): AnAction(<span class="string">"Scroll into view"</span>) &#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">actionPerformed</span><span class="params">(e: <span class="type">AnActionEvent</span>)</span></span> &#123;</span><br><span class="line">    surface.scrollToCenter(listOf(component))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img width="300px" src="https://p0.meituan.net/spacex/57e4efde6cdf7b0ff51029799d31cf47.png" alt=""><br> <strong>../property目录</strong><br> 所有的属性也需要显示在界面上。例如NavActionsProperty<br><img width="300px" src="https://p0.meituan.net/spacex/15a7118875bfb55db98e3705204ff5e0.png" alt=""><br> <strong>…/scene/decorator</strong><br>这里有很多decorator，每个decorator中都分配了一个scene，以FragmentDecorator为例，编辑器中显示的每个Fragment其实就是一个FragmentDecorator。每个decorator中都会生成各自特有的绘制指令，然后之后交给Draw类进行绘制工作。<br><img width="300px" src="https://p0.meituan.net/spacex/03ff110b711d6f6194d7927a6a729946.png" alt=""><br> <strong>…/scene/draw</strong><br>执行decorator产生的绘制指令，以完成真正的显示工作。<br> <strong>…/surface</strong><br> 这里是navigation编辑器的主视图，所有编辑器上能看到的内容都是以它作为容器。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Navigation并不只是一个单Activity+多Fragment的解决方案，它更是一个<strong>闭环的工具链条</strong>。可惜出现的比较晚，没有多少人会真正的把老项目用它进行重构，所以更多的我们还是学习它的思想和核心要领。</p>
+<p>在保证我们项目中<strong>跳转和传参的形式稳定</strong>的情况下：</p>
+<p>1.我们是否可以通过脚本扫描跳转和传参的代码，输出一个xxx_navigation.xml文件？</p>
+<p>2.或者是通过注解的方式在编译期生成xxx_navigation.xml文件？</p>
+<p>3.有了xxx_navigation.xml文件后，是否可以模仿SafeArg编写个gradle插件自动生成代码？</p>
+<p>4.是否还可以利用xxx_navigation.xml文件，再编写个AS插件生成导航图？</p>
+<p>5.再或者我们可不可以直接将生成的xxx_navigation.xml的格式与Navigation组件中xml的格式保持一致？这样就能直接利用他的导航图了。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/17/zhangziying/KotlinGuideForA GreenHand/" rel="prev">Kotlin初探(Java视角)</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/18/caomengqi/HTTP_cache/" rel="next">HTTP缓存机制</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">127</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">2.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用"><span class="nav-number">3.</span> <span class="nav-text">如何使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖添加"><span class="nav-number">3.1.</span> <span class="nav-text">依赖添加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#概念理解"><span class="nav-number">3.2.</span> <span class="nav-text">概念理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宿主Activity搭建"><span class="nav-number">3.3.</span> <span class="nav-text">宿主Activity搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#携参跳转"><span class="nav-number">3.4.</span> <span class="nav-text">携参跳转</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳转方式"><span class="nav-number">4.</span> <span class="nav-text">跳转方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#默认跳转方式"><span class="nav-number">4.1.</span> <span class="nav-text">默认跳转方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#launchSingleTop属性"><span class="nav-number">4.2.</span> <span class="nav-text">launchSingleTop属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#popUpTo-amp-popUpToInclusive"><span class="nav-number">4.3.</span> <span class="nav-text">popUpTo&amp;popUpToInclusive</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XML标签概览"><span class="nav-number">5.</span> <span class="nav-text">XML标签概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Navigation实现原理"><span class="nav-number">6.</span> <span class="nav-text">Navigation实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AndroidStudio导航图绘制原理"><span class="nav-number">7.</span> <span class="nav-text">AndroidStudio导航图绘制原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

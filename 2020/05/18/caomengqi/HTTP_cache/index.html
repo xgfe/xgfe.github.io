@@ -1,0 +1,825 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head><meta name="generator" content="Hexo 3.8.0">
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+  <meta name="google-site-verification" content="K8DCBviaoTBKVs28YBB7IBIbospQ9RVlgSh81RYMUhY">
+
+
+  <meta name="baidu-site-verification" content="tXr3ZTm3Hx">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1">
+
+  <meta name="description" content="xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
+
+
+  <meta name="keywords" content="缓存,">
+
+
+  <link rel="alternate" target="_blank" href="/atom.xml" title="xgfe" type="application/atom+xml">
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="http://p0.meituan.net/xgfe/2db359f56ce13be30dedef160e0e57ce16958.ico?v=0.4.5.1">
+
+<meta name="description" content="本文主要针对HTTP的缓存机制进行了介绍。">
+<meta name="keywords" content="缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP缓存机制">
+<meta property="og:url" content="http://xgfe.github.io/2020/05/18/caomengqi/HTTP_cache/index.html">
+<meta property="og:site_name" content="xgfe">
+<meta property="og:description" content="本文主要针对HTTP的缓存机制进行了介绍。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://p0.meituan.net/spacex/689248b0db9ead4609e591284a38b67b.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/f128a87935661c41f78fca0d311f87a9.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/bb11a5a591085b6d09accf91d7cf5daf.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/6611fde19d148f9031c38c776113ddcf.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/aa3728e363c3187709e4f65266e814ef.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/a8a2611be26837e89249df0a693ac716.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/200106127c37bd2eb59e04c4cd847b1f.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/4629ed3bec0e6af2c9619354076021c5.png">
+<meta property="og:image" content="https://p0.meituan.net/spacex/0b7f944872390c95114f5a49af558463.png">
+<meta property="og:updated_time" content="2020-08-24T13:13:15.497Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP缓存机制">
+<meta name="twitter:description" content="本文主要针对HTTP的缓存机制进行了介绍。">
+<meta name="twitter:image" content="https://p0.meituan.net/spacex/689248b0db9ead4609e591284a38b67b.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> HTTP缓存机制 | xgfe </title>
+  <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div style="position: fixed; top: -9999px; left: -9999px;">
+    <img src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe">
+  </div>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">xgfe</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br>
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br>
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br>
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-join">
+          <a href="/join" rel="section">
+            <i class="menu-item-icon icon-next-join"></i> <br>
+            加入我们
+          </a>
+        </li>
+      
+      <!-- slide-links added by felix -->
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://xgfe.github.io/Basics/" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Basics
+        </a>
+      </li>
+      <li class="menu-item menu-item-slides" style="opacity: 1; transform: translateY(0px);">
+        <a href="https://slides.com/xgfe" target="_blank" rel="section">
+          <i class="menu-item-icon icon-next-slides"></i> <br>
+          Slides
+        </a>
+      </li>
+
+      
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+
+    </div>
+  
+
+    <div class="site-search">
+      <form class="site-search-form" id="gg-form" action="https://www.google.com/webhp">
+        <input type="text" name="q" id="gg-search-input" class="menu-search-input">
+      </form>
+    </div>
+</nav>
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              HTTP缓存机制
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2020-05-18T10:00:00+08:00" content="2020-05-18">
+            2020-05-18
+          </time>
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 作者
+            
+              <span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
+                <a href="/categories/caomengqi/" itemprop="url" rel="index">
+                  <span itemprop="name">caomengqi</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+
+        <!-- tags 挪动位置 -->
+        
+          <span class="post-tags">
+            &nbsp; | &nbsp;
+            
+              <a href="/tags/缓存/" rel="tag"><i class="icon-next-tags"></i>缓存</a>
+            
+          </span>
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文主要针对HTTP的缓存机制进行了介绍。<br><a id="more"></a></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>web缓存一直是前端备受关注的一个话题，主要包括数据库缓存、服务器缓存（代理服务器缓存、CDN缓存）、浏览器缓存。其中浏览器缓存是把已经访问的过的页面（如 html js css 图片等）拷贝一份副本保存在浏览器中，当下一次访问该网站，缓存会根据缓存机制决定是直接使用副本响应访问请求，还是向源服务器再次发送请求。本文对浏览器缓存中的HTTP缓存进行了介绍。</p>
+<h2 id="缓存的作用"><a href="#缓存的作用" class="headerlink" title="缓存的作用"></a>缓存的作用</h2><p>为什么使用缓存？原因是缓存能够提高 Web 项目的性能和用户体验，具体体现在以下几点：</p>
+<ul>
+<li>加快浏览器加载网页的速度</li>
+<li>减少冗余的数据传输，节省网络流量和带宽</li>
+<li>减少服务器的负担，大大提高了网站的性能</li>
+</ul>
+<p>当然缓存无法保存世界上每份文档的副本 ，对于到达缓存的请求存在两种情况：缓存命中和缓存未命中。</p>
+<p>缓存命中(cache hit)：可以用已有的副本为某些到达缓存的请求提供服务。</p>
+<p>缓存未命中(cache miss) ：到达缓存的请求可能会由于没有副本可用，而被转发给原始服务器。</p>
+<h1 id="缓存处理步骤"><a href="#缓存处理步骤" class="headerlink" title="缓存处理步骤"></a>缓存处理步骤</h1><p>缓存处理步骤可以用一张图来表示：</p>
+<p><img src="https://p0.meituan.net/spacex/689248b0db9ead4609e591284a38b67b.png" alt="1589872657427"></p>
+<p>分析上图，可以了解到缓存处理主要分为6个步骤：</p>
+<ol>
+<li><p><strong>接收：</strong>缓存从网络中读取抵达的请求报文</p>
+<p>缓存检测到一条网络连接上的活动，读取输入数据。高性能的缓存会同时从多条输入连接上读取数据，在整条报文抵达之前开始对事务进行处理。 </p>
+</li>
+<li><p><strong>解析：</strong>缓存对报文进行解析，提取出 URL 和各种首部</p>
+<p>缓存将请求报文解析为片断，将首部的各个部分放入易于操作的数据结构中。这样，缓存软件就更容易处理首部字段并修改它们了 。解析程序还要负责首部各部分的标准化，将大小写或可替换数据格式之类不太重要的区别都看作等效的。而且，某些请求报文中包含有完整的绝对 URL，而其他一些请求中包含的则是相对 URL 和 Host 首部，所以解析程序通常都要将这些细节隐藏起来 。</p>
+</li>
+<li><p><strong>查询：</strong>缓存查看是否有本地副本可用，如果没有，就获取一份副本(并将其保存在本地) </p>
+<p>在第三步中，缓存获取了 URL，查找本地副本。本地副本可能存储在内存、本地磁盘，甚至附近的另一台计算机中。专业级的缓存会使用快速算法来确定本地缓存中是否有某个对象。如果本地没有这个文档，它可以根据情形和配置，到原始服务器或父代理中去取，或者返回一条错误信息。 </p>
+<p>已缓存对象中包含了服务器响应主体和原始服务器响应首部，这样就会在缓存命中时返回正确的服务器首部。已缓存对象中还包含了一些元数据(metadata)，用来记录对象在缓存中停留了多长时间，以及它被用过多少次等 。 </p>
+</li>
+<li><p><strong>新鲜度检测：</strong>缓存查看已缓存副本是否足够新鲜，如果不是，就询问服务器是否有任何更新 </p>
+<p>HTTP 通过缓存将服务器文档的副本保留一段时间。在这段时间里，都认为文档是 “新鲜的”，缓存可以在不联系服务器的情况下，直接提供该文档。但一旦已缓存副本停留的时间太长，超过了文档的新鲜度限值(freshness limit)，就认为对象“过期”了，在提供该文档之前，缓存要再次与服务器进行确认，以查看文档是否发生了变化。</p>
+</li>
+<li><p><strong>创建响应：</strong>缓存会用新的首部和已缓存的主体来构建一条响应报文</p>
+<p>为了使缓存的响应看起来就像来自原始服务器的一样，缓存将已缓存的服务器响应首部作为响应首部的起点。然后缓存对这些基础首部进行了修改和扩充。</p>
+<p>缓存负责对这些首部进行改造，以便与客户端的要求相匹配。比如，服务器返回的可能是一条 HTTP/1.0 响应，而客户端期待的是一条 HTTP/1.1 响应，在这种情况下，缓存必须对首部进行相应的转换。缓存还会向其中插入新鲜度信息(Cache-Control、 Expires 首部等)，而且通常会包含一个 Via 首部来说明请求是由一个代理缓存提供的。 </p>
+</li>
+<li><p><strong>发送：</strong>缓存通过网络将响应发回给客户端 </p>
+<p>一旦响应首部准备好了，缓存就将响应回送给客户端。和所有代理服务器一样，代理缓存要管理与客户端之间的连接。高性能的缓存会尽力高效地发送数据，通常可以避免在本地缓存和网络 I/O 缓冲区之间进行文档内容的复制。  </p>
+</li>
+</ol>
+<h1 id="缓存规则"><a href="#缓存规则" class="headerlink" title="缓存规则"></a>缓存规则</h1><p>为了方便理解，可以假设浏览器存在一个缓存数据库，用于存储缓存信息（实际上静态资源是被缓存到了内存和磁盘中），在浏览器第一次请求数据时，缓存数据库没有对应的缓存数据，则需要请求服务器，服务器将返回缓存规则和数据，浏览器将缓存规则和数据存储进缓存数据库。</p>
+<p><img src="https://p0.meituan.net/spacex/f128a87935661c41f78fca0d311f87a9.png" alt="1589873289242"></p>
+<p>注意：在浏览器地址栏输入地址后，与页面相关的所有资源都会遵循缓存策略，而是否被缓存则依赖于缓存策略的设置。</p>
+<p>HTTP 缓存有多种规则，根据是否需要向服务器发送请求主要分为两大类，强缓存和协商缓存。</p>
+<h2 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h2><h3 id="强缓存流程"><a href="#强缓存流程" class="headerlink" title="强缓存流程"></a>强缓存流程</h3><p>强制缓存是第一次访问服务器获取数据后，在有效时间内不会再请求服务器，而是直接使用缓存数据，强制缓存的流程如下。</p>
+<p><img src="https://p0.meituan.net/spacex/bb11a5a591085b6d09accf91d7cf5daf.png" alt="1589873518965"></p>
+<h3 id="强缓存到期时间"><a href="#强缓存到期时间" class="headerlink" title="强缓存到期时间"></a>强缓存到期时间</h3><p>通过特殊的 HTTP Cache-Control 首部(HTTP/1.0+)和 Expires 首部(HTTP/1.1 )，HTTP 让原始服务器向每个文档附加了一个“过期日期”。这些首部说明了在多长时间内可以将这些内容视为新鲜的。 </p>
+<p><img src="https://p0.meituan.net/spacex/6611fde19d148f9031c38c776113ddcf.png" alt="1589873870042"></p>
+<p>在 HTTP 1.0 版本中，Expires 字段的绝对时间是从服务器获取的，由于请求需要时间，所以浏览器的请求时间与服务器接收到请求所获取的时间是存在误差的，这也导致了缓存命中的误差。在 HTTP 1.1 版本中，因为 Cache-Control 的值 max-age=xxx 中的 xxx 是以秒为单位的相对时间，所以在浏览器接收到资源后开始倒计时，规避了 HTTP 1.0 中缓存命中存在误差的缺点。</p>
+<p>为了兼容低版本 HTTP 协议，正常开发中两种响应头会同时使用，HTTP 1.1 版本的实现优先级高于 HTTP 1.0。</p>
+<h3 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h3><ul>
+<li>Cache-Control：no-store</li>
+</ul>
+<p>禁止一切缓存。缓存通常会像非缓存代理服务器一样，向客户端转发一条 no-store 响应，然后删除对象。 </p>
+<ul>
+<li>Cache-Control：no-cache</li>
+</ul>
+<p>强制客户端直接向服务器发送请求，也就是说每次请求都必须向服务器发送。服务器接收到请求，然后判断资源是否变更，是则返回新内容，否则返回304，未变更。这个很容易让人产生误解，使人误以为是响应不被缓存。实际上Cache-Control: no-cache是会被缓存的，只不过每次在向客户端（浏览器）提供响应数据时，缓存都要向服务器评估缓存响应的有效性。 </p>
+<ul>
+<li>Cache-Control：must-revalidate</li>
+</ul>
+<p>在事先没有跟原始服务器进行再验证的情况下，不能提供这个对象的陈旧副本。缓存仍然可以随意提供新鲜的副本。如果在缓存进行 must-revalidate 新鲜度检查时，原始服务器不可用，缓存就必须返回一条 504 Gateway Timeout 错误。</p>
+<ul>
+<li>Cache-Control：max-age</li>
+</ul>
+<p>首部表示的是从服务器将文档传来之时起，可以认为此文档处于新鲜状态的秒数。</p>
+<ul>
+<li>Cache-Control：s-maxage</li>
+</ul>
+<p>和max-age是一样的，不过它只针对代理服务器缓存而言。</p>
+<ul>
+<li>Cache-Control：private</li>
+</ul>
+<p>只能针对个人用户，而不能被代理服务器缓存。</p>
+<ul>
+<li>Cache-Control：public</li>
+</ul>
+<p>可以被任何对象缓存，包括发送请求的客户端，代理服务器。</p>
+<ul>
+<li>Cache-Control：max-stale</li>
+</ul>
+<p>缓存可以随意提供过期的文件。如果指定了参数 <s>，在这段时间内，文档就不能过期。这条指令放松了缓存的规则。</s></p>
+<h3 id="Pragma"><a href="#Pragma" class="headerlink" title="Pragma"></a>Pragma</h3><p>Pragma 只有一个属性值，就是 no-cache ，效果和 Cache-Control 中的 no-cache 一致，不使用强缓存，需要与服务器验证缓存是否新鲜，在 3 个头部属性中的优先级最高。</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>使用express构建本地服务器进行强缓存验证，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">var</span> options = &#123; </span><br><span class="line">  etag: <span class="literal">false</span>, <span class="comment">// 禁用协商缓存</span></span><br><span class="line">  lastModified: <span class="literal">false</span>, <span class="comment">// 禁用协商缓存</span></span><br><span class="line">  setHeaders: <span class="function">(<span class="params">res, path, stat</span>) =&gt;</span> &#123;</span><br><span class="line">    res.set(<span class="string">'Cache-Control'</span>, <span class="string">'max-age=10'</span>); <span class="comment">// 强缓存超时时间为10秒</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">app.use(express.static((__dirname + <span class="string">'/public'</span>), options));</span><br><span class="line">app.listen(<span class="number">3001</span>);</span><br></pre></td></tr></table></figure>
+<p>第一次请求，状态码200 OK，Response Header中增加Cache-Control，过期时间为10秒：</p>
+<p><img src="https://p0.meituan.net/spacex/aa3728e363c3187709e4f65266e814ef.png" alt="1589887718530"></p>
+<p>十秒内第二次请求，状态码200 OK (from disk cache)，并在在Response Headers中，Date未更新：</p>
+<p><img src="https://p0.meituan.net/spacex/a8a2611be26837e89249df0a693ac716.png" alt="1589887736499"></p>
+<h2 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h2><h3 id="协商缓存流程"><a href="#协商缓存流程" class="headerlink" title="协商缓存流程"></a>协商缓存流程</h3><p>协商缓存又叫对比缓存，设置协商缓存后，第一次访问服务器获取数据时，服务器会将数据和缓存标识一起返回给浏览器，客户端会将数据和标识存入缓存数据库中，下一次请求时，会先去缓存中取出缓存标识发送给服务器进行询问，当服务器数据更改时会更新标识，所以服务器拿到浏览器发来的标识进行对比，相同代表数据未更改，响应浏览器通知数据未更改，浏览器会去缓存中获取数据，如果标识不同，代表服务器更改过数据，所以会将新的数据和新的标识返回浏览器，浏览器会将新的数据和标识存入缓存中，协商缓存的流程如下。</p>
+<p><img src="https://p0.meituan.net/spacex/200106127c37bd2eb59e04c4cd847b1f.png" alt="1589874616041"></p>
+<p>协商缓存和强制缓存不同的是，协商缓存每次请求都需要跟服务器通信，而且命中缓存服务器返回状态码不再是200，而是304。</p>
+<h3 id="协商缓存判断"><a href="#协商缓存判断" class="headerlink" title="协商缓存判断"></a>协商缓存判断</h3><p>强制缓存是通过过期时间来控制是否访问服务器，而协商缓存每次都要与服务器交互对比缓存标识，同样的，对于协商缓存的实现在 HTTP 1.0 版本和 HTTP 1.1 版本也有所不同。在HTTP1.0版本中，使用Last-Modified/If-Modified-Since来标识，在HTTP1.1版本中使用ETag/If-None-Match来标识。</p>
+<h4 id="Last-Modified-If-Modified-Since"><a href="#Last-Modified-If-Modified-Since" class="headerlink" title="Last-Modified/If-Modified-Since"></a>Last-Modified/If-Modified-Since</h4><p>Last-Modified/If-Modified-Since 的值代表的是文件的最后修改时间，如果在指定日期之后文档被修改过了，就执行请求。</p>
+<ul>
+<li>如果自指定日期后，文档被修改了，If-Modified-Since 条件为真，通常 GET 就会成功执行。携带新首部的新文档会被返回给缓存，新首部除了其他信息之外，还包含了一个新的过期日期。</li>
+<li>如果自指定日期后，文档没被修改过，If-Modified-Since条件为假，会向客户端返回一个304 Not Modified响应报文。</li>
+<li>If-Modified-Since 首部可以与 Last-Modified 服务器响应首部配合工作。第一次请求服务端会把资源的最后修改时间放到 Last-Modified 响应头中，第二次发起请求的时候，请求头会带上上一次响应头中的 Last-Modified 的时间，并放到 If-Modified-Since 请求头属性中，服务端根据文件最后一次修改时间和 If-Modified-Since 的值进行比较，如果相等，返回 304 ，并加载浏览器缓存。如果不相等， 则返回带有新主体的 200 响应。</li>
+</ul>
+<h4 id="ETag-If-None-Match"><a href="#ETag-If-None-Match" class="headerlink" title="ETag/If-None-Match"></a>ETag/If-None-Match</h4><p>服务器通过 ETag 响应头来设置缓存标识，ETag一般为资源实体的哈希值，也服务器生成的一个标记，用来标识返回值是否有变化。且Etag的优先级高于Last-Modified。</p>
+<ul>
+<li>浏览器接收到数据和唯一标识后存入缓存，下次请求时，通过 If-None-Match 请求头将唯一标识带给服务器，服务器取出唯一标识与之前的标识对比，不同，说明修改过，If-None-Match 首部就会执行所请求的方法返回新标识和数据；相同，则返回状态码 304 通知浏览器命中缓存。</li>
+</ul>
+<p>注意：ETag 又有强弱校验之分，如果 hash 码是以 “W/“ 开头的一串字符串，说明此时协商缓存的校验是弱校验的，只有服务器上的文件差异（根据 ETag 计算方式来决定）达到能够触发 hash 值后缀变化的时候，才会真正地请求资源，否则返回 304 并加载浏览器缓存。</p>
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>使用express构建本地服务器进行协商缓存验证，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">var</span> options = &#123; </span><br><span class="line">  etag: <span class="literal">true</span>, <span class="comment">// 开启协商缓存</span></span><br><span class="line">  lastModified: <span class="literal">true</span>, <span class="comment">// 开启协商缓存</span></span><br><span class="line">  setHeaders: <span class="function">(<span class="params">res, path, stat</span>) =&gt;</span> &#123;</span><br><span class="line">    res.set(&#123;</span><br><span class="line">      <span class="string">'Cache-Control'</span>: <span class="string">'max-age=00'</span>, <span class="comment">// 浏览器不走强缓存</span></span><br><span class="line">      <span class="string">'Pragma'</span>: <span class="string">'no-cache'</span>, <span class="comment">// 浏览器不走强缓存</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">app.use(express.static((__dirname + <span class="string">'/public'</span>), options));</span><br><span class="line">app.listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>第一次请求，状态码为200 OK，响应头中带有资源的hash信息和最后一次修改时间：</p>
+<p><img src="https://p0.meituan.net/spacex/4629ed3bec0e6af2c9619354076021c5.png" alt="1589885754975"></p>
+<p>第二次请求，服务端根据请求头中的 If-Modified-Since 和 If-None-Match 验证文件是否修改，未修改返回状态码304 Not Modified：</p>
+<p><img src="https://p0.meituan.net/spacex/0b7f944872390c95114f5a49af558463.png" alt="1589885770173"></p>
+<h2 id="强缓存vs协商缓存"><a href="#强缓存vs协商缓存" class="headerlink" title="强缓存vs协商缓存"></a>强缓存vs协商缓存</h2><ul>
+<li>两者的共同点是：如果命中，都是从客户端缓存中加载资源，而不是从服务器加载资源数据；</li>
+<li>两者的区别是：强缓存不发请求到服务器，协商缓存会发请求到服务器。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>为了使缓存策略更加健壮、灵活，HTTP 1.0 版本 和 HTTP 1.1 版本的缓存策略会同时使用，甚至强制缓存和协商缓存也会同时使用，对于强制缓存，服务器通知浏览器一个缓存时间，在缓存时间内，下次请求，直接使用缓存，超出有效时间，执行协商缓存策略，对于协商缓存，将缓存信息中的 Etag 和 Last-Modified 通过请求头 If-None-Match 和 If-Modified-Since 发送给服务器，由服务器校验同时设置新的强制缓存，校验通过并返回 304 状态码时，浏览器直接使用缓存，如果协商缓存也未命中，则服务器重新设置协商缓存的标识。</p>
+<p>相关参考链接：</p>
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ" target="_blank" rel="noopener">HTTP缓存介绍</a></li>
+<li><a href="https://juejin.im/post/5eb7f811f265da7bbc7cc5bd" target="_blank" rel="noopener">图解HTTP缓存</a></li>
+<li><a href="https://juejin.im/post/5a1d4e546fb9a0450f21af23" target="_blank" rel="noopener">HTTP缓存机制</a></li>
+<li><a href="https://juejin.im/post/5c136bd16fb9a049d37efc47" target="_blank" rel="noopener">前端缓存最佳实践</a></li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/27/jiangweidong02/navigation/" rel="prev">Jetpack-Navigation使用指南与原理剖析</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/16/zhengchangjun/高阶函数学习总结/" rel="next">高阶函数学习总结</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+ </div>
+        
+          <div id="comments" class="article-info article-info-index"></div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <a href="https://github.com/xgfe" target="_blank"><img class="site-author-image" src="http://p0.meituan.net/xgfe/082a9624ba5ae8602150a2d43968463e49348.png" alt="xgfe" itemprop="image"></a>
+          <p class="site-author-name" itemprop="name">xgfe</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">xgfe's blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">127</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-name">作者</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">176</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" target="_blank" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xgfe" target="_blank">GitHub</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存的作用"><span class="nav-number">1.1.</span> <span class="nav-text">缓存的作用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#缓存处理步骤"><span class="nav-number">2.</span> <span class="nav-text">缓存处理步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#缓存规则"><span class="nav-number">3.</span> <span class="nav-text">缓存规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#强缓存"><span class="nav-number">3.1.</span> <span class="nav-text">强缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#强缓存流程"><span class="nav-number">3.1.1.</span> <span class="nav-text">强缓存流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强缓存到期时间"><span class="nav-number">3.1.2.</span> <span class="nav-text">强缓存到期时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache-Control"><span class="nav-number">3.1.3.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pragma"><span class="nav-number">3.1.4.</span> <span class="nav-text">Pragma</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分析"><span class="nav-number">3.1.5.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协商缓存"><span class="nav-number">3.2.</span> <span class="nav-text">协商缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#协商缓存流程"><span class="nav-number">3.2.1.</span> <span class="nav-text">协商缓存流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协商缓存判断"><span class="nav-number">3.2.2.</span> <span class="nav-text">协商缓存判断</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Last-Modified-If-Modified-Since"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">Last-Modified/If-Modified-Since</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ETag-If-None-Match"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">ETag/If-None-Match</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分析-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强缓存vs协商缓存"><span class="nav-number">3.3.</span> <span class="nav-text">强缓存vs协商缓存</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright">
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xgfe</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+  <script type="text/javascript" src="/vendors/gitmint.browser.js"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    <script type="text/javascript">
+  let name = window.location.href;
+  let idArray = name.split('/');
+  let id = idArray[idArray.length - 2];
+  id = id.slice(0, 20);
+  const gitment = new Gitmint({
+    id: id,
+    owner: 'xgfe',
+    admin: ['lulutia', 'Catherine33'],
+    repo: 'xgfe.github.io',
+    oauth: {
+      redirect_protocol: 'https',
+      client_id: '23cc0db4fc1491f8ae2e',
+      client_secret: '13f4c4623bf8acb0479801903c80a71fdff0350e',
+    }
+  })
+  gitment.render('comments')
+</script>
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+
+  <!-- google search, added by felix -->
+  <script>
+      $('#gg-form').on('submit', function(e) {
+        var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>

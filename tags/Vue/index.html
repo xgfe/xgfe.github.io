@@ -36,7 +36,7 @@
 <meta name="keywords" content="xgfe, xg, fe, 鲜果前端, 前端">
 <meta property="og:type" content="website">
 <meta property="og:title" content="xgfe">
-<meta property="og:url" content="http://xgfe.github.io/tags/Vue/index.html">
+<meta property="og:url" content="http://xgfe.github.io/tags/vue/index.html">
 <meta property="og:site_name" content="xgfe">
 <meta property="og:description" content="xgfe&apos;s blog. 鲜果前端的技术博客，鲜果前端研发部官方博客。前端基础技术研究：html, html5, javascript, css, css3；前端框架研究：angularJs, react, react native.">
 <meta property="og:locale" content="zh-Hans">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title> 标签: Vue | xgfe </title>
+  <title> 标签: vue | xgfe </title>
   <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
 </head>
 
@@ -187,7 +187,7 @@
   <div id="posts" class="posts-collapse">
     <div class="collection-title">
       <h2>
-        Vue
+        vue
         <small>标签</small>
       </h2>
     </div>
@@ -200,14 +200,14 @@
 
       <h1 class="post-title">
         
-            <a class="post-title-link" href="/2018/01/19/lulutia/keep-alive/" itemprop="url">
-              <span itemprop="name">移动端基于vue-router的滚动位置记录(keep-alive)</span>
+            <a class="post-title-link" href="/2020/07/03/zhangdezhi/VirtualDOM与diff(Vue实现)/" itemprop="url">
+              <span itemprop="name">Vue中VirtualDOM与diff的实现</span>
             </a>
         
       </h1>
 
       <div class="post-meta">
-        <time class="post-time" datetime="2018-01-19T02:57:00.000Z" itemprop="dateCreated" content="2018-01-19"> 01-19 </time>
+        <time class="post-time" datetime="2020-07-02T16:00:00.000Z" itemprop="dateCreated" content="2020-07-02"> 07-03 </time>
       </div>
 
     </header>
@@ -222,36 +222,14 @@
 
       <h1 class="post-title">
         
-            <a class="post-title-link" href="/2017/10/31/lulutia/vue-lifecycle/" itemprop="url">
-              <span itemprop="name">Vue生命周期总结</span>
+            <a class="post-title-link" href="/2019/07/23/luoyu/vue/" itemprop="url">
+              <span itemprop="name">【浅度解析】new Vue() 源码结构梳理</span>
             </a>
         
       </h1>
 
       <div class="post-meta">
-        <time class="post-time" datetime="2017-10-31T07:04:00.000Z" itemprop="dateCreated" content="2017-10-31"> 10-31 </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/11/08/y8n/vue-in-action-vue-project/" itemprop="url">
-              <span itemprop="name">Vue实战（二）—— 在项目中的实践</span>
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" datetime="2016-11-07T16:00:00.000Z" itemprop="dateCreated" content="2016-11-07"> 11-08 </time>
+        <time class="post-time" datetime="2019-07-23T05:47:00.000Z" itemprop="dateCreated" content="2019-07-23"> 07-23 </time>
       </div>
 
     </header>
@@ -290,21 +268,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">118</span>
+              <span class="site-state-item-count">127</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-count">73</span>
               <span class="site-state-item-name">作者</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-count">176</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
@@ -351,7 +329,7 @@
       <div class="footer-inner"> <div class="copyright">
   
   &copy; &nbsp; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="icon-next-heart"></i>
   </span>
@@ -458,6 +436,24 @@
   <script>
       $('#gg-form').on('submit', function(e) {
         var keyword = $.trim($(this).find('#gg-search-input').val());
+        if (keyword) {
+          location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
+        }
+        return false;
+      });
+  </script>
+  <!-- baidu 站长自动推送 -->
+  <script>
+  (function(){
+      var bp = document.createElement('script');
+      bp.src = '//push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+  </script>
+</body>
+</html>
+r keyword = $.trim($(this).find('#gg-search-input').val());
         if (keyword) {
           location.href = 'https://www.google.com.hk/?gfe_rd=cr&ei=hXw8VpjtHuLC8AeSuIjQAg&gws_rd=ssl#safe=strict&q='+encodeURIComponent(keyword)+'+site:xgfe.github.io';
         }
