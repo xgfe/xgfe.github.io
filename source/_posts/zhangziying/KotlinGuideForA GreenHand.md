@@ -9,7 +9,7 @@ tags:
 - Mobile
 ---
 ## 简介
-Kotlin凭什么被称为 "better Java"？本文从Java使用者的角度入门Kotlin，康康Kotlin好处都有啥🤔
+Kotlin凭什么被称为 "better Java"？本文从Java使用者的角度入门Kotlin，看看Kotlin好处都有啥。
 <!--more-->
 ## Kotlin是什么
 ### Kotlin和Java的关系：
@@ -19,14 +19,13 @@ Kotlin兼容Java，可以直接调用Java代码，因此一切Java的库也适�
 Kotlin 在2017年被Google宣布为Android官方开发语言。
 ## 基本语法
 ## 变量
-Kotlin中一切都是对象。可以采用统一的方式进行声明
+Kotlin中一切都是对象。可以采用统一的方式进行声明。
 ### 声明
-Kotlin中可以使用var或val对变量进行定义，其中var定义可变变量，val定义不可变变量
+Kotlin中可以使用var或val对变量进行定义，其中var定义可变变量，val定义不可变变量。
 ```Kotlin
-//Kotlin中不需要分号了哦😯
+//Kotlin中不需要分号了哦
 var <标识符> : <类型> = <初始化值>
 val <标识符> : <类型> = <初始化值>
-
 ```
 ### null检测
 Java中虽然有@Nullable @NotNull等注解,但是加上这些注解后仅仅会有IDE警告，提示处理null情况。Kotlin编译器则可以强制处理null情况，最大限度避免null问题。Kotlin在声明变量的时候，可以指定变量是否为空，调用可为空对象时，需要进行空判断。
@@ -42,15 +41,16 @@ var h: String? = "1"
 val ages = age!!.toInt()
 //不做处理返回 null
 val ages1 = age?.toInt()
-//age为空返回-1 等价于 age2 = age==null?null:-1;
+//age为空返回-1 等价于 ages2 = age==null? -1: age;
 val ages2 = age?.toInt() ?: -1
 ```
 ### 比较与类型判断
 在 Kotlin 中，三个等号 === 表示比较对象地址，两个 == 表示比较两个值大小。
 ```Kotlin
-val a:Int = 1
-val b:Int = 1
-a===b //false
+var c:Int = 999
+val a:Int? = c
+val b:Int? = c
+a===b //false 需要注意两点 1、使用？会进行自动装箱，是Int对象。2、若c在-127到128之间则结果为true 因为会使用IntegerCache里缓存的数据而不是装箱成新对象。
 a==b //true
 ```
 类型判断也十分简便，使用 is 进行判断：
@@ -59,9 +59,9 @@ if(a is Int) { //todo }
 ```
 ## 循环相关
 ### 区间遍历
-对于一个区间的遍历，Kotlin提供了Java相比更为简约的写法
-//区间可以通过..进行连接，如A..B表示[A,B] 还可以通过 until 进行连接,比如 A until B 表示[A,B)
+对于一个区间的遍历，Kotlin提供了Java相比更为简约的写法：
 ```Kotlin
+//区间可以通过..进行连接，如A..B表示[A,B] 还可以通过 until 进行连接,比如 A until B 表示[A,B)
 for(i in 区间) 
 //还可以通过downTo从大往小取 
 for(i in 5 downTo 1)
@@ -69,8 +69,8 @@ for(i in 5 downTo 1)
 for(i in 5 downTo 1 step 2)
 ```
 ### 更简洁的switch：when
+在Kotlin中可以使用when来替代Java中的switch：
 ```Kotlin
-在Kotlin中可以使用when来替代Java中的switch
 when (x) {
     1,3 -> print("1 OR 3")
     2 -> print("3")
@@ -102,7 +102,7 @@ class Demo construcotr(name: String) {
 首先，协程并不是Kotlin特有的，它已经有十几年的历史了，go Javascript python等语言都支持协程。简单的来说，协程就是轻量级的线程。协程完全由程序控制，因此协程的切换不设计用户态和内核态的转变消耗相对于线程切换更低。一个进程中可以有多个线程，而一个线程中也可以有多个协程。对于同一个线程里面的协程，它们之间的执行是串行的。因此协程序适合于io密集型的程序。
 ### 基本使用
 **launch**
-一个最简单协程的创建用launch加上大括号括起来的代码即可，返回Job,可以用来对协程进行取消等操作
+一个最简单协程的创建用launch加上大括号括起来的代码即可，返回Job,可以用来对协程进行取消等操作：  
 ```Kotlin
 fun main() {
     var job = launch{
@@ -123,7 +123,7 @@ fun main() {
     } 
 }
 ```
-也可以用runBlocking来包装一个函数
+也可以用runBlocking来包装一个函数：
 ```Kotlin
 fun test() = runBlocking<T> { 
     //todo
@@ -140,10 +140,10 @@ fun test() = runBlocking<T> {
 ```
 ### 其他概念&参数
 上下文：协程运行的上下文包括Job以及调度器等
-协程调度器: 决定协程运行的线程情况，比如指定线程或者不设限
+协程调度器：决定协程运行的线程情况，比如指定线程或者不设限
 ***GlobalScope&CoroutineScope***
 GlobalScope继承自CoroutineScope。当一个协程被其它协程在 CoroutineScope中启动的时候则会继承父协程的上下文。当使用 GlobalScope来启动一个协程时，则新协程的作业没有父作业。 因此它与这个启动的作用域无关且独立运作。
-可以在创建协程的时候使用，比如
+可以在创建协程的时候使用，比如：
 ```Kotlin
 var job = GlobalScope.launch{
         //todo
@@ -151,7 +151,7 @@ var job = GlobalScope.launch{
     delay(1000L)
 }
 ```
-也可以直接创建一个作用域，然后在里面创建协程
+也可以直接创建一个作用域，然后在里面创建协程：
 ```Kotlin
 GlobalScope{
         launch{
@@ -168,5 +168,3 @@ launch(newSingleThreadContext("MyOwnThread")) { // 将使它获得一个新的�
    //todo
 }
 ```
-
-
