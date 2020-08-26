@@ -271,7 +271,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/07/04/wanglibin/category%E4%B8%8EExtension%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/</loc>
+        <loc>http://xgfe.github.io/2018/05/01/wangpan/redux-realize/</loc>
         <lastmod>2019-06-14T07:28:14.254Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -279,7 +279,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/05/01/wangpan/redux-realize/</loc>
+        <loc>http://xgfe.github.io/2018/07/04/wanglibin/category%E4%B8%8EExtension%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/</loc>
         <lastmod>2019-06-14T07:28:14.254Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -343,7 +343,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2016/11/09/zhouxiong/vue-in-action-vue-basis/</loc>
+        <loc>http://xgfe.github.io/2018/03/04/zhouyinian/React-component/</loc>
         <lastmod>2019-06-14T07:08:56.545Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -351,7 +351,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/03/04/zhouyinian/React-component/</loc>
+        <loc>http://xgfe.github.io/2016/11/09/zhouxiong/vue-in-action-vue-basis/</loc>
         <lastmod>2019-06-14T07:08:56.545Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -543,14 +543,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2016/05/16/scliuyang/ChromeDevTools4/</loc>
-        <lastmod>2019-06-14T07:08:56.535Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/2016/05/16/scliuyang/ChromeDevTools3/</loc>
         <lastmod>2019-06-14T07:08:56.535Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -568,6 +560,14 @@
 
     <url>
         <loc>http://xgfe.github.io/2016/12/21/scliuyang/docker1/</loc>
+        <lastmod>2019-06-14T07:08:56.535Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://xgfe.github.io/2016/05/16/scliuyang/ChromeDevTools4/</loc>
         <lastmod>2019-06-14T07:08:56.535Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -599,7 +599,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/12/21/rongweiwei/mysql-protocol/</loc>
+        <loc>http://xgfe.github.io/2017/01/22/penglu/git-01/</loc>
         <lastmod>2019-06-14T07:08:56.534Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -607,7 +607,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/01/22/penglu/git-01/</loc>
+        <loc>http://xgfe.github.io/2018/12/21/rongweiwei/mysql-protocol/</loc>
         <lastmod>2019-06-14T07:08:56.534Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -663,7 +663,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/06/28/lulutia/reactnative02/</loc>
+        <loc>http://xgfe.github.io/2016/08/21/lulutia/react-native-touch-animation/</loc>
         <lastmod>2019-06-14T07:08:56.530Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -671,7 +671,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2016/08/21/lulutia/react-native-touch-animation/</loc>
+        <loc>http://xgfe.github.io/2017/06/28/lulutia/reactnative02/</loc>
         <lastmod>2019-06-14T07:08:56.530Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -687,7 +687,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2018/01/19/lulutia/keep-alive/</loc>
+        <loc>http://xgfe.github.io/2017/07/10/lulutia/immutable-RN-Redux/</loc>
         <lastmod>2019-06-14T07:08:56.529Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -703,7 +703,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/07/10/lulutia/immutable-RN-Redux/</loc>
+        <loc>http://xgfe.github.io/2018/01/19/lulutia/keep-alive/</loc>
         <lastmod>2019-06-14T07:08:56.529Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -767,6 +767,14 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/2017/09/07/huanglifen/html2image/</loc>
+        <lastmod>2019-06-14T07:08:56.525Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/2018/01/05/hardhpp/node_crawler/</loc>
         <lastmod>2019-06-14T07:08:56.525Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -775,8 +783,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/09/07/huanglifen/html2image/</loc>
-        <lastmod>2019-06-14T07:08:56.525Z</lastmod>
+        <loc>http://xgfe.github.io/2016/11/28/felix/web-secure-skill/</loc>
+        <lastmod>2019-06-14T07:08:56.524Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -799,14 +807,6 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2016/11/28/felix/web-secure-skill/</loc>
-        <lastmod>2019-06-14T07:08:56.524Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://xgfe.github.io/2016/05/09/felix/funny-design-pattern/</loc>
         <lastmod>2019-06-14T07:08:56.523Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -815,7 +815,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/09/07/felix/html-parsing-and-resources-load/</loc>
+        <loc>http://xgfe.github.io/2015/10/28/felix/git-commit-hook/</loc>
         <lastmod>2019-06-14T07:08:56.523Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -823,7 +823,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/10/28/felix/git-commit-hook/</loc>
+        <loc>http://xgfe.github.io/2017/09/07/felix/html-parsing-and-resources-load/</loc>
         <lastmod>2019-06-14T07:08:56.523Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -879,6 +879,14 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/</loc>
+        <lastmod>2019-06-14T07:08:56.520Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-radar/</loc>
         <lastmod>2019-06-14T07:08:56.520Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -895,8 +903,8 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2015/11/24/chenwubai/d3-basicCharts-scatter-bubble/</loc>
-        <lastmod>2019-06-14T07:08:56.520Z</lastmod>
+        <loc>http://xgfe.github.io/2018/02/09/caominkang/ListView%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+        <lastmod>2019-06-14T07:08:56.519Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -904,22 +912,6 @@
 
     <url>
         <loc>http://xgfe.github.io/2018/06/10/anjing/Communication-between-front-end/</loc>
-        <lastmod>2019-06-14T07:08:56.519Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/2015/11/23/chenwubai/d3-basicCharts-line/</loc>
-        <lastmod>2019-06-14T07:08:56.519Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://xgfe.github.io/2018/02/09/caominkang/ListView%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
         <lastmod>2019-06-14T07:08:56.519Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -935,6 +927,14 @@
     </url>
 
     <url>
+        <loc>http://xgfe.github.io/2015/11/23/chenwubai/d3-basicCharts-line/</loc>
+        <lastmod>2019-06-14T07:08:56.519Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://xgfe.github.io/2017/09/22/Sudaxi/attributeStr1/</loc>
         <lastmod>2019-06-14T07:08:56.518Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -943,7 +943,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/02/07/TinySymphony/React-Native-ART%E4%BB%8B%E7%BB%8D/</loc>
+        <loc>http://xgfe.github.io/2017/03/16/TinySymphony/electronic-apps/</loc>
         <lastmod>2019-06-14T07:08:56.518Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -951,7 +951,7 @@
     </url>
 
     <url>
-        <loc>http://xgfe.github.io/2017/03/16/TinySymphony/electronic-apps/</loc>
+        <loc>http://xgfe.github.io/2017/02/07/TinySymphony/React-Native-ART%E4%BB%8B%E7%BB%8D/</loc>
         <lastmod>2019-06-14T07:08:56.518Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
