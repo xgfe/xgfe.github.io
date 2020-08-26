@@ -249,7 +249,6 @@ UIImage *image = [UIImage imageNamed:@"fruit.jpeg"];
 CGImageRef imgRef = [image CGImage];
 ```
 
-## pixelBufferFromCGImage: 函数
 
 ```objectivec
 //CGImageRef 转  CVPixelBufferRef
@@ -303,7 +302,7 @@ CGImageRef imgRef = [image CGImage];
 ```
 
 
-## pixelBufferFromCGImage: 函数
+## imageBlackToTransparent 函数
 
 
 
